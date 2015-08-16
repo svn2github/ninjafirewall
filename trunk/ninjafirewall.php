@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.5-RC3
+Version: 1.5
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -21,8 +21,8 @@ Domain Path: /languages
  | REVISION: 2015-08-14 12:08:47                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.5-RC3' );
-define( 'NFW_RULES_VERSION',  '20150813.3' );
+define( 'NFW_ENGINE_VERSION', '1.5' );
+define( 'NFW_RULES_VERSION',  '20150816.3' );
  /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -669,7 +669,7 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 	$message = __('Someone just logged in to your WordPress admin console:', 'ninjafirewall') . "\n\n".
 				__('- User :', 'ninjafirewall') .' '. $user_login . ' (' . $whoami . ")\n" .
 				__('- IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
-				__('- Date :', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n" .
+				__('- Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 				$url .
 				'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
 				__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";

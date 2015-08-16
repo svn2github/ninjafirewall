@@ -219,7 +219,7 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 
 == Changelog ==
 
-= 1.5-RC2 =
+= 1.5 =
 * Internationalization support. The POT file is included in the `/languages/` folder.
 * French (fr_FR) language added.
 * [WP+ edition] Updated IPv4/IPv6 GeoIP databases.

@@ -451,7 +451,7 @@ function nf_sub_updates_notification($new_rules_version) {
 		$msg .=__('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 	}
 	$msg .=__('Rules version:', 'ninjafirewall') .' '. preg_replace('/(\d{4})(\d\d)(\d\d)/', '$1-$2-$3', $new_rules_version) . "\n";
-	$msg .= sprintf( __('Date: %s', 'ninjafirewall'), date_i18n('M d, Y @ H:i:s O') ) . "\n\n" .
+	$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) ) . "\n\n" .
 			'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $msg );
