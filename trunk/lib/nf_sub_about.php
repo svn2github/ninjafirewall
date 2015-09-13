@@ -56,58 +56,61 @@ function nfw_eg() {
 	<h2>' . __('About', 'ninjafirewall') .'</h2>
 	<br />
 	<br />
-	<center>
-		<table border="0" width="500" style="border: 1px solid #DFDFDF;padding:10px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;">
-			<tr style="text-align:center">
-				<td>
-					<font style="font-size: 1.2em; font-weight: bold;">NinjaFirewall (WP edition) v' . NFW_ENGINE_VERSION . '</font>
-					<br />
-					<br />
-					<a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network"><img src="' . plugins_url() . '/ninjafirewall/images/nintechnet.png" border="0" width="190" height="60" title="The Ninja Technologies Network"></a>
-					<br />
-					<font onContextMenu="nfw_eg();return false;">&copy;</font> 2012-' . date( 'Y' ) . ' <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network"><strong>NinTechNet</strong></a>
-					<br />
-					The Ninja Technologies Network
-					<p><a href="https://twitter.com/nintechnet"><img border="0" src="'. plugins_url() . '/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></p>
-					<table border="0" cellspacing="2" cellpadding="10" width="100%">
-						<tr valign=top>
-							<td align="center" width="33%">
-								<img src="' . plugins_url() . '/ninjafirewall/images/logo_nm_65.png" width="65" height="65" border=0>
-								<br />
-								<a href="http://ninjamonitoring.com/"><b>NinjaMonitoring.com</b></a>
-								<br />
-								' . __('Monitor your website for just $4.99 per month.', 'ninjafirewall') . '
-							</td>
-							<td align="center" width="34%">
-								<img src="' . plugins_url() . '/ninjafirewall/images/logo_pro_65.png" width="65" height="65" border=0>
-								<br />
-								<a href="http://ninjafirewall.com/"><b>NinjaFirewall.com</b></a>
-								<br />
-								' . __('Advanced firewall software for all your PHP applications.', 'ninjafirewall') . '
-							</td>
-							<td align="center" width="33%">
-								<img src="' . plugins_url() . '/ninjafirewall/images/logo_nr_65.png" width="65" height="65" border=0>
-								<br />
-								<a href="http://ninjarecovery.com/"><b>NinjaRecovery.com</b></a>
-								<br />
-								' . __('Malware removal and hacking recovery for just $89.', 'ninjafirewall') . '
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+	<center>';
+?>
+	<table border="0" width="80%" style="padding:10px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#749BBB;border:1px solid #638DB0;color:#fff;border-radius:6px">
+		<tr>
+			<td style="text-align:center">
+				<font style="font-size: 2em; font-weight: bold;">NinjaFirewall (WP Edition) v<?php echo NFW_ENGINE_VERSION ?></font>
+				<br />
+				<font onContextMenu="nfw_eg();return false;">&copy;</font> 2012-<?php echo date( 'Y' ) ?> <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
+				<br />
+				The Ninja Technologies Network
+				<br />&nbsp;
+			</td>
+		</tr>
+		<tr style="text-align:center">
+			<td width="100%">
+				<table width="100%" border="0">
+					<tr>
+						<td style="width:33.3333%">
+							<font style="font-size: 1.5em; font-weight: bold;">NinjaFirewall</font>
+							<p>Web Application Firewall<br />for PHP and WordPress.</p>
+							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_pro_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
+							<p><a href="http://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;">Free Download</a></p>
+						</td>
+						<td style="width:33.3333%">
+							<font style="font-size: 1.5em; font-weight: bold;">NinjaMonitoring</font>
+							<p>Website Monitoring<br />for just $4.99/month.</p>
+							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nm_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
+							<p><a href="http://nintechnet.com/ninjamonitoring/" class="button-primary" style="color:#FFF;background-color:#EC971F;border-color:#D58512;">7-Day Free Trial</a></p>
+						</td>
+						<td style="width:33.3333%">
+							<font style="font-size: 1.5em; font-weight: bold;">NinjaRecovery</font>
+							<p>Malware removal and<br />hack recovery at $89.</p>
+							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nr_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
+							<p><a href="http://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;">Clean Your Site!</a></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+	</table>
+<?php
+	echo '
 		<br />
 		<br />
-		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word about the Ninja !', 'ninjafirewall') . '" onclick="show_table(11);" autofocus>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Privacy Policy', 'ninjafirewall') . '" onclick="show_table(14);">
+		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word about the Ninja !', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Privacy Policy', 'ninjafirewall') . '" onclick="show_table(14);">
 		<br />
 		<br />
 
 		<table id="11" border="0" width="500">
 			<tr style="text-align:center;">
-				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="http://twitter.com/share?text=NinjaFirewall&url=http://ninjafirewall.com/" target="_blank"><img src="' . plugins_url() .  '/ninjafirewall/images/twitter.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+				<td><a href="http://twitter.com/share?text=NinjaFirewall&url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() .  '/ninjafirewall/images/twitter.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+				<td><a href="https://twitter.com/nintechnet"><img border="0" src="'. plugins_url() .'/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></td>
 			</tr>
 		</table>
 

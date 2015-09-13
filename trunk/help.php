@@ -40,7 +40,7 @@ function help_nfsubmain() {
 	) );
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:', 'ninjafirewall') . '</strong></p>' .
-		'<p><a href="http://ninjafirewall.com/wordpress/help.php">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
+		'<p><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
 		'<p><a href="http://wordpress.org/support/plugin/ninjafirewall/">' . __( 'Support Forum', 'ninjafirewall') . '</a></p>' .
 		'<p>'. __('Updates via Twitter', 'ninjafirewall') . '<br /><a href="https://twitter.com/nintechnet"><img border="0" src="' . plugins_url( '/images/twitter_ntn.png', __FILE__ ) . '" width="116" height="28"></a></p>'
 	);
@@ -388,7 +388,7 @@ function help_nfsublogin() {
 		__('Sample loglines:', 'ninjafirewall') .
 		'<br />
 		<textarea class="small-text code" style="width:100%;height:80px;" wrap="off">Aug 31 01:40:35 www ninjafirewall[6191]: Possible brute-force attack from 172.16.0.1 on mysite.com (wp-login.php). Blocking access for 5mn.'. "\n" . 'Aug 31 01:45:28 www ninjafirewall[6192]: Possible brute-force attack from fe80::6e88:14ff:fe3e:86f0 on blog.domain.com (XML-RPC API). Blocking access for 25mn.</textarea>
-		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'http://ninjafirewall.com/wordpress/htninja/') . '</span></p>
+		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja') . '</span></p>
 		</div>'
 	) );
 
@@ -489,79 +489,6 @@ function help_nfsubupdates() {
 		'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' .
 		__('Updates are downloaded from wordpress.org repo only. There is no connection to NinTechNet\'s servers (A.K.A "phoning home") during the update process.', 'ninjafirewall') . '</span>'
 	) );
-}
-
-/* ------------------------------------------------------------------ */
-
-function help_nfsubabout() {
-
-	// Firewall about menu help :
-
-	get_current_screen()->add_help_tab( array(
-		'id'        => 'about01',
-		'title'     => 'NinTechNet',
-		'content'   => '<br />
-		<strong>NinTechNet</strong> offers a variety of security related products and services aimed to help you to protect and keep your website up and running. It addresses both professional business sites and personal blogs.
-		<br /><br />
-		The Ninja Technologies Network includes :
-		<br />
-		<li><strong>NinjaMonitoring :</strong> Reviews and monitor suspicious activity, preventing all sorts of damage to your website.</li>
-		<li><strong>NinjaFirewall :</strong> Provides advanced firewall software for all PHP applications.</li>
-		<li><strong>NinjaRacovery :</strong> Deals with incident response, malware removal & post-hacking recovery.</li>
-		<br />
-		<center><a href="http://nintechnet.com/" title="The Ninja Technologies Network"><b>www.NinTechNet.com</b></a></center>
-		'
-	) );
-	get_current_screen()->add_help_tab( array(
-		'id'        => 'about02',
-		'title'     => 'NinjaMonitoring',
-		'content'   => '<br /><strong>NinjaMonitoring :</strong> Monitor your website for suspicious activities
-		<br /><br />
-		Our service can review and monitor your website for any suspicious activities, from hacking attempts to malware infection.
-		<br /><br/>Service features&nbsp;:
-		<br/>
-		<li>Server-side scan&nbsp;: we will detect any modification of your files.</li>
-		<li>Adjustable scanning interval, from 15 to 180 minutes.</li>
-		<li>Unlimited number of files to monitor: 500, 5000 or even 50000+</li>
-		<li>Fully configurable options&nbsp;: file extensions, exclusions, detection types etc.</li>
-		<li>Compatible with any shared hosting account offering either PHP or Perl/CGI.</li>
-		<li>Free trial.</li>
-		<br />
-		<center><a href="http://ninjamonitoring.com/" title="NinjaMonitoring.com"><b>www.NinjaMonitoring.com</b></a></center><br />'
-	) );
-	get_current_screen()->add_help_tab( array(
-		'id'        => 'about03',
-		'title'     => 'NinjaFirewall',
-		'content'   => '<br /><strong>NinjaFirewall :</strong> Advanced firewall software for all your PHP applications
-		<br /><br />
-		NinjaFirewall is a powerful firewall software designed to protect all PHP applications from custom scripts to shopping cart softwares (osCommerce, Magento, VirtueMart etc) and also CMS applications (Joomla, WordPress etc).
-		<br /><br />
-		Product features :<br />
-		<li>Compatible with shared hosting accounts.</li>
-		<li>Protects against remote & local file inclusions, code execution, uploads, MySQL injections, brute-force scanners, XSS and many other threats.</li>
-		<li>Stand-alone firewall; will not stop working when you upgrade your shopping cart or CMS software.</li>
-		<li>Hooks and sanitises all requests before they reach your scripts.</li>
-		<li>Management administration console.</li>
-		<li>Free Opensource and Commercial versions available for download</li>
-		<br />
-		<center><a href="http://ninjafirewall.com/" title="NinjaFirewall.com"><b>www.NinjaFirewall.com</b></a></center><br />'
-	) );
-	get_current_screen()->add_help_tab( array(
-		'id'        => 'about04',
-		'title'     => 'NinjaRecovery',
-		'content'   => '<br /><strong>NinjaRecovery :</strong> Incident response, malware removal & hacking recovery
-		<br /><br />
-		If your online business is hacked or compromised by a virus or malware, the consequences will be not only that your site will be included in Google and the other search engines blacklist, but it could damage your reputation and consequently, might determine significant financial loss.
-		<br /><br />
-		Our services include :<br />
-		<li>Virus &amp; Malware removal</li>
-		<li>Hacking recovery</li>
-		<br />
-		All our offers include 1-month warranty and monitoring of your site.
-		<br/><br/>
-		<center><a href="http://ninjarecovery.com/" title="NinjaRecovery.com"><b>www.NinjaRecovery.com</b></a></center><br />'
-	) );
-
 }
 
 /* ------------------------------------------------------------------ */

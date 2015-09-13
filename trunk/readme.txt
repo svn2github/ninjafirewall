@@ -136,7 +136,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://ninjafirewall
 * URL-based Access Control.
 * Bot-based Access Control.
 * Antispam for comment and user regisration forms.
-* Rate limiting option to block aggressive bots, crawlers, web scrapers and HTTP DoS attacks.
+* Rate limiting option to block aggressive bots, crawlers, web scrapers and HTTP attacks.
 * Response body filter to scan the output of the HTML page right before it is sent to your visitors browser.
 * Better File uploads management.
 * Better logs management.
@@ -219,6 +219,13 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 
 == Changelog ==
 
+= 1.6-RC1 =
+* Improved the firewall engine to handle double-encoding used in query strings to perform advanced SQLi and XSS attempts.
+* Improved Base64-encoded injection detection.
+* Updated links and doc.
+* Removed green 'OK' icons (Overview page etc).
+* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+
 = 1.5 =
 * Internationalization support. The POT file is included in the `/languages/` folder.
 * French (fr_FR) language added.
@@ -236,7 +243,7 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * Updated security rules.
 
 = 1.4.2 =
-* The path to NinjaFirewall's log/cache directory can be changed with the `NFW_LOG_DIR` constant (see http://ninjafirewall.com/wordpress/htninja/#nfwlogdir for more details).
+* The path to NinjaFirewall's log/cache directory can be changed with the `NFW_LOG_DIR` constant (see http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja for more details).
 * Disabling NinjaFirewall will disable the brute-force protection as well.
 * When importing its configuration, NinjaFirewall will ensure that the server is compatible with the HTTP response headers option, otherwise it will disable that option.
 * The installer will return an error message if the PHP mysqli extension is not loaded.
@@ -292,7 +299,7 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 = 1.3.7 =
 * Added a new feature: "Live Log". It lets you watch your website traffic in real time.
 * Fixed a bug in the "Event Notifications" email alert: after an update, the name of the (re)activated plugin was missing.
-* It is now possible to create the ".htninja" optional configuration file in either the document root or its parent directory (see http://ninjafirewall.com/wordpress/htninja/ ).
+* It is now possible to create the ".htninja" optional configuration file in either the document root or its parent directory (see http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ).
 * NinjaFirewall will not block access to the TinyMCE WYSIWYG editor even if the option to block direct access to any PHP file located in the `/wp-includes/` folder is enabled (see "Firewall Policies" page).
 
 = 1.3.6 =
@@ -414,7 +421,7 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * The "Protect against username enumeration" option ("Firewall Policies" page) will not be enabled by default, to prevent Google bot from being blocked.
 * Modified the handling of session_start.
 * Added a stats file to summarize the firewall log statistics in order to speed up the display of the dashboard widget when the log is huge.
-* Added new features to the `.htninja` file to quickly allow or block visitors. See `http://ninjafirewall.com/wordpress/htninja/` for full details.
+* Added new features to the `.htninja` file to quickly allow or block visitors. See http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja for full details.
 
 = 1.1.7 =
 * Updated firewall rules.
@@ -448,7 +455,7 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 = 1.1.3 =
 * Added an option to block username enumeration scanning attempts through the author archives and the login page (Firewall Policies page).
 * Added an option to always enforce HTTP Basic authentication to protect the login page and the possibility to set a custom 'realm' message (Login Protection page).
-* Added an optional configuration file that can be used to tell NinjaFirewall where is located the `wp-config.php` file, in the case it was moved to another directory (see `http://ninjafirewall.com/wordpress/htninja/` for full details).
+* Added an optional configuration file that can be used to tell NinjaFirewall where is located the `wp-config.php` file, in the case it was moved to another directory (see http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja for full details).
 * Added a warning about blocking direct access to PHP scripts located in the `/wp-includes/` directory because it could prevent non-admin users from using the TinyMCE WYSIWYG editor.
 
 = 1.1.2 =

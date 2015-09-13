@@ -61,7 +61,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<br />
 
-				<p><?php _e('<b>Access Control</b> can slow down aggressive bots, crawlers, web scrapers or even small HTTP DoS attacks with its <strong>Rate-Limiting</strong> feature.', 'ninjafirewall') ?>
+				<p><?php _e('<b>Access Control</b> can slow down aggressive bots, crawlers, web scrapers or even small HTTP attacks with its <strong>Rate-Limiting</strong> feature.', 'ninjafirewall') ?>
 				<br />
 				<?php _e('Because it can block attackers <strong>before WordPress and all its plugins are loaded</strong> and can handle thousands of HTTP requests per second, NinjaFirewall will save precious bandwidth and reduce your server load.', 'ninjafirewall') ?></p>
 				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/04_ac_limit.png" width="471" height="122" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
@@ -124,8 +124,8 @@ nf_not_allowed( 'block', __LINE__ );
 		</tr>
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<td style="text-align:center">
-				<h2><b><a href="http://ninjafirewall.com/wordpress/nfwplus.php"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> edition unique features.', 'ninjafirewall') ?></b></h2>
-				<h2><b><a href="http://ninjafirewall.com/wordpress/overview.php"><?php _e('Compare</a> the WP and <font color="#21759B">WP+</font> editions.', 'ninjafirewall') ?></b></h2>
+				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> edition unique features.', 'ninjafirewall') ?></b></h2>
+				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/?comparison"><?php _e('Compare</a> the WP and <font color="#21759B">WP+</font> editions.', 'ninjafirewall') ?></b></h2>
 			</td>
 		</tr>
 	</table>

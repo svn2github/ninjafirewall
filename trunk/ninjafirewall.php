@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.5
+Version: 1.6-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,11 +18,11 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-14 12:08:47                                       |
+ | REVISION: 2015-09-12 15:59:30                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.5' );
-define( 'NFW_RULES_VERSION',  '20150816.3' );
+define( 'NFW_ENGINE_VERSION', '1.6-RC1' );
+define( 'NFW_RULES_VERSION',  '20150913.2' );
  /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -81,7 +81,7 @@ $err_fw = array(
 	10	=> __('Unable to communicate with the firewall. Please check your PHP INI settings', 'ninjafirewall'),
 	11	=>	__('Cannot retrieve user options from database (#1)', 'ninjafirewall'),
 	12	=>	__('Cannot retrieve user rules from database (#1)', 'ninjafirewall'),
-	13 => sprintf( __("The firewall cannot access its log and cache folders. If you changed the name of WordPress %s or %s folders, you must define NinjaFirewall's built-in %s constant (see %s for more info)", 'ninjafirewall'), '<code>/wp-content/</code>', '<code>/plugins/</code>', '<code>NFW_LOG_DIR</code>', "<a href='http://ninjafirewall.com/wordpress/htninja/#nfwlogdir' target='_blank'>Path to NinjaFirewall's log and cache directory</a>"),
+	13 => sprintf( __("The firewall cannot access its log and cache folders. If you changed the name of WordPress %s or %s folders, you must define NinjaFirewall's built-in %s constant (see %s for more info)", 'ninjafirewall'), '<code>/wp-content/</code>', '<code>/plugins/</code>', '<code>NFW_LOG_DIR</code>', "<a href='http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja' target='_blank'>Path to NinjaFirewall's log and cache directory</a>"),
 );
 
 if (! defined('NFW_LOG_DIR') ) {
@@ -857,7 +857,6 @@ function ninjafirewall_admin_menu() {
 	// About menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: About', 'ninjafirewall'), __('About...', 'ninjafirewall'), 'manage_options',
 		'nfsubabout', 'nf_sub_about' );
-	add_action( 'load-' . $menu_hook, 'help_nfsubabout' );
 
 }
 
@@ -989,7 +988,7 @@ function nf_menu_main() {
 
 		<tr>
 			<th scope="row"><?php _e('Firewall', 'ninjafirewall') ?></th>
-			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_ok_16.png', __FILE__ ) ?>" border="0" height="16" width="16"></td>
+			<td width="20" align="left">&nbsp;</td>
 			<td><?php _e('Enabled', 'ninjafirewall') ?></td>
 		</tr>
 
@@ -1073,7 +1072,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('Source IP', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('You have a private IP : %s', 'ninjafirewall') .'<br />'. __('If your site is behind a reverse proxy or a load balancer, ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), htmlentities($_SERVER['REMOTE_ADDR']), '<code><a href="http://ninjafirewall.com/wordpress/htninja/">.htninja</a></code>') ?></td>
+			<td><?php printf( __('You have a private IP : %s', 'ninjafirewall') .'<br />'. __('If your site is behind a reverse proxy or a load balancer, ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), htmlentities($_SERVER['REMOTE_ADDR']), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 	}
@@ -1086,7 +1085,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('CDN detection', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('%s detected: you seem to be using Cloudflare CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_CF_CONNECTING_IP</code>', '<code><a href="http://ninjafirewall.com/wordpress/htninja/?#variables">.htninja</a></code>') ?></td>
+			<td><?php printf( __('%s detected: you seem to be using Cloudflare CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_CF_CONNECTING_IP</code>', '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 		}
@@ -1098,7 +1097,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('CDN detection', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('%s detected: you seem to be using Incapsula CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_INCAP_CLIENT_IP</code>', '<code><a href="http://ninjafirewall.com/wordpress/htninja/?#variables">.htninja</a></code>') ?></td>
+			<td><?php printf( __('%s detected: you seem to be using Incapsula CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_INCAP_CLIENT_IP</code>', '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 		}
@@ -1179,7 +1178,7 @@ function nf_menu_main() {
 		echo $ro_msg . '<tr>
 			<th scope="row">&nbsp;</th>
 			<td width="20">&nbsp;</td>
-			<td><span class="description">&nbsp;' . sprintf( __('Warning: you have some read-only system files; please <a href="%s">read this</a> if you want to uninstall NinjaFirewall.', 'ninjafirewall'), 'http://ninjafirewall.com/wordpress/help.php#ro_sysfile') . '</span></td>
+			<td><span class="description">&nbsp;' . sprintf( __('Warning: you have some read-only system files; please <a href="%s">read this</a> if you want to uninstall NinjaFirewall.', 'ninjafirewall'), 'http://nintechnet.com/ninjafirewall/wp-edition/help/?uninstall') . '</span></td>
 			</tr></table>';
 	}
 	?>
@@ -3467,7 +3466,7 @@ function ninjafirewall_settings_link( $links ) {
 	nf_not_allowed( 'block', __LINE__ );
 
    $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-   $links[] = '<a href="http://ninjafirewall.com/wordpress/nfwplus.php" target="_blank">WP+ Edition</a>';
+   $links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/" target="_blank">WP+ Edition</a>';
    return $links;
 }
 
