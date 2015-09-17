@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2015-09-13 11:56:58                                       |
+// | REVISION: 2015-09-17 15:26:36                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -636,7 +636,7 @@ function nfw_check_upload() {
 
 			// Look for EICAR test file :
 			$data = file_get_contents($f_uploaded[$key]['tmp_name'], NULL, NULL, NULL, 68);
-			if ($data == 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*') {
+			if ($data == 'X5O!P%@AP' . '[4\PZX54(P^)7CC)7}$EIC' . 'AR-STANDARD-ANTIVIRUS-TEST-FILE!$H' . '+H*') {
 				nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes', 3, 0);
 				// Always block it, even if we allow uploads:
 				nfw_block();
