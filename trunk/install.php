@@ -894,7 +894,7 @@ function welcome_email() {
 			$message.= __('This is NinjaFirewall\'s installer. Below are some helpful info and links you may consider reading before using NinjaFirewall.', 'ninjafirewall') . "\n\n";
 
 			$message.= '1) ' . __('Troubleshooting:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?troubleshooting' . "\n\n";
+			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?troubleshooting ' . "\n\n";
 
 			$message.= __('-Locked out of your site / Fatal error / WordPress crash?', 'ninjafirewall') . "\n";
 			$message.= __('-Failed installation ("Error: the firewall is not loaded")?', 'ninjafirewall') . "\n";
@@ -907,7 +907,7 @@ function welcome_email() {
 			$message.= __('-Blocked visitors (see below)?', 'ninjafirewall') . "\n\n";
 
 			$message.= '2) ' . __('-NinjaFirewall (WP Edition) troubleshooter script', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/share/wp-check.txt' . "\n\n";
+			$message.= 'http://nintechnet.com/share/wp-check.txt ' . "\n\n";
 			$message.=  __('-Rename this file to "wp-check.php".', 'ninjafirewall') . "\n";
 			$message.=  __('-Upload it into your WordPress root folder.', 'ninjafirewall') . "\n";
 			$message.=  __('-Goto http://YOUR WEBSITE/wp-check.php.', 'ninjafirewall') . "\n";
@@ -915,7 +915,7 @@ function welcome_email() {
 
 
 			$message.= '3) '. __('FAQ:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?faq' . "\n\n";
+			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?faq ' . "\n\n";
 
 			$message.= __('-Why is NinjaFirewall different from other security plugins for WordPress?', 'ninjafirewall') . "\n";
 			$message.= __('-Do I need root privileges to install NinjaFirewall?', 'ninjafirewall') . "\n";
@@ -932,23 +932,23 @@ function welcome_email() {
 			$message.= '4) '. __('Must Read:', 'ninjafirewall') . "\n\n";
 
 			$message.= __('-Testing NinjaFirewall without blocking your visitors.', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/' . "\n";
+			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n";
 
 			$message.= __('-Add your own code to the firewall: the ".htninja" file.', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja' . "\n";
+			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n";
 
 			$message.= __('-Keep your blog protected against the latest vulnerabilities.', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules' . "\n\n";
+			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
 
 
 			$message.= '5) '. __('Help & Support Links:', 'ninjafirewall') . "\n\n";
 
 			$message.= __('-Each page of NinjaFirewall includes a contextual help: click on the "Help" menu tab located in the upper right corner of the corresponding page.', 'ninjafirewall') . "\n";
-			$message.= __('-Online documentation is also available here:', 'ninjafirewall'). ' http://nintechnet.com/ninjafirewall/wp-edition/doc/' . "\n";
-			$message.= __('-The WordPress support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
-			$message.= __('-Updates info are available via Twitter:', 'ninjafirewall') .' https://twitter.com/nintechnet' . "\n\n";
+			$message.= __('-Online documentation is also available here:', 'ninjafirewall'). ' http://nintechnet.com/ninjafirewall/wp-edition/doc/ ' . "\n";
+			$message.= __('-The WordPress support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall ' . "\n";
+			$message.= __('-Updates info are available via Twitter:', 'ninjafirewall') .' https://twitter.com/nintechnet ' . "\n\n";
 
-			$message.= 'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n\n";
+			$message.= 'NinjaFirewall (WP Edition) - http://ninjafirewall.com/ ' . "\n\n";
 
 			if (! DONOTEMAIL ) {
 				wp_mail( $recipient, $subject, $message );

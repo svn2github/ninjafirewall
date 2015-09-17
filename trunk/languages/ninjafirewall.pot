@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2015-09-13 18:48+0700\n"
-"PO-Revision-Date: 2015-09-13 18:48+0700\n"
+"POT-Creation-Date: 2015-09-17 00:05+0700\n"
+"PO-Revision-Date: 2015-09-17 00:05+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2622,6 +2622,10 @@ msgstr ""
 
 #: lib/nf_sub_options.php:163
 msgid "Download"
+msgstr ""
+
+#: lib/nf_sub_options.php:163
+msgid "File Check configuration will not be exported/imported."
 msgstr ""
 
 #: lib/nf_sub_options.php:166

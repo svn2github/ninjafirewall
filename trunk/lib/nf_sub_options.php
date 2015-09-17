@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-01 17:32:06                                       |
+ | REVISION: 2015-09-17 17:32:06                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -160,7 +160,7 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 		<tr>
 			<th scope="row"><?php _e('Export configuration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left"><input class="button-secondary" type="submit" name="nf_export" value="<?php _e('Download', 'ninjafirewall') ?>" /></td>
+			<td align="left"><input class="button-secondary" type="submit" name="nf_export" value="<?php _e('Download', 'ninjafirewall') ?>" /><br /><span class="description"><?php _e( 'File Check configuration will not be exported/imported.', 'ninjafirewall') ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Import configuration', 'ninjafirewall') ?></th>

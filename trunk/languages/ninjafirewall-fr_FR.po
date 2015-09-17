@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall (WP edition)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ninjafirewall\n"
-"POT-Creation-Date: 2015-09-13 18:48+0700\n"
-"PO-Revision-Date: 2015-09-13 18:48+0700\n"
+"POT-Creation-Date: 2015-09-17 00:05+0700\n"
+"PO-Revision-Date: 2015-09-17 00:05+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: NinTechNet <nintechnet.com>\n"
 "Language: fr_FR\n"
@@ -3231,6 +3231,11 @@ msgstr "Exporter la configuration"
 #: lib/nf_sub_options.php:163
 msgid "Download"
 msgstr "Télécharger"
+
+#: lib/nf_sub_options.php:163
+msgid "File Check configuration will not be exported/imported."
+msgstr ""
+"La configuration de \"File Check\" ne peut pas être importée ou exportée."
 
 #: lib/nf_sub_options.php:166
 msgid "Import configuration"

@@ -2,7 +2,7 @@
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
-Tested up to: 4.3
+Tested up to: 4.3.1
 Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -219,11 +219,12 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 
 == Changelog ==
 
-= 1.6-RC1 =
-* Improved the firewall engine to handle double-encoding used in query strings to perform advanced SQLi and XSS attempts.
+= 1.6 =
+* Improved firewall engine to handle double-encoding used in query strings to perform advanced SQLi and XSS attempts.
 * Improved Base64-encoded injection detection.
 * Updated links and doc.
-* Removed green 'OK' icons (Overview page etc).
+* Removed green 'OK' icons from the Overview page. Only warning and error icons will be used.
+* Updated security rules.
 * [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 1.5 =
