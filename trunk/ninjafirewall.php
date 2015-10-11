@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.6
+Version: 1.7-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,11 +18,11 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-09-17 09:52:18                                       |
+ | REVISION: 2015-10-10 19:30:46                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.6' );
-define( 'NFW_RULES_VERSION',  '20150916.1' );
+define( 'NFW_ENGINE_VERSION', '1.7-RC1' );
+define( 'NFW_RULES_VERSION',  '20151011.1' );
  /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -168,6 +168,14 @@ function nfw_activate() {
 			}
 			wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
 		}
+		// Re-enable daily report, if needed :
+		if (! empty($nfw_options['a_52']) ) {
+			if ( wp_next_scheduled('nfdailyreport') ) {
+				wp_clear_scheduled_hook('nfdailyreport');
+			}
+			nfw_get_blogtimezone();
+			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
+		}
 		// Re-enable brute-force protection :
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php' ) ) {
 			rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php');
@@ -201,6 +209,10 @@ function nfw_deactivate() {
 	// Clear auto updates (if any) :
 	if ( wp_next_scheduled('nfsecupdates') ) {
 		wp_clear_scheduled_hook('nfsecupdates');
+	}
+	// Clear daily report (if any) :
+	if ( wp_next_scheduled('nfdailyreport') ) {
+		wp_clear_scheduled_hook('nfdailyreport');
 	}
 	// and disable brute-force protection :
 	if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
@@ -470,6 +482,16 @@ function nfw_upgrade() {
 				}
 			}
 		}
+		// v1.7 update -------------------------------------------------
+		// Create daily report cronjob :
+		if ( version_compare( $nfw_options['engine_version'], '1.7', '<' ) ) {
+			$nfw_options['a_52'] = 1;
+			if ( ! wp_next_scheduled('nfdailyreport') ) {
+				nfw_get_blogtimezone();
+				wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
+			}
+			$nfw_options['no_xmlrpc_multi'] = 0;
+		}
 		// ---------------------------------------------------------------
 
 		$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
@@ -662,14 +684,14 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 
 	$subject = '[NinjaFirewall] ' . __('Alert: WordPress console login', 'ninjafirewall');
 	if ( is_multisite() ) {
-		$url = __('- Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
+		$url = __('-Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
 	} else {
-		$url = __('- Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
+		$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
 	}
 	$message = __('Someone just logged in to your WordPress admin console:', 'ninjafirewall') . "\n\n".
-				__('- User :', 'ninjafirewall') .' '. $user_login . ' (' . $whoami . ")\n" .
-				__('- IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
-				__('- Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
+				__('-User :', 'ninjafirewall') .' '. $user_login . ' (' . $whoami . ")\n" .
+				__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
+				__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 				$url .
 				'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
 				__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";
@@ -1015,6 +1037,7 @@ function nf_menu_main() {
 				} else {
 					echo strtoupper(PHP_SAPI);
 				}
+				echo ' ('. PHP_MAJOR_VERSION .'.'. PHP_MINOR_VERSION .'.'. PHP_RELEASE_VERSION .')';
 				?>
 			</td>
 		</tr>
@@ -1927,6 +1950,11 @@ function httponly() {
 	} else {
 		$no_xmlrpc = 1;
 	}
+	if ( empty( $nfw_options['no_xmlrpc_multi']) ) {
+		$no_xmlrpc_multi = 0;
+	} else {
+		$no_xmlrpc_multi = 1;
+	}
 	if ( empty( $nfw_options['no_post_themes']) ) {
 		$no_post_themes = 0;
 	} else {
@@ -2012,19 +2040,17 @@ function httponly() {
 				<p><label><input type="checkbox" name="nfw_options[enum_login]" value="1"<?php checked( $enum_login, 1 ) ?>>&nbsp;<?php _e('Through the login page', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php _e('WordPress XML-RPC API', 'ninjafirewall') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left">
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block only <code>system.multicall</code> method', 'ninjafirewall') ?></label></p>
+			</td>
+		</tr>
 	</table>
 
 	<table class="form-table">
-		<tr valign="top">
-			<th scope="row"><?php _e('Block access to WordPress XML-RPC API', 'ninjafirewall') ?></th>
-			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
-			</td>
-			<td align="left">
-				<label><input type="radio" name="nfw_options[no_xmlrpc]" value="0"<?php checked( $no_xmlrpc, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
-			</td>
-		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Block <code>POST</code> requests in the themes folder', 'ninjafirewall') ?> <code>/<?php echo basename(WP_CONTENT_DIR); ?>/themes</code></th>
 			<td width="20">&nbsp;</td>
@@ -2373,7 +2399,16 @@ function nf_sub_policies_save() {
 		// Default : no
 		$nfw_options['no_xmlrpc'] = 0;
 	} else {
-		$nfw_options['no_xmlrpc'] = 'xmlrpc.php';
+		$nfw_options['no_xmlrpc'] = 1;
+		// Clear no_xmlrpc_multi as we cannot offer both options
+		// at the same time !
+		$_POST['nfw_options']['no_xmlrpc_multi'] = 0;
+	}
+	if ( empty( $_POST['nfw_options']['no_xmlrpc_multi']) ) {
+		// Default : no
+		$nfw_options['no_xmlrpc_multi'] = 0;
+	} else {
+		$nfw_options['no_xmlrpc_multi'] = 1;
 	}
 
 	// Block POST requests in the themes folder ?
@@ -2535,6 +2570,7 @@ function nf_sub_policies_default() {
 	$nfw_options['enum_archives']		= 1;
 	$nfw_options['enum_login']			= 0;
 	$nfw_options['no_xmlrpc']			= 0;
+	$nfw_options['no_xmlrpc_multi']	= 0;
 	$nfw_options['no_post_themes']	= 0;
 	$nfw_options['force_ssl'] 			= 0;
 	$nfw_options['disallow_edit'] 	= 0;
@@ -2799,6 +2835,14 @@ function nf_sub_event() {
 }
 
 add_action('init', 'nf_check_dbdata', 1);
+
+// Daily report cronjob :
+add_action('nfdailyreport', 'nfdailyreportdo');
+
+function nfdailyreportdo() {
+	define('NFREPORTDO', 1);
+	nf_sub_event();
+}
 
 /* ------------------------------------------------------------------ */ // i18n+
 
@@ -3532,16 +3576,16 @@ function nfw_check_emailalert() {
 		}
 		$subject = __('[NinjaFirewall] Alert:', 'ninjafirewall') . ' ' . $alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2];
 		if ( is_multisite() ) {
-			$url = __('- Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
+			$url = __('-Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
 		} else {
-			$url = __('- Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
+			$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
 		}
 		$message = __('NinjaFirewall has detected the following activity on your account:', 'ninjafirewall') . "\n\n".
-			'- ' . $alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2] . "\n" .
-			'- ' . $alert_array[$a_1]['label'] . ' : ' . $a_3 . "\n\n" .
-			__('- User :', 'ninjafirewall') .' '. $current_user->user_login . ' (' . $current_user->roles[0] . ")\n" .
-			__('- IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
-			__('- Date :', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s O') ."\n" .
+			'-' . $alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2] . "\n" .
+			'-' . $alert_array[$a_1]['label'] . ' : ' . $a_3 . "\n\n" .
+			__('-User :', 'ninjafirewall') .' '. $current_user->user_login . ' (' . $current_user->roles[0] . ")\n" .
+			__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
+			__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
 			$url .
 			'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";

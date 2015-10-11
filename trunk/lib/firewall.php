@@ -457,7 +457,7 @@ if (! empty($nfw_['nfw_options']['fg_enable']) ) {
 	if ( empty($nfw_['nfw_options']['fg_exclude']) || strpos($_SERVER['SCRIPT_FILENAME'], $nfw_['nfw_options']['fg_exclude']) === FALSE ) {
 		// Stat() the requested script :
 		if ( $nfw_['nfw_options']['fg_stat'] = stat( $_SERVER['SCRIPT_FILENAME'] ) ) {
-			// Was is created/modified lately ?
+			// Was it created/modified lately ?
 			if ( time() - $nfw_['nfw_options']['fg_mtime'] * 3660 < $nfw_['nfw_options']['fg_stat']['ctime'] ) {
 				// Did we check it already ?
 				if (! file_exists( $nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php' ) ) {
@@ -497,16 +497,27 @@ if (! empty($nfw_['nfw_options']['no_host_ip']) && @filter_var(parse_url('http:/
    nfw_block();
 }
 
-// block POST without Referer header ?
+// Block POST without Referer header ?
 if ( (! empty($nfw_['nfw_options']['referer_post']) ) && ($_SERVER['REQUEST_METHOD'] == 'POST') && (! isset($_SERVER['HTTP_REFERER'])) ) {
 	nfw_log('POST method without Referer header', $_SERVER['REQUEST_METHOD'], 1, 0);
    nfw_block();
 }
 
-// Block access to WordPress XML-RPC API ?
-if ( (! empty($nfw_['nfw_options']['no_xmlrpc'])) && (strpos($_SERVER['SCRIPT_NAME'], $nfw_['nfw_options']['no_xmlrpc']) !== FALSE) ) {
-	nfw_log('Access to WordPress XML-RPC API', $_SERVER['SCRIPT_NAME'], 2, 0);
-   nfw_block();
+// Access to WordPress XML-RPC API (Firewall Policies) ?
+if ( strpos($_SERVER['SCRIPT_NAME'], '/xmlrpc.php' ) !== FALSE ) {
+	// Always block ?
+	if (! empty($nfw_['nfw_options']['no_xmlrpc']) ) {
+		nfw_log('Access to WordPress XML-RPC API', $_SERVER['SCRIPT_NAME'], 2, 0);
+		nfw_block();
+	}
+	// Block only if the 'system.multicall' method is used ?
+	if (! empty($nfw_['nfw_options']['no_xmlrpc_multi']) ) {
+		// Check the raw POST data:
+		if ( @strpos( @file_get_contents('php://input'), 'system.multicall') !== FALSE ) {
+			nfw_log('Access to WordPress XML-RPC API (system.multicall method)', $_SERVER['SCRIPT_NAME'], 2, 0);
+			nfw_block();
+		}
+	}
 }
 
 // POST request in the themes folder ?
@@ -924,6 +935,8 @@ function nfw_block() {
 	$tmp = str_replace( '%%NUM_INCIDENT%%', $nfw_['num_incident'],  base64_decode($nfw_['nfw_options']['blocked_msg']) );
 	$tmp = @str_replace( '%%NINJA_LOGO%%', '<img title="NinjaFirewall" src="' . $nfw_['nfw_options']['logo'] . '" width="75" height="75">', $tmp );
 	$tmp = str_replace( '%%REM_ADDRESS%%', $_SERVER['REMOTE_ADDR'], $tmp );
+
+	@session_destroy();
 
 	if (! headers_sent() ) {
 		header('HTTP/1.1 ' . $http_codes[$nfw_['nfw_options']['ret_code']] );

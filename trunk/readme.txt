@@ -98,7 +98,7 @@ NinjaFirewall is multi-site compatible. It will protect all sites from your netw
 
 = Possibility to prepend your own PHP code to the firewall =
 
-You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://ninjafirewall.com/wordpress/htninja/). It will be processed **before WordPress and all its plugins are loaded**. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulated HTTP requests, variables etc.
+You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed **before WordPress and all its plugins are loaded**. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulated HTTP requests, variables etc.
 
 = Low Footprint Firewall =
 
@@ -116,7 +116,7 @@ If you need help, click on the *Help* menu tab located in the upper right corner
 
 = Strong Privacy Policy =
 
-[NinTechNet](http://nintechnet.com/ "NinTechNet") strictly follows the [WordPress Plugin Developer guidelines](http://wordpress.org/plugins/about/guidelines/ ""): our software, [NinjaFirewall (WP edition)](http://ninjafirewall.com/wordpress/ "NinjaFirewall"), is 100% free, 100% open source and 100% fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home".
+[NinTechNet](http://nintechnet.com/ "NinTechNet") strictly follows the [WordPress Plugin Developer guidelines](http://wordpress.org/plugins/about/guidelines/ ""): our software, [NinjaFirewall (WP edition)](http://nintechnet.com/ninjafirewall/ "NinjaFirewall"), is 100% free, 100% open source and 100% fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home".
 It does not require a registration process or an activation key to be installed or used.
 Because **we do not collect any user data**, we do not even know that you are using (and hopefully enjoying !) our product.
 
@@ -127,7 +127,7 @@ Because **we do not collect any user data**, we do not even know that you are us
 
 = Need more security ? =
 
-Check out our new supercharged edition: [NinjaFirewall WP+](http://ninjafirewall.com/wordpress/nfwplus.php "NinjaFirewall WP+")
+Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+")
 
 * Unix shared memory use for inter-process communication and blazing fast performances.
 * IP-based Access Control.
@@ -141,7 +141,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://ninjafirewall
 * Better File uploads management.
 * Better logs management.
 
-[Learn more](http://ninjafirewall.com/wordpress/nfwplus.php "") about the WP+ edition unique features. [Compare](http://ninjafirewall.com/wordpress/overview.php "") the WP and WP+ editions.
+[Learn more](http://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ edition unique features. [Compare](http://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ editions.
 
 
 = Requirements =
@@ -181,15 +181,15 @@ You do not need to make any modifications to your scripts. NinjaFirewall hooks a
 
 = I moved my wp-config.php file to another directory. Will it work with NinjaFirewall ? =
 
-Since version 1.1.3, you can use an optional configuration file to tell NinjaFirewall where is located your WordPress configuration file, wp-config.php, if you moved it to another directory. Please [follow these steps](http://ninjafirewall.com/wordpress/htninja/ "").
+Since version 1.1.3, you can use an optional configuration file to tell NinjaFirewall where is located your WordPress configuration file, wp-config.php, if you moved it to another directory. Please [follow these steps](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja "").
 
 = Will NinjaFirewall detect the correct IP of my visitors if I am behind a CDN service like Cloudflare ? =
 
-You can use an optional configuration file to tell NinjaFirewall which IP to use. Please [follow these steps](http://ninjafirewall.com/wordpress/htninja/ "").
+You can use an optional configuration file to tell NinjaFirewall which IP to use. Please [follow these steps](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja "").
 
 = Will it slow down my site ? =
 
-Your visitors will not notice any difference with or without NinjaFirewall. From WordPress administration console, you can click "NinjaFirewall > Status" menu to see the benchmarks and statistics (the fastest, slowest and average time per request). NinjaFirewall is very fast, optimised, compact, requires very low system resources and [outperforms all other security plugins](http://nintechnet.com/wordpress-brute-force-detection-plugins-benchmarks.html "").
+Your visitors will not notice any difference with or without NinjaFirewall. From WordPress administration console, you can click "NinjaFirewall > Status" menu to see the benchmarks and statistics (the fastest, slowest and average time per request). NinjaFirewall is very fast, optimised, compact, requires very low system resources and [outperforms all other security plugins](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ "").
 By blocking dangerous requests and bots before WordPress is loaded, it will save bandwidth and reduce server load.
 
 = Is there any Windows version ? =
@@ -218,6 +218,15 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 
 
 == Changelog ==
+
+= 1.7 =
+* A daily report will be sent to the administrator every morning. It is enabled by default and can be disabled from the "Event Notifications > Daily report" page.
+* Added protection to block immediately WordPress XMLRPC brute-force amplification attacks using the `system.multicall` method (see "Firewall Policies > WordPress XML-RPC API") .
+* Fixed a bug with the "Import Configuration" option: NinjaFirewall updates cronjob was not re-enabled when importing its configuration.
+* Updated security rules.
+* [WP+ edition] Fixed a bug in the Overview page that could show contradictory messages about whitelisted administrator.
+* [WP+ edition] Added the server IP(s) to the "Access Control > Source IP" section.
+* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 1.6 =
 * Improved firewall engine to handle double-encoding used in query strings to perform advanced SQLi and XSS attempts.

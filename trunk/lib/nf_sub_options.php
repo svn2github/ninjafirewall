@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-09-17 17:32:06                                       |
+ | REVISION: 2015-10-10 19:31:35                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -32,6 +32,17 @@ function preview_msg() {
 	var t1 = document.option_form.elements[\'nfw_options[blocked_msg]\'].value.replace(\'%%REM_ADDRESS%%\',\'' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '\');
 	var t2 = t1.replace(\'%%NUM_INCIDENT%%\',\'1234567\');
 	var t3 = t2.replace(\'%%NINJA_LOGO%%\',\'<img src="' . plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png" width="75" height="75" title="NinjaFirewall">\');
+	var ns;
+	if ( t3.match(/<style/i) ) {
+		ns = "'. __('CSS style sheets', 'ninjafirewall') .'";
+	}
+	if ( t3.match(/<script/i) ) {
+		ns = "'. __('Javascript code', 'ninjafirewall') .'";
+	}
+	if ( ns ) {
+		alert("'. sprintf( __('Your message seems to contain %s. For security reason, it cannot be previewed from the admin dashboard.', 'ninjafirewall'), '"+ ns +"'). '");
+		return false;
+	}
 	document.getElementById(\'out_msg\').innerHTML = t3;
 	document.getElementById(\'td_msg\').style.display = \'\';
 	document.getElementById(\'btn_msg\').value = \'' . __('Refresh preview', 'ninjafirewall') . '\';
@@ -203,6 +214,9 @@ function nf_sub_options_save() {
 		if ( wp_next_scheduled('nfsecupdates') ) {
 			wp_clear_scheduled_hook('nfsecupdates');
 		}
+		if ( wp_next_scheduled('nfdailyreport') ) {
+			wp_clear_scheduled_hook('nfdailyreport');
+		}
 		// Disable brute-force protection :
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php');
@@ -237,6 +251,14 @@ function nf_sub_options_save() {
 				wp_clear_scheduled_hook('nfsecupdates');
 			}
 			wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
+		}
+		// Re-enable daily report, if needed :
+		if (! empty($nfw_options['a_52']) ) {
+			if ( wp_next_scheduled('nfdailyreport') ) {
+				wp_clear_scheduled_hook('nfdailyreport');
+			}
+			nfw_get_blogtimezone();
+			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 		}
 		// Reenable brute-force protection :
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php' ) ) {
@@ -316,6 +338,31 @@ function nf_sub_options_import() {
 	// We delete any File Check cron jobs :
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');
+	}
+
+	// Re-enable auto updates, if needed :
+	if ( wp_next_scheduled('nfsecupdates') ) {
+		// Clear old one :
+		wp_clear_scheduled_hook('nfsecupdates');
+	}
+	if (! empty($nfw_options['enable_updates']) ) {
+		if ($nfw_options['sched_updates'] == 1) {
+			$schedtype = 'hourly';
+		} elseif ($nfw_options['sched_updates'] == 2) {
+			$schedtype = 'twicedaily';
+		} else {
+			$schedtype = 'daily';
+		}
+		wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
+	}
+	// Re-enable daily report, if needed :
+	if ( wp_next_scheduled('nfdailyreport') ) {
+		// Clear old one :
+		wp_clear_scheduled_hook('nfdailyreport');
+	}
+	if (! empty($nfw_options['a_52']) ) {
+		nfw_get_blogtimezone();
+		wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 	}
 
 	// Check compatibility before importing HSTS headers configration

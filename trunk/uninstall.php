@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-04-16 22:11:29                                       |
+ | REVISION: 2015-10-10 00:14:45                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -108,6 +108,9 @@ function nfw_uninstall() {
 	}
 	if ( wp_next_scheduled('nfsecupdates') ) {
 		wp_clear_scheduled_hook('nfsecupdates');
+	}
+	if ( wp_next_scheduled('nfdailyreport') ) {
+		wp_clear_scheduled_hook('nfdailyreport');
 	}
 
 	// Delete DB rows :

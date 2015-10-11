@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-11 23:50:25                                       |
+ | REVISION: 2015-10-10 19:31:45                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -20,6 +20,12 @@
 */
 
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
+
+// Daily report cronjob?
+if ( defined('NFREPORTDO') ) {
+	nf_daily_report();
+	return;
+}
 
 // Block immediately if user is not allowed :
 nf_not_allowed( 'block', __LINE__ );
@@ -120,6 +126,9 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	if (! isset( $nfw_options['a_51']) ) {
 		$nfw_options['a_51'] = 1;
 	}
+	if (! isset( $nfw_options['a_52']) ) {
+		$nfw_options['a_52'] = 1;
+	}
 	?>
 	<h3><?php _e('Database', 'ninjafirewall') ?></h3>
 	<table class="form-table">
@@ -127,6 +136,18 @@ if (! isset( $nfw_options['a_0'] ) ) {
 			<th scope="row"><?php _e('Send me an alert whenever', 'ninjafirewall') ?></th>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[a_51]" value="1"<?php checked( $nfw_options['a_51'], 1) ?>>&nbsp;<?php _e('An administrator account is created, modified or deleted in the database (default)', 'ninjafirewall') ?></label></p>
+			</td>
+		</tr>
+	</table>
+
+	<br />
+
+	<h3><?php _e('Daily report', 'ninjafirewall') ?></h3>
+	<table class="form-table">
+		<tr>
+			<th scope="row"><?php _e('Send me a daily activity report', 'ninjafirewall') ?></th>
+			<td align="left">
+			<p><label><input type="checkbox" name="nfw_options[a_52]" value="1"<?php checked( $nfw_options['a_52'], 1) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
@@ -296,6 +317,20 @@ function nf_sub_event_save() {
 	} else {
 		$nfw_options['a_51'] = 1;
 	}
+	if ( empty( $_POST['nfw_options']['a_52']) ) {
+		$nfw_options['a_52'] = 0;
+		// Clear the daily report cronjob, if any:
+		if ( wp_next_scheduled('nfdailyreport') ) {
+			wp_clear_scheduled_hook('nfdailyreport');
+		}
+	} else {
+		$nfw_options['a_52'] = 1;
+		// Create the cronjob that will send the daily report:
+		if (! wp_next_scheduled('nfdailyreport') ) {
+			nfw_get_blogtimezone();
+			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
+		}
+	}
 
 	// Multiple recipients (WPMU only) ?
 	if (! empty( $_POST['nfw_options']['alert_multirec']) ) {
@@ -316,6 +351,94 @@ function nf_sub_event_save() {
 
 	// Update options :
 	update_option( 'nfw_options', $nfw_options );
+
+}
+
+/* ------------------------------------------------------------------ */
+
+function nf_daily_report() {
+
+	// Send a daily report to the admin(s):
+	$nfw_options = get_option( 'nfw_options' );
+
+	if ( ( is_multisite() ) && ( @$nfw_options['alert_sa_only'] == 2 ) ) {
+		$recipient = get_option('admin_email');
+	} else {
+		$recipient = $nfw_options['alert_email'];
+	}
+
+	$logstats = array();
+	$logstats = nf_daily_report_log();
+
+	nf_daily_report_email($recipient, $logstats);
+
+}
+/* ------------------------------------------------------------------ */
+function nf_daily_report_log() {
+
+	nfw_get_blogtimezone();
+	$cur_month = date('Y-m');
+	$previous_day = strtotime( date('Y-m-d 00:00:01', strtotime("-1 day")) );
+
+	$log_file  = NFW_LOG_DIR . '/nfwlog/firewall_' . $cur_month;
+	$logstats = array( 0 => 0, 1 => 0, 2 => 0, 3 => 0);
+
+	$glob = glob($log_file . "*.php");
+	if ( is_array($glob)) {
+		// Parse each log :
+		foreach($glob as $file) {
+			// Stat the file; if it's older than 24 hours,
+			// we don't waste our time to parse it:
+			$log_stat = stat($file);
+			if ( $log_stat['mtime'] < $previous_day ) {
+				continue;
+			}
+
+			$log_lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			foreach ($log_lines as $line) {
+				if ( preg_match( '/^\[(\d{10})\]\s+\[.+?\]\s+\[.+?\]\s+\[#\d{7}\]\s+\[\d+\]\s+\[([1235])\]\s+\[/', $line, $match) ) {
+					// Fetch last 24 hours only :
+					if ( $match[1] > $previous_day && $match[1] < $previous_day + 86400 ) {
+						$logstats[$match[2]]++;
+						if ( strpos($line, 'Brute-force attack detected') !== FALSE ) {
+							$logstats[0]++;
+						}
+					}
+				}
+			}
+		}
+
+	}
+	return $logstats;
+}
+
+/* ------------------------------------------------------------------ */
+
+function nf_daily_report_email($recipient, $logstats) {
+
+	$subject = __('[NinjaFirewall] Daily Activity Report', 'ninjafirewall');
+	if ( is_multisite() ) {
+		$url = network_home_url('/');
+	} else {
+		$url = home_url('/');
+	}
+
+	$message = "\n". sprintf( __('Daily activity report for: %s', 'ninjafirewall'), $url) . "\n";
+	$message .= __('Date Range Processed: Yesterday', 'ninjafirewall') .", ". ucfirst( date_i18n('F j, Y',strtotime("-1 days")) ) ."\n\n";
+
+	$message.= __('Blocked hacking attempts:', 'ninjafirewall') .' '.
+		($logstats[1] + $logstats[2] + $logstats[3]) .
+		' ('. __('critical:', 'ninjafirewall') .' '. $logstats[3] .', '.
+		__('high:', 'ninjafirewall') .' '. $logstats[2] .', '.
+		__('medium:', 'ninjafirewall') .' '. $logstats[1] . ")\n";
+
+	$message.= __('Blocked brute-force attacks:', 'ninjafirewall') .' '. $logstats[0] ."\n\n";
+	$message.= __('This notification can be turned off from NinjaFirewall "Event Notifications" page.', 'ninjafirewall') ."\n\n";
+
+	$message .=
+			'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
+			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+		wp_mail( $recipient, $subject, $message );
 
 }
 
