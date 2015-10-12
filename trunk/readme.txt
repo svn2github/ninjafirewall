@@ -1,4 +1,4 @@
-=== NinjaFirewall (WP edition) ===
+=== NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
@@ -11,7 +11,7 @@ A true Web Application Firewall to protect and secure WordPress.
 
 == Description ==
 
-NinjaFirewall (WP edition) is a true Web Application Firewall. Although it can be installed and configured just like a plugin, it is a stand-alone firewall that sits in front of WordPress.
+NinjaFirewall (WP Edition) is a true Web Application Firewall. Although it can be installed and configured just like a plugin, it is a stand-alone firewall that sits in front of WordPress.
 
 It allows any blog administrator to benefit from very advanced and powerful security features that usually aren't available at the WordPress level, but only in security applications such as the Apache [ModSecurity](http://www.modsecurity.org/ "") module or the PHP [Suhosin](http://suhosin.org/ "") extension.
 
@@ -116,7 +116,7 @@ If you need help, click on the *Help* menu tab located in the upper right corner
 
 = Strong Privacy Policy =
 
-[NinTechNet](http://nintechnet.com/ "NinTechNet") strictly follows the [WordPress Plugin Developer guidelines](http://wordpress.org/plugins/about/guidelines/ ""): our software, [NinjaFirewall (WP edition)](http://nintechnet.com/ninjafirewall/ "NinjaFirewall"), is 100% free, 100% open source and 100% fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home".
+[NinTechNet](http://nintechnet.com/ "NinTechNet") strictly follows the [WordPress Plugin Developer guidelines](http://wordpress.org/plugins/about/guidelines/ ""): our software, [NinjaFirewall (WP Edition)](http://nintechnet.com/ninjafirewall/ "NinjaFirewall"), is 100% free, 100% open source and 100% fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home".
 It does not require a registration process or an activation key to be installed or used.
 Because **we do not collect any user data**, we do not even know that you are using (and hopefully enjoying !) our product.
 
@@ -141,7 +141,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.co
 * Better File uploads management.
 * Better logs management.
 
-[Learn more](http://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ edition unique features. [Compare](http://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ editions.
+[Learn more](http://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ Edition unique features. [Compare](http://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ Editions.
 
 
 = Requirements =
@@ -220,13 +220,14 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 == Changelog ==
 
 = 1.7 =
-* A daily report will be sent to the administrator every morning. It is enabled by default and can be disabled from the "Event Notifications > Daily report" page.
+* A daily report will be sent to the administrator every morning. It is enabled by default and can be disabled from the "Event Notifications > Daily report" menu.
 * Added protection to block immediately WordPress XMLRPC brute-force amplification attacks using the `system.multicall` method (see "Firewall Policies > WordPress XML-RPC API") .
 * Fixed a bug with the "Import Configuration" option: NinjaFirewall updates cronjob was not re-enabled when importing its configuration.
 * Updated security rules.
-* [WP+ edition] Fixed a bug in the Overview page that could show contradictory messages about whitelisted administrator.
-* [WP+ edition] Added the server IP(s) to the "Access Control > Source IP" section.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Fixed a bug in the Overview page that could show contradictory messages about whitelisted administrator.
+* [WP+ Edition] Added the server IP(s) to the "Access Control > Source IP" section.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes and improvements.
 
 = 1.6 =
 * Improved firewall engine to handle double-encoding used in query strings to perform advanced SQLi and XSS attempts.
@@ -234,12 +235,12 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * Updated links and doc.
 * Removed green 'OK' icons from the Overview page. Only warning and error icons will be used.
 * Updated security rules.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 1.5 =
 * Internationalization support. The POT file is included in the `/languages/` folder.
 * French (fr_FR) language added.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Updated security rules.
 * Minor fixes and improvements.
 
@@ -248,8 +249,8 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * It is now possible to send notifications and alerts to multiple recipients (see "Event Notifications > Contact email").
 * After each scan, "File Check" will always keep the list of the previous changes rather than deleting it.
 * Updates log is sorted in reverse order.
-* [WP+ edition] Whitelisted and blacklisted IPs are sorted using "natural order" algorithm in the "Access Control" page.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Whitelisted and blacklisted IPs are sorted using "natural order" algorithm in the "Access Control" page.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Updated security rules.
 
 = 1.4.2 =
@@ -261,8 +262,8 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * Fixed potential PHP warning when headers are wrongly sent by another plugin before NinjaFirewall starts a PHP session.
 * Loosened Base64 decoder rules to reduce the risk of false-positives.
 * Updated security rules.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ edition] Added a warning to the antispam protection about caching plugins.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Added a warning to the antispam protection about caching plugins.
 
 = 1.4.1 =
 * "File Guard" email alert will contain the date/time the file was last changed, rather than the date/time the detection occurred.
@@ -273,8 +274,8 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * It is possible to set the Strict-Transport-Security (HSTS) header if the client has the `HTTP_X_FORWARDED_PROTO` set to 'https' (Firewall Policies > HTTP response headers).
 * Notification emails will either use the `home_url()` or `site_url()` function depending on the type of notification.
 * The firewall will no longer sanitise user input when running in "Debugging Mode", but will only write the event to its log.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ edition] The antispam will not block any message if NinjaFirewall is running in "Debugging Mode".
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] The antispam will not block any message if NinjaFirewall is running in "Debugging Mode".
 * Updated security rules.
 * Minor fixes and improvements.
 
@@ -324,8 +325,8 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * The installer will send an email to the administrator with some info and links that could be helpful if there was a problem or crash during NinajFirewall installation/activation.
 * The installer will comment out any `auto_prepend_file` directive that may be found in the PHP INI file prior to insert its own one.
 * The database monitoring option will save its data to a file whose name will be based on the `blog_id` and `site_id` variables to prevent potential false detection alerts.
-* [WP+ edition] The priority of the antispam `add filter` and `add_action` hooks was lowered in order to execute them earlier.
-* [WP+ edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] The priority of the antispam `add filter` and `add_action` hooks was lowered in order to execute them earlier.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 1.3.4 =
 * Added a new option to monitor the database and send an alert if an administrator account is created, modified or deleted (see "Event Notifications > Database").

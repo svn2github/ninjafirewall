@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: NinjaFirewall (WP edition)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ninjafirewall\n"
 "POT-Creation-Date: 2015-10-11 18:30+0700\n"
-"PO-Revision-Date: 2015-10-11 18:38+0700\n"
+"PO-Revision-Date: 2015-10-12 10:02+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: NinTechNet <nintechnet.com>\n"
 "Language: fr_FR\n"
@@ -2629,7 +2629,7 @@ msgstr "Rapport d'activité quotidien pour : %s"
 
 #: lib/nf_sub_event.php:427
 msgid "Date Range Processed: Yesterday"
-msgstr "Plage de dates traitées : Hier"
+msgstr "Plage de date traitée : Hier"
 
 #: lib/nf_sub_event.php:429
 msgid "Blocked hacking attempts:"

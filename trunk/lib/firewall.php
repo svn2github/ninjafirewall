@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2015-09-17 15:26:36                                       |
+// | REVISION: 2015-10-11 15:26:36                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -732,9 +732,13 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 					if (! $reqvalue) { continue; }
 
 					// Decode potential double-encoding (applies to XSS and SQLi attempts only):
-					if ( (($rules_id > 99 && $rules_id < 150) || ($rules_id > 199 && $rules_id < 250)) && ! isset($nf_decode[$reqkey]['url']) ) {
-						$reqvalue = urldecode($reqvalue);
-						$nf_decode[$reqkey]['url'] = 1;
+					if ( ($rules_id > 99 && $rules_id < 150) || ($rules_id > 199 && $rules_id < 250) ) {
+						if (! isset($nf_decode[$reqkey]['url']) ) {
+							$reqvalue = urldecode($reqvalue);
+							$nf_decode[$reqkey]['url'] = $reqvalue;
+						} else{
+							$reqvalue = $nf_decode[$reqkey]['url'];
+						}
 					}
 
 					if ( preg_match('`'. $rules_values['what'] .'`', $reqvalue) ) {
