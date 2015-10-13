@@ -66,7 +66,7 @@ function nfw_eg() {
 				<font onContextMenu="nfw_eg();return false;">&copy;</font> 2012-<?php echo date( 'Y' ) ?> <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
 				<br />
 				The Ninja Technologies Network
-				<br />&nbsp;
+				<p><a href="https://twitter.com/nintechnet"><img border="1" src="<?php echo plugins_url() ?>/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></p>
 			</td>
 		</tr>
 		<tr style="text-align:center">
@@ -110,7 +110,8 @@ function nfw_eg() {
 				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
 				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
 				<td><a href="http://twitter.com/share?text=NinjaFirewall&url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() .  '/ninjafirewall/images/twitter.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="https://twitter.com/nintechnet"><img border="0" src="'. plugins_url() .'/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></td>
+				<td><a href="https://wordpress.org/support/view/plugin-reviews/ninjafirewall?rate=5#postform"><img title="Rate it" border="0" src="'. plugins_url() .'/ninjafirewall/images/rate.png" width="116" height="28" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"><br />Rate it on WordPress.org!</a>
+				</td>
 			</tr>
 		</table>
 

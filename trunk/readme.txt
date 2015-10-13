@@ -220,8 +220,9 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 == Changelog ==
 
 = 1.7 =
+* Added protection to block WordPress XMLRPC brute-force amplification attacks using the `system.multicall` method (see "Firewall Policies > WordPress XML-RPC API").
 * A daily report will be sent to the administrator every morning. It is enabled by default and can be disabled from the "Event Notifications > Daily report" menu.
-* Added protection to block immediately WordPress XMLRPC brute-force amplification attacks using the `system.multicall` method (see "Firewall Policies > WordPress XML-RPC API") .
+* Added a button to immediately updates the firewall security rules (See "Updates > Check For updates Now!").
 * Fixed a bug with the "Import Configuration" option: NinjaFirewall updates cronjob was not re-enabled when importing its configuration.
 * Updated security rules.
 * [WP+ Edition] Fixed a bug in the Overview page that could show contradictory messages about whitelisted administrator.

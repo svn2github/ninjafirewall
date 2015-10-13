@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-01 17:53:59                                       |
+ | REVISION: 2015-10-12 18:28:12                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -47,12 +47,23 @@ if (! empty($_POST['nfw_act']) ) {
 	if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'updates_save') ) {
 		wp_nonce_ays('updates_save');
 	}
-	if ($_POST['nfw_act'] == 1) {
-		nf_sub_updates_save();
-	} elseif ($_POST['nfw_act'] == 2) {
-		nf_sub_updates_clearlog($update_log);
+	// Check updates now :
+	if  ($_POST['nfw_act'] == 3) {
+		if ( $res = nf_sub_do_updates($update_url, $update_log) ) {
+			echo '<div class="updated notice is-dismissible"><p>' . __('Security rules have been updated.', 'ninjafirewall') . '</p></div>';
+		} else {
+			echo '<div class="updated notice is-dismissible"><p>' . __('No update available.', 'ninjafirewall') . '</p></div>';
+		}
+		// Enable flag to display log :
+		$tmp_showlog = 1;
+	} else {
+		if ($_POST['nfw_act'] == 1) {
+			nf_sub_updates_save();
+		} elseif ($_POST['nfw_act'] == 2) {
+			nf_sub_updates_clearlog($update_log);
+		}
+		echo '<div class="updated notice is-dismissible"><p>' . __('Your changes have been saved.', 'ninjafirewall') . '</p></div>';
 	}
-	echo '<div class="updated notice is-dismissible"><p>' . __('Your changes have been saved.', 'ninjafirewall') . '</p></div>';
 }
 
 $nfw_options = get_option('nfw_options');
@@ -86,7 +97,7 @@ function toogle_table(off) {
 }
 </script>
 <br />
-<form method="post">
+<form method="post" name="fupdates">
 	<?php wp_nonce_field('updates_save', 'nfwnonce', 0); ?>
 	<table class="form-table">
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
@@ -146,11 +157,11 @@ function toogle_table(off) {
 	</table>
 
 	<input type="hidden" name="nfw_act" value="1" />
-	<p><input type="submit" class="button-primary" value="<?php _e('Save Updates Options', 'ninjafirewall') ?>" /></p>
+	<p><input type="submit" class="button-primary" value="<?php _e('Save Updates Options', 'ninjafirewall') ?>" />&nbsp;&nbsp;<input type="submit" class="button-secondary" onClick="document.fupdates.nfw_act.value=3" value="<?php _e('Check For Updates Now!', 'ninjafirewall') ?>" /></p>
 	</form>
 
 	<?php
-	if (! empty($nfw_options['enable_updates']) ) {
+	if (! empty($nfw_options['enable_updates']) || ! empty($tmp_showlog) ) {
 		$log_data = array();
 		if ( file_exists($update_log) ) {
 			$log_data = file($update_log);
@@ -313,6 +324,7 @@ function nf_sub_do_updates($update_url, $update_log) {
 	if (! empty($nfw_options['notify_updates']) ) {
 		nf_sub_updates_notification($new_rules_version);
 	}
+	return 1;
 }
 
 /* ------------------------------------------------------------------ */
