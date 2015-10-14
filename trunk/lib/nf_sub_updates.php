@@ -344,6 +344,18 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 		if ( $res['response']['code'] == 200 ) {
 			// Get the rules version :
 			$new_version =  explode('|', rtrim($res['body']), 2);
+
+			// Ensure that the rules are compatible :
+			$curr_version = explode(':', $new_version[0], 2);
+			if ( isset($curr_version[1]) && $curr_version[1] > 1) {
+				// This version of NinjaFirewall may be too old :
+				nf_sub_updates_log(
+					$update_log,
+					__('Error: Your version of NinjaFirewall is too old and is not compatible with those rules. Please upgrade it.', 'ninjafirewall')
+				);
+				return 0;
+			}
+
 			if (! preg_match('/^\d{8}\.\d+$/', $new_version[1]) ) {
 				// Not what we were expecting:
 				nf_sub_updates_log(

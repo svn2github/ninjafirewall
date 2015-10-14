@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2015-10-12 18:58+0700\n"
-"PO-Revision-Date: 2015-10-12 18:58+0700\n"
+"POT-Creation-Date: 2015-10-13 19:37+0700\n"
+"PO-Revision-Date: 2015-10-13 19:37+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2074,7 +2074,7 @@ msgid ""
 msgstr ""
 
 #: lib/nf_sub_event.php:440 lib/nf_sub_filecheck.php:833
-#: lib/nf_sub_filecheck.php:850 lib/nf_sub_updates.php:468
+#: lib/nf_sub_filecheck.php:850 lib/nf_sub_updates.php:480
 #: ninjafirewall.php:3591
 msgid "Support forum:"
 msgstr ""
@@ -2393,13 +2393,13 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:826 lib/nf_sub_filecheck.php:828
 #: lib/nf_sub_filecheck.php:844 lib/nf_sub_filecheck.php:846
-#: lib/nf_sub_updates.php:461 lib/nf_sub_updates.php:463 lib/nfw_misc.php:206
+#: lib/nf_sub_updates.php:473 lib/nf_sub_updates.php:475 lib/nfw_misc.php:206
 #: lib/nfw_misc.php:208
 msgid "Blog:"
 msgstr ""
 
 #: lib/nf_sub_filecheck.php:830 lib/nf_sub_filecheck.php:848
-#: lib/nf_sub_updates.php:466
+#: lib/nf_sub_updates.php:478
 #, php-format
 msgid "Date: %s"
 msgstr ""
@@ -2868,42 +2868,48 @@ msgstr ""
 msgid "Security rules updated to version %s."
 msgstr ""
 
-#: lib/nf_sub_updates.php:351
+#: lib/nf_sub_updates.php:354
+msgid ""
+"Error: Your version of NinjaFirewall is too old and is not compatible with "
+"those rules. Please upgrade it."
+msgstr ""
+
+#: lib/nf_sub_updates.php:363
 msgid "Error: Unable to retrieve the new rules version."
 msgstr ""
 
-#: lib/nf_sub_updates.php:362
+#: lib/nf_sub_updates.php:374
 msgid "Security rules are up-to-date."
 msgstr ""
 
-#: lib/nf_sub_updates.php:369
+#: lib/nf_sub_updates.php:381
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#1)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:376 lib/nf_sub_updates.php:421
+#: lib/nf_sub_updates.php:388 lib/nf_sub_updates.php:433
 msgid "Error: Unable to connect to WordPress server"
 msgstr ""
 
-#: lib/nf_sub_updates.php:403
+#: lib/nf_sub_updates.php:415
 #, php-format
 msgid "Error: The new rules versions do not match (%s != %s)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:414
+#: lib/nf_sub_updates.php:426
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#2)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:458
+#: lib/nf_sub_updates.php:470
 msgid "[NinjaFirewall] Security rules update"
 msgstr ""
 
-#: lib/nf_sub_updates.php:459
+#: lib/nf_sub_updates.php:471
 msgid "NinjaFirewall security rules have been updated:"
 msgstr ""
 
-#: lib/nf_sub_updates.php:465
+#: lib/nf_sub_updates.php:477
 msgid "Rules version:"
 msgstr ""
 
