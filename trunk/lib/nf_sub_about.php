@@ -1,7 +1,7 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -87,7 +87,7 @@ function nfw_eg() {
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaRecovery</font>
-							<p>Malware removal and<br />hack recovery at $89.</p>
+							<p>Malware removal<br />and hack recovery.</p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nr_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
 							<p><a href="http://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;">Clean Your Site!</a></p>
 						</td>
@@ -179,7 +179,7 @@ echo '
 		<table id="14" style="display:none;" width="500">
 			<tr>
 				<td>
-					<textarea class="small-text code" cols="60" rows="8">' . __('NinTechNet strictly follows the WordPress Plugin Developer guidelines', 'ninjafirewall') . ' &lt;http://wordpress.org/plugins/about/guidelines/&gt;: ' . __('NinjaFirewall (WP edition) is free, open source and fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home". It does not require a registration process or an activation key to be installed or used.', 'ninjafirewall') . "\n" .  __('Because we do not collect any user data, we do not even know that you are using (and hopefully enjoying !) our product.', 'ninjafirewall') . '</textarea>
+					<textarea class="small-text code" cols="60" rows="8">' . __('NinTechNet strictly follows the WordPress Plugin Developer guidelines', 'ninjafirewall') . ' &lt;http://wordpress.org/plugins/about/guidelines/&gt;: ' . __('NinjaFirewall (WP Edition) is free, open source and fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home". It does not require a registration process or an activation key to be installed or used.', 'ninjafirewall') . "\n" .  __('Because we do not collect any user data, we do not even know that you are using (and hopefully enjoying !) our product.', 'ninjafirewall') . '</textarea>
 				</td>
 			</tr>
 		</table>

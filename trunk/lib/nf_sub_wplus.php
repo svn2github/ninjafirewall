@@ -1,7 +1,7 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -34,11 +34,11 @@ nf_not_allowed( 'block', __LINE__ );
 		<tr>
 			<td>
 				<h2>
-				<b><?php _e('Need more security? Check out NinjaFirewall', 'ninjafirewall') ?> (<font color="#21759B">WP+</font> edition).</b>
+				<b><?php _e('Need more security? Check out NinjaFirewall', 'ninjafirewall') ?> (<font color="#21759B">WP+</font> Edition).</b>
 				</h2>
 				NinjaFirewall (<font color="#21759B">WP+</font> Edition) <?php
-				// translators: [NinjaFirewall] is a supercharged edition...
-				_e('is a supercharged edition of our Web Application Firewall. It adds many new exciting features and blazing fast performances to make it the fastest and most advanced security plugin for WordPress.', 'ninjafirewall') ?>
+				// translators: [NinjaFirewall] is a supercharged Edition...
+				_e('is a supercharged Edition of our Web Application Firewall. It adds many new exciting features and blazing fast performances to make it the fastest and most advanced security plugin for WordPress.', 'ninjafirewall') ?>
 			</td>
 		</tr>
 		<tr>
@@ -124,8 +124,8 @@ nf_not_allowed( 'block', __LINE__ );
 		</tr>
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<td style="text-align:center">
-				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> edition unique features.', 'ninjafirewall') ?></b></h2>
-				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/?comparison"><?php _e('Compare</a> the WP and <font color="#21759B">WP+</font> editions.', 'ninjafirewall') ?></b></h2>
+				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> Edition unique features.', 'ninjafirewall') ?></b></h2>
+				<h2><b><a href="http://nintechnet.com/ninjafirewall/wp-edition/?comparison"><?php _e('Compare</a> the WP and <font color="#21759B">WP+</font> Editions.', 'ninjafirewall') ?></b></h2>
 			</td>
 		</tr>
 	</table>

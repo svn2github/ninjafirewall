@@ -1,7 +1,7 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -218,7 +218,7 @@ function nf_check_dbdata() {
 			$message.= '-display_name : ' . $adm->display_name . "\n\n";
 		}
 		$message.= "\n" . __('If you cannot see any modifications in the above fields, it is likely that the administrator password was changed.', 'ninjafirewall'). "\n\n";
-		$message.= 	'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
+		$message.= 	'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 

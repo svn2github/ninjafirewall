@@ -1,11 +1,11 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-10 19:31:35                                       |
+ | REVISION: 2015-10-14 19:31:35                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -205,6 +205,10 @@ function nf_sub_options_save() {
 	$nfw_options = get_option( 'nfw_options' );
 
 	if ( empty( $_POST['nfw_options']['enabled']) ) {
+		if (! empty($nfw_options['enabled']) ) {
+			// Alert the admin :
+			nf_sub_options_alert(1);
+		}
 		$nfw_options['enabled'] = 0;
 
 		// Disable cron jobs:
@@ -282,6 +286,10 @@ function nf_sub_options_save() {
 	if ( empty( $_POST['nfw_options']['debug']) ) {
 		$nfw_options['debug'] = 0;
 	} else {
+		if ( empty($nfw_options['debug']) ) {
+			// Alert the admin :
+			nf_sub_options_alert(2);
+		}
 		$nfw_options['debug'] = 1;
 	}
 
@@ -399,7 +407,58 @@ function nf_sub_options_import() {
 	// Save rules :
 	update_option( 'nfw_rules', $nfw_rules);
 
+	// Alert the admin :
+	nf_sub_options_alert(3);
+
 	return;
+}
+
+/* ------------------------------------------------------------------ */
+
+function nf_sub_options_alert( $what ) {
+
+	$nfw_options = get_option( 'nfw_options' );
+
+	if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
+		$recipient = get_option('admin_email');
+	} else {
+		$recipient = $nfw_options['alert_email'];
+	}
+
+	global $current_user;
+	$current_user = wp_get_current_user();
+
+	// Get timezone :
+	nfw_get_blogtimezone();
+
+	$subject = __('[NinjaFirewall] Alert: Firewall is disabled', 'ninjafirewall');
+	if ( is_multisite() ) {
+		$url = __('-Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
+	} else {
+		$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
+	}
+	// Disabled ?
+	if ($what == 1) {
+		$message = __('Someone disabled NinjaFirewall from your WordPress admin dashboard:', 'ninjafirewall') . "\n\n";
+	// Debugging mode :
+	} elseif ($what == 2) {
+		$message = __('NinjaFirewall is disabled because someone enabled debugging mode from your WordPress admin dashboard:', 'ninjafirewall') . "\n\n";
+	// Imported configuration ?
+	} elseif ($what == 3) {
+		$subject = __('[NinjaFirewall] Alert: Firewall override settings', 'ninjafirewall');
+		$message = __('Someone imported a new configuration which overrode the firewall settings:', 'ninjafirewall') . "\n\n";
+	} else {
+		// Should never reach this line!
+		return;
+	}
+
+	$message .= __('-User :', 'ninjafirewall') .' '. $current_user->user_login . ' (' . $current_user->roles[0] . ")\n" .
+		__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
+		__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
+		$url .
+		'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+		__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+	wp_mail( $recipient, $subject, $message );
 }
 
 /* ------------------------------------------------------------------ */

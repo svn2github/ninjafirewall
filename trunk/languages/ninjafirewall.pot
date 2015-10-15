@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2015-10-13 19:37+0700\n"
-"PO-Revision-Date: 2015-10-13 19:37+0700\n"
+"POT-Creation-Date: 2015-10-14 21:49+0700\n"
+"PO-Revision-Date: 2015-10-14 21:49+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -141,7 +141,7 @@ msgstr ""
 #: help.php:106
 msgid ""
 "This options lets you export you current configuration or import it from "
-"another NinjaFirewall (WP edition) installation. The imported file must "
+"another NinjaFirewall (WP Edition) installation. The imported file must "
 "match your current version otherwise it will be rejected. Note that "
 "importing will override all firewall rules and options."
 msgstr ""
@@ -1320,7 +1320,7 @@ msgstr ""
 msgid "This is NinjaFirewall's logs and cache directory."
 msgstr ""
 
-#: install.php:190
+#: install.php:190 ninjafirewall.php:977
 msgid "NinjaFirewall (WP Edition)"
 msgstr ""
 
@@ -1869,7 +1869,7 @@ msgstr ""
 
 #: lib/nf_sub_about.php:182
 msgid ""
-"NinjaFirewall (WP edition) is free, open source and fully functional, no "
+"NinjaFirewall (WP Edition) is free, open source and fully functional, no "
 "\"trialware\", no \"obfuscated code\", no \"crippleware\", no \"phoning home"
 "\". It does not require a registration process or an activation key to be "
 "installed or used."
@@ -2074,8 +2074,8 @@ msgid ""
 msgstr ""
 
 #: lib/nf_sub_event.php:440 lib/nf_sub_filecheck.php:833
-#: lib/nf_sub_filecheck.php:850 lib/nf_sub_updates.php:480
-#: ninjafirewall.php:3591
+#: lib/nf_sub_filecheck.php:850 lib/nf_sub_options.php:460
+#: lib/nf_sub_updates.php:480 ninjafirewall.php:3591
 msgid "Support forum:"
 msgstr ""
 
@@ -2712,13 +2712,53 @@ msgstr ""
 msgid "Save Firewall Options"
 msgstr ""
 
-#: lib/nf_sub_options.php:299
+#: lib/nf_sub_options.php:307
 #, php-format
 msgid "Uploaded file is either corrupted or its format is not supported (#%s)"
 msgstr ""
 
-#: lib/nf_sub_options.php:317
+#: lib/nf_sub_options.php:325
 msgid "The imported file is not compatible with that version of NinjaFirewall"
+msgstr ""
+
+#: lib/nf_sub_options.php:434
+msgid "[NinjaFirewall] Alert: Firewall is disabled"
+msgstr ""
+
+#: lib/nf_sub_options.php:436 lib/nf_sub_options.php:438 ninjafirewall.php:687
+#: ninjafirewall.php:689 ninjafirewall.php:3579 ninjafirewall.php:3581
+msgid "-Blog :"
+msgstr ""
+
+#: lib/nf_sub_options.php:442
+msgid "Someone disabled NinjaFirewall from your WordPress admin dashboard:"
+msgstr ""
+
+#: lib/nf_sub_options.php:445
+msgid ""
+"NinjaFirewall is disabled because someone enabled debugging mode from your "
+"WordPress admin dashboard:"
+msgstr ""
+
+#: lib/nf_sub_options.php:448
+msgid "[NinjaFirewall] Alert: Firewall override settings"
+msgstr ""
+
+#: lib/nf_sub_options.php:449
+msgid ""
+"Someone imported a new configuration which overrode the firewall settings:"
+msgstr ""
+
+#: lib/nf_sub_options.php:455 ninjafirewall.php:692 ninjafirewall.php:3586
+msgid "-User :"
+msgstr ""
+
+#: lib/nf_sub_options.php:456 ninjafirewall.php:693 ninjafirewall.php:3587
+msgid "-IP   :"
+msgstr ""
+
+#: lib/nf_sub_options.php:457 ninjafirewall.php:694 ninjafirewall.php:3588
+msgid "-Date :"
 msgstr ""
 
 #: lib/nf_sub_statistics.php:30 ninjafirewall.php:816
@@ -2917,10 +2957,10 @@ msgstr ""
 msgid "Need more security? Check out NinjaFirewall"
 msgstr ""
 
-#. translators: [NinjaFirewall] is a supercharged edition...
+#. translators: [NinjaFirewall] is a supercharged Edition...
 #: lib/nf_sub_wplus.php:41
 msgid ""
-"is a supercharged edition of our Web Application Firewall. It adds many new "
+"is a supercharged Edition of our Web Application Firewall. It adds many new "
 "exciting features and blazing fast performances to make it the fastest and "
 "most advanced security plugin for WordPress."
 msgstr ""
@@ -3090,12 +3130,12 @@ msgstr ""
 
 #: lib/nf_sub_wplus.php:127
 msgid ""
-"Learn more</a> about the <font color=\"#21759B\">WP+</font> edition unique "
+"Learn more</a> about the <font color=\"#21759B\">WP+</font> Edition unique "
 "features."
 msgstr ""
 
 #: lib/nf_sub_wplus.php:128
-msgid "Compare</a> the WP and <font color=\"#21759B\">WP+</font> editions."
+msgid "Compare</a> the WP and <font color=\"#21759B\">WP+</font> Editions."
 msgstr ""
 
 #: lib/nfw_dashboard_widgets.php:27
@@ -3287,25 +3327,8 @@ msgstr ""
 msgid "Alert: WordPress console login"
 msgstr ""
 
-#: ninjafirewall.php:687 ninjafirewall.php:689 ninjafirewall.php:3579
-#: ninjafirewall.php:3581
-msgid "-Blog :"
-msgstr ""
-
 #: ninjafirewall.php:691
 msgid "Someone just logged in to your WordPress admin console:"
-msgstr ""
-
-#: ninjafirewall.php:692 ninjafirewall.php:3586
-msgid "-User :"
-msgstr ""
-
-#: ninjafirewall.php:693 ninjafirewall.php:3587
-msgid "-IP   :"
-msgstr ""
-
-#: ninjafirewall.php:694 ninjafirewall.php:3588
-msgid "-Date :"
 msgstr ""
 
 #: ninjafirewall.php:697
@@ -3397,10 +3420,6 @@ msgstr ""
 
 #: ninjafirewall.php:935
 msgid "NinjaFirewall is enabled"
-msgstr ""
-
-#: ninjafirewall.php:977
-msgid "NinjaFirewall (WP edition)"
 msgstr ""
 
 #: ninjafirewall.php:983

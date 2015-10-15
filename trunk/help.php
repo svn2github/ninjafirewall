@@ -1,7 +1,7 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -103,7 +103,7 @@ function help_nfsubopt() {
 		'id'        => 'opt04',
 		'title'     =>  __('Export/import configuration', 'ninjafirewall'),
 		'content'   => '<br />' .
-			__('This options lets you export you current configuration or import it from another NinjaFirewall (WP edition) installation. The imported file must match your current version otherwise it will be rejected. Note that importing will override all firewall rules and options.', 'ninjafirewall') .
+			__('This options lets you export you current configuration or import it from another NinjaFirewall (WP Edition) installation. The imported file must match your current version otherwise it will be rejected. Note that importing will override all firewall rules and options.', 'ninjafirewall') .
 			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' .
 			__('"File Check" configuration will not be exported/imported.', 'ninjafirewall') . '</span></p>'
 	) );

@@ -1,7 +1,7 @@
 <?php
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -436,7 +436,7 @@ function nf_daily_report_email($recipient, $logstats) {
 	$message.= __('This notification can be turned off from NinjaFirewall "Event Notifications" page.', 'ninjafirewall') ."\n\n";
 
 	$message .=
-			'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
+			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 

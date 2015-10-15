@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: NinjaFirewall (WP edition)
+Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
 Version: 1.7
@@ -14,7 +14,7 @@ Domain Path: /languages
 
 /*
  +---------------------------------------------------------------------+
- | NinjaFirewall (WP edition)                                          |
+ | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
@@ -693,7 +693,7 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 				__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
 				__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 				$url .
-				'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
+				'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
 				__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $message );
 
@@ -974,7 +974,7 @@ function nf_menu_main() {
 
 <div class="wrap">
 	<div style="width:54px;height:52px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2><?php _e('NinjaFirewall (WP edition)', 'ninjafirewall') ?></h2>
+	<h2><?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h2>
 	<br />
 	<?php
 	// first run ?
@@ -3587,7 +3587,7 @@ function nfw_check_emailalert() {
 			__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
 			__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
 			$url .
-			'NinjaFirewall (WP edition) - http://ninjafirewall.com/' . "\n" .
+			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 
