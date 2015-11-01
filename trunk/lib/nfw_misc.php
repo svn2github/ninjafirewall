@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-07-31 17:34:49                                       |
+ | REVISION: 2015-10-28 15:50:01                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -97,12 +97,10 @@ function nfw_query( $query ) { // i18n
 	}
 
 	if ( $query->is_main_query() && $query->is_author() ) {
-		if (! empty($_REQUEST['author']) ) {
-			$tmp = 'author=' . $_REQUEST['author'];
-		} elseif (! empty($_REQUEST['author_name']) ) {
-			$tmp = 'author_name=' . $_REQUEST['author_name'];
-		} else {
-			return;
+		if ( $query->get('author_name') ) {
+			$tmp = 'author_name=' . $query->get('author_name');
+		} elseif ( $query->get('author') ) {
+			$tmp = 'author=' . $query->get('author');
 		}
 		@session_destroy();
 		$query->set('author_name', '0');
@@ -119,8 +117,6 @@ if (! isset($_SESSION['nfw_goodguy']) ) {
 /* ------------------------------------------------------------------ */
 
 function nfw_authenticate( $user ) { // i18n
-
-	// User enumeration (login page) :
 
 	$nfw_options = get_option( 'nfw_options' );
 

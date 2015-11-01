@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-12 18:28:12                                       |
+ | REVISION: 2015-10-30 15:42:45                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -21,16 +21,23 @@
 
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
+// If your server can't remotely connect to a SSL port, add this
+// to your wp-config.php script: define('NFW_DONTUSESSL', 1);
+if (defined('NFW_DONTUSESSL')) {
+	$proto = "http";
+} else {
+	$proto = "https";
+}
 $update_log = NFW_LOG_DIR . '/nfwlog/updates.php';
 $update_url = array(
-	'http://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
+	$proto . '://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
 	'version.php',
 	'rules.php'
 );
 
-// Scheduled updates ?
+// Scheduled updates or NinjaFirewall installation:
 if (defined('NFUPDATESDO') ) {
-	nf_sub_do_updates($update_url, $update_log);
+	define('NFW_RULES', nf_sub_do_updates($update_url, $update_log, NFUPDATESDO));
 	return;
 }
 
@@ -49,7 +56,7 @@ if (! empty($_POST['nfw_act']) ) {
 	}
 	// Check updates now :
 	if  ($_POST['nfw_act'] == 3) {
-		if ( $res = nf_sub_do_updates($update_url, $update_log) ) {
+		if ( $res = nf_sub_do_updates($update_url, $update_log, 0) ) {
 			echo '<div class="updated notice is-dismissible"><p>' . __('Security rules have been updated.', 'ninjafirewall') . '</p></div>';
 		} else {
 			echo '<div class="updated notice is-dismissible"><p>' . __('No update available.', 'ninjafirewall') . '</p></div>';
@@ -258,7 +265,12 @@ function nf_sub_updates_clearlog($update_log) {
 
 /* ------------------------------------------------------------------ */
 
-function nf_sub_do_updates($update_url, $update_log) {
+function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
+
+	// Are we installing NinjaFirewall ?
+	if ( $NFUPDATESDO == 2 ) {
+		 return nf_sub_updates_download($update_url, $update_log, 0);
+	}
 
 	$nfw_options = get_option('nfw_options');
 
@@ -277,7 +289,7 @@ function nf_sub_do_updates($update_url, $update_log) {
 	}
 
 	// Unserialize the new rules :
-	if (! $new_rules = @unserialize(preg_replace('/eeee/', 'e', $data)) ) {
+	if (! $new_rules = @unserialize($data) ) {
 		nf_sub_updates_log(
 			$update_log,
 			__('Error: Unable to unserialize the new rules.', 'ninjafirewall')
@@ -408,15 +420,18 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 		if ( $res['response']['code'] == 200 ) {
 			$data = explode('|', rtrim($res['body']), 3);
 
-			// Rules version should match the one we just fetched :
-			if ( $new_rules_version != $data[1]) {
+			// Rules version should match the one we just fetched
+			// unless we are intalling NinjaFirewall ($new_rules_version==0) :
+			if ( $new_rules_version & $new_rules_version != $data[1]) {
 				nf_sub_updates_log(
 					$update_log,
 					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'ninjafirewall'), $new_rules_version, htmlspecialchars($data[1]) )
 				);
 				return 0;
 			}
-
+			// Save new rules version for install/upgrade:
+			define('NFW_NEWRULES_VERSION', $data[1]);
+			// Return the rules:
 			return $data[2];
 
 		// Not a 200 OK ret code :

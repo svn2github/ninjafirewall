@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2015-10-11 15:26:36                                       |
+// | REVISION: 2015-10-28 18:13:31                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -1195,7 +1195,7 @@ function nfw_response_headers() {
 	// NFW_RESHEADERS:
 	// 000000
 	// ||||||_ Strict-Transport-Security (includeSubDomains) [0-1]
-	// |||||__ Strict-Transport-Security [0-3]
+	// |||||__ Strict-Transport-Security [0-4]
 	// ||||___ X-XSS-Protection [0-1]
 	// |||____ X-Frame-Options [0-2]
 	// ||_____ X-Content-Type-Options [0-1]
@@ -1243,30 +1243,29 @@ function nfw_response_headers() {
 		header('X-XSS-Protection: 1; mode=block');
 	}
 
+	if ($NFW_RESHEADERS[4] == 0) { return; }
 	// We don't send HSTS headers over HTTP :
 	if ( $_SERVER['SERVER_PORT'] != 443 &&
 	(! isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) ||
 	$_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https') ) {
 		return;
 	}
-	if ($NFW_RESHEADERS[4] == 0) {
+	if ($NFW_RESHEADERS[4] == 1) {
+		// 1 month :
+		$max_age = 'max-age=2628000';
+	} elseif ($NFW_RESHEADERS[4] == 2) {
+		// 6 months :
+		$max_age = 'max-age=15768000';
+	} elseif ($NFW_RESHEADERS[4] == 3) {
+		// 12 months
+		$max_age = 'max-age=31536000';
+	} elseif ($NFW_RESHEADERS[4] == 4) {
 		// Send an empty max-age to signal the UA to
 		// cease regarding the host as a known HSTS Host :
 		$max_age = 'max-age=0';
-	} else {
-		if ($NFW_RESHEADERS[4] == 1) {
-			// 1 month :
-			$max_age = 'max-age=2628000';
-		} elseif ($NFW_RESHEADERS[4] == 2) {
-			// 6 months :
-			$max_age = 'max-age=15768000';
-		} else {
-			// 12 months
-			$max_age = 'max-age=31536000';
-		}
-		if ($NFW_RESHEADERS[5] == 1) {
-			$max_age .= ' ; includeSubDomains';
-		}
+	}
+	if ($NFW_RESHEADERS[5] == 1) {
+		$max_age .= ' ; includeSubDomains';
 	}
 	header('Strict-Transport-Security: '. $max_age);
 }

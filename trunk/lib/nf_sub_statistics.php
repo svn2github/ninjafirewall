@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-01 17:43:40                                       |
+ | REVISION: 2015-10-31 16:38:01                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -31,11 +31,13 @@ echo '
 	<br />';
 
 $critical = $high = $medium = $slow = $benchmark =
-$tot_bench = $speed = $upload = $banned_ip = 0;
+$tot_bench = $speed = $upload = $banned_ip = $xtr = 0;
 $fast = 1000;
 
 // Which monthly log should we read ?
-$xtr = @$_GET['xtr'];
+if (! empty($_GET['xtr']) ) {
+	$xtr = $_GET['xtr'];
+}
 if ( empty($xtr) || ! preg_match('/^firewall_\d{4}-\d{2}\.php$/D', $xtr) ) {
 	$xtr = 'firewall_' . date('Y-m') . '.php';
 }

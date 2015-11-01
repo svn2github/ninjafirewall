@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.7
+Version: 1.8-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,11 +18,11 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-11 19:30:46                                       |
+ | REVISION: 2015-10-31 15:32:43                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.7' );
-define( 'NFW_RULES_VERSION',  '20151013.1' );
+define( 'NFW_ENGINE_VERSION', '1.8-RC1' );
+define( 'NFW_RULES_VERSION',  '20151029.1' );
  /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -500,39 +500,44 @@ function nfw_upgrade() {
 
 	// do we need to update rules as well ?
 	if (! empty($nfw_options['rules_version']) && version_compare($nfw_options['rules_version'], NFW_RULES_VERSION, '<') ) {
-		// fetch new set of rules :
-		$_REQUEST['nfw_act'] = 'x';
-		require_once( plugin_dir_path(__FILE__) . 'install.php' );
-		$nfw_rules_new = unserialize( nfw_default_rules() );
 
-		foreach ( $nfw_rules_new as $new_key => $new_value ) {
-			foreach ( $new_value as $key => $value ) {
-				// if that rule exists already, we keep its 'on' flag value
-				// as it may have been changed by the user with the rules editor :
-				if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'on' ) ) {
-					$nfw_rules_new[$new_key]['on'] = $nfw_rules[$new_key]['on'];
+		// Fetch the latest set of rules from wordpress.org :
+		define('NFUPDATESDO', 2);
+		@nf_sub_updates();
+		if ( $nfw_rules_new = @unserialize(NFW_RULES) ) {
+			// Rules successfully downloaded :
+			foreach ( $nfw_rules_new as $new_key => $new_value ) {
+				foreach ( $new_value as $key => $value ) {
+					// if that rule exists already, we keep its 'on' flag value
+					// as it may have been changed by the user with the rules editor :
+					if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'on' ) ) {
+						$nfw_rules_new[$new_key]['on'] = $nfw_rules[$new_key]['on'];
+					}
 				}
 			}
-		}
-		$nfw_rules_new[NFW_DOC_ROOT]['what']= $nfw_rules[NFW_DOC_ROOT]['what'];
-		$nfw_rules_new[NFW_DOC_ROOT]['on']	= $nfw_rules[NFW_DOC_ROOT]['on'];
+			$nfw_rules_new[NFW_DOC_ROOT]['what']= $nfw_rules[NFW_DOC_ROOT]['what'];
+			$nfw_rules_new[NFW_DOC_ROOT]['on']	= $nfw_rules[NFW_DOC_ROOT]['on'];
 
-		// v1.2.7:20140925 update ----------------------------------------
-		// We delete rules #151 and #152
-		if ( version_compare( $nfw_options['rules_version'], '20140925', '<' ) ) {
-			if ( isset($nfw_rules_new[151]) ) {
-				unset($nfw_rules_new[151]);
+			// v1.2.7:20140925 update ----------------------------------------
+			// We delete rules #151 and #152
+			if ( version_compare( $nfw_options['rules_version'], '20140925', '<' ) ) {
+				if ( isset($nfw_rules_new[151]) ) {
+					unset($nfw_rules_new[151]);
+				}
+				if ( isset($nfw_rules_new[152]) ) {
+					unset($nfw_rules_new[152]);
+				}
 			}
-			if ( isset($nfw_rules_new[152]) ) {
-				unset($nfw_rules_new[152]);
-			}
-		}
-		// ---------------------------------------------------------------
+			// ---------------------------------------------------------------
 
-		// update rules... :
-		update_option( 'nfw_rules', $nfw_rules_new);
-		// ...and rules version number :
-		$nfw_options['rules_version'] = NFW_RULES_VERSION;
+			// update rules... :
+			update_option( 'nfw_rules', $nfw_rules_new);
+			// ...and the latest rules version number:
+			$nfw_options['rules_version'] = NFW_NEWRULES_VERSION;
+		} else {
+			// We failed to download the rules, return the hardcoded version:
+			$nfw_options['rules_version'] = NFW_RULES_VERSION;
+		}
 		$is_update = 1;
 	}
 
@@ -1066,6 +1071,17 @@ function nf_menu_main() {
 		</tr>
 	<?php
 	}
+	// Display restrictions (not available to WPMU):
+	if ( defined('NFW_ALLOWED_ADMIN') && ! is_multisite() ) {
+	?>
+		<tr>
+			<th scope="row"><?php _e('Restrictions', 'ninjafirewall') ?></th>
+			<td width="20" align="left">&nbsp;</td>
+			<td><?php _e('Access to NinjaFirewall is restricted to:', 'ninjafirewall') ?> <code><?php echo htmlspecialchars(NFW_ALLOWED_ADMIN) ?></code></td>
+		</tr>
+	<?php
+	}
+
 	// Try to find out if there is any "lost" session between the firewall
 	// and the plugin part of NinjaFirewall (could be a buggy plugin killing
 	// the session etc), unless we just installed it :
@@ -1248,7 +1264,7 @@ function nf_sub_policies() {
 	echo '
 <script>
 function restore() {
-   if (confirm("' . __('All fields will be restored to their default values. Go ahead ?', 'ninjafirewall') . '")){
+   if (confirm("' . __('All fields will be restored to their default values. Go ahead?', 'ninjafirewall') . '")){
       return true;
    }else{
 		return false;
@@ -1269,7 +1285,7 @@ function ssl_warn() {';
 		echo 'return true;';
 	} else {
 		echo '
-		if (confirm("' . __('WARNING: ensure that you can access your admin console over HTTPS before enabling this option, otherwise you will lock yourself out of your site. Go ahead ?', 'ninjafirewall') . '")){
+		if (confirm("' . __('WARNING: ensure that you can access your admin console over HTTPS before enabling this option, otherwise you will lock yourself out of your site. Go ahead?', 'ninjafirewall') . '")){
 			return true;
 		}
 		return false;';
@@ -1277,10 +1293,18 @@ function ssl_warn() {';
 echo '
 }
 function httponly() {
-	if (confirm("' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep this option disabled. Go ahead ?', 'ninjafirewall') . '")){
+	if (confirm("' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep this option disabled. Go ahead?', 'ninjafirewall') . '")){
 		return true;
 	}
 	return false;
+}
+function sanitise_fn(cbox) {
+	if(cbox.checked) {
+		if (confirm("' . __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the [X] character. Go ahead?', 'ninjafirewall') . '")){
+			return true;
+		}
+		return false;
+	}
 }
 </script>
 
@@ -1352,7 +1376,7 @@ function httponly() {
 				<select name="nfw_options[uploads]" onchange="chksubmenu();">
 					<option value="1"<?php selected( $uploads, 1 ) ?>><?php _e('Allow uploads', 'ninjafirewall') ?></option>
 					<option value="0"<?php selected( $uploads, 0 ) ?>><?php _e('Disallow uploads (default)', 'ninjafirewall') ?></option>
-				</select>&nbsp;&nbsp;&nbsp;&nbsp;<label id="santxt"<?php if (! $uploads) { echo ' style="color:#bbbbbb;"'; }?>><input type="checkbox" name="nfw_options[sanitise_fn]"<?php checked( $sanitise_fn, 1 ); disabled( $uploads, 0 ) ?> id="san">&nbsp;<?php _e('Sanitise filenames', 'ninjafirewall') ?></label>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;<label id="santxt"<?php if (! $uploads) { echo ' style="color:#bbbbbb;"'; }?>><input type="checkbox" onclick='return sanitise_fn(this);' name="nfw_options[sanitise_fn]"<?php checked( $sanitise_fn, 1 ); disabled( $uploads, 0 ) ?> id="san">&nbsp;<?php _e('Sanitise filenames', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 	</table>
@@ -1701,8 +1725,10 @@ function httponly() {
 				<br />
 				<label><input type="checkbox" name="nfw_options[strict_transport_sub]" value="1"<?php checked( $nfw_options['response_headers'][5], 1 ); disabled($err, 1); ?>><?php _e('Apply to subdomains', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[strict_transport]" value="0"<?php checked( $nfw_options['response_headers'][4], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p>
-			<?php echo $hsts_msg; ?>
+			<td align="left" style="vertical-align:top;">
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="0"<?php checked( $nfw_options['response_headers'][4], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="4"<?php checked( $nfw_options['response_headers'][4], 4 ); disabled($err, 1); ?>><?php _e('Set <code>max-age</code> to 0', 'ninjafirewall'); ?></label><?php echo $err_msg ?></p>
+				<?php echo $hsts_msg; ?>
 			</td>
 		</tr>
 	</table>
@@ -2254,8 +2280,10 @@ function nf_sub_policies_save() {
 			$nfw_options['response_headers'][4] = 1;
 		} elseif ( $_POST['nfw_options']['strict_transport'] == 2) {
 			$nfw_options['response_headers'][4] = 2;
-		} else {
+		} elseif ( $_POST['nfw_options']['strict_transport'] == 3) {
 			$nfw_options['response_headers'][4] = 3;
+		} else {
+			$nfw_options['response_headers'][4] = 4;
 		}
 	}
 
@@ -3101,11 +3129,7 @@ function nf_sub_loginprot() {
 	<input id="save_login" class="button-primary" type="submit" name="Save" value="<?php _e('Save Login Protection', 'ninjafirewall') ?>" />
 	<div align="right"><?php _e('See our benchmark and stress-test:', 'ninjafirewall') ?>
 	<br />
-	<a href="http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/" target="_blank">WordPress brute-force attack detection plugins comparison.</a>
-	<br />
-	<a href="http://blog.nintechnet.com/brute-force-attack-protection-in-a-production-environment/" target="_blank">WordPress brute-force attack protection in a production environment.</a>
-	<br />
-	<a href="http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/#benchmarks" target="_blank">Benchmarks with PHP 5.5.6 and Hip-Hop VM 3.4.2.</a>
+	Brute-force attack detection plugins comparison <a href="http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/">2013 benchmarks</a>, <a href="http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/">2015 benchmarks</a>.
 	</div>
 </form>
 </div>
@@ -3506,11 +3530,13 @@ function nf_sub_about() {
 
 function ninjafirewall_settings_link( $links ) {
 
-	// Block immediately if user is not allowed :
-	nf_not_allowed( 'block', __LINE__ );
-
-   $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-   $links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/" target="_blank">WP+ Edition</a>';
+	if ( nf_not_allowed(0, __LINE__) ) {
+		unset($links);
+		$links[] = __('Access Restricted', 'ninjafirewall');
+	} else {
+		$links[] = '<a href="'. get_admin_url(null, 'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
+		$links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/" target="_blank">WP+ Edition</a>';
+	}
    return $links;
 }
 
@@ -3627,7 +3653,19 @@ function nf_not_allowed($block, $line) {
 		}
 	} else {
 		if ( current_user_can('manage_options') ) {
-			return false;
+			// Check if that admin is allowed to use NinjaFirewall
+			// (see NFW_ALLOWED_ADMIN at http://nin.link/nfwaa ):
+			if ( defined('NFW_ALLOWED_ADMIN') ) {
+				$current_user = wp_get_current_user();
+				$admins = explode(',', NFW_ALLOWED_ADMIN);
+				foreach ($admins as $admin) {
+					if ( trim($admin) == $current_user->user_login ) {
+						return false;
+					}
+				}
+			} else {
+				return false;
+			}
 		}
 	}
 

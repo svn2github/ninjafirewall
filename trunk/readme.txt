@@ -219,10 +219,17 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 
 == Changelog ==
 
+= 1.8.=
+* The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host.
+* The security rules are no longer included inside the install.php script because some security scanners could (wrongly) flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
+* Added a new constant: NFW_DONTUSESSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding to your wp-config.php file the following directive: `define('NFW_DONTUSESSL', 1);`.
+* Added a new constant: NFW_ALLOWED_ADMIN. It can be used to allow only selected administrators to access NinjaFirewall configuration (see our blog for more info about it: http://nin.link/nfwaa).
+* Updated security rules.
+
 = 1.7 =
 * Added protection to block WordPress XMLRPC brute-force amplification attacks using the `system.multicall` method (see "Firewall Policies > WordPress XML-RPC API").
 * A daily report will be sent to the administrator every morning. It is enabled by default and can be disabled from the "Event Notifications > Daily report" menu.
-* Added a button to immediately updates the firewall security rules (See "Updates > Check For updates Now!").
+* Added a button to immediately update the firewall security rules (See "Updates > Check For updates Now!").
 * Fixed a bug with the "Import Configuration" option: NinjaFirewall updates cronjob was not re-enabled when importing its configuration.
 * Updated security rules.
 * [WP+ Edition] Fixed a bug in the Overview page that could show contradictory messages about whitelisted administrator.
