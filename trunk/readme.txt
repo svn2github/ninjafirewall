@@ -223,7 +223,9 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 * The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host.
 * The security rules are no longer included inside the install.php script because some security scanners could (wrongly) flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
 * Added a new constant: NFW_DONTUSESSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding to your wp-config.php file the following directive: `define('NFW_DONTUSESSL', 1);`.
+* Tightened security about required capabilities to access NinjaFirewall configuration. Previously, it was only accessible to users with 'manage_options' capability. Now, it will require the three 'manage_options', 'update_core' and 'unfiltered_html' capabilities (see our blog for more info about it: http://nin.link/nfwaa).
 * Added a new constant: NFW_ALLOWED_ADMIN. It can be used to allow only selected administrators to access NinjaFirewall configuration (see our blog for more info about it: http://nin.link/nfwaa).
+* The firewall base64 detection routine was rewritten to be much more efficient and faster.
 * Updated security rules.
 
 = 1.7 =

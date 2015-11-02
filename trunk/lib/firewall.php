@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2015-10-28 18:13:31                                       |
+// | REVISION: 2015-11-02 15:46:23                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -723,11 +723,10 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 						$res = nfw_flatten( "\n", $reqvalue );
 						$reqvalue = $res;
 						$rules_values['what'] = '(?m:'. $rules_values['what'] .')';
-					} else {
-						if (! empty($nfw_options['post_b64']) && $where == 'POST' && $reqvalue && ! isset($nf_decode[$reqkey]['b64']) ) {
-							nfw_check_b64($reqkey, $reqvalue);
-							$nf_decode[$reqkey]['b64'] = 1;
-						}
+					}
+					if (! empty($nfw_options['post_b64']) && $where == 'POST' && $reqvalue && ! isset($nf_decode[$reqkey]['b64']) ) {
+						nfw_check_b64($reqkey, $reqvalue);
+						$nf_decode[$reqkey]['b64'] = 1;
 					}
 					if (! $reqvalue) { continue; }
 
@@ -813,17 +812,17 @@ function nfw_flatten( $glue, $pieces ) {
 
 function nfw_check_b64( $reqkey, $string ) {
 
-	if ( defined('NFW_STATUS') ) { return; }
+	if ( defined('NFW_STATUS') || strlen($string) < 16 ) { return; }
 
-	// clean-up the string before testing it :
-	$string = preg_replace( '`[^A-Za-z0-9+/=]`', '', $string);
-	if ( (! $string) || (strlen($string) % 4 != 0) ) { return; }
-
-	if ( base64_encode( $decoded = base64_decode($string) ) === $string ) {
-		if ( preg_match( '`\b(?:\$?_(COOKIE|ENV|FILES|(?:GE|POS|REQUES)T|SE(RVER|SSION))|HTTP_(?:(?:POST|GET)_VARS|RAW_POST_DATA)|GLOBALS)\s*[=\[)]|\b(?i:array_map|assert|base64_(?:de|en)code|chmod|curl_exec|(?:ex|im)plode|error_reporting|eval|file(?:_get_contents)?|f(?:open|write|close)|fsockopen|function_exists|gzinflate|md5|move_uploaded_file|ob_start|passthru|preg_replace|phpinfo|stripslashes|strrev|(?:shell_)?exec|system|unlink)\s*\(|\becho\s*[\'"]|<\s*(?i:applet|div|embed|i?frame(?:set)?|img|meta|marquee|object|script|textarea)\b|\W\$\{\s*[\'"]\w+[\'"]|<\?(?i:php)|(?i:select\b.+?from\b.+?where|insert\b.+?into\b)`', $decoded) ) {
-			nfw_log('base64-encoded injection', 'POST:' . $reqkey . ' = ' . $string, '3', 0);
-			nfw_block();
-		}
+	if (! $decoded = base64_decode($string) ) { return; }
+	$decoded = urldecode( $decoded );
+	if (strpos($decoded,'%') !== false) {
+		$decoded = urldecode($decoded);
+	}
+	if ( strlen($decoded) < 16 ) { return; }
+	if ( preg_match( '`\b(?:\$?_(COOKIE|ENV|FILES|(?:GE|POS|REQUES)T|SE(RVER|SSION))|HTTP_(?:(?:POST|GET)_VARS|RAW_POST_DATA)|GLOBALS)\s*[=\[)]|\b(?i:array_map|assert|base64_(?:de|en)code|chmod|curl_exec|(?:ex|im)plode|error_reporting|eval|file(?:_get_contents)?|f(?:open|write|close)|fsockopen|function_exists|gzinflate|md5|move_uploaded_file|ob_start|passthru|preg_replace|phpinfo|stripslashes|strrev|(?:shell_)?exec|system|unlink)\s*\(|\becho\s*[\'"]|<\s*(?i:applet|div|embed|i?frame(?:set)?|img|meta|marquee|object|script|textarea)\b|\W\$\{\s*[\'"]\w+[\'"]|<\?(?i:php)|(?i:select\b.+?from\b.+?where|insert\b.+?into\b)`', $decoded) ) {
+		nfw_log('BASE64-encoded injection', 'POST:' . $reqkey . ' = ' . $decoded, '3', 0);
+		nfw_block();
 	}
 }
 
