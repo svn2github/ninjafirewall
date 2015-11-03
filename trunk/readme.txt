@@ -15,7 +15,7 @@ NinjaFirewall (WP Edition) is a true Web Application Firewall. Although it can b
 
 It allows any blog administrator to benefit from very advanced and powerful security features that usually aren't available at the WordPress level, but only in security applications such as the Apache [ModSecurity](http://www.modsecurity.org/ "") module or the PHP [Suhosin](http://suhosin.org/ "") extension.
 
-> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features), MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is not compatible with Windows.
+> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features), MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is not compatible with Microsoft Windows.
 
 = Web Application Firewall =
 
@@ -150,7 +150,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.co
 * PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
 * MySQLi extension
 * Apache / Nginx / LiteSpeed
-* Unix-like OS (Linux, BSD) only. NinjaFirewall is **NOT** compatible with Windows.
+* Unix-like OS (Linux, BSD) only. NinjaFirewall is **NOT** compatible with Microsoft Windows.
 
 == Frequently Asked Questions ==
 
@@ -192,9 +192,9 @@ You can use an optional configuration file to tell NinjaFirewall which IP to use
 Your visitors will not notice any difference with or without NinjaFirewall. From WordPress administration console, you can click "NinjaFirewall > Status" menu to see the benchmarks and statistics (the fastest, slowest and average time per request). NinjaFirewall is very fast, optimised, compact, requires very low system resources and [outperforms all other security plugins](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ "").
 By blocking dangerous requests and bots before WordPress is loaded, it will save bandwidth and reduce server load.
 
-= Is there any Windows version ? =
+= Is there any Microsoft Windows version ? =
 
-NinjaFirewall works on Unix-like servers only. There is no Windows version and we do not expect to release any.
+NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows version and we do not expect to release any.
 
 
 == Installation ==
@@ -220,12 +220,12 @@ NinjaFirewall works on Unix-like servers only. There is no Windows version and w
 == Changelog ==
 
 = 1.8.=
-* The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host.
-* The security rules are no longer included inside the install.php script because some security scanners could (wrongly) flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
-* Added a new constant: NFW_DONTUSESSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding to your wp-config.php file the following directive: `define('NFW_DONTUSESSL', 1);`.
-* Tightened security about required capabilities to access NinjaFirewall configuration. Previously, it was only accessible to users with 'manage_options' capability. Now, it will require the three 'manage_options', 'update_core' and 'unfiltered_html' capabilities (see our blog for more info about it: http://nin.link/nfwaa).
-* Added a new constant: NFW_ALLOWED_ADMIN. It can be used to allow only selected administrators to access NinjaFirewall configuration (see our blog for more info about it: http://nin.link/nfwaa).
-* The firewall base64 detection routine was rewritten to be much more efficient and faster.
+* The firewall decoding routine was rewritten to be much more efficient. It can now better detect advanced evasion techniques (see our blog for some attack examples: http://ninlink/ATAs ).
+* Added a new constant: NFW_DONT_USE_SSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding the following directive to your wp-config.php file: `define('NFW_DONT_USE_SSL', 1);`
+* The security rules are no longer included inside the install.php script because some security scanners could wrongly flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
+* The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host, while disabling the HSTS option will not return any header at all.
+* Accessing NinjaFirewall menu and settings will now require the following three capabilities: manage_options, update_core and unfiltered_html. Previously, only the manage_options capability was needed (see our blog for more info about it: http://nin.link/nfwaa ).
+* Added a new constant: NFW_ALLOWED_ADMIN. It can be used to allow only selected administrators to access NinjaFirewall configuration (see our blog for more info about it: http://nin.link/nfwaa ).
 * Updated security rules.
 
 = 1.7 =

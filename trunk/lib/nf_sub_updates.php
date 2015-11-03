@@ -22,8 +22,8 @@
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
 // If your server can't remotely connect to a SSL port, add this
-// to your wp-config.php script: define('NFW_DONTUSESSL', 1);
-if (defined('NFW_DONTUSESSL')) {
+// to your wp-config.php script: define('NFW_DONT_USE_SSL', 1);
+if (defined('NFW_DONT_USE_SSL')) {
 	$proto = "http";
 } else {
 	$proto = "https";
