@@ -935,6 +935,9 @@ function welcome_email() {
 			$message.= __('-Add your own code to the firewall: the ".htninja" file.', 'ninjafirewall') . "\n";
 			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n";
 
+			$message.= __('-Restricting access to NinjaFirewall settings.', 'ninjafirewall') . "\n";
+			$message.= 'http://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/ ' . "\n";
+
 			$message.= __('-Keep your blog protected against the latest vulnerabilities.', 'ninjafirewall') . "\n";
 			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
 

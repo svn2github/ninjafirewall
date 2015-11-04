@@ -733,7 +733,7 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 					// Decode potential double-encoding (applies to XSS and SQLi attempts only):
 					if ( ($rules_id > 99 && $rules_id < 150) || ($rules_id > 199 && $rules_id < 250) ) {
 						if (! isset($nf_decode[$reqkey]['url']) ) {
-							$reqvalue = urldecode($reqvalue);
+							$reqvalue = rawurldecode($reqvalue);
 							$nf_decode[$reqkey]['url'] = $reqvalue;
 						} else{
 							$reqvalue = $nf_decode[$reqkey]['url'];
@@ -815,9 +815,9 @@ function nfw_check_b64( $reqkey, $string ) {
 	if ( defined('NFW_STATUS') || strlen($string) < 16 ) { return; }
 
 	if (! $decoded = base64_decode($string) ) { return; }
-	$decoded = urldecode( $decoded );
+	$decoded = rawurldecode( $decoded );
 	if (strpos($decoded,'%') !== false) {
-		$decoded = urldecode($decoded);
+		$decoded = rawurldecode($decoded);
 	}
 	if ( strlen($decoded) < 16 ) { return; }
 	if ( preg_match( '`\b(?:\$?_(COOKIE|ENV|FILES|(?:GE|POS|REQUES)T|SE(RVER|SSION))|HTTP_(?:(?:POST|GET)_VARS|RAW_POST_DATA)|GLOBALS)\s*[=\[)]|\b(?i:array_map|assert|base64_(?:de|en)code|chmod|curl_exec|(?:ex|im)plode|error_reporting|eval|file(?:_get_contents)?|f(?:open|write|close)|fsockopen|function_exists|gzinflate|md5|move_uploaded_file|ob_start|passthru|preg_replace|phpinfo|stripslashes|strrev|(?:shell_)?exec|system|unlink)\s*\(|\becho\s*[\'"]|<\s*(?i:applet|div|embed|i?frame(?:set)?|img|meta|marquee|object|script|textarea)\b|\W\$\{\s*[\'"]\w+[\'"]|<\?(?i:php)|(?i:select\b.+?from\b.+?where|insert\b.+?into\b)`', $decoded) ) {

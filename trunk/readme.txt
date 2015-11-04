@@ -220,7 +220,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 == Changelog ==
 
 = 1.8.=
-* The firewall decoding routine was rewritten to be much more efficient. It can now better detect advanced evasion techniques (see our blog for some attack examples: http://ninlink/ATAs ).
+* The firewall decoding routine was rewritten to be much more efficient. It is faster and can better detect advanced evasion techniques.
 * Added a new constant: NFW_DONT_USE_SSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding the following directive to your wp-config.php file: `define('NFW_DONT_USE_SSL', 1);`
 * The security rules are no longer included inside the install.php script because some security scanners could wrongly flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
 * The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host, while disabling the HSTS option will not return any header at all.
