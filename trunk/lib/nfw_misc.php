@@ -95,12 +95,13 @@ function nfw_query( $query ) { // i18n
 	if ( empty($nfw_options['enum_archives']) || empty($nfw_options['enabled']) ) {
 		return;
 	}
-
 	if ( $query->is_main_query() && $query->is_author() ) {
 		if ( $query->get('author_name') ) {
 			$tmp = 'author_name=' . $query->get('author_name');
 		} elseif ( $query->get('author') ) {
 			$tmp = 'author=' . $query->get('author');
+		} else {
+			$tmp = 'author';
 		}
 		@session_destroy();
 		$query->set('author_name', '0');

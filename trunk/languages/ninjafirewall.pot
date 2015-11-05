@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2015-11-03 21:58+0700\n"
-"PO-Revision-Date: 2015-11-03 21:58+0700\n"
+"POT-Creation-Date: 2015-11-05 16:38+0700\n"
+"PO-Revision-Date: 2015-11-05 16:38+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -85,7 +85,7 @@ msgstr ""
 msgid "Your site will remain unprotected until you enable it again."
 msgstr ""
 
-#: help.php:87 lib/nf_sub_options.php:104 ninjafirewall.php:1028
+#: help.php:87 lib/nf_sub_options.php:104 ninjafirewall.php:1033
 msgid "Debugging mode"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgid ""
 "substitute characters."
 msgstr ""
 
-#: help.php:143 ninjafirewall.php:831 ninjafirewall.php:1313
+#: help.php:143 ninjafirewall.php:831 ninjafirewall.php:1318
 msgid "Firewall Policies"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Whether to filter HTTP and/or HTTPS traffic"
 msgstr ""
 
-#: help.php:152 ninjafirewall.php:1370
+#: help.php:152 ninjafirewall.php:1375
 msgid "Uploads"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgid ""
 "<code>X</code> character."
 msgstr ""
 
-#: help.php:158 ninjafirewall.php:1398
+#: help.php:158 ninjafirewall.php:1403
 msgid "HTTP GET variable"
 msgstr ""
 
@@ -260,7 +260,7 @@ msgstr ""
 msgid "Whether to scan and/or sanitise the <code>GET</code> variable."
 msgstr ""
 
-#: help.php:163 ninjafirewall.php:1441
+#: help.php:163 ninjafirewall.php:1446
 msgid "HTTP POST variable"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgid ""
 "code> variable."
 msgstr ""
 
-#: help.php:169 ninjafirewall.php:1484
+#: help.php:169 ninjafirewall.php:1489
 msgid "HTTP REQUEST variable"
 msgstr ""
 
@@ -287,7 +287,7 @@ msgstr ""
 msgid "Whether to sanitise the <code>REQUEST</code> variable."
 msgstr ""
 
-#: help.php:174 ninjafirewall.php:1512
+#: help.php:174 ninjafirewall.php:1517
 msgid "Cookies"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Whether to scan and/or sanitise cookies."
 msgstr ""
 
-#: help.php:179 ninjafirewall.php:1557
+#: help.php:179 ninjafirewall.php:1562
 msgid "HTTP_USER_AGENT server variable"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgid ""
 "to access your blog."
 msgstr ""
 
-#: help.php:185 ninjafirewall.php:1610
+#: help.php:185 ninjafirewall.php:1615
 msgid "HTTP_REFERER server variable"
 msgstr ""
 
@@ -337,7 +337,7 @@ msgid ""
 "default."
 msgstr ""
 
-#: help.php:191 ninjafirewall.php:1667
+#: help.php:191 ninjafirewall.php:1672
 msgid "HTTP response headers"
 msgstr ""
 
@@ -519,7 +519,7 @@ msgid ""
 "variables to prevent various XSS and database injection attempts."
 msgstr ""
 
-#: help.php:226 ninjafirewall.php:1906
+#: help.php:226 ninjafirewall.php:1911
 msgid "Various"
 msgstr ""
 
@@ -660,7 +660,7 @@ msgid ""
 "Protection</a> which, if enabled, are always enforced."
 msgstr ""
 
-#: help.php:260 ninjafirewall.php:836 ninjafirewall.php:2672
+#: help.php:260 ninjafirewall.php:836 ninjafirewall.php:2677
 msgid "File Guard"
 msgstr ""
 
@@ -698,7 +698,7 @@ msgid ""
 "package (third-party software, shell script, backdoor etc)."
 msgstr ""
 
-#: help.php:275 ninjafirewall.php:846 ninjafirewall.php:2793
+#: help.php:275 ninjafirewall.php:846 ninjafirewall.php:2798
 msgid "Network"
 msgstr ""
 
@@ -811,7 +811,7 @@ msgid ""
 "theme in order to take full control of your website."
 msgstr ""
 
-#: help.php:336 ninjafirewall.php:856 ninjafirewall.php:2903
+#: help.php:336 ninjafirewall.php:856 ninjafirewall.php:2908
 msgid "Login Protection"
 msgstr ""
 
@@ -902,7 +902,7 @@ msgid ""
 "page."
 msgstr ""
 
-#: help.php:372 ninjafirewall.php:3108
+#: help.php:372 ninjafirewall.php:3113
 msgid "AUTH log"
 msgstr ""
 
@@ -1103,7 +1103,7 @@ msgid ""
 "and lowercase letters <code>a-z</code>."
 msgstr ""
 
-#: help.php:461 ninjafirewall.php:871 ninjafirewall.php:3363
+#: help.php:461 ninjafirewall.php:871 ninjafirewall.php:3368
 msgid "Rules Editor"
 msgstr ""
 
@@ -1136,7 +1136,7 @@ msgid ""
 "\"Firewall Policies\" page."
 msgstr ""
 
-#: help.php:480 lib/nf_sub_updates.php:50 ninjafirewall.php:876
+#: help.php:480 lib/nf_sub_updates.php:49 ninjafirewall.php:876
 msgid "Updates"
 msgstr ""
 
@@ -1213,7 +1213,7 @@ msgstr ""
 
 #: install.php:102
 msgid ""
-"Do NOT rename, edit or delete its files or folders, EVEN when it is disabled "
+"Do NOT rename, edit or delete its files or folders, even if it is disabled "
 "from the Plugins page."
 msgstr ""
 
@@ -1318,7 +1318,7 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
-#: install.php:221 install.php:346 install.php:512
+#: install.php:221 install.php:349 install.php:515
 msgid "Error:"
 msgstr ""
 
@@ -1347,11 +1347,11 @@ msgstr ""
 msgid "Path to WordPress site root directory:"
 msgstr ""
 
-#: install.php:231 install.php:423 install.php:709
+#: install.php:231 install.php:426 install.php:712
 msgid "Next Step"
 msgstr ""
 
-#: install.php:242 install.php:436
+#: install.php:242 install.php:439
 msgid "please enter the full path to WordPress folder."
 msgstr ""
 
@@ -1362,94 +1362,94 @@ msgid ""
 "root directory."
 msgstr ""
 
-#: install.php:258
+#: install.php:261
 msgid "(recommended)"
 msgstr ""
 
 #. translators: quotes (') must be escaped
-#: install.php:311
+#: install.php:314
 msgid "Please select the PHP initialization file supported by your server."
 msgstr ""
 
-#: install.php:340
+#: install.php:343
 #, php-format
 msgid ""
 "Error: NinjaFirewall log directory is not writable (%s). Please chmod it to "
 "0777 and reload this page."
 msgstr ""
 
-#: install.php:350
+#: install.php:353
 msgid "System configuration"
 msgstr ""
 
-#: install.php:354
+#: install.php:357
 msgid "Multisite network detected:"
 msgstr ""
 
-#: install.php:354
+#: install.php:357
 msgid ""
 "NinjaFirewall will protect all sites from your network and its configuration "
 "interface will be accessible only to the Super Admin from the network main "
 "site."
 msgstr ""
 
-#: install.php:361
+#: install.php:364
 msgid "Select your HTTP server and your PHP server API"
 msgstr ""
 
-#: install.php:370
+#: install.php:373
 msgid "Other webserver + CGI/FastCGI"
 msgstr ""
 
-#: install.php:371
+#: install.php:374
 msgid "Other webserver + HHVM"
 msgstr ""
 
-#: install.php:372
+#: install.php:375
 msgid "view PHPINFO"
 msgstr ""
 
-#: install.php:380
+#: install.php:383
 #, php-format
 msgid ""
 "Please <a href=\"%s\">check our blog</a> if you want to install "
 "NinjaFirewall on HHVM."
 msgstr ""
 
-#: install.php:411
+#: install.php:414
 msgid "Select the PHP initialization file supported by your server"
 msgstr ""
 
-#: install.php:414
+#: install.php:417
 msgid "Used by most shared hosting accounts."
 msgstr ""
 
-#: install.php:416
+#: install.php:419
 msgid ""
 "Used by most dedicated/VPS servers, as well as shared hosting accounts that "
 "do not support php.ini"
 msgstr ""
 
-#: install.php:416
+#: install.php:419
 msgid "more info"
 msgstr ""
 
-#: install.php:418
+#: install.php:421
 #, php-format
 msgid ""
 "A few shared hosting accounts (some <a href=\"%s\">Godaddy hosting plans</"
 "a>). Seldom used."
 msgstr ""
 
-#: install.php:449 install.php:734
+#: install.php:452 install.php:737
 msgid "select your HTTP server and PHP SAPI."
 msgstr ""
 
-#: install.php:456 install.php:740
+#: install.php:459 install.php:743
 msgid "select the PHP initialization file supported by your server."
 msgstr ""
 
-#: install.php:487
+#: install.php:490
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
 "specific directives to your <code>.htaccess</code> located inside WordPress "
@@ -1457,7 +1457,7 @@ msgid ""
 "edited."
 msgstr ""
 
-#: install.php:489
+#: install.php:492
 #, php-format
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
@@ -1466,7 +1466,7 @@ msgid ""
 "or, if they exist, to be edited."
 msgstr ""
 
-#: install.php:491
+#: install.php:494
 #, php-format
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
@@ -1474,109 +1474,109 @@ msgid ""
 "That file will have to be created or, if it exists, to be edited."
 msgstr ""
 
-#: install.php:515
+#: install.php:518
 msgid "Firewall Integration"
 msgstr ""
 
-#: install.php:520
+#: install.php:523
 msgid ""
 "If your WordPress root directory is writable, the installer can make those "
 "changes for you."
 msgstr ""
 
-#: install.php:522
+#: install.php:525
 msgid "Checking if WordPress root directory is writable:"
 msgstr ""
 
-#: install.php:524
+#: install.php:527
 msgid "YES"
 msgstr ""
 
-#: install.php:526
+#: install.php:529
 msgid "NO"
 msgstr ""
 
-#: install.php:533
+#: install.php:536
 #, php-format
 msgid ""
 "The <code>%s</code> file must be created, and the following lines of code "
 "added to it:"
 msgstr ""
 
-#: install.php:534
+#: install.php:537
 #, php-format
 msgid ""
 "The following <font color=\"red\">red lines</font> of code must be added to "
 "your <code>%s</code> file."
 msgstr ""
 
-#: install.php:536
+#: install.php:539
 msgid "All other lines, if any, are the actual content of the file:"
 msgstr ""
 
-#: install.php:537
+#: install.php:540
 msgid "The file is not writable, I cannot make those changes for you."
 msgstr ""
 
-#: install.php:618
+#: install.php:621
 msgid ""
 "Add the following code to your <code>/etc/hhvm/php.ini</code> file, and "
 "restart HHVM afterwards:"
 msgstr ""
 
-#: install.php:686
+#: install.php:689
 msgid "Please make those changes, then click on button below."
 msgstr ""
 
-#: install.php:691
+#: install.php:694
 msgid "Let NinjaFirewall make the above changes (recommended)."
 msgstr ""
 
-#: install.php:693
+#: install.php:696
 msgid ""
 "Ensure that you have an FTP access to your website so that, if there was a "
 "problem, you could undo the above changes."
 msgstr ""
 
-#: install.php:695
+#: install.php:698
 msgid "I want to make the changes myself."
 msgstr ""
 
-#: install.php:704
+#: install.php:707
 msgid "Please check our blog if you want to install NinjaFirewall on HHVM."
 msgstr ""
 
-#: install.php:724
+#: install.php:727
 msgid "you must select how to make changes to your files."
 msgstr ""
 
-#: install.php:752
+#: install.php:754
 msgid ""
 "your WordPress root directory is not writable, I cannot make those changes "
 "for you."
 msgstr ""
 
-#: install.php:769 install.php:811
+#: install.php:770 install.php:812
 #, php-format
 msgid "cannot write to <code>%s</code>, it is read-only."
 msgstr ""
 
-#: install.php:848
+#: install.php:849
 msgid "Your configuration was saved."
 msgstr ""
 
-#. translators: was sent to [admin_email_address]
-#: install.php:855
+#. translators: ...was sent to [admin_email_address]
+#: install.php:856 ninjafirewall.php:991
 msgid "A \"Quick Start, FAQ & Troubleshooting Guide\" email was sent to"
 msgstr ""
 
-#: install.php:860
+#: install.php:862
 msgid ""
 "Please click the button below to test if the firewall integration was "
 "successful."
 msgstr ""
 
-#: install.php:862
+#: install.php:864
 msgid "Test Firewall"
 msgstr ""
 
@@ -1745,27 +1745,27 @@ msgstr ""
 msgid "-Updates info are available via Twitter:"
 msgstr ""
 
-#: install.php:976
+#: install.php:975
 msgid "Error: the firewall is not loaded."
 msgstr ""
 
-#: install.php:977
+#: install.php:976
 msgid "Suggestions:"
 msgstr ""
 
-#: install.php:981
+#: install.php:980
 msgid ""
 "You selected <code>Apache + PHP5 module</code> as your HTTP server and PHP "
 "SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?"
 msgstr ""
 
-#: install.php:983 install.php:1000
+#: install.php:982 install.php:999
 msgid ""
 "You can click the \"Go Back\" button and try to select another HTTP server "
 "type."
 msgstr ""
 
-#: install.php:987
+#: install.php:986
 msgid ""
 "You have selected <code>.user.ini</code> as your PHP initialization file. "
 "Unlike <code>php.ini</code>, <code>.user.ini</code> files are not reloaded "
@@ -1775,33 +1775,33 @@ msgid ""
 "the \"Test Again\" button below."
 msgstr ""
 
-#: install.php:989
+#: install.php:988
 msgid "Test Again"
 msgstr ""
 
-#: install.php:998
+#: install.php:997
 msgid ""
 "You selected <code>Apache + CGI/FastCGI</code> as your HTTP server and PHP "
 "SAPI. Maybe your HTTP server is <code>Apache + mod_php5</code>?"
 msgstr ""
 
-#: install.php:1003
+#: install.php:1002
 msgid "Maybe you did not select the correct PHP INI ?"
 msgstr ""
 
-#: install.php:1005
+#: install.php:1004
 msgid "You can click the \"Go Back\" button and try to select another one."
 msgstr ""
 
-#: install.php:1009
+#: install.php:1008
 msgid "Go Back"
 msgstr ""
 
-#: install.php:1015
+#: install.php:1014
 msgid "Need help ? Check our blog:"
 msgstr ""
 
-#: install.php:1138
+#: install.php:1137
 msgid ""
 "Error: I cannot download the security rules from wordpress.org. Please try "
 "again in a few minutes."
@@ -1883,8 +1883,8 @@ msgstr ""
 
 #: lib/nf_sub_event.php:57 lib/nf_sub_filecheck.php:115
 #: lib/nf_sub_livelog.php:242 lib/nf_sub_options.php:70
-#: lib/nf_sub_updates.php:73 ninjafirewall.php:1323 ninjafirewall.php:2689
-#: ninjafirewall.php:2812 ninjafirewall.php:2913
+#: lib/nf_sub_updates.php:72 ninjafirewall.php:1328 ninjafirewall.php:2694
+#: ninjafirewall.php:2817 ninjafirewall.php:2918
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -1986,13 +1986,13 @@ msgstr ""
 msgid "Send me a daily activity report"
 msgstr ""
 
-#: lib/nf_sub_event.php:150 lib/nf_sub_event.php:162 ninjafirewall.php:1404
-#: ninjafirewall.php:1447 ninjafirewall.php:1467 ninjafirewall.php:1518
-#: ninjafirewall.php:1563 ninjafirewall.php:1573 ninjafirewall.php:1583
-#: ninjafirewall.php:1626 ninjafirewall.php:1761 ninjafirewall.php:1781
-#: ninjafirewall.php:1824 ninjafirewall.php:1834 ninjafirewall.php:1844
-#: ninjafirewall.php:1854 ninjafirewall.php:1864 ninjafirewall.php:1912
-#: ninjafirewall.php:1922 ninjafirewall.php:1932 ninjafirewall.php:2826
+#: lib/nf_sub_event.php:150 lib/nf_sub_event.php:162 ninjafirewall.php:1409
+#: ninjafirewall.php:1452 ninjafirewall.php:1472 ninjafirewall.php:1523
+#: ninjafirewall.php:1568 ninjafirewall.php:1578 ninjafirewall.php:1588
+#: ninjafirewall.php:1631 ninjafirewall.php:1766 ninjafirewall.php:1786
+#: ninjafirewall.php:1829 ninjafirewall.php:1839 ninjafirewall.php:1849
+#: ninjafirewall.php:1859 ninjafirewall.php:1869 ninjafirewall.php:1917
+#: ninjafirewall.php:1927 ninjafirewall.php:1937 ninjafirewall.php:2831
 msgid "Yes (default)"
 msgstr ""
 
@@ -2075,7 +2075,7 @@ msgstr ""
 
 #: lib/nf_sub_event.php:440 lib/nf_sub_filecheck.php:833
 #: lib/nf_sub_filecheck.php:850 lib/nf_sub_options.php:460
-#: lib/nf_sub_updates.php:496 ninjafirewall.php:3617
+#: lib/nf_sub_updates.php:495 ninjafirewall.php:3622
 msgid "Support forum:"
 msgstr ""
 
@@ -2111,7 +2111,7 @@ msgstr ""
 msgid "Exclude the following files/folders"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:161 ninjafirewall.php:2733
+#: lib/nf_sub_filecheck.php:161 ninjafirewall.php:2738
 msgid "e.g.,"
 msgstr ""
 
@@ -2274,23 +2274,23 @@ msgstr ""
 msgid "Enable scheduled scans"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:506 lib/nf_sub_updates.php:117
-#: ninjafirewall.php:1417 ninjafirewall.php:1460 ninjafirewall.php:1493
-#: ninjafirewall.php:1531 ninjafirewall.php:1619 ninjafirewall.php:1639
-#: ninjafirewall.php:1774 ninjafirewall.php:2087 ninjafirewall.php:2097
-#: ninjafirewall.php:2107 ninjafirewall.php:2117 ninjafirewall.php:3052
+#: lib/nf_sub_filecheck.php:506 lib/nf_sub_updates.php:116
+#: ninjafirewall.php:1422 ninjafirewall.php:1465 ninjafirewall.php:1498
+#: ninjafirewall.php:1536 ninjafirewall.php:1624 ninjafirewall.php:1644
+#: ninjafirewall.php:1779 ninjafirewall.php:2092 ninjafirewall.php:2102
+#: ninjafirewall.php:2112 ninjafirewall.php:2122 ninjafirewall.php:3057
 msgid "No (default)"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:507 lib/nf_sub_updates.php:135
+#: lib/nf_sub_filecheck.php:507 lib/nf_sub_updates.php:134
 msgid "Hourly"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:508 lib/nf_sub_updates.php:136
+#: lib/nf_sub_filecheck.php:508 lib/nf_sub_updates.php:135
 msgid "Twicedaily"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:509 lib/nf_sub_updates.php:137
+#: lib/nf_sub_filecheck.php:509 lib/nf_sub_updates.php:136
 msgid "Daily"
 msgstr ""
 
@@ -2393,13 +2393,13 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:826 lib/nf_sub_filecheck.php:828
 #: lib/nf_sub_filecheck.php:844 lib/nf_sub_filecheck.php:846
-#: lib/nf_sub_updates.php:489 lib/nf_sub_updates.php:491 lib/nfw_misc.php:202
+#: lib/nf_sub_updates.php:488 lib/nf_sub_updates.php:490 lib/nfw_misc.php:202
 #: lib/nfw_misc.php:204
 msgid "Blog:"
 msgstr ""
 
 #: lib/nf_sub_filecheck.php:830 lib/nf_sub_filecheck.php:848
-#: lib/nf_sub_updates.php:494
+#: lib/nf_sub_updates.php:493
 #, php-format
 msgid "Date: %s"
 msgstr ""
@@ -2627,7 +2627,7 @@ msgstr ""
 
 #: lib/nf_sub_options.php:87 lib/nf_sub_options.php:96
 #: lib/nf_sub_options.php:111 lib/nf_sub_options.php:121
-#: ninjafirewall.php:1019
+#: ninjafirewall.php:1024
 msgid "Enabled"
 msgstr ""
 
@@ -2726,7 +2726,7 @@ msgid "[NinjaFirewall] Alert: Firewall is disabled"
 msgstr ""
 
 #: lib/nf_sub_options.php:436 lib/nf_sub_options.php:438 ninjafirewall.php:692
-#: ninjafirewall.php:694 ninjafirewall.php:3605 ninjafirewall.php:3607
+#: ninjafirewall.php:694 ninjafirewall.php:3610 ninjafirewall.php:3612
 msgid "-Blog :"
 msgstr ""
 
@@ -2749,15 +2749,15 @@ msgid ""
 "Someone imported a new configuration which overrode the firewall settings:"
 msgstr ""
 
-#: lib/nf_sub_options.php:455 ninjafirewall.php:697 ninjafirewall.php:3612
+#: lib/nf_sub_options.php:455 ninjafirewall.php:697 ninjafirewall.php:3617
 msgid "-User :"
 msgstr ""
 
-#: lib/nf_sub_options.php:456 ninjafirewall.php:698 ninjafirewall.php:3613
+#: lib/nf_sub_options.php:456 ninjafirewall.php:698 ninjafirewall.php:3618
 msgid "-IP   :"
 msgstr ""
 
-#: lib/nf_sub_options.php:457 ninjafirewall.php:699 ninjafirewall.php:3614
+#: lib/nf_sub_options.php:457 ninjafirewall.php:699 ninjafirewall.php:3619
 msgid "-Date :"
 msgstr ""
 
@@ -2813,143 +2813,143 @@ msgstr ""
 msgid "Select monthly stats to view..."
 msgstr ""
 
-#: lib/nf_sub_updates.php:61
+#: lib/nf_sub_updates.php:60
 msgid "Security rules have been updated."
 msgstr ""
 
-#: lib/nf_sub_updates.php:63
+#: lib/nf_sub_updates.php:62
 msgid "No update available."
 msgstr ""
 
-#: lib/nf_sub_updates.php:112
+#: lib/nf_sub_updates.php:111
 msgid "Automatically update NinjaFirewall security rules"
 msgstr ""
 
-#: lib/nf_sub_updates.php:114 ninjafirewall.php:1257 ninjafirewall.php:1414
-#: ninjafirewall.php:1457 ninjafirewall.php:1490 ninjafirewall.php:1528
-#: ninjafirewall.php:1616 ninjafirewall.php:1636 ninjafirewall.php:1771
-#: ninjafirewall.php:2084 ninjafirewall.php:2094 ninjafirewall.php:2104
-#: ninjafirewall.php:2114
+#: lib/nf_sub_updates.php:113 ninjafirewall.php:1262 ninjafirewall.php:1419
+#: ninjafirewall.php:1462 ninjafirewall.php:1495 ninjafirewall.php:1533
+#: ninjafirewall.php:1621 ninjafirewall.php:1641 ninjafirewall.php:1776
+#: ninjafirewall.php:2089 ninjafirewall.php:2099 ninjafirewall.php:2109
+#: ninjafirewall.php:2119
 msgid "Yes"
 msgstr ""
 
-#: lib/nf_sub_updates.php:126
+#: lib/nf_sub_updates.php:125
 #, php-format
 msgid ""
 "It seems that %s is enabled. Ensure you have another way to run WP-Cron, "
 "otherwise NinjaFirewall automatic updates will not work."
 msgstr ""
 
-#: lib/nf_sub_updates.php:133
+#: lib/nf_sub_updates.php:132
 msgid "Check for updates"
 msgstr ""
 
-#: lib/nf_sub_updates.php:144
+#: lib/nf_sub_updates.php:143
 #, php-format
 msgid ""
 "Next scheduled update will start in approximately %s day, %s hour(s), %s "
 "minute(s) and %s seconds."
 msgstr ""
 
-#: lib/nf_sub_updates.php:151
+#: lib/nf_sub_updates.php:150
 msgid ""
 "The next scheduled date is in the past! WordPress wp-cron may not be working "
 "or may have been disabled."
 msgstr ""
 
-#: lib/nf_sub_updates.php:159
+#: lib/nf_sub_updates.php:158
 msgid "Notification"
 msgstr ""
 
-#: lib/nf_sub_updates.php:161
+#: lib/nf_sub_updates.php:160
 msgid "Send me a report by email when security rules have been updated."
 msgstr ""
 
-#: lib/nf_sub_updates.php:162
+#: lib/nf_sub_updates.php:161
 msgid ""
 "Reports will be sent to the contact email address defined in the Event "
 "Notifications menu."
 msgstr ""
 
-#: lib/nf_sub_updates.php:168
+#: lib/nf_sub_updates.php:167
 msgid "Save Updates Options"
 msgstr ""
 
-#: lib/nf_sub_updates.php:168
+#: lib/nf_sub_updates.php:167
 msgid "Check For Updates Now!"
 msgstr ""
 
-#: lib/nf_sub_updates.php:177
+#: lib/nf_sub_updates.php:176
 msgid "The updates log is currently empty."
 msgstr ""
 
-#: lib/nf_sub_updates.php:185
+#: lib/nf_sub_updates.php:184
 msgid "Updates Log"
 msgstr ""
 
-#: lib/nf_sub_updates.php:194
+#: lib/nf_sub_updates.php:193
 msgid "Delete Log"
 msgstr ""
 
-#: lib/nf_sub_updates.php:200
+#: lib/nf_sub_updates.php:199
 msgid "Log is flushed automatically."
 msgstr ""
 
-#: lib/nf_sub_updates.php:296
+#: lib/nf_sub_updates.php:295
 msgid "Error: Unable to unserialize the new rules."
 msgstr ""
 
-#: lib/nf_sub_updates.php:304
+#: lib/nf_sub_updates.php:303
 msgid "Error: Unserialized rules seem corrupted."
 msgstr ""
 
-#: lib/nf_sub_updates.php:332
+#: lib/nf_sub_updates.php:331
 #, php-format
 msgid "Security rules updated to version %s."
 msgstr ""
 
-#: lib/nf_sub_updates.php:367
+#: lib/nf_sub_updates.php:366
 msgid ""
 "Error: Your version of NinjaFirewall is too old and is not compatible with "
 "those rules. Please upgrade it."
 msgstr ""
 
-#: lib/nf_sub_updates.php:376
+#: lib/nf_sub_updates.php:375
 msgid "Error: Unable to retrieve the new rules version."
 msgstr ""
 
-#: lib/nf_sub_updates.php:387
+#: lib/nf_sub_updates.php:386
 msgid "Security rules are up-to-date."
 msgstr ""
 
-#: lib/nf_sub_updates.php:394
+#: lib/nf_sub_updates.php:393
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#1)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:401 lib/nf_sub_updates.php:449
+#: lib/nf_sub_updates.php:400 lib/nf_sub_updates.php:448
 msgid "Error: Unable to connect to WordPress server"
 msgstr ""
 
-#: lib/nf_sub_updates.php:429
+#: lib/nf_sub_updates.php:428
 #, php-format
 msgid "Error: The new rules versions do not match (%s != %s)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:442
+#: lib/nf_sub_updates.php:441
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#2)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:486
+#: lib/nf_sub_updates.php:485
 msgid "[NinjaFirewall] Security rules update"
 msgstr ""
 
-#: lib/nf_sub_updates.php:487
+#: lib/nf_sub_updates.php:486
 msgid "NinjaFirewall security rules have been updated:"
 msgstr ""
 
-#: lib/nf_sub_updates.php:493
+#: lib/nf_sub_updates.php:492
 msgid "Rules version:"
 msgstr ""
 
@@ -3176,7 +3176,7 @@ msgid ""
 "%s is writable."
 msgstr ""
 
-#: lib/nfw_misc.php:82 ninjafirewall.php:1003
+#: lib/nfw_misc.php:82 ninjafirewall.php:1008
 msgid "unknown error"
 msgstr ""
 
@@ -3432,35 +3432,35 @@ msgid ""
 "in the upper right corner of each page."
 msgstr ""
 
-#: ninjafirewall.php:1007 ninjafirewall.php:1017
+#: ninjafirewall.php:1012 ninjafirewall.php:1022
 msgid "Firewall"
 msgstr ""
 
-#: ninjafirewall.php:1030
+#: ninjafirewall.php:1035
 msgid "Enabled."
 msgstr ""
 
-#: ninjafirewall.php:1030
+#: ninjafirewall.php:1035
 msgid "Click here to turn Debugging Mode off"
 msgstr ""
 
-#: ninjafirewall.php:1036
+#: ninjafirewall.php:1041
 msgid "PHP SAPI"
 msgstr ""
 
-#: ninjafirewall.php:1050 ninjafirewall.php:3592
+#: ninjafirewall.php:1055 ninjafirewall.php:3597
 msgid "Version"
 msgstr ""
 
-#: ninjafirewall.php:1052
+#: ninjafirewall.php:1057
 msgid "security rules:"
 msgstr ""
 
-#: ninjafirewall.php:1059 ninjafirewall.php:1068
+#: ninjafirewall.php:1064 ninjafirewall.php:1073
 msgid "Admin user"
 msgstr ""
 
-#: ninjafirewall.php:1061
+#: ninjafirewall.php:1066
 #, php-format
 msgid ""
 "You are not whitelisted. Ensure that the \"Do not block WordPress "
@@ -3469,46 +3469,46 @@ msgid ""
 "from your administration dashboard."
 msgstr ""
 
-#: ninjafirewall.php:1070
+#: ninjafirewall.php:1075
 msgid "you are whitelisted by the firewall"
 msgstr ""
 
-#: ninjafirewall.php:1078
+#: ninjafirewall.php:1083
 msgid "Restrictions"
 msgstr ""
 
-#: ninjafirewall.php:1080
+#: ninjafirewall.php:1085
 msgid "Access to NinjaFirewall is restricted to:"
 msgstr ""
 
-#: ninjafirewall.php:1091 ninjafirewall.php:1101
+#: ninjafirewall.php:1096 ninjafirewall.php:1106
 msgid "User session"
 msgstr ""
 
-#: ninjafirewall.php:1093
+#: ninjafirewall.php:1098
 msgid ""
 "It seems the user session was not set by the firewall script or may have "
 "been destroyed by another plugin. You may get blocked by the firewall while "
 "working from the WordPress administration dashboard."
 msgstr ""
 
-#: ninjafirewall.php:1103
+#: ninjafirewall.php:1108
 msgid ""
 "It seems that the user session set by NinjaFirewall was not found by the "
 "firewall script. You may get blocked by the firewall while working from the "
 "WordPress administration dashboard."
 msgstr ""
 
-#: ninjafirewall.php:1112
+#: ninjafirewall.php:1117
 msgid "Source IP"
 msgstr ""
 
-#: ninjafirewall.php:1114
+#: ninjafirewall.php:1119
 #, php-format
 msgid "You have a private IP : %s"
 msgstr ""
 
-#: ninjafirewall.php:1114
+#: ninjafirewall.php:1119
 #, php-format
 msgid ""
 "If your site is behind a reverse proxy or a load balancer, ensure that you "
@@ -3516,11 +3516,11 @@ msgid ""
 "otherwise use the NinjaFirewall %s configuration file."
 msgstr ""
 
-#: ninjafirewall.php:1125 ninjafirewall.php:1137
+#: ninjafirewall.php:1130 ninjafirewall.php:1142
 msgid "CDN detection"
 msgstr ""
 
-#: ninjafirewall.php:1127
+#: ninjafirewall.php:1132
 #, php-format
 msgid ""
 "%s detected: you seem to be using Cloudflare CDN services. Ensure that you "
@@ -3528,7 +3528,7 @@ msgid ""
 "otherwise use the NinjaFirewall %s configuration file."
 msgstr ""
 
-#: ninjafirewall.php:1139
+#: ninjafirewall.php:1144
 #, php-format
 msgid ""
 "%s detected: you seem to be using Incapsula CDN services. Ensure that you "
@@ -3536,720 +3536,720 @@ msgid ""
 "otherwise use the NinjaFirewall %s configuration file."
 msgstr ""
 
-#: ninjafirewall.php:1149 ninjafirewall.php:1160
+#: ninjafirewall.php:1154 ninjafirewall.php:1165
 msgid "Log dir"
 msgstr ""
 
-#: ninjafirewall.php:1151 ninjafirewall.php:1162
+#: ninjafirewall.php:1156 ninjafirewall.php:1167
 #, php-format
 msgid "%s directory is not writable! Please chmod it to 0777 or equivalent."
 msgstr ""
 
-#: ninjafirewall.php:1171
+#: ninjafirewall.php:1176
 msgid "Optional configuration file"
 msgstr ""
 
-#: ninjafirewall.php:1174
+#: ninjafirewall.php:1179
 #, php-format
 msgid "%s is writable. Consider changing its permissions to read-only."
 msgstr ""
 
-#: ninjafirewall.php:1184
+#: ninjafirewall.php:1189
 msgid "System Files"
 msgstr ""
 
-#: ninjafirewall.php:1194 ninjafirewall.php:1211
+#: ninjafirewall.php:1199 ninjafirewall.php:1216
 #, php-format
 msgid "%s is read-only."
 msgstr ""
 
-#: ninjafirewall.php:1220
+#: ninjafirewall.php:1225
 #, php-format
 msgid ""
 "Warning: you have some read-only system files; please <a href=\"%s\">read "
 "this</a> if you want to uninstall NinjaFirewall."
 msgstr ""
 
-#: ninjafirewall.php:1258 ninjafirewall.php:1407 ninjafirewall.php:1450
-#: ninjafirewall.php:1470 ninjafirewall.php:1521 ninjafirewall.php:1566
-#: ninjafirewall.php:1576 ninjafirewall.php:1586 ninjafirewall.php:1629
-#: ninjafirewall.php:1764 ninjafirewall.php:1784 ninjafirewall.php:1827
-#: ninjafirewall.php:1837 ninjafirewall.php:1847 ninjafirewall.php:1857
-#: ninjafirewall.php:1867 ninjafirewall.php:1915 ninjafirewall.php:1925
-#: ninjafirewall.php:1935 ninjafirewall.php:2715 ninjafirewall.php:2827
+#: ninjafirewall.php:1263 ninjafirewall.php:1412 ninjafirewall.php:1455
+#: ninjafirewall.php:1475 ninjafirewall.php:1526 ninjafirewall.php:1571
+#: ninjafirewall.php:1581 ninjafirewall.php:1591 ninjafirewall.php:1634
+#: ninjafirewall.php:1769 ninjafirewall.php:1789 ninjafirewall.php:1832
+#: ninjafirewall.php:1842 ninjafirewall.php:1852 ninjafirewall.php:1862
+#: ninjafirewall.php:1872 ninjafirewall.php:1920 ninjafirewall.php:1930
+#: ninjafirewall.php:1940 ninjafirewall.php:2720 ninjafirewall.php:2832
 msgid "No"
 msgstr ""
 
-#: ninjafirewall.php:1259
+#: ninjafirewall.php:1264
 msgid "(default)"
 msgstr ""
 
-#: ninjafirewall.php:1267
+#: ninjafirewall.php:1272
 msgid "All fields will be restored to their default values. Go ahead?"
 msgstr ""
 
-#: ninjafirewall.php:1288
+#: ninjafirewall.php:1293
 msgid ""
 "WARNING: ensure that you can access your admin console over HTTPS before "
 "enabling this option, otherwise you will lock yourself out of your site. Go "
 "ahead?"
 msgstr ""
 
-#: ninjafirewall.php:1296
+#: ninjafirewall.php:1301
 msgid ""
 "If your PHP scripts send cookies that need to be accessed from JavaScript, "
 "you should keep this option disabled. Go ahead?"
 msgstr ""
 
-#: ninjafirewall.php:1303
+#: ninjafirewall.php:1308
 msgid ""
 "Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a "
 "hyphen [-] or an underscore [_] will be removed from the filename and "
 "replaced with the [X] character. Go ahead?"
 msgstr ""
 
-#: ninjafirewall.php:1326
+#: ninjafirewall.php:1331
 msgid "Default values were restored."
 msgstr ""
 
-#: ninjafirewall.php:1328
+#: ninjafirewall.php:1333
 msgid "No action taken."
 msgstr ""
 
-#: ninjafirewall.php:1347
+#: ninjafirewall.php:1352
 msgid "Enable NinjaFirewall for"
 msgstr ""
 
-#: ninjafirewall.php:1350
+#: ninjafirewall.php:1355
 msgid "<code>HTTP</code> and <code>HTTPS</code> traffic (default)"
 msgstr ""
 
-#: ninjafirewall.php:1351
+#: ninjafirewall.php:1356
 msgid "<code>HTTP</code> traffic only"
 msgstr ""
 
-#: ninjafirewall.php:1352
+#: ninjafirewall.php:1357
 msgid "<code>HTTPS</code> traffic only"
 msgstr ""
 
-#: ninjafirewall.php:1373
+#: ninjafirewall.php:1378
 msgid "File Uploads"
 msgstr ""
 
-#: ninjafirewall.php:1377
+#: ninjafirewall.php:1382
 msgid "Allow uploads"
 msgstr ""
 
-#: ninjafirewall.php:1378
+#: ninjafirewall.php:1383
 msgid "Disallow uploads (default)"
 msgstr ""
 
-#: ninjafirewall.php:1379
+#: ninjafirewall.php:1384
 msgid "Sanitise filenames"
 msgstr ""
 
-#: ninjafirewall.php:1401
+#: ninjafirewall.php:1406
 msgid "Scan <code>GET</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1411
+#: ninjafirewall.php:1416
 msgid "Sanitise <code>GET</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1444
+#: ninjafirewall.php:1449
 msgid "Scan <code>POST</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1454
+#: ninjafirewall.php:1459
 msgid "Sanitise <code>POST</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1460
+#: ninjafirewall.php:1465
 msgid "Do not enable this option unless you know what you are doing!"
 msgstr ""
 
-#: ninjafirewall.php:1464
+#: ninjafirewall.php:1469
 msgid "Decode Base64-encoded <code>POST</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1487
+#: ninjafirewall.php:1492
 msgid "Sanitise <code>REQUEST</code> variable"
 msgstr ""
 
-#: ninjafirewall.php:1515
+#: ninjafirewall.php:1520
 msgid "Scan cookies"
 msgstr ""
 
-#: ninjafirewall.php:1525
+#: ninjafirewall.php:1530
 msgid "Sanitise cookies"
 msgstr ""
 
-#: ninjafirewall.php:1560
+#: ninjafirewall.php:1565
 msgid "Scan <code>HTTP_USER_AGENT</code>"
 msgstr ""
 
-#: ninjafirewall.php:1570
+#: ninjafirewall.php:1575
 msgid "Sanitise <code>HTTP_USER_AGENT</code>"
 msgstr ""
 
-#: ninjafirewall.php:1580
+#: ninjafirewall.php:1585
 msgid "Block suspicious bots/scanners"
 msgstr ""
 
-#: ninjafirewall.php:1613
+#: ninjafirewall.php:1618
 msgid "Scan <code>HTTP_REFERER</code>"
 msgstr ""
 
-#: ninjafirewall.php:1623
+#: ninjafirewall.php:1628
 msgid "Sanitise <code>HTTP_REFERER</code>"
 msgstr ""
 
-#: ninjafirewall.php:1633
+#: ninjafirewall.php:1638
 msgid ""
 "Block <code>POST</code> requests that do not have an <code>HTTP_REFERER</"
 "code> header"
 msgstr ""
 
-#: ninjafirewall.php:1639
+#: ninjafirewall.php:1644
 msgid ""
 "Keep this option disabled if you are using scripts like Paypal IPN, "
 "WordPress WP-Cron etc"
 msgstr ""
 
-#: ninjafirewall.php:1652
+#: ninjafirewall.php:1657
 #, php-format
 msgid ""
 "This option is disabled because the %s PHP function is not available on your "
 "server."
 msgstr ""
 
-#: ninjafirewall.php:1670
+#: ninjafirewall.php:1675
 #, php-format
 msgid "Set %s to protect against MIME type confusion attacks"
 msgstr ""
 
-#: ninjafirewall.php:1680
+#: ninjafirewall.php:1685
 #, php-format
 msgid "Set %s to protect against clickjacking attempts"
 msgstr ""
 
-#: ninjafirewall.php:1689
+#: ninjafirewall.php:1694
 #, php-format
 msgid "Set %s to enable browser's built-in XSS filter (IE, Chrome and Safari)"
 msgstr ""
 
-#: ninjafirewall.php:1699
+#: ninjafirewall.php:1704
 #, php-format
 msgid "Force %s flag on all cookies to mitigate XSS attacks"
 msgstr ""
 
-#: ninjafirewall.php:1713
+#: ninjafirewall.php:1718
 msgid ""
 "HSTS headers can only be set when you are accessing your site over HTTPS."
 msgstr ""
 
-#: ninjafirewall.php:1719
+#: ninjafirewall.php:1724
 #, php-format
 msgid "Set %s (HSTS) to enforce secure connections to the server"
 msgstr ""
 
-#: ninjafirewall.php:1722
+#: ninjafirewall.php:1727
 msgid "1 month"
 msgstr ""
 
-#: ninjafirewall.php:1723
+#: ninjafirewall.php:1728
 msgid "6 months"
 msgstr ""
 
-#: ninjafirewall.php:1724
+#: ninjafirewall.php:1729
 msgid "1 year"
 msgstr ""
 
-#: ninjafirewall.php:1726
+#: ninjafirewall.php:1731
 msgid "Apply to subdomains"
 msgstr ""
 
-#: ninjafirewall.php:1730
+#: ninjafirewall.php:1735
 msgid "Set <code>max-age</code> to 0"
 msgstr ""
 
-#: ninjafirewall.php:1758
+#: ninjafirewall.php:1763
 msgid "Block localhost IP in <code>GET/POST</code> request"
 msgstr ""
 
-#: ninjafirewall.php:1768
+#: ninjafirewall.php:1773
 msgid "Block HTTP requests with an IP in the <code>HTTP_HOST</code> header"
 msgstr ""
 
-#: ninjafirewall.php:1778
+#: ninjafirewall.php:1783
 msgid "Scan traffic coming from localhost and private IP address spaces"
 msgstr ""
 
-#: ninjafirewall.php:1821
+#: ninjafirewall.php:1826
 msgid "Block PHP built-in wrappers"
 msgstr ""
 
-#: ninjafirewall.php:1831
+#: ninjafirewall.php:1836
 msgid "Hide PHP notice and error messages"
 msgstr ""
 
-#: ninjafirewall.php:1841
+#: ninjafirewall.php:1846
 msgid "Sanitise <code>PHP_SELF</code>"
 msgstr ""
 
-#: ninjafirewall.php:1851
+#: ninjafirewall.php:1856
 msgid "Sanitise <code>PATH_TRANSLATED</code>"
 msgstr ""
 
-#: ninjafirewall.php:1861
+#: ninjafirewall.php:1866
 msgid "Sanitise <code>PATH_INFO</code>"
 msgstr ""
 
-#: ninjafirewall.php:1882
+#: ninjafirewall.php:1887
 msgid "This option is not compatible with your actual configuration."
 msgstr ""
 
-#: ninjafirewall.php:1909
+#: ninjafirewall.php:1914
 msgid "Block the <code>DOCUMENT_ROOT</code> server variable in HTTP request"
 msgstr ""
 
-#: ninjafirewall.php:1919
+#: ninjafirewall.php:1924
 msgid "Block ASCII character 0x00 (NULL byte)"
 msgstr ""
 
-#: ninjafirewall.php:1929
+#: ninjafirewall.php:1934
 msgid "Block ASCII control characters 1 to 8 and 14 to 31"
 msgstr ""
 
-#: ninjafirewall.php:2010
+#: ninjafirewall.php:2015
 msgid "Block direct access to any PHP file located in one of these directories"
 msgstr ""
 
-#: ninjafirewall.php:2036
+#: ninjafirewall.php:2041
 msgid ""
 "NinjaFirewall will not block access to the TinyMCE WYSIWYG editor even if "
 "this option is enabled."
 msgstr ""
 
-#: ninjafirewall.php:2051
+#: ninjafirewall.php:2056
 msgid ""
 "Unless you have PHP scripts in a \"/cache/\" folder that need to be accessed "
 "by your visitors, we recommend to enable this option."
 msgstr ""
 
-#: ninjafirewall.php:2062
+#: ninjafirewall.php:2067
 msgid "Protect against username enumeration"
 msgstr ""
 
-#: ninjafirewall.php:2065
+#: ninjafirewall.php:2070
 msgid "Through the author archives (default)"
 msgstr ""
 
-#: ninjafirewall.php:2066
+#: ninjafirewall.php:2071
 msgid "Through the login page"
 msgstr ""
 
-#: ninjafirewall.php:2070
+#: ninjafirewall.php:2075
 msgid "WordPress XML-RPC API"
 msgstr ""
 
-#: ninjafirewall.php:2073
+#: ninjafirewall.php:2078
 msgid "Block any access to the API"
 msgstr ""
 
-#: ninjafirewall.php:2074
+#: ninjafirewall.php:2079
 msgid "Block only <code>system.multicall</code> method"
 msgstr ""
 
-#: ninjafirewall.php:2081
+#: ninjafirewall.php:2086
 msgid "Block <code>POST</code> requests in the themes folder"
 msgstr ""
 
-#: ninjafirewall.php:2091
+#: ninjafirewall.php:2096
 msgid "Force SSL for admin and logins"
 msgstr ""
 
-#: ninjafirewall.php:2101
+#: ninjafirewall.php:2106
 msgid "Disable the plugin and theme editor"
 msgstr ""
 
-#: ninjafirewall.php:2111
+#: ninjafirewall.php:2116
 msgid "Disable plugin and theme update/installation"
 msgstr ""
 
-#: ninjafirewall.php:2134
+#: ninjafirewall.php:2139
 msgid "Do not block WordPress administrator (must be logged in)"
 msgstr ""
 
-#: ninjafirewall.php:2137
+#: ninjafirewall.php:2142
 msgid "Yes, do not block the Administrator (default)"
 msgstr ""
 
-#: ninjafirewall.php:2138
+#: ninjafirewall.php:2143
 msgid "No, block everyone, including the Admin if needed!"
 msgstr ""
 
-#: ninjafirewall.php:2139
+#: ninjafirewall.php:2144
 msgid ""
 "Note : does not apply to <code>FORCE_SSL_ADMIN</code>, "
 "<code>DISALLOW_FILE_EDIT</code> and <code>DISALLOW_FILE_MODS</code> options "
 "which, if enabled, are always enforced."
 msgstr ""
 
-#: ninjafirewall.php:2146
+#: ninjafirewall.php:2151
 msgid "Save Firewall Policies"
 msgstr ""
 
-#: ninjafirewall.php:2148
+#: ninjafirewall.php:2153
 msgid "Restore Default Values"
 msgstr ""
 
-#: ninjafirewall.php:2657 ninjafirewall.php:2663
+#: ninjafirewall.php:2662 ninjafirewall.php:2668
 msgid "Please enter a number from 1 to 99."
 msgstr ""
 
-#: ninjafirewall.php:2679
+#: ninjafirewall.php:2684
 #, php-format
 msgid ""
 "The cache directory %s is not writable. Please change its permissions (0777 "
 "or equivalent)."
 msgstr ""
 
-#: ninjafirewall.php:2710
+#: ninjafirewall.php:2715
 msgid "Enable File Guard"
 msgstr ""
 
-#: ninjafirewall.php:2712
+#: ninjafirewall.php:2717
 msgid "Yes (recommended)"
 msgstr ""
 
-#: ninjafirewall.php:2724
+#: ninjafirewall.php:2729
 msgid "Real-time detection"
 msgstr ""
 
-#: ninjafirewall.php:2727
+#: ninjafirewall.php:2732
 #, php-format
 msgid ""
 "Monitor file activity and send an alert when someone is accessing a PHP "
 "script that was modified or created less than %s hour(s) ago."
 msgstr ""
 
-#: ninjafirewall.php:2732
+#: ninjafirewall.php:2737
 msgid "Exclude the following folder (optional)"
 msgstr ""
 
-#: ninjafirewall.php:2733
+#: ninjafirewall.php:2738
 msgid "or"
 msgstr ""
 
-#: ninjafirewall.php:2733
+#: ninjafirewall.php:2738
 msgid "A full or partial case-sensitive string, max 150 characters."
 msgstr ""
 
-#: ninjafirewall.php:2737
+#: ninjafirewall.php:2742
 msgid "Save File Guard options"
 msgstr ""
 
-#: ninjafirewall.php:2784 ninjafirewall.php:3676
+#: ninjafirewall.php:2789 ninjafirewall.php:3681
 #, php-format
 msgid "You are not allowed to perform this task (%s)."
 msgstr ""
 
-#: ninjafirewall.php:2796
+#: ninjafirewall.php:2801
 msgid "You do not have a multisite network."
 msgstr ""
 
-#: ninjafirewall.php:2822
+#: ninjafirewall.php:2827
 msgid "NinjaFirewall Status"
 msgstr ""
 
-#: ninjafirewall.php:2825
+#: ninjafirewall.php:2830
 msgid ""
 "Display NinjaFirewall status icon in the admin bar of all sites in the "
 "network"
 msgstr ""
 
-#: ninjafirewall.php:2833
+#: ninjafirewall.php:2838
 msgid "Save Network options"
 msgstr ""
 
-#: ninjafirewall.php:2947 ninjafirewall.php:2969 ninjafirewall.php:3245
+#: ninjafirewall.php:2952 ninjafirewall.php:2974 ninjafirewall.php:3250
 msgid "Access restricted"
 msgstr ""
 
 #. translators: quotes (') must be escaped
-#: ninjafirewall.php:2981
+#: ninjafirewall.php:2986
 msgid "Please enter a number from 1 to 99 in 'Password-protect' field."
 msgstr ""
 
 #. translators: quotes (') must be escaped
-#: ninjafirewall.php:2990 ninjafirewall.php:3007
+#: ninjafirewall.php:2995 ninjafirewall.php:3012
 msgid "Invalid character."
 msgstr ""
 
 #. translators: quotes (') must be escaped
-#: ninjafirewall.php:2997
+#: ninjafirewall.php:3002
 msgid "\"admin\" is not acceptable, please choose another user name."
 msgstr ""
 
-#: ninjafirewall.php:3043
+#: ninjafirewall.php:3048
 msgid "Enable brute force attack protection"
 msgstr ""
 
-#: ninjafirewall.php:3046
+#: ninjafirewall.php:3051
 msgid "Yes, if under attack"
 msgstr ""
 
-#: ninjafirewall.php:3049
+#: ninjafirewall.php:3054
 msgid "Always ON"
 msgstr ""
 
-#: ninjafirewall.php:3059
+#: ninjafirewall.php:3064
 msgid "Protect the login page against"
 msgstr ""
 
-#: ninjafirewall.php:3061
+#: ninjafirewall.php:3066
 msgid "<code>GET</code> request attacks"
 msgstr ""
 
-#: ninjafirewall.php:3062
+#: ninjafirewall.php:3067
 msgid "<code>POST</code> request attacks (default)"
 msgstr ""
 
-#: ninjafirewall.php:3063
+#: ninjafirewall.php:3068
 msgid "<code>GET</code> and <code>POST</code> requests attacks"
 msgstr ""
 
-#: ninjafirewall.php:3067
+#: ninjafirewall.php:3072
 msgid "Password-protect it"
 msgstr ""
 
-#: ninjafirewall.php:3070
+#: ninjafirewall.php:3075
 #, php-format
 msgid "For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds."
 msgstr ""
 
-#: ninjafirewall.php:3083
+#: ninjafirewall.php:3088
 msgid "Apply the protection to the <code>xmlrpc.php</code> script as well."
 msgstr ""
 
-#: ninjafirewall.php:3097
+#: ninjafirewall.php:3102
 msgid "HTTP authentication"
 msgstr ""
 
-#: ninjafirewall.php:3099
+#: ninjafirewall.php:3104
 msgid "User:"
 msgstr ""
 
-#: ninjafirewall.php:3099
+#: ninjafirewall.php:3104
 msgid "Password:"
 msgstr ""
 
-#: ninjafirewall.php:3100
+#: ninjafirewall.php:3105
 msgid "User and Password must be from 6 to 32 characters."
 msgstr ""
 
-#: ninjafirewall.php:3101
+#: ninjafirewall.php:3106
 msgid "Message (max. 150 ASCII characters)"
 msgstr ""
 
-#: ninjafirewall.php:3114
+#: ninjafirewall.php:3119
 msgid "Your server configuration is not compatible with that option."
 msgstr ""
 
-#: ninjafirewall.php:3117
+#: ninjafirewall.php:3122
 msgid "See contextual help before enabling this option."
 msgstr ""
 
-#: ninjafirewall.php:3121
+#: ninjafirewall.php:3126
 msgid "Write incident to the server <code>AUTH</code> log."
 msgstr ""
 
-#: ninjafirewall.php:3129
+#: ninjafirewall.php:3134
 msgid "Save Login Protection"
 msgstr ""
 
-#: ninjafirewall.php:3130
+#: ninjafirewall.php:3135
 msgid "See our benchmark and stress-test:"
 msgstr ""
 
-#: ninjafirewall.php:3150
+#: ninjafirewall.php:3155
 #, php-format
 msgid "Error: %s directory is not writable. Please chmod it to 0777."
 msgstr ""
 
-#: ninjafirewall.php:3165 ninjafirewall.php:3170 ninjafirewall.php:3175
+#: ninjafirewall.php:3170 ninjafirewall.php:3175 ninjafirewall.php:3180
 #, php-format
 msgid "Error: %s is read-only and cannot be deleted. Please chmod it to 0777."
 msgstr ""
 
-#: ninjafirewall.php:3227
+#: ninjafirewall.php:3232
 msgid "Error: please enter a user name for HTTP authentication."
 msgstr ""
 
-#: ninjafirewall.php:3229
+#: ninjafirewall.php:3234
 msgid "Error: HTTP authentication user name is not valid."
 msgstr ""
 
-#: ninjafirewall.php:3235
+#: ninjafirewall.php:3240
 msgid "Error: please enter a user name and password for HTTP authentication."
 msgstr ""
 
-#: ninjafirewall.php:3238
+#: ninjafirewall.php:3243
 msgid "Error: password must be from 6 to 32 characters."
 msgstr ""
 
-#: ninjafirewall.php:3263
+#: ninjafirewall.php:3268
 #, php-format
 msgid "Error: unable to write to the %s configuration file"
 msgstr ""
 
-#: ninjafirewall.php:3374
+#: ninjafirewall.php:3379
 msgid "Error: you did not select a rule to disable."
 msgstr ""
 
-#: ninjafirewall.php:3376 ninjafirewall.php:3391
+#: ninjafirewall.php:3381 ninjafirewall.php:3396
 msgid "Error: to change this rule, use the \"Firewall Policies\" menu."
 msgstr ""
 
-#: ninjafirewall.php:3378 ninjafirewall.php:3393
+#: ninjafirewall.php:3383 ninjafirewall.php:3398
 msgid "Error: this rule does not exist."
 msgstr ""
 
-#: ninjafirewall.php:3382
+#: ninjafirewall.php:3387
 #, php-format
 msgid "Rule ID %s has been disabled."
 msgstr ""
 
-#: ninjafirewall.php:3389
+#: ninjafirewall.php:3394
 msgid "Error: you did not select a rule to enable."
 msgstr ""
 
-#: ninjafirewall.php:3397
+#: ninjafirewall.php:3402
 #, php-format
 msgid "Rule ID %s has been enabled."
 msgstr ""
 
-#: ninjafirewall.php:3414
+#: ninjafirewall.php:3419
 msgid "NinjaFirewall built-in security rules"
 msgstr ""
 
-#: ninjafirewall.php:3417
+#: ninjafirewall.php:3422
 msgid "Select the rule you want to disable or enable"
 msgstr ""
 
-#: ninjafirewall.php:3421
+#: ninjafirewall.php:3426
 msgid "Total rules enabled"
 msgstr ""
 
-#: ninjafirewall.php:3430 ninjafirewall.php:3447 ninjafirewall.php:3463
-#: ninjafirewall.php:3480
+#: ninjafirewall.php:3435 ninjafirewall.php:3452 ninjafirewall.php:3468
+#: ninjafirewall.php:3485
 msgid "Rule ID"
 msgstr ""
 
-#: ninjafirewall.php:3430 ninjafirewall.php:3463
+#: ninjafirewall.php:3435 ninjafirewall.php:3468
 msgid "Firewall policy"
 msgstr ""
 
-#: ninjafirewall.php:3433 ninjafirewall.php:3466
+#: ninjafirewall.php:3438 ninjafirewall.php:3471
 msgid "Remote/local file inclusion"
 msgstr ""
 
-#: ninjafirewall.php:3435 ninjafirewall.php:3468
+#: ninjafirewall.php:3440 ninjafirewall.php:3473
 msgid "Cross-site scripting"
 msgstr ""
 
-#: ninjafirewall.php:3437 ninjafirewall.php:3470
+#: ninjafirewall.php:3442 ninjafirewall.php:3475
 msgid "Code injection"
 msgstr ""
 
-#: ninjafirewall.php:3439 ninjafirewall.php:3472
+#: ninjafirewall.php:3444 ninjafirewall.php:3477
 msgid "SQL injection"
 msgstr ""
 
-#: ninjafirewall.php:3441 ninjafirewall.php:3474
+#: ninjafirewall.php:3446 ninjafirewall.php:3479
 msgid "Various vulnerability"
 msgstr ""
 
-#: ninjafirewall.php:3443 ninjafirewall.php:3476
+#: ninjafirewall.php:3448 ninjafirewall.php:3481
 msgid "Backdoor/shell"
 msgstr ""
 
-#: ninjafirewall.php:3445 ninjafirewall.php:3478
+#: ninjafirewall.php:3450 ninjafirewall.php:3483
 msgid "WordPress vulnerability"
 msgstr ""
 
-#: ninjafirewall.php:3451
+#: ninjafirewall.php:3456
 msgid "Disable it"
 msgstr ""
 
-#: ninjafirewall.php:3456
+#: ninjafirewall.php:3461
 msgid "Total rules disabled"
 msgstr ""
 
-#: ninjafirewall.php:3485
+#: ninjafirewall.php:3490
 msgid "Enable it"
 msgstr ""
 
-#: ninjafirewall.php:3487
+#: ninjafirewall.php:3492
 #, php-format
 msgid ""
 "Greyed out rules can be changed in the <a href=\"%s\">Firewall Policies</a> "
 "page."
 msgstr ""
 
-#: ninjafirewall.php:3535
+#: ninjafirewall.php:3540
 msgid "Access Restricted"
 msgstr ""
 
-#: ninjafirewall.php:3537
+#: ninjafirewall.php:3542
 msgid "Settings"
 msgstr ""
 
-#: ninjafirewall.php:3584
+#: ninjafirewall.php:3589
 msgid "Plugin"
 msgstr ""
 
-#: ninjafirewall.php:3584 ninjafirewall.php:3588
+#: ninjafirewall.php:3589 ninjafirewall.php:3593
 msgid "uploaded"
 msgstr ""
 
-#: ninjafirewall.php:3584 ninjafirewall.php:3588
+#: ninjafirewall.php:3589 ninjafirewall.php:3593
 msgid "installed"
 msgstr ""
 
-#: ninjafirewall.php:3584 ninjafirewall.php:3588
+#: ninjafirewall.php:3589 ninjafirewall.php:3593
 msgid "activated"
 msgstr ""
 
-#: ninjafirewall.php:3585
+#: ninjafirewall.php:3590
 msgid "updated"
 msgstr ""
 
-#: ninjafirewall.php:3585
+#: ninjafirewall.php:3590
 msgid "deactivated"
 msgstr ""
 
-#: ninjafirewall.php:3585 ninjafirewall.php:3589
+#: ninjafirewall.php:3590 ninjafirewall.php:3594
 msgid "deleted"
 msgstr ""
 
-#: ninjafirewall.php:3585 ninjafirewall.php:3589
+#: ninjafirewall.php:3590 ninjafirewall.php:3594
 msgid "Name"
 msgstr ""
 
-#: ninjafirewall.php:3588
+#: ninjafirewall.php:3593
 msgid "Theme"
 msgstr ""
 
-#: ninjafirewall.php:3592
+#: ninjafirewall.php:3597
 msgid "upgraded"
 msgstr ""
 
-#: ninjafirewall.php:3603
+#: ninjafirewall.php:3608
 msgid "[NinjaFirewall] Alert:"
 msgstr ""
 
-#: ninjafirewall.php:3609
+#: ninjafirewall.php:3614
 msgid "NinjaFirewall has detected the following activity on your account:"
 msgstr ""

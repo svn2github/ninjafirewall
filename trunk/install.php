@@ -99,7 +99,7 @@ function nfw_welcome() {
 	<p><?php _e('That\'s cool and makes NinjaFirewall a true firewall. And probably the most powerful security applications for WordPress. But just like any firewall, if you misuse it, you can get into serious problems and crash your site.', 'ninjafirewall') ?></p>
 	<div class="updated settings-error">
 	<br />
-	1 - <?php _e('Do NOT rename, edit or delete its files or folders, EVEN when it is disabled from the Plugins page.', 'ninjafirewall') ?>
+	1 - <?php _e('Do NOT rename, edit or delete its files or folders, even if it is disabled from the Plugins page.', 'ninjafirewall') ?>
 	<br />
 	2 - <?php _e('Do NOT migrate your site with NinjaFirewall installed. Export its configuration, uninstall it, migrate your site, reinstall NinjaFirewall and reimport its configuration.', 'ninjafirewall') ?>
 	<br />
@@ -252,6 +252,9 @@ function nfw_presave($err) {
 
 	// Save the configuration to the DB :
 	nfw_default_conf();
+
+	// Send an welcome e-mail to the admin :
+	welcome_email();
 
 	// Let's try to detect the system configuration :
 	$s1 = $s2 = $s3 = $s4 = $s5 = $s7 = '';
@@ -744,7 +747,6 @@ NFW_INTEGRATION:
 
 	// The user decided to make the changes :
 	if ( $_POST['makechange'] == 'usr' ) {
-		$recipient = welcome_email();
 		goto DOITYOURSELF;
 	}
 
@@ -755,7 +757,6 @@ NFW_INTEGRATION:
 	}
 
 	nfw_ini_data();
-	$recipient = welcome_email();
 
 	$bakup_file = time();
 
@@ -847,13 +848,14 @@ NFW_INTEGRATION:
 	<br />
 	<div class="updated settings-error"><p><?php _e('Your configuration was saved.', 'ninjafirewall') ?>
 	<?php
-	if (! empty($recipient) ) {
+	if (! empty($_SESSION['email_install']) ) {
 	?>
 		<br />
 		<?php
-		// translators: was sent to [admin_email_address]
-		_e('A "Quick Start, FAQ & Troubleshooting Guide" email was sent to', 'ninjafirewall') ?> <code><?php echo $recipient ?></code>.
+		// translators: ...was sent to [admin_email_address]
+		_e('A "Quick Start, FAQ & Troubleshooting Guide" email was sent to', 'ninjafirewall') ?> <code><?php echo htmlspecialchars( $_SESSION['email_install'] ) ?></code>.
 	<?php
+		unset($_SESSION['email_install']);
 	}
 	?>
 	</p></div>
@@ -878,8 +880,6 @@ DOITYOURSELF:
 /* ------------------------------------------------------------------ */ // i18n+
 
 function welcome_email() {
-
-	$recipient = '';
 
 	if ( empty($_SESSION['email_install']) ) {
 		// We send an email to the admin (or super admin) with some details
@@ -953,11 +953,10 @@ function welcome_email() {
 
 			if (! DONOTEMAIL ) {
 				wp_mail( $recipient, $subject, $message );
+				$_SESSION['email_install'] = $recipient;
 			}
-			$_SESSION['email_install'] = 1;
 		}
 	}
-	return $recipient;
 }
 
 /* ------------------------------------------------------------------ */ // i18n+

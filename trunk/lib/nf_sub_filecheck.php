@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-01 18:20:01                                       |
+ | REVISION: 2015-11-05 15:40:28                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -33,7 +33,7 @@ if (defined('NFSCANDO') ) {
 	$err = nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff);
 	$nfw_options = get_option('nfw_options');
 	if (empty($nfw_options['enabled']) ) { return; }
-	$nfw_options['snapproc'] = ceil( microtime(true) - $snapproc );
+	$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2 );
 	update_option('nfw_options', $nfw_options);
 
 	// Changes detected :
@@ -98,7 +98,7 @@ if (! empty($_REQUEST['nfw_act'])) {
 			$snapproc = microtime(true);
 			$err = nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff);
 			$nfw_options = get_option('nfw_options');
-			$nfw_options['snapproc'] = ceil( microtime(true) - $snapproc );
+			$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2);
 			update_option('nfw_options', $nfw_options);
 
 			if (! $err) {

@@ -226,6 +226,8 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * The Strict-Transport-Security response header in the Firewall Policies page has a new option to send an empty `max-age` to signal the user-agent to cease regarding the host as a known HSTS Host, while disabling the HSTS option will not return any header at all.
 * Accessing NinjaFirewall menu and settings will now require the following three capabilities: manage_options, update_core and unfiltered_html. Previously, only the manage_options capability was needed (see our blog for more info about it: http://nin.link/nfwaa ).
 * Added a new constant: NFW_ALLOWED_ADMIN. It can be used to allow only selected administrators to access NinjaFirewall configuration (see our blog for more info about it: http://nin.link/nfwaa ).
+* NinjaFirewall will prevent any user, including the administrator, to edit its code from the WordPress built-in plugin editor.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Updated security rules.
 
 = 1.7 =

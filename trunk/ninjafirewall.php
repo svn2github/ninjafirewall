@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.8-RC4
+Version: 1.8
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-03 17:01:29                                       |
+ | REVISION: 2015-11-05 11:41:32                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.8-RC4' );
+define( 'NFW_ENGINE_VERSION', '1.8' );
 define( 'NFW_RULES_VERSION',  '20151029.1' );
  /*
  +---------------------------------------------------------------------+
@@ -986,7 +986,12 @@ function nf_menu_main() {
 	if ( @NFW_STATUS == 20 && ! empty( $_REQUEST['nfw_firstrun']) ) {
 		echo '<br><div class="updated notice is-dismissible"><p>' .
 			__('Congratulations, NinjaFirewall is up and running!', 'ninjafirewall') .	'<br />' .
-			__('If you need help, click on the contextual <code>Help</code> menu tab located in the upper right corner of each page.', 'ninjafirewall') . '</p></div>';
+			__('If you need help, click on the contextual <code>Help</code> menu tab located in the upper right corner of each page.', 'ninjafirewall');
+		if (! empty($_SESSION['email_install']) ) {
+			echo '<p>' . __('A "Quick Start, FAQ & Troubleshooting Guide" email was sent to', 'ninjafirewall') .' <code>' .htmlspecialchars( $_SESSION['email_install'] ) .'</code>.</p>';
+			unset($_SESSION['email_install']);
+		}
+		echo '</p></div>';
 		unset($_SESSION['abspath']); unset($_SESSION['http_server']);
 		unset($_SESSION['php_ini_type']); unset($_SESSION['abspath_writable']);
 		unset($_SESSION['ini_write']); unset($_SESSION['htaccess_write']);
