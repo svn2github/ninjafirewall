@@ -219,7 +219,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 1.8.=
+= 1.8 =
 * The firewall decoding routine was rewritten to be much more efficient. It is faster and can better detect advanced evasion techniques.
 * Added a new constant: NFW_DONT_USE_SSL. Because NinjaFirewall downloads its rules over an HTTPS secure connection, if your server does not support SSL you can ask it to use a non-secure connection by adding the following directive to your wp-config.php file: `define('NFW_DONT_USE_SSL', 1);`
 * The security rules are no longer included inside the install.php script because some security scanners could wrongly flag them as suspicious. Instead, they will be downloaded from the WordPress repo during the installation or update of NinjaFirewall.
