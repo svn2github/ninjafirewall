@@ -105,7 +105,7 @@ function nfw_eg() {
 		<br />
 		<br />
 
-		<table id="11" border="0" width="500">
+		<table id="11" style="display:none;" border="0" width="500">
 			<tr style="text-align:center;">
 				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
 				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>

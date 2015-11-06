@@ -1053,7 +1053,7 @@ function nfw_default_conf() {
 		'debug'				=> 0,
 		'scan_protocol'	=> 3,
 		'uploads'			=> 0,
-		'sanitise_fn'		=> 1,
+		'sanitise_fn'		=> 0,
 		'get_scan'			=> 1,
 		'get_sanitise'		=> 0,
 		'post_scan'			=> 1,

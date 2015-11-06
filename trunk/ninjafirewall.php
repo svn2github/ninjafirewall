@@ -2575,7 +2575,7 @@ function nf_sub_policies_default() {
 
 	$nfw_options['scan_protocol']		= 3;
 	$nfw_options['uploads']				= 0;
-	$nfw_options['sanitise_fn']		= 1;
+	$nfw_options['sanitise_fn']		= 0;
 	$nfw_options['get_scan']			= 1;
 	$nfw_options['get_sanitise']		= 0;
 	$nfw_options['post_scan']			= 1;
