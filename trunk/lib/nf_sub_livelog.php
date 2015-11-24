@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-07-31 19:39:44                                       |
+ | REVISION: 2015-11-21 18:59:36                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -36,8 +36,8 @@ if ( empty($_SESSION['nfw_goodguy']) ) {
 if (! empty($err_msg) ) {
 	?>
 	<div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2><?php _e('Live Log', 'ninjafirewall') ?></h2>
+	<div style="width:33px;height:33px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1><?php _e('Live Log', 'ninjafirewall') ?></h1>
 	<br />
 	<div class="error notice is-dismissible"><p><?php echo $err_msg ?></p></div>
 	</div>
@@ -230,9 +230,8 @@ function create_cookie(name, value) {
 </script>
 
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2><?php _e('Live Log', 'ninjafirewall') ?></h2>
-	<br />
+	<div style="width:33px;height:33px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1><?php _e('Live Log', 'ninjafirewall') ?></h1>
 <?php
 if ( isset($_POST['lf']) ) {
 	$res = nf_sub_liveloge_save();

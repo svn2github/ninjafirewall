@@ -2,7 +2,7 @@
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
-Tested up to: 4.3.1
+Tested up to: 4.4
 Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -218,6 +218,13 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 1.8.2 =
+* Fixed UI compatibility issues with WordPress 4.4.
+* Fixed an "undefined offset" PHP notice while creating the daily activity report.
+* Fixed a bug in "File Check" where the processing time was not updated after creating a snapshot.
+* Fixed a bug in "File Check" where the symlinks option was not displayed if the exclusion list was empty.
+* Fixed a bug where non-admin users were blocked from accessing the editor if the "Protect against username enumeration > Through the author archives" firewall policy was enabled.
 
 = 1.8.1 =
 * Removed the `update_core` capability that was required to access NinjaFirewall settings because if the `DISALLOW_FILE_MODS` option from the "Firewall Policies" page was enabled, the admin could no longer access NinjaFirewall.

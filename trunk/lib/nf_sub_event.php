@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-10 19:31:45                                       |
+ | REVISION: 2015-11-21 18:59:23                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -44,9 +44,8 @@ function ac_radio_toogle(on_off, rbutton) {
 }
 </script>
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Event Notifications', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Event Notifications', 'ninjafirewall') . '</h1>';
 
 // Saved ?
 if ( isset( $_POST['nfw_options']) ) {
@@ -61,7 +60,7 @@ if ( isset( $_POST['nfw_options']) ) {
 if (! isset( $nfw_options['a_0'] ) ) {
 	$nfw_options['a_0'] = 1;
 }
-?>
+?><br />
 	<form method="post" name="nfwalerts">
 	<?php wp_nonce_field('events_save', 'nfwnonce', 0); ?>
 	<h3><?php _e('WordPress admin dashboard', 'ninjafirewall') ?></h3>
@@ -381,7 +380,7 @@ function nf_daily_report_log() {
 	$previous_day = strtotime( date('Y-m-d 00:00:01', strtotime("-1 day")) );
 
 	$log_file  = NFW_LOG_DIR . '/nfwlog/firewall_' . $cur_month;
-	$logstats = array( 0 => 0, 1 => 0, 2 => 0, 3 => 0);
+	$logstats = array( 0 => 0, 1 => 0, 2 => 0, 3 => 0, 5 => 0);
 
 	$glob = glob($log_file . "*.php");
 	if ( is_array($glob)) {

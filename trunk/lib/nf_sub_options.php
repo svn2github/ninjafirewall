@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-14 19:31:35                                       |
+ | REVISION: 2015-11-21 19:00:15                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -53,9 +53,8 @@ function default_msg() {
 </script>
 
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Firewall Options', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Firewall Options', 'ninjafirewall') . '</h1>';
 
 // Saved options ?
 if ( isset( $_POST['nfw_options']) ) {

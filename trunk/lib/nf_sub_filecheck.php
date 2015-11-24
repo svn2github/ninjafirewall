@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-05 15:40:28                                       |
+ | REVISION: 2015-11-23 16:38:40                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -128,9 +128,8 @@ if (! isset($nfw_options['snapexclude']) ) {
 }
 
 echo '<div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('File Check', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('File Check', 'ninjafirewall') . '</h1>';
 
 if ( $err ) {
 	echo '<div class="error notice is-dismissible"><p>' . $err . '</p></div>';
@@ -315,15 +314,15 @@ if (file_exists($nfmon_diff) ) {
 					foreach ($res as $exc) {
 						echo '<code>' . htmlspecialchars($exc) . '</code>&nbsp;';
 					}
-					echo '</p>
-					<p>' .  __('Symlinks:', 'ninjafirewall') . ' ';
-					if ( empty($nfw_options['snapnoslink']) ) {
-						echo __('follow', 'ninjafirewall');
-					} else {
-						echo __('do not follow', 'ninjafirewall');
-					}
 					echo '</p>';
 				}
+				echo	'<p>' .  __('Symlinks:', 'ninjafirewall') . ' ';
+				if ( empty($nfw_options['snapnoslink']) ) {
+					echo __('follow', 'ninjafirewall');
+				} else {
+					echo __('do not follow', 'ninjafirewall');
+				}
+				echo '</p>';
 				if (! empty($nfw_options['snapproc']) ) {
 					echo '<p>' . sprintf( __('Processing time: %s seconds', 'ninjafirewall'), $nfw_options['snapproc']) . '</p>';
 				}
@@ -572,6 +571,8 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 		$snapexclude = str_replace(',', '|', $tmp);
 	}
 
+	$snapproc = microtime(true);
+
 	if ($fh = fopen($nfmon_snapshot, 'w') ) {
 		fwrite($fh, '<?php die("Forbidden"); ?>' . "\n");
 		$res = scd($_POST['snapdir'], $snapexclude, $fh, $snapnoslink);
@@ -592,6 +593,7 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 
 		// Save scan dir :
 		$nfw_options = get_option('nfw_options');
+		$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2);
 		$nfw_options['snapexclude'] = $_POST['snapexclude'];
 		$nfw_options['snapdir'] = $_POST['snapdir'];
 		$nfw_options['snapnoslink'] = $snapnoslink;

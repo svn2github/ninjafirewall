@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-01 02:08:23                                       |
+ | REVISION: 2015-11-21 18:59:47                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -70,9 +70,8 @@ if ( file_exists( $log_dir . $selected_log ) ) {
 }
 
 echo '<div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Firewall Log', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Firewall Log', 'ninjafirewall') . '</h1>';
 
 if ( $err ) {
 	echo '<div class="error notice is-dismissible"><p>' . __('Error', 'ninjafirewall') . ' : ' . $err . '</p></div>';

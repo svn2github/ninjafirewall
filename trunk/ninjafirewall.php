@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.8.1
+Version: 1.8.2-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,11 +18,11 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-15 13:10:19                                       |
+ | REVISION: 2015-11-24 10:59:59                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.8.1' );
-define( 'NFW_RULES_VERSION',  '20151030.1' );
+define( 'NFW_ENGINE_VERSION', '1.8.2-RC1' );
+define( 'NFW_RULES_VERSION',  '20151101.1' );
  /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -87,7 +87,9 @@ $err_fw = array(
 if (! defined('NFW_LOG_DIR') ) {
 	define('NFW_LOG_DIR', WP_CONTENT_DIR);
 }
-
+if (! empty($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] != '/' ) {
+	$_SERVER['DOCUMENT_ROOT'] = rtrim( $_SERVER['DOCUMENT_ROOT'] , '/' );
+}
 /* ------------------------------------------------------------------ */	// i18n+
 
 require( plugin_dir_path(__FILE__) . 'lib/nfw_misc.php' );
@@ -978,9 +980,8 @@ function nf_menu_main() {
 ?>
 
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2><?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h2>
-	<br />
+	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1><?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 	<?php
 	// first run ?
 	if ( @NFW_STATUS == 20 && ! empty( $_REQUEST['nfw_firstrun']) ) {
@@ -1314,9 +1315,8 @@ function sanitise_fn(cbox) {
 </script>
 
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Firewall Policies', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
 
 	// Saved options ?
 	if ( isset( $_POST['nfw_options']) ) {
@@ -2673,9 +2673,8 @@ function nf_sub_fileguard() {
 	</script>
 
 	<div class="wrap">
-		<div style="width:54px;height:52px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-		<h2><?php _e('File Guard', 'ninjafirewall') ?></h2>
-		<br />
+		<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+		<h1><?php _e('File Guard', 'ninjafirewall') ?></h1>
 	<?php
 
 	// Ensure cache folder is writable :
@@ -2794,9 +2793,8 @@ function nf_sub_network() {
 
 	echo '
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Network', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Network', 'ninjafirewall') . '</h1>';
 	if (! is_multisite() ) {
 		echo '<div class="updated notice is-dismissible"><p>' . __('You do not have a multisite network.', 'ninjafirewall') . '</p></div></div>';
 		return;
@@ -2904,9 +2902,8 @@ function nf_sub_loginprot() {
 
 	echo '
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Login Protection', 'ninjafirewall') . '</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Login Protection', 'ninjafirewall') . '</h1>';
 
 	// Saved ?
 	if ( isset( $_POST['nfw_options']) ) {
@@ -3364,9 +3361,8 @@ function nf_sub_edit() {
 
 	echo '
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h2>' . __('Rules Editor', 'ninjafirewall') .'</h2>
-	<br />';
+	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
+	<h1>' . __('Rules Editor', 'ninjafirewall') .'</h1>';
 
 	$nfw_rules = get_option( 'nfw_rules' );
 	$is_update = 0;

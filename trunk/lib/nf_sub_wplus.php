@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-08-06 23:06:17                                       |
+ | REVISION: 2015-11-21 19:01:30                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -26,9 +26,8 @@ nf_not_allowed( 'block', __LINE__ );
 
 ?>
 <div class="wrap">
-	<div style="width:54px;height:52px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_50.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;" title="NinTechNet"></div>
-	<h2><font color="#21759B">WP+</font> Edition</h2>
-	<br />
+	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;" title="NinTechNet"></div>
+	<h1><font color="#21759B">WP+</font> Edition</h1>
 	<br />
 	<table border="0" cellspacing="2" cellpadding="5" width="100%">
 		<tr>
