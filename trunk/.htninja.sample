@@ -73,7 +73,7 @@
 
 
 // Do not filter any HTTP request sent to a script located inside the /myfolder/ directory:
-# if (strpos($_SERVER['SCRIPT_NAME'], '/myfolder/') !== FALSE) {
+# if (strpos($_SERVER['SCRIPT_FILENAME'], '/myfolder/') !== FALSE) {
 # 	return 'ALLOW';
 # }
 

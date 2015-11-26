@@ -92,7 +92,7 @@ add_action('all_admin_notices', 'nfw_admin_notice');
 function nfw_query( $query ) { // i18n
 
 	$nfw_options = get_option( 'nfw_options' );
-	// Return is not enabled, or if we are accessing the dashboard (e.g., /wp-admin/edit.php):
+	// Return if not enabled, or if we are accessing the dashboard (e.g., /wp-admin/edit.php):
 	if ( empty($nfw_options['enum_archives']) || empty($nfw_options['enabled']) || is_admin() ) {
 		return;
 	}
