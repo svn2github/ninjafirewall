@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2015-11-26 13:36+0700\n"
-"PO-Revision-Date: 2015-11-26 13:36+0700\n"
+"POT-Creation-Date: 2015-12-06 02:43+0700\n"
+"PO-Revision-Date: 2015-12-06 02:43+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1173,7 +1173,7 @@ msgid ""
 "to NinTechNet's servers (A.K.A \"phoning home\") during the update process."
 msgstr ""
 
-#: install.php:91
+#: install.php:93
 #, php-format
 msgid ""
 "Error: You have a copy of NinjaFirewall (%s) installed.<br />Please "
@@ -1181,17 +1181,17 @@ msgid ""
 "Edition)."
 msgstr ""
 
-#: install.php:95
+#: install.php:97
 msgid "Thank you for using NinjaFirewall"
 msgstr ""
 
-#: install.php:96
+#: install.php:98
 msgid ""
 "This installer will help you to make the setup process as quick and easy as "
 "possible. But before doing so, please read carefully the following lines:"
 msgstr ""
 
-#: install.php:97
+#: install.php:99
 msgid ""
 "Although NinjaFirewall looks like a regular plugin, it is not. It can be "
 "installed and configured from WordPress admin console, but it is a stand-"
@@ -1204,37 +1204,37 @@ msgid ""
 "shell script (e.g., c99, r57) will be filtered by NinjaFirewall."
 msgstr ""
 
-#: install.php:98
+#: install.php:100
 msgid ""
 "That's cool and makes NinjaFirewall a true firewall. And probably the most "
 "powerful security applications for WordPress. But just like any firewall, if "
 "you misuse it, you can get into serious problems and crash your site."
 msgstr ""
 
-#: install.php:101
+#: install.php:103
 msgid ""
 "Do NOT rename, edit or delete its files or folders, even if it is disabled "
 "from the Plugins page."
 msgstr ""
 
-#: install.php:103
+#: install.php:105
 msgid ""
 "Do NOT migrate your site with NinjaFirewall installed. Export its "
 "configuration, uninstall it, migrate your site, reinstall NinjaFirewall and "
 "reimport its configuration."
 msgstr ""
 
-#: install.php:106
+#: install.php:108
 msgid ""
 "Failure to do so will almost always cause you to be locked out of your own "
 "site and/or to crash it."
 msgstr ""
 
-#: install.php:108 lib/nf_sub_about.php:103
+#: install.php:110 lib/nf_sub_about.php:103
 msgid "Privacy Policy"
 msgstr ""
 
-#: install.php:109
+#: install.php:111
 #, php-format
 msgid ""
 "<a href=\"%s\">NinTechNet</a> strictly follows the WordPress <a href=\"%s"
@@ -1244,17 +1244,17 @@ msgid ""
 "require a registration process or an activation key to be installed or used."
 msgstr ""
 
-#: install.php:111
+#: install.php:113
 msgid ""
 "Because we do not collect any user data, we do not even know that you are "
 "using (and hopefully enjoying!) our product."
 msgstr ""
 
-#: install.php:113
+#: install.php:115
 msgid "License"
 msgstr ""
 
-#: install.php:114
+#: install.php:116
 msgid ""
 "This program is free software: you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -1262,7 +1262,7 @@ msgid ""
 "any later version."
 msgstr ""
 
-#: install.php:116
+#: install.php:118
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -1270,59 +1270,59 @@ msgid ""
 "more details (LICENSE.TXT)."
 msgstr ""
 
-#: install.php:118
+#: install.php:120
 msgid "Installation help and troubleshooting"
 msgstr ""
 
-#: install.php:119
+#: install.php:121
 #, php-format
 msgid ""
 "If you need technical support, please use our <a href=\"%s\">support forum</"
 "a> at WordPress.org site."
 msgstr ""
 
-#: install.php:121
+#: install.php:123
 msgid "Doc, FAQ and How-To are also available from our site:"
 msgstr ""
 
-#: install.php:123
+#: install.php:125
 msgid "Updates info are available via Twitter:"
 msgstr ""
 
-#: install.php:124
+#: install.php:126
 msgid ""
 "Ensure that you have an FTP access to your website so that, if there was a "
 "problem during the installation of the firewall, you could undo the changes."
 msgstr ""
 
-#: install.php:126
+#: install.php:128
 msgid "Enough chitchat, let's go!"
 msgstr ""
 
-#: install.php:142
+#: install.php:144
 #, php-format
 msgid ""
 "NinjaFirewall cannot create its <code>nfwlog/</code>log and cache folder; "
 "please make sure that the <code>%s</code> directory is writable"
 msgstr ""
 
-#: install.php:178
+#: install.php:180
 msgid "This is NinjaFirewall's logs and cache directory."
 msgstr ""
 
-#: install.php:187 ninjafirewall.php:984
+#: install.php:189 ninjafirewall.php:984
 msgid "NinjaFirewall (WP Edition)"
 msgstr ""
 
-#: install.php:194
+#: install.php:196
 msgid "Try again"
 msgstr ""
 
-#: install.php:218 install.php:345 install.php:510
+#: install.php:220 install.php:351 install.php:516
 msgid "Error:"
 msgstr ""
 
-#: install.php:222
+#: install.php:224
 #, php-format
 msgid ""
 "Your WordPress directory (%s) is different from your website document root "
@@ -1331,7 +1331,7 @@ msgid ""
 "location of the site root."
 msgstr ""
 
-#: install.php:223
+#: install.php:225
 #, php-format
 msgid ""
 "Please edit the path below only if you have manually modified your WordPress "
@@ -1339,117 +1339,117 @@ msgid ""
 "Directory</a> article."
 msgstr ""
 
-#: install.php:224
+#: install.php:226
 msgid "Most users should not change this value."
 msgstr ""
 
-#: install.php:225
+#: install.php:227
 msgid "Path to WordPress site root directory:"
 msgstr ""
 
-#: install.php:228 install.php:422 install.php:707
+#: install.php:230 install.php:428 install.php:713
 msgid "Next Step"
 msgstr ""
 
-#: install.php:239 install.php:435
+#: install.php:241 install.php:441
 msgid "please enter the full path to WordPress folder."
 msgstr ""
 
-#: install.php:244
+#: install.php:246
 #, php-format
 msgid ""
 "cannot find the %s directory! Please correct the full path to WordPress site "
 "root directory."
 msgstr ""
 
-#: install.php:258
+#: install.php:264
 msgid "(recommended)"
 msgstr ""
 
 #. translators: quotes (') must be escaped
-#: install.php:311
+#: install.php:317
 msgid "Please select the PHP initialization file supported by your server."
 msgstr ""
 
-#: install.php:339
+#: install.php:345
 #, php-format
 msgid ""
 "Error: NinjaFirewall log directory is not writable (%s). Please chmod it to "
 "0777 and reload this page."
 msgstr ""
 
-#: install.php:349
+#: install.php:355
 msgid "System configuration"
 msgstr ""
 
-#: install.php:353
+#: install.php:359
 msgid "Multisite network detected:"
 msgstr ""
 
-#: install.php:353
+#: install.php:359
 msgid ""
 "NinjaFirewall will protect all sites from your network and its configuration "
 "interface will be accessible only to the Super Admin from the network main "
 "site."
 msgstr ""
 
-#: install.php:360
+#: install.php:366
 msgid "Select your HTTP server and your PHP server API"
 msgstr ""
 
-#: install.php:369
+#: install.php:375
 msgid "Other webserver + CGI/FastCGI"
 msgstr ""
 
-#: install.php:370
+#: install.php:376
 msgid "Other webserver + HHVM"
 msgstr ""
 
-#: install.php:371
+#: install.php:377
 msgid "view PHPINFO"
 msgstr ""
 
-#: install.php:379
+#: install.php:385
 #, php-format
 msgid ""
 "Please <a href=\"%s\">check our blog</a> if you want to install "
 "NinjaFirewall on HHVM."
 msgstr ""
 
-#: install.php:410
+#: install.php:416
 msgid "Select the PHP initialization file supported by your server"
 msgstr ""
 
-#: install.php:413
+#: install.php:419
 msgid "Used by most shared hosting accounts."
 msgstr ""
 
-#: install.php:415
+#: install.php:421
 msgid ""
 "Used by most dedicated/VPS servers, as well as shared hosting accounts that "
 "do not support php.ini"
 msgstr ""
 
-#: install.php:415
+#: install.php:421
 msgid "more info"
 msgstr ""
 
-#: install.php:417
+#: install.php:423
 #, php-format
 msgid ""
 "A few shared hosting accounts (some <a href=\"%s\">Godaddy hosting plans</"
 "a>). Seldom used."
 msgstr ""
 
-#: install.php:448 install.php:732
+#: install.php:454 install.php:738
 msgid "select your HTTP server and PHP SAPI."
 msgstr ""
 
-#: install.php:455 install.php:738
+#: install.php:461 install.php:744
 msgid "select the PHP initialization file supported by your server."
 msgstr ""
 
-#: install.php:486
+#: install.php:492
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
 "specific directives to your <code>.htaccess</code> located inside WordPress "
@@ -1457,7 +1457,7 @@ msgid ""
 "edited."
 msgstr ""
 
-#: install.php:488
+#: install.php:494
 #, php-format
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
@@ -1466,7 +1466,7 @@ msgid ""
 "or, if they exist, to be edited."
 msgstr ""
 
-#: install.php:490
+#: install.php:496
 #, php-format
 msgid ""
 "In order to hook and protect all PHP files, NinjaFirewall needs to add some "
@@ -1474,298 +1474,302 @@ msgid ""
 "That file will have to be created or, if it exists, to be edited."
 msgstr ""
 
-#: install.php:513
+#: install.php:519
 msgid "Firewall Integration"
 msgstr ""
 
-#: install.php:518
+#: install.php:524
 msgid ""
 "If your WordPress root directory is writable, the installer can make those "
 "changes for you."
 msgstr ""
 
-#: install.php:520
+#: install.php:526
 msgid "Checking if WordPress root directory is writable:"
 msgstr ""
 
-#: install.php:522
+#: install.php:528
 msgid "YES"
 msgstr ""
 
-#: install.php:524
+#: install.php:530
 msgid "NO"
 msgstr ""
 
-#: install.php:531
+#: install.php:537
 #, php-format
 msgid ""
 "The <code>%s</code> file must be created, and the following lines of code "
 "added to it:"
 msgstr ""
 
-#: install.php:532
+#: install.php:538
 #, php-format
 msgid ""
 "The following <font color=\"red\">red lines</font> of code must be added to "
 "your <code>%s</code> file."
 msgstr ""
 
-#: install.php:534
+#: install.php:540
 msgid "All other lines, if any, are the actual content of the file:"
 msgstr ""
 
-#: install.php:535
+#: install.php:541
 msgid "The file is not writable, I cannot make those changes for you."
 msgstr ""
 
-#: install.php:616
+#: install.php:622
 msgid ""
 "Add the following code to your <code>/etc/hhvm/php.ini</code> file, and "
 "restart HHVM afterwards:"
 msgstr ""
 
-#: install.php:684
+#: install.php:690
 msgid "Please make those changes, then click on button below."
 msgstr ""
 
-#: install.php:689
+#: install.php:695
 msgid "Let NinjaFirewall make the above changes (recommended)."
 msgstr ""
 
-#: install.php:691
+#: install.php:697
 msgid ""
 "Ensure that you have an FTP access to your website so that, if there was a "
 "problem, you could undo the above changes."
 msgstr ""
 
-#: install.php:693
+#: install.php:699
 msgid "I want to make the changes myself."
 msgstr ""
 
-#: install.php:702
+#: install.php:708
 msgid "Please check our blog if you want to install NinjaFirewall on HHVM."
 msgstr ""
 
-#: install.php:722
+#: install.php:728
 msgid "you must select how to make changes to your files."
 msgstr ""
 
-#: install.php:749
+#: install.php:755
 msgid ""
 "your WordPress root directory is not writable, I cannot make those changes "
 "for you."
 msgstr ""
 
-#: install.php:765 install.php:807
+#: install.php:771 install.php:813
 #, php-format
 msgid "cannot write to <code>%s</code>, it is read-only."
 msgstr ""
 
-#: install.php:843
+#: install.php:849
 msgid "Your configuration was saved."
 msgstr ""
 
 #. translators: ...was sent to [admin_email_address]
-#: install.php:850 ninjafirewall.php:992
+#: install.php:856 ninjafirewall.php:992
 msgid "A \"Quick Start, FAQ & Troubleshooting Guide\" email was sent to"
 msgstr ""
 
-#: install.php:856
+#: install.php:862
 msgid ""
 "Please click the button below to test if the firewall integration was "
 "successful."
 msgstr ""
 
-#: install.php:858
+#: install.php:864
 msgid "Test Firewall"
 msgstr ""
 
-#: install.php:883
+#: install.php:889
 msgid "Quick Start, FAQ & Troubleshooting Guide"
 msgstr ""
 
-#: install.php:884
+#: install.php:890
 msgid "Hi,"
 msgstr ""
 
-#: install.php:886
+#: install.php:892
 msgid ""
 "This is NinjaFirewall's installer. Below are some helpful info and links you "
 "may consider reading before using NinjaFirewall."
 msgstr ""
 
-#: install.php:888
+#: install.php:894
 msgid "Troubleshooting:"
 msgstr ""
 
-#: install.php:891
+#: install.php:897
 msgid "-Locked out of your site / Fatal error / WordPress crash?"
 msgstr ""
 
-#: install.php:892
+#: install.php:898
 msgid "-Failed installation (\"Error: the firewall is not loaded\")?"
 msgstr ""
 
-#: install.php:893
+#: install.php:899
 msgid "-Blank page after INSTALLING NinjaFirewall?"
 msgstr ""
 
-#: install.php:894
+#: install.php:900
 msgid "-Blank page after UNINSTALLING NinjaFirewall?"
 msgstr ""
 
-#: install.php:895
+#: install.php:901
 msgid "-500 Internal Server Error?"
 msgstr ""
 
-#: install.php:896
+#: install.php:902
 msgid "-\"Cannot connect to WordPress database\" error message?"
 msgstr ""
 
-#: install.php:897
+#: install.php:903
 msgid "-How to disable NinjaFirewall?"
 msgstr ""
 
-#: install.php:898
+#: install.php:904
 msgid "-Lost password (brute-force protection)?"
 msgstr ""
 
-#: install.php:899
+#: install.php:905
 msgid "-Blocked visitors (see below)?"
 msgstr ""
 
-#: install.php:901
+#: install.php:907
 msgid "-NinjaFirewall (WP Edition) troubleshooter script"
 msgstr ""
 
-#: install.php:903
+#: install.php:909
 msgid "-Rename this file to \"wp-check.php\"."
 msgstr ""
 
-#: install.php:904
+#: install.php:910
 msgid "-Upload it into your WordPress root folder."
 msgstr ""
 
-#: install.php:905
+#: install.php:911
 msgid "-Goto http://YOUR WEBSITE/wp-check.php."
 msgstr ""
 
-#: install.php:906
+#: install.php:912
 msgid "-Delete it afterwards."
 msgstr ""
 
-#: install.php:909
+#: install.php:915
 msgid "FAQ:"
 msgstr ""
 
-#: install.php:912
+#: install.php:918
 msgid ""
 "-Why is NinjaFirewall different from other security plugins for WordPress?"
 msgstr ""
 
-#: install.php:913
+#: install.php:919
 msgid "-Do I need root privileges to install NinjaFirewall?"
 msgstr ""
 
-#: install.php:914
+#: install.php:920
 msgid "-Does it work with Nginx?"
 msgstr ""
 
-#: install.php:915
+#: install.php:921
 msgid "-Do I need to alter my PHP scripts?"
 msgstr ""
 
-#: install.php:916
+#: install.php:922
 msgid ""
 "-Will NinjaFirewall detect the correct IP of my visitors if I am behind a "
 "CDN service like Cloudflare or Incapsula?"
 msgstr ""
 
-#: install.php:917
+#: install.php:923
 msgid ""
 "-I moved my wp-config.php file to another directory. Will it work with "
 "NinjaFirewall?"
 msgstr ""
 
-#: install.php:918
+#: install.php:924
 msgid "-Will it slow down my site?"
 msgstr ""
 
-#: install.php:919
+#: install.php:925
 msgid "-Is there any Windows version?"
 msgstr ""
 
-#: install.php:920
+#: install.php:926
 msgid "-Can I add/write my own security rules?"
 msgstr ""
 
-#: install.php:921
+#: install.php:927
 msgid "-Can I migrate my site(s) with NinjaFirewall installed?"
 msgstr ""
 
-#: install.php:924
+#: install.php:930
 msgid "Must Read:"
 msgstr ""
 
-#: install.php:926
-msgid "-Testing NinjaFirewall without blocking your visitors."
-msgstr ""
-
-#: install.php:929
-msgid "-Add your own code to the firewall: the \".htninja\" file."
-msgstr ""
-
 #: install.php:932
-msgid "-Restricting access to NinjaFirewall settings."
+msgid "-Testing NinjaFirewall without blocking your visitors:"
 msgstr ""
 
 #: install.php:935
-msgid "-Keep your blog protected against the latest vulnerabilities."
+msgid "-Add your own code to the firewall: the \".htninja\" file:"
 msgstr ""
 
-#: install.php:939
-msgid "Help & Support Links:"
+#: install.php:938
+msgid "-Restricting access to NinjaFirewall settings:"
 msgstr ""
 
 #: install.php:941
+msgid "-Upgrading to PHP 7 with NinjaFirewall installed:"
+msgstr ""
+
+#: install.php:944
+msgid "-Keep your blog protected against the latest vulnerabilities:"
+msgstr ""
+
+#: install.php:947
+msgid "Help & Support Links:"
+msgstr ""
+
+#: install.php:949
 msgid ""
 "-Each page of NinjaFirewall includes a contextual help: click on the \"Help"
 "\" menu tab located in the upper right corner of the corresponding page."
 msgstr ""
 
-#: install.php:942
+#: install.php:950
 msgid "-Online documentation is also available here:"
 msgstr ""
 
-#: install.php:943
+#: install.php:951
 msgid "-The WordPress support forum:"
 msgstr ""
 
-#: install.php:944
+#: install.php:952
 msgid "-Updates info are available via Twitter:"
 msgstr ""
 
-#: install.php:968
+#: install.php:976
 msgid "Error: the firewall is not loaded."
 msgstr ""
 
-#: install.php:969
+#: install.php:977
 msgid "Suggestions:"
 msgstr ""
 
-#: install.php:973
+#: install.php:981
 msgid ""
-"You selected <code>Apache + PHP5 module</code> as your HTTP server and PHP "
+"You selected <code>Apache + PHP module</code> as your HTTP server and PHP "
 "SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?"
 msgstr ""
 
-#: install.php:975 install.php:992
+#: install.php:983 install.php:1000
 msgid ""
 "You can click the \"Go Back\" button and try to select another HTTP server "
 "type."
 msgstr ""
 
-#: install.php:979
+#: install.php:987
 msgid ""
 "You have selected <code>.user.ini</code> as your PHP initialization file. "
 "Unlike <code>php.ini</code>, <code>.user.ini</code> files are not reloaded "
@@ -1775,45 +1779,45 @@ msgid ""
 "the \"Test Again\" button below."
 msgstr ""
 
-#: install.php:981
+#: install.php:989
 msgid "Test Again"
 msgstr ""
 
-#: install.php:990
+#: install.php:998
 msgid ""
 "You selected <code>Apache + CGI/FastCGI</code> as your HTTP server and PHP "
-"SAPI. Maybe your HTTP server is <code>Apache + mod_php5</code>?"
+"SAPI. Maybe your HTTP server is <code>Apache + PHP module</code>?"
 msgstr ""
 
-#: install.php:995
+#: install.php:1003
 msgid "Maybe you did not select the correct PHP INI ?"
 msgstr ""
 
-#: install.php:997
+#: install.php:1005
 msgid "You can click the \"Go Back\" button and try to select another one."
 msgstr ""
 
-#: install.php:1001
+#: install.php:1009
 msgid "Go Back"
 msgstr ""
 
-#: install.php:1007
+#: install.php:1015
 msgid "Need help ? Check our blog:"
 msgstr ""
 
-#: install.php:1130
+#: install.php:1138
 msgid ""
 "Error: The installer cannot download the security rules from wordpress.org "
 "website."
 msgstr ""
 
-#: install.php:1131
+#: install.php:1139
 msgid ""
 "The server may be temporarily down or you may have network connectivity "
 "problems? Please try again in a few minutes."
 msgstr ""
 
-#: install.php:1132
+#: install.php:1140
 msgid ""
 "NinjaFirewall downloads its rules over an HTTPS secure connection. Maybe "
 "your server does not support SSL? You can force NinjaFirewall to use a non-"

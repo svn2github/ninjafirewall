@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-26 10:09:29                                       |
+ | REVISION: 2015-12-05 15:11:00                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -81,7 +81,9 @@ function nfw_welcome() {
 	if (isset($_SESSION['email_install']) ) {
 		unset($_SESSION['email_install']);
 	}
-
+	if (isset($_SESSION['default_conf']) ) {
+		unset($_SESSION['default_conf']);
+	}
 ?>
 <div class="wrap">
 	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
@@ -247,11 +249,15 @@ function nfw_presave($err) {
 
 	$_SESSION['abspath'] = $abspath . '/';
 
-	// Save the configuration to the DB :
-	nfw_default_conf();
+	// If the user is sent back to the installer "System configuration" page,
+	// we don't download the rules again:
+	if ( empty($_SESSION['default_conf']) ) {
+		// Save the configuration to the DB :
+		nfw_default_conf();
 
-	// Send an welcome e-mail to the admin :
-	welcome_email();
+		// Send an welcome e-mail to the admin :
+		welcome_email();
+	}
 
 	// Let's try to detect the system configuration :
 	$s1 = $s2 = $s3 = $s4 = $s5 = $s7 = '';
@@ -304,7 +310,7 @@ function nfw_presave($err) {
 				break;
 			}
 		}
-		// Dont warn if user selected Apache/mod_php5 or HHVM
+		// Dont warn if user selected Apache/mod_php5/mod_php7 or HHVM
 		if (! ischecked && document.presave_form.http_server.value != 1 && document.presave_form.http_server.value != 7) {
 			alert('<?php
 			// translators: quotes (') must be escaped
@@ -361,7 +367,7 @@ function nfw_presave($err) {
 			<td width="20">&nbsp;</td>
 			<td>
 				<select class="input" name="http_server" onchange="ini_toogle(this.value);">
-					<option value="1"<?php selected($http_server, 1) ?>>Apache + PHP5 module<?php echo $s1 ?></option>
+					<option value="1"<?php selected($http_server, 1) ?>>Apache + PHP<?php echo PHP_MAJOR_VERSION ?> module<?php echo $s1 ?></option>
 					<option value="2"<?php selected($http_server, 2) ?>>Apache + CGI/FastCGI<?php echo $s2 ?></option>
 					<option value="6"<?php selected($http_server, 6) ?>>Apache + suPHP</option>
 					<option value="3"<?php selected($http_server, 3) ?>>Nginx + CGI/FastCGI<?php echo $s3 ?></option>
@@ -401,7 +407,7 @@ function nfw_presave($err) {
 		}
 
 		if ($http_server == 1 || $http_server == 7) {
-			// We don't need PHP INI if the server is running Apache/mod_php5 or HHVM :
+			// We don't need PHP INI if the server is running Apache/mod_php5/mod_php7 or HHVM :
 			echo '<tr id="trini" style="display:none;">';
 		} else {
 			echo '<tr id="trini">';
@@ -437,7 +443,7 @@ function nfw_integration($err) {
 	}
 
 	// HTTP server type:
-	// 1: Apache + PHP5 module
+	// 1: Apache + PHP5/7 module
 	// 2: Apache + CGI/FastCGI
 	// 3: Nginx
 	// 4: Litespeed (either LSAPI or Apache-style configuration directives (php_value)
@@ -449,7 +455,7 @@ function nfw_integration($err) {
 		return;
 	}
 
-	// We must have a PHP INI type, except if the server is running Apache/mod_php5 or HHVM:
+	// We must have a PHP INI type, except if the server is running Apache/mod_php5/7 or HHVM:
 	if ( preg_match('/^[2-6]$/', $_POST['http_server']) ) {
 		if ( empty($_POST['php_ini_type']) || ! preg_match('/^[1-3]$/', $_POST['php_ini_type']) ) {
 			nfw_presave( __('select the PHP initialization file supported by your server.', 'ninjafirewall') );
@@ -507,7 +513,7 @@ function nfw_integration($err) {
 	<?php
 	// Error ?
 	if ( $err ) {
-		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') . $err . '</p></div>';
+		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') .' '. $err . '</p></div>';
 	}
 	?>
 	<h3><?php _e('Firewall Integration', 'ninjafirewall') ?></h3>
@@ -534,7 +540,7 @@ function nfw_integration($err) {
 					__('All other lines, if any, are the actual content of the file:', 'ninjafirewall');
 	$not_writable = __('The file is not writable, I cannot make those changes for you.', 'ninjafirewall');
 
-	// Apache mod_php5 : only .htaccess changes are required :
+	// Apache mod_php5/7 : only .htaccess changes are required :
 	if ($_SESSION['http_server'] == 1) {
 		if ( file_exists($_SESSION['abspath'] . '.htaccess') ) {
 			if (! is_writable($_SESSION['abspath'] . '.htaccess') ) {
@@ -923,18 +929,20 @@ function welcome_email() {
 
 			$message.= '4) '. __('Must Read:', 'ninjafirewall') . "\n\n";
 
-			$message.= __('-Testing NinjaFirewall without blocking your visitors.', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n";
+			$message.= __('-Testing NinjaFirewall without blocking your visitors:', 'ninjafirewall') . "\n";
+			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n\n";
 
-			$message.= __('-Add your own code to the firewall: the ".htninja" file.', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n";
+			$message.= __('-Add your own code to the firewall: the ".htninja" file:', 'ninjafirewall') . "\n";
+			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n\n";
 
-			$message.= __('-Restricting access to NinjaFirewall settings.', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/ ' . "\n";
+			$message.= __('-Restricting access to NinjaFirewall settings:', 'ninjafirewall') . "\n";
+			$message.= 'http://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/ ' . "\n\n";
 
-			$message.= __('-Keep your blog protected against the latest vulnerabilities.', 'ninjafirewall') . "\n";
+			$message.= __('-Upgrading to PHP 7 with NinjaFirewall installed:', 'ninjafirewall') . "\n";
+			$message.= 'http://blog.nintechnet.com/upgrading-to-php-7-with-ninjafirewall-installed/ ' . "\n\n";
+
+			$message.= __('-Keep your blog protected against the latest vulnerabilities:', 'ninjafirewall') . "\n";
 			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
-
 
 			$message.= '5) '. __('Help & Support Links:', 'ninjafirewall') . "\n\n";
 
@@ -970,7 +978,7 @@ function nfw_firewalltest() {
 		<ol>';
 		if ($_SESSION['http_server'] == 1) {
 			// User choosed Apache/mod_php instead of CGI/FCGI:
-			echo '<li>'. __('You selected <code>Apache + PHP5 module</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?', 'ninjafirewall'). '
+			echo '<li>'. __('You selected <code>Apache + PHP module</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?', 'ninjafirewall'). '
 			<br />
 			'. __('You can click the "Go Back" button and try to select another HTTP server type.', 'ninjafirewall'). '</li><br />';
 		} else {
@@ -987,7 +995,7 @@ function nfw_firewalltest() {
 			if ($_SESSION['http_server'] == 2) {
 				if ( preg_match('/apache/i', PHP_SAPI) ) {
 					// User choosed Apache/CGI instead of mod_php:
-					echo '<li>'. __('You selected <code>Apache + CGI/FastCGI</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + mod_php5</code>?', 'ninjafirewall'). '
+					echo '<li>'. __('You selected <code>Apache + CGI/FastCGI</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + PHP module</code>?', 'ninjafirewall'). '
 					<br />
 					'. __('You can click the "Go Back" button and try to select another HTTP server type.', 'ninjafirewall'). '</li><br />';
 				}
@@ -1015,7 +1023,7 @@ function nfw_ini_data() {
 
 	if (! defined('HTACCESS_BEGIN') ) {
 		define( 'HTACCESS_BEGIN', '# BEGIN NinjaFirewall' );
-		define( 'HTACCESS_DATA', '<IfModule mod_php5.c>' . "\n" .
+		define( 'HTACCESS_DATA', '<IfModule mod_php' . PHP_MAJOR_VERSION . '.c>' . "\n" .
 									'   php_value auto_prepend_file ' . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "\n" .
 									'</IfModule>');
 		define( 'LITESPEED_DATA', 'php_value auto_prepend_file ' . plugin_dir_path(__FILE__) . 'lib/firewall.php');
@@ -1161,9 +1169,11 @@ function nfw_default_conf() {
 	if ( wp_next_scheduled('nfdailyreport') ) {
 		wp_clear_scheduled_hook('nfdailyreport');
 	}
-	// and recreare a new one by default :
+	// and recreate a new one by default :
 	nfw_get_blogtimezone();
 	wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
+
+	$_SESSION['default_conf'] = 1;
 }
 
 /* ------------------------------------------------------------------ */

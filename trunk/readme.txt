@@ -219,6 +219,11 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 1.8.3 =
+* If you want to upgrade your server from PHP 5 to PHP 7, please check our blog for potential issues: http://nin.link/php7/
+* During the installation process, NinjaFirewall will add the correct PHP 5 or PHP 7 directive to the .htaccess if the server is running Apache with mod_php.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+
 = 1.8.2 =
 * Fixed UI compatibility issues with WordPress 4.4.
 * Fixed an "undefined offset" PHP notice while creating the daily activity report.
