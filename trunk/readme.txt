@@ -11,6 +11,8 @@ A true Web Application Firewall to protect and secure WordPress.
 
 == Description ==
 
+> **NinjaFirewall v3.0 Beta is available!**<br />If you want to test it, see the [support forum](https://wordpress.org/support/topic/ninjafirewall-v30-beta-1-available "").
+
 NinjaFirewall (WP Edition) is a true Web Application Firewall. Although it can be installed and configured just like a plugin, it is a stand-alone firewall that sits in front of WordPress.
 
 It allows any blog administrator to benefit from very advanced and powerful security features that usually aren't available at the WordPress level, but only in security applications such as the Apache [ModSecurity](http://www.modsecurity.org/ "") module or the PHP [Suhosin](http://suhosin.org/ "") extension.
