@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-12-05 15:11:00                                       |
+ | REVISION: 2016-02-18 18:09:40                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -97,8 +97,8 @@ function nfw_welcome() {
 	<p><?php _e('Thank you for using NinjaFirewall', 'ninjafirewall') ?> (WP Edition).</p>
 	<p><?php _e('This installer will help you to make the setup process as quick and easy as possible. But before doing so, please read carefully the following lines:', 'ninjafirewall') ?></p>
 	<p><?php _e('Although NinjaFirewall looks like a regular plugin, it is not. It can be installed and configured from WordPress admin console, but it is a stand-alone Web Application Firewall that sits in front of WordPress. That means that it will hook, scan, reject and/or sanitise any HTTP/HTTPS request sent to a PHP script before it reaches WordPress and any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube) or any potential backdoor/shell script (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?></p>
-	<p><?php _e('That\'s cool and makes NinjaFirewall a true firewall. And probably the most powerful security applications for WordPress. But just like any firewall, if you misuse it, you can get into serious problems and crash your site.', 'ninjafirewall') ?></p>
-	<div class="updated settings-error">
+	<p><?php printf( __('That\'s cool and makes NinjaFirewall a true firewall. And probably <a href="%s" title="%s">the most powerful security applications for WordPress</a>. But just like any firewall, if you misuse it, you can get into serious problems and crash your site.', 'ninjafirewall'), 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine') ?></p>
+	<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:#46b450;">
 	<br />
 	1 - <?php _e('Do NOT rename, edit or delete its files or folders, even if it is disabled from the Plugins page.', 'ninjafirewall') ?>
 	<br />
@@ -370,8 +370,8 @@ function nfw_presave($err) {
 					<option value="1"<?php selected($http_server, 1) ?>>Apache + PHP<?php echo PHP_MAJOR_VERSION ?> module<?php echo $s1 ?></option>
 					<option value="2"<?php selected($http_server, 2) ?>>Apache + CGI/FastCGI<?php echo $s2 ?></option>
 					<option value="6"<?php selected($http_server, 6) ?>>Apache + suPHP</option>
-					<option value="3"<?php selected($http_server, 3) ?>>Nginx + CGI/FastCGI<?php echo $s3 ?></option>
-					<option value="4"<?php selected($http_server, 4) ?>>Litespeed + LSAPI<?php echo $s4 ?></option>
+					<option value="3"<?php selected($http_server, 3) ?>>Nginx<?php echo $s3 ?></option>
+					<option value="4"<?php selected($http_server, 4) ?>>Litespeed<?php echo $s4 ?></option>
 					<option value="5"<?php selected($http_server, 5) ?>><?php _e('Other webserver + CGI/FastCGI', 'ninjafirewall') ?><?php echo $s5 ?></option>
 					<option value="7"<?php selected($http_server, 7) ?>><?php _e('Other webserver + HHVM', 'ninjafirewall') ?><?php echo $s7 ?></option>
 				</select>&nbsp;&nbsp;&nbsp;<span class="description"><a class="links" href="javascript:popup('<?php echo wp_nonce_url( '?page=NinjaFirewall&nfw_act=99', 'show_phpinfo', 'nfwnonce' ); ?>',700,500,0);"><?php _e('view PHPINFO', 'ninjafirewall') ?></a></span>
@@ -929,6 +929,9 @@ function welcome_email() {
 
 			$message.= '4) '. __('Must Read:', 'ninjafirewall') . "\n\n";
 
+			$message.= __('-An introduction to NinjaFirewall filtering engine:', 'ninjafirewall') . "\n";
+			$message.= 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ ' . "\n\n";
+
 			$message.= __('-Testing NinjaFirewall without blocking your visitors:', 'ninjafirewall') . "\n";
 			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n\n";
 
@@ -1147,11 +1150,11 @@ function nfw_default_conf() {
 
 	// Add the correct DOCUMENT_ROOT :
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
-		$nfw_rules[NFW_DOC_ROOT]['what'] = $_SERVER['DOCUMENT_ROOT'];
+		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
 	} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
-		$nfw_rules[NFW_DOC_ROOT]['what'] = getenv( 'DOCUMENT_ROOT' );
+		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', getenv( 'DOCUMENT_ROOT' ) );
 	} else {
-		$nfw_rules[NFW_DOC_ROOT]['on']  = 0;
+		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
 
 	// Save to the DB :

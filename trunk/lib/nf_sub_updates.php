@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 19:01:03                                       |
+ | REVISION: 2016-02-17 00:28:32                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -31,8 +31,8 @@ if (defined('NFW_DONT_USE_SSL')) {
 $update_log = NFW_LOG_DIR . '/nfwlog/updates.php';
 $update_url = array(
 	$proto . '://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
-	'version.php',
-	'rules.php'
+	'version3.txt',
+	'rules3.txt'
 );
 
 // Scheduled updates or NinjaFirewall installation:
@@ -47,6 +47,15 @@ nf_not_allowed( 'block', __LINE__ );
 echo '<div class="wrap">
 	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>' . __('Updates', 'ninjafirewall') . '</h1>';
+
+// We stop and warn the user if the firewall is diabled:
+if (! defined('NF_DISABLED') ) {
+	is_nfw_enabled();
+}
+if (NF_DISABLED) {
+	echo '<div class="error notice is-dismissible"><p>' . __('Security rules cannot be updated when NinjaFirewall is disabled.', 'ninjafirewall') . '</p></div></div>';
+	return;
+}
 
 //Saved options ?
 if (! empty($_POST['nfw_act']) ) {
@@ -109,10 +118,10 @@ function toogle_table(off) {
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Automatically update NinjaFirewall security rules', 'ninjafirewall') ?></th>
 			<td align="left">
-			<label><input type="radio" name="enable_updates" value="1"<?php checked($enable_updates, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="enable_updates" value="1"<?php checked($enable_updates, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes (recommended)', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-			<label><input type="radio" name="enable_updates" value="0"<?php checked($enable_updates, 0) ?> onclick="toogle_table(2);">&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="enable_updates" value="0"<?php checked($enable_updates, 0) ?> onclick="toogle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 	</table>
@@ -296,7 +305,7 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 		return 0;
 	}
 	// One more check...:
-	if (! is_array($new_rules) || empty($new_rules[1]['where']) ) {
+	if (! is_array($new_rules) || empty($new_rules[1]['cha'][1]['whe']) ) {
 		nf_sub_updates_log(
 			$update_log,
 			__('Error: Unserialized rules seem corrupted.', 'ninjafirewall')
@@ -308,15 +317,27 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 
 	foreach ( $new_rules as $new_key => $new_value ) {
 		foreach ( $new_value as $key => $value ) {
-			// If that rule exists already, we keep its 'on' flag value
-			// as it may have been changed by the user with the rules editor :
-			if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'on' ) ) {
-				$new_rules[$new_key]['on'] = $nfw_rules[$new_key]['on'];
+			// If that rule exists already, we keep its 'ena' flag value
+			// as it may have been changed by the user with the rules editor:
+			// v3.x:
+			if ( ( isset( $nfw_rules[$new_key]['ena'] ) ) && ( $key == 'ena' ) ) {
+				$new_rules[$new_key]['ena'] = $nfw_rules[$new_key]['ena'];
+			}
+			// v1.x:
+			if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'ena' ) ) {
+				$new_rules[$new_key]['ena'] = $nfw_rules[$new_key]['on'];
 			}
 		}
 	}
-	$new_rules[NFW_DOC_ROOT]['what']= $nfw_rules[NFW_DOC_ROOT]['what'];
-	$new_rules[NFW_DOC_ROOT]['on']	= $nfw_rules[NFW_DOC_ROOT]['on'];
+	// v1.x:
+	if ( isset( $nfw_rules[NFW_DOC_ROOT]['what'] ) ) {
+		$new_rules[NFW_DOC_ROOT]['cha'][1]['wha']= str_replace( '/', '/[./]*', $nfw_rules[NFW_DOC_ROOT]['what'] );
+		$new_rules[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['on'];
+	// v3.x:
+	} else {
+		$new_rules[NFW_DOC_ROOT]['cha'][1]['wha']= $nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'];
+		$new_rules[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['ena'];
+	}
 
 	// Update rules in the DB :
 	update_option('nfw_rules', $new_rules);
@@ -357,8 +378,7 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 			$new_version =  explode('|', rtrim($res['body']), 2);
 
 			// Ensure that the rules are compatible :
-			$curr_version = explode(':', $new_version[0], 2);
-			if ( isset($curr_version[1]) && $curr_version[1] > 1) {
+			if ( $new_version[0] != 3 ) {
 				// This version of NinjaFirewall may be too old :
 				nf_sub_updates_log(
 					$update_log,
@@ -417,21 +437,21 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 	);
 	if (! is_wp_error($res) ) {
 		if ( $res['response']['code'] == 200 ) {
-			$data = explode('|', rtrim($res['body']), 3);
+			$data = explode('|', rtrim($res['body']), 2);
 
 			// Rules version should match the one we just fetched
 			// unless we are intalling NinjaFirewall ($new_rules_version==0) :
-			if ( $new_rules_version & $new_rules_version != $data[1]) {
+			if ( $new_rules_version & $new_rules_version != $data[0]) {
 				nf_sub_updates_log(
 					$update_log,
-					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'ninjafirewall'), $new_rules_version, htmlspecialchars($data[1]) )
+					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'nfwplus'), $new_rules_version, htmlspecialchars($data[0]))
 				);
 				return 0;
 			}
 			// Save new rules version for install/upgrade:
-			define('NFW_NEWRULES_VERSION', $data[1]);
+			define('NFW_NEWRULES_VERSION', $data[0]);
 			// Return the rules:
-			return $data[2];
+			return $data[1];
 
 		// Not a 200 OK ret code :
 		} else {

@@ -361,6 +361,7 @@ function help_nfsublogin() {
 		<ul>
 		<li>' . __('HTTP authentication:', 'ninjafirewall') . '<span class="description"> ' . __('enter the user name and password that you want to use to access the login page.', 'ninjafirewall') . '</span></li>
 		<li>' . __('Message:', 'ninjafirewall') . '<span class="description"> ' . __('enter the message to display during the authentication process.', 'ninjafirewall') . '</span></li>
+		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('When <b>Always ON</b> is enabled, brute-force attacks will not be written to the firewall log.', 'ninjafirewall') . '</span></p>
 		</ul>
 
 		<br />&nbsp;

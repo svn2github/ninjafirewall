@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 1.8.3
+Version: 3.0-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,12 +18,11 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-12-02 15:58:50                                       |
+ | REVISION: 2016-02-17 19:11:31                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '1.8.3' );
-define( 'NFW_RULES_VERSION',  '20151201.1' );
- /*
+define( 'NFW_ENGINE_VERSION', '3.0-RC1' );
+/*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -498,32 +497,47 @@ function nfw_upgrade() {
 
 		$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
 		$is_update = 1;
-	}
 
-	// do we need to update rules as well ?
-	if (! empty($nfw_options['rules_version']) && version_compare($nfw_options['rules_version'], NFW_RULES_VERSION, '<') ) {
-
-		// Fetch the latest set of rules from wordpress.org :
+		// Fetch the latest set of rules from wordpress.org:
 		define('NFUPDATESDO', 2);
 		@nf_sub_updates();
+
+		if (! defined('NFW_NEWRULES_VERSION') ) {
+			// If we weren't able to download the rules, set it to an older value:
+			define('NFW_NEWRULES_VERSION', '20160101.1');
+		}
+
+		// We update rules anyway:
 		if ( $nfw_rules_new = @unserialize(NFW_RULES) ) {
 			// Rules successfully downloaded :
 			foreach ( $nfw_rules_new as $new_key => $new_value ) {
 				foreach ( $new_value as $key => $value ) {
-					// if that rule exists already, we keep its 'on' flag value
+					// if that rule exists already, we keep its 'ena' flag value
 					// as it may have been changed by the user with the rules editor :
-					if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'on' ) ) {
-						$nfw_rules_new[$new_key]['on'] = $nfw_rules[$new_key]['on'];
+					// v3.x:
+					if ( ( isset( $nfw_rules[$new_key]['ena'] ) ) && ( $key == 'ena' ) ) {
+						$nfw_rules_new[$new_key]['ena'] = $nfw_rules[$new_key]['ena'];
+					}
+					// v1.x:
+					if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'ena' ) ) {
+						$nfw_rules_new[$new_key]['ena'] = $nfw_rules[$new_key]['on'];
 					}
 				}
 			}
-			$nfw_rules_new[NFW_DOC_ROOT]['what']= $nfw_rules[NFW_DOC_ROOT]['what'];
-			$nfw_rules_new[NFW_DOC_ROOT]['on']	= $nfw_rules[NFW_DOC_ROOT]['on'];
+			//  Version 1.x:
+			if ( isset( $nfw_rules[NFW_DOC_ROOT]['what'] ) ) {
+				$nfw_rules_new[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $nfw_rules[NFW_DOC_ROOT]['what'] );
+				$nfw_rules_new[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['on'];
+			// Version 3.x:
+			} else {
+				$nfw_rules_new[NFW_DOC_ROOT]['cha'][1]['wha'] = $nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'];
+				$nfw_rules_new[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['ena'];
+			}
 
 			// v1.2.7:20140925 update ----------------------------------------
 			// We delete rules #151 and #152
 			if ( version_compare( $nfw_options['rules_version'], '20140925', '<' ) ) {
-				if ( isset($nfw_rules_new[151]) ) {
+			if ( isset($nfw_rules_new[151]) ) {
 					unset($nfw_rules_new[151]);
 				}
 				if ( isset($nfw_rules_new[152]) ) {
@@ -536,12 +550,37 @@ function nfw_upgrade() {
 			update_option( 'nfw_rules', $nfw_rules_new);
 			// ...and the latest rules version number:
 			$nfw_options['rules_version'] = NFW_NEWRULES_VERSION;
+
 		} else {
-			// We failed to download the rules, return the hardcoded version:
-			$nfw_options['rules_version'] = NFW_RULES_VERSION;
+
+			// We failed to download the rules, warn the admin:
+			if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
+				$recipient = get_option('admin_email');
+			} else {
+				$recipient = $nfw_options['alert_email'];
+			}
+			// Get timezone :
+			nfw_get_blogtimezone();
+
+			$subject = '[NinjaFirewall] ' . __('ERROR: Failed to update rules', 'ninjafirewall');
+			if ( is_multisite() ) {
+				$url = __('-Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
+			} else {
+				$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
+			}
+			$message = __('NinjaFirewall failed to update its rules. This is a critical error, your current rules may be corrupted or disabled. In order to solve the problem, please follow these instructions:', 'ninjafirewall') . "\n\n";
+			$message.= __('1. Log in to your WordPress admin dashboard.', 'ninjafirewall') . "\n";
+			$message.= __('2. Go to "NinjaFirewall > Updates".', 'ninjafirewall') . "\n";
+			$message.= __('3. Click on "Check for updates now!".', 'ninjafirewall') .
+							"\n\n".
+							__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
+							$url .
+						'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+					__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+			wp_mail( $recipient, $subject, $message );
 		}
-		$is_update = 1;
 	}
+
 
 	if ( $is_update ) {
 		$tmp_data = '';
@@ -1553,7 +1592,7 @@ function sanitise_fn(cbox) {
 	}
 
 
-	if ( empty( $nfw_rules[NFW_SCAN_BOTS]['on']) ) {
+	if ( empty( $nfw_rules[NFW_SCAN_BOTS]['ena']) ) {
 		$block_bots = 0;
 	} else {
 		$block_bots = 1;
@@ -1741,7 +1780,7 @@ function sanitise_fn(cbox) {
 	<br /><br />
 
 	<?php
-	if ( empty( $nfw_rules[NFW_LOOPBACK]['on']) ) {
+	if ( empty( $nfw_rules[NFW_LOOPBACK]['ena']) ) {
 		$no_localhost_ip = 0;
 	} else {
 		$no_localhost_ip = 1;
@@ -1794,7 +1833,7 @@ function sanitise_fn(cbox) {
 	<br /><br />
 
 	<?php
-	if ( empty( $nfw_rules[NFW_WRAPPERS]['on']) ) {
+	if ( empty( $nfw_rules[NFW_WRAPPERS]['ena']) ) {
 		$php_wrappers = 0;
 	} else {
 		$php_wrappers = 1;
@@ -1880,7 +1919,7 @@ function sanitise_fn(cbox) {
 
 	// If the document root is < 5 characters, grey out that option:
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) < 5 ) {
-		$nfw_rules[NFW_DOC_ROOT]['on'] = 0;
+		$nfw_rules[NFW_DOC_ROOT]['ena'] = 0;
 		$greyed = 'style="color:#bbbbbb"';
 		$disabled = 'disabled ';
 		$disabled_msg = '<br /><span class="description">&nbsp;' .
@@ -1892,17 +1931,17 @@ function sanitise_fn(cbox) {
 		$disabled_msg = '';
 	}
 
-	if ( empty( $nfw_rules[NFW_DOC_ROOT]['on']) ) {
+	if ( empty( $nfw_rules[NFW_DOC_ROOT]['ena']) ) {
 		$block_doc_root = 0;
 	} else {
 		$block_doc_root = 1;
 	}
-	if ( empty( $nfw_rules[NFW_NULL_BYTE]['on']) ) {
+	if ( empty( $nfw_rules[NFW_NULL_BYTE]['ena']) ) {
 		$block_null_byte = 0;
 	} else {
 		$block_null_byte = 1;
 	}
-	if ( empty( $nfw_rules[NFW_ASCII_CTRL]['on']) ) {
+	if ( empty( $nfw_rules[NFW_ASCII_CTRL]['ena']) ) {
 		$block_ctrl_chars = 0;
 	} else {
 		$block_ctrl_chars = 1;
@@ -1996,18 +2035,36 @@ function sanitise_fn(cbox) {
 		$force_ssl = 0;
 	} else {
 		$force_ssl = 1;
+		$force_ssl_already_enabled = 0;
 	}
 	if ( empty( $nfw_options['disallow_edit']) ) {
 		$disallow_edit = 0;
 	} else {
 		$disallow_edit = 1;
+		$disallow_edit_already_enabled = 0;
 	}
 	if ( empty( $nfw_options['disallow_mods']) ) {
 		$disallow_mods = 0;
 	} else {
 		$disallow_mods = 1;
+		$disallow_mods_already_enabled = 0;
 	}
 
+	// We must disable these 2 options if their constants are already defined
+	// (e.g., in the wp-config.php). Note that even if they are defined as 'false',
+	// we must disable them because NinjaFirewall would define them first, and
+	// then WordPress would try as well. We would end up with a PHP error:
+	if ( defined('DISALLOW_FILE_EDIT') && ! $disallow_edit ) {
+		$disallow_edit_already_enabled = 1;
+	}
+	if ( defined('DISALLOW_FILE_MODS') && ! $disallow_mods ) {
+		$disallow_mods_already_enabled = 1;
+	}
+	// Because FORCE_SSL_ADMIN is always defined by WP (see wp-includes/default_constants.php),
+	// we disable this option only if it is set to 'true':
+	if ( defined('FORCE_SSL_ADMIN') && FORCE_SSL_ADMIN == true && ! $force_ssl ) {
+		$force_ssl_already_enabled = 1;
+	}
 	?>
 	<h3>WordPress</h3>
 	<table class="form-table">
@@ -2096,30 +2153,30 @@ function sanitise_fn(cbox) {
 			<th scope="row"><a name="builtinconstants"></a><?php _e('Force SSL for admin and logins', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Require_SSL_for_Admin_and_Logins" target="_blank">FORCE_SSL_ADMIN</a></code></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[force_ssl]" value="1"<?php checked( $force_ssl, 1 ) ?> onclick="return ssl_warn();">&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[force_ssl]" value="1"<?php checked( $force_ssl, 1 ) ?> onclick="return ssl_warn();" <?php disabled( $force_ssl_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" id="ssl_0" name="nfw_options[force_ssl]" value="0"<?php checked( $force_ssl, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+				<label><input type="radio" id="ssl_0" name="nfw_options[force_ssl]" value="0"<?php checked( $force_ssl, 0 ) ?> <?php disabled( $force_ssl_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Disable the plugin and theme editor', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Disable_the_Plugin_and_Theme_Editor" target="_blank">DISALLOW_FILE_EDIT</a></code></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[disallow_edit]" value="1"<?php checked( $disallow_edit, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[disallow_edit]" value="1"<?php checked( $disallow_edit, 1 ) ?> <?php disabled( $disallow_edit_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[disallow_edit]" value="0"<?php checked( $disallow_edit, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[disallow_edit]" value="0"<?php checked( $disallow_edit, 0 ) ?> <?php disabled( $disallow_edit_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Disable plugin and theme update/installation', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Disable_Plugin_and_Theme_Update_and_Installation" target="_blank">DISALLOW_FILE_MODS</a></code></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[disallow_mods]" value="1"<?php checked( $disallow_mods, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[disallow_mods]" value="1"<?php checked( $disallow_mods, 1 ) ?> <?php disabled( $disallow_mods_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[disallow_mods]" value="0"<?php checked( $disallow_mods, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[disallow_mods]" value="0"<?php checked( $disallow_mods, 0 ) ?> <?php disabled( $disallow_mods_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 
@@ -2496,30 +2553,30 @@ function nf_sub_policies_save() {
 
 	// Block NULL byte 0x00 (#ID 2) :
 	if ( empty( $_POST['nfw_rules']['block_null_byte']) ) {
-		$nfw_rules[NFW_NULL_BYTE]['on'] = 0;
+		$nfw_rules[NFW_NULL_BYTE]['ena'] = 0;
 	} else {
 		// Default: yes
-		$nfw_rules[NFW_NULL_BYTE]['on'] = 1;
+		$nfw_rules[NFW_NULL_BYTE]['ena'] = 1;
 	}
 	// Block bots & script kiddies' scanners (#ID 531) :
 	if ( empty( $_POST['nfw_rules']['block_bots']) ) {
-		$nfw_rules[NFW_SCAN_BOTS]['on'] = 0;
+		$nfw_rules[NFW_SCAN_BOTS]['ena'] = 0;
 	} else {
 		// Default: yes
-		$nfw_rules[NFW_SCAN_BOTS]['on'] = 1;
+		$nfw_rules[NFW_SCAN_BOTS]['ena'] = 1;
 	}
 	// Block ASCII control characters 1 to 8 and 14 to 31 (#ID 500) :
 	if ( empty( $_POST['nfw_rules']['block_ctrl_chars']) ) {
-		$nfw_rules[NFW_ASCII_CTRL]['on'] = 0;
+		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 0;
 	} else {
 		// Default: yes
-		$nfw_rules[NFW_ASCII_CTRL]['on'] = 1;
+		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 1;
 	}
 
 
 	// Block the DOCUMENT_ROOT server variable in GET/POST requests (#ID 510) :
 	if ( empty( $_POST['nfw_rules']['block_doc_root']) ) {
-		$nfw_rules[NFW_DOC_ROOT]['on'] = 0;
+		$nfw_rules[NFW_DOC_ROOT]['ena'] = 0;
 	} else {
 		// Default: yes
 
@@ -2527,31 +2584,31 @@ function nf_sub_policies_save() {
 		// 5 characters, otherwise this option could block a lot
 		// of legitimate requests:
 		if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
-			$nfw_rules[NFW_DOC_ROOT]['what'] = $_SERVER['DOCUMENT_ROOT'];
-			$nfw_rules[NFW_DOC_ROOT]['on']	= 1;
+			$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
+			$nfw_rules[NFW_DOC_ROOT]['ena']	= 1;
 		} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
-			$nfw_rules[NFW_DOC_ROOT]['what'] = getenv( 'DOCUMENT_ROOT' );
-			$nfw_rules[NFW_DOC_ROOT]['on']	= 1;
+			$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', getenv( 'DOCUMENT_ROOT' ) );
+			$nfw_rules[NFW_DOC_ROOT]['ena']	= 1;
 		// we must disable that option:
 		} else {
-			$nfw_rules[NFW_DOC_ROOT]['on']	= 0;
+			$nfw_rules[NFW_DOC_ROOT]['ena']	= 0;
 		}
 	}
 
 
 	// Block PHP built-in wrappers (#ID 520) :
 	if ( empty( $_POST['nfw_rules']['php_wrappers']) ) {
-		$nfw_rules[NFW_WRAPPERS]['on'] = 0;
+		$nfw_rules[NFW_WRAPPERS]['ena'] = 0;
 	} else {
 		// Default: yes
-		$nfw_rules[NFW_WRAPPERS]['on'] = 1;
+		$nfw_rules[NFW_WRAPPERS]['ena'] = 1;
 	}
 	// Block localhost IP in GET/POST requests (#ID 540) :
 	if ( empty( $_POST['nfw_rules']['no_localhost_ip']) ) {
-		$nfw_rules[NFW_LOOPBACK]['on'] = 0;
+		$nfw_rules[NFW_LOOPBACK]['ena'] = 0;
 	} else {
 		// Default: yes
-		$nfw_rules[NFW_LOOPBACK]['on'] = 1;
+		$nfw_rules[NFW_LOOPBACK]['ena'] = 1;
 	}
 
 
@@ -2612,22 +2669,22 @@ function nf_sub_policies_default() {
 	$nfw_options['wl_admin']			= 1;
 	$_SESSION['nfw_goodguy'] 			= true;
 
-	$nfw_rules[NFW_SCAN_BOTS]['on']	= 1;
-	$nfw_rules[NFW_LOOPBACK]['on']	= 1;
-	$nfw_rules[NFW_WRAPPERS]['on']	= 1;
+	$nfw_rules[NFW_SCAN_BOTS]['ena']	= 1;
+	$nfw_rules[NFW_LOOPBACK]['ena']	= 1;
+	$nfw_rules[NFW_WRAPPERS]['ena']	= 1;
 
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
-		$nfw_rules[NFW_DOC_ROOT]['what'] = $_SERVER['DOCUMENT_ROOT'];
-		$nfw_rules[NFW_DOC_ROOT]['on'] = 1;
+		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
+		$nfw_rules[NFW_DOC_ROOT]['ena'] = 1;
 	} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
-		$nfw_rules[NFW_DOC_ROOT]['what'] = getenv( 'DOCUMENT_ROOT' );
-		$nfw_rules[NFW_DOC_ROOT]['on'] = 1;
+		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', getenv( 'DOCUMENT_ROOT' ) );
+		$nfw_rules[NFW_DOC_ROOT]['ena'] = 1;
 	} else {
-		$nfw_rules[NFW_DOC_ROOT]['on']  = 0;
+		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
 
-	$nfw_rules[NFW_NULL_BYTE]['on']  = 1;
-	$nfw_rules[NFW_ASCII_CTRL]['on'] = 1;
+	$nfw_rules[NFW_NULL_BYTE]['ena']  = 1;
+	$nfw_rules[NFW_ASCII_CTRL]['ena'] = 1;
 
 	update_option( 'nfw_options', $nfw_options);
 	update_option( 'nfw_rules', $nfw_rules);
@@ -3378,7 +3435,7 @@ function nf_sub_edit() {
 		} else if (! isset( $nfw_rules[$_POST['sel_e_r']] ) ) {
 			echo '<div class="error notice is-dismissible"><p>' . __('Error: this rule does not exist.', 'ninjafirewall') .'</p></div>';
 		} elseif ($_POST['sel_e_r'] != 999) {
-			$nfw_rules[$_POST['sel_e_r']]['on'] = 0;
+			$nfw_rules[$_POST['sel_e_r']]['ena'] = 0;
 			$is_update = 1;
 			echo '<div class="updated notice is-dismissible"><p>' . sprintf( __('Rule ID %s has been disabled.', 'ninjafirewall'), htmlentities($_POST['sel_e_r']) ) .'</p></div>';
 		}
@@ -3393,7 +3450,7 @@ function nf_sub_edit() {
 		} else if (! isset( $nfw_rules[$_POST['sel_d_r']] ) ) {
 			echo '<div class="error notice is-dismissible"><p>' . __('Error: this rule does not exist.', 'ninjafirewall') .'</p></div>';
 		} elseif ($_POST['sel_d_r'] != 999) {
-			$nfw_rules[$_POST['sel_d_r']]['on'] = 1;
+			$nfw_rules[$_POST['sel_d_r']]['ena'] = 1;
 			$is_update = 1;
 			echo '<div class="updated notice is-dismissible"><p>' . sprintf( __('Rule ID %s has been enabled.', 'ninjafirewall'), htmlentities($_POST['sel_d_r']) ) .'</p></div>';
 		}
@@ -3405,7 +3462,7 @@ function nf_sub_edit() {
 	$disabled_rules = $enabled_rules = array();
 	foreach ( $nfw_rules as $rule_key => $rule_value ) {
 		if ( $rule_key == 999 ) { continue; }
-		if (! empty( $nfw_rules[$rule_key]['on'] ) ) {
+		if (! empty( $nfw_rules[$rule_key]['ena'] ) ) {
 			$enabled_rules[] =  $rule_key;
 		} else {
 			$disabled_rules[] = $rule_key;
@@ -3436,13 +3493,15 @@ function nf_sub_edit() {
 				$desc = ' ' . __('Cross-site scripting', 'ninjafirewall');
 			} elseif ( $key < 200 ) {
 				$desc = ' ' . __('Code injection', 'ninjafirewall');
-			} elseif ( $key < 250 ) {
+			} elseif (  $key > 249 && $key < 300 ) {
 				$desc = ' ' . __('SQL injection', 'ninjafirewall');
 			} elseif ( $key < 350 ) {
 				$desc = ' ' . __('Various vulnerability', 'ninjafirewall');
 			} elseif ( $key < 400 ) {
 				$desc = ' ' . __('Backdoor/shell', 'ninjafirewall');
-			} elseif ( $key > 1299 ) {
+			} elseif ( $key > 999 && $key < 1300 ) {
+				$desc = ' ' . __('Application specific', 'ninjafirewall');
+			} elseif ( $key > 1349 ) {
 				$desc = ' ' . __('WordPress vulnerability', 'ninjafirewall');
 			}
 			echo '<option value="' . htmlspecialchars($key) . '">' . __('Rule ID', 'ninjafirewall') .' : ' . htmlspecialchars($key) . $desc . '</option>';
@@ -3469,13 +3528,15 @@ function nf_sub_edit() {
 				$desc = ' ' . __('Cross-site scripting', 'ninjafirewall');
 			} elseif ( $key < 200 ) {
 				$desc = ' ' . __('Code injection', 'ninjafirewall');
-			} elseif ( $key < 250 ) {
+			} elseif (  $key > 249 && $key < 300 ) {
 				$desc = ' ' . __('SQL injection', 'ninjafirewall');
 			} elseif ( $key < 350 ) {
 				$desc = ' ' . __('Various vulnerability', 'ninjafirewall');
 			} elseif ( $key < 400 ) {
 				$desc = ' ' . __('Backdoor/shell', 'ninjafirewall');
-			} elseif ( $key > 1299 ) {
+			} elseif ( $key > 999 && $key < 1300 ) {
+				$desc = ' ' . __('Application specific', 'ninjafirewall');
+			} elseif ( $key > 1349 ) {
 				$desc = ' ' . __('WordPress vulnerability', 'ninjafirewall');
 			}
 			echo '<option value="' . htmlspecialchars($key) . '">' . __('Rule ID', 'ninjafirewall') .' #' . htmlspecialchars($key) . $desc . '</option>';

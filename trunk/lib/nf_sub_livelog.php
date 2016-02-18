@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 18:59:36                                       |
+ | REVISION: 2016-02-13 15:35:51                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -264,7 +264,7 @@ $nfw_options = get_option('nfw_options');
 			</td>
 		</tr>
 	</table>
-	<div align="right"><span class="description"><?php _e('Live Log will not include yourself or any other whitelisted users.', 'ninjafirewall') ?></span></div>
+	<div align="right"><span class="description"><?php _e('Live Log will not display whitelisted users and brute-force attacks.', 'ninjafirewall') ?></span></div>
 </form>
 <?php
 if ( empty($nfw_options['liveformat']) ) {

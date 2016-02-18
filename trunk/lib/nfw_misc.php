@@ -235,13 +235,8 @@ function nf_get_dbdata() {
 	return get_users(
 		array( 'role' => 'administrator',
 			'fields' => array(
-				'ID',
-				'user_login',
-				'user_pass',
-				'user_nicename',
-				'user_email',
-				'user_registered',
-				'display_name'
+				'ID', 'user_login', 'user_pass', 'user_nicename',
+				'user_email', 'user_registered', 'display_name'
 			)
 		)
 	);
