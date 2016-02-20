@@ -4,8 +4,8 @@ Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute fo
 Requires at least: 3.3.0
 Tested up to: 4.4.2
 Stable tag: 1.8.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 A true Web Application Firewall to protect and secure WordPress.
 
@@ -230,7 +230,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 = 3.0 =
 
-* This is a major upgrade: NinjaFirewall has a brand new, powerful and awesome filtering engine. Please see our blog for a complete description: http://nin.link/sensei/
+* This is a major update: NinjaFirewall has a brand new, powerful and awesome filtering engine. Please see our blog for a complete description: http://nin.link/sensei/
 * Added many new security rules.
 * Fixed a bug where NinjaFirewall was unable to retrieve the DB password from the wp-config.php file if it contained a double-quote character.
 * The Firewall Policies "Force SSL for admin", "Disable the plugin and theme editor" and "Disable plugin and theme update/installation" options will be disabled if their respective constants have been defined elsewhere (e.g., in wp-config.php).
