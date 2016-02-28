@@ -10,6 +10,7 @@
 
 // To tell NinjaFirewall where you moved your WP config file,
 // use the '$wp_config' variable :
+// ** NOTE: Deprecated since NinjaFirewall 3.0.1 **
 # $wp_config = '/foo/bar/wp-config.php';
 
 

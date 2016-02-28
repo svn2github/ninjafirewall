@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.4.2
-Stable tag: 3.0
+Stable tag: 3.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -11,7 +11,7 @@ A true Web Application Firewall to protect and secure WordPress.
 
 == Description ==
 
-> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features), MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
+> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features) or HHVM 3.4+, MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
 
 = A true Web Application Firewall =
 
@@ -190,7 +190,7 @@ You do not need to make any modifications to your scripts. NinjaFirewall hooks a
 
 = I moved my wp-config.php file to another directory. Will it work with NinjaFirewall ? =
 
-Since version 1.1.3, you can use an optional configuration file to tell NinjaFirewall where is located your WordPress configuration file, wp-config.php, if you moved it to another directory. Please [follow these steps](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja "").
+NinjaFirewall will look for the wp-config.php script in the current folder or, if it cannot find it, in the parent folder.
 
 = Will NinjaFirewall detect the correct IP of my visitors if I am behind a CDN service like Cloudflare ? =
 
@@ -227,6 +227,13 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.0.1 =
+
+* Fixed a PHP notice in the "Firewall Policies" page.
+* NinjaFirewall will always search for the `wp-config.php` script in the current folder or, if it cannot find it, in the parent folder (there is no need to use the `.htninja` configuration script for that purpose).
+* The "Protect against username enumeration > Through the author archives" policy will be disabled by default when installing NinjaFirewall.
+* The "WordPress XML-RPC API > Block only system.multicall method" policy will be enabled by default when installing NinjaFirewall.
 
 = 3.0 =
 

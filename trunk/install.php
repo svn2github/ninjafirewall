@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-18 18:09:40                                       |
+ | REVISION: 2016-02-28 11:05:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -1113,10 +1113,10 @@ function nfw_default_conf() {
 		// v1.1.2 :
 		'no_xmlrpc'			=> 0,
 		// v1.7 :
-		'no_xmlrpc_multi'	=> 0,
+		'no_xmlrpc_multi'	=> 1,
 
 		// v1.1.3 :
-		'enum_archives'	=> 1,
+		'enum_archives'	=> 0,
 		'enum_login'		=> 0,
 		// v1.1.6 :
 		'request_sanitise'=> 0,

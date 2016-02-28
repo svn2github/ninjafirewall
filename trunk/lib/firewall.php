@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2016-02-13 17:07:00                                       |
+// | REVISION: 2016-02-28 11:28:08                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -78,11 +78,14 @@ if (empty ($wp_config)) {
 }
 
 if (! file_exists($wp_config) ) {
-	// set the error flag and return :
-	define( 'NFW_STATUS', 1 );
-	unset($nfw_);
-	unset($wp_config);
-	return;
+	// Maybe the user moved it inside the parent directory?
+	if (! @file_exists( $wp_config = dirname( dirname($nfw_['wp_content']) ) . '/wp-config.php') ) {
+		// Set the error flag and return :
+		define( 'NFW_STATUS', 1 );
+		unset($nfw_);
+		unset($wp_config);
+		return;
+	}
 }
 if (! $nfw_['fh'] = fopen($wp_config, 'r') ) {
 	define( 'NFW_STATUS', 2 );

@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.0
+Version: 3.0.1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-19 19:11:31                                       |
+ | REVISION: 2016-02-28 11:08:25                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.0' );
+define( 'NFW_ENGINE_VERSION', '3.0.1' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -491,7 +491,7 @@ function nfw_upgrade() {
 				nfw_get_blogtimezone();
 				wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 			}
-			$nfw_options['no_xmlrpc_multi'] = 0;
+			$nfw_options['no_xmlrpc_multi'] = 1;
 		}
 		// ---------------------------------------------------------------
 
@@ -2035,25 +2035,23 @@ function sanitise_fn(cbox) {
 		$force_ssl = 0;
 	} else {
 		$force_ssl = 1;
-		$force_ssl_already_enabled = 0;
 	}
 	if ( empty( $nfw_options['disallow_edit']) ) {
 		$disallow_edit = 0;
 	} else {
 		$disallow_edit = 1;
-		$disallow_edit_already_enabled = 0;
 	}
 	if ( empty( $nfw_options['disallow_mods']) ) {
 		$disallow_mods = 0;
 	} else {
 		$disallow_mods = 1;
-		$disallow_mods_already_enabled = 0;
 	}
 
 	// We must disable these 2 options if their constants are already defined
 	// (e.g., in the wp-config.php). Note that even if they are defined as 'false',
 	// we must disable them because NinjaFirewall would define them first, and
 	// then WordPress would try as well. We would end up with a PHP error:
+	$force_ssl_already_enabled = $disallow_edit_already_enabled = $disallow_mods_already_enabled = 0;
 	if ( defined('DISALLOW_FILE_EDIT') && ! $disallow_edit ) {
 		$disallow_edit_already_enabled = 1;
 	}
@@ -2124,7 +2122,7 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php _e('Protect against username enumeration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
-				<p><label><input type="checkbox" name="nfw_options[enum_archives]" value="1"<?php checked( $enum_archives, 1 ) ?>>&nbsp;<?php _e('Through the author archives (default)', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[enum_archives]" value="1"<?php checked( $enum_archives, 1 ) ?>>&nbsp;<?php _e('Through the author archives', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[enum_login]" value="1"<?php checked( $enum_login, 1 ) ?>>&nbsp;<?php _e('Through the login page', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
@@ -2133,7 +2131,7 @@ function sanitise_fn(cbox) {
 			<td width="20">&nbsp;</td>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
-				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block only <code>system.multicall</code> method', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block only <code>system.multicall</code> method (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
@@ -2471,9 +2469,9 @@ function nf_sub_policies_save() {
 
 	// Protect against username enumeration attempts ?
 	if (! isset( $_POST['nfw_options']['enum_archives']) ) {
+		// Default : no
 		$nfw_options['enum_archives'] = 0;
 	} else {
-		// Default : yes
 		$nfw_options['enum_archives'] = 1;
 	}
 	if (! isset( $_POST['nfw_options']['enum_login']) ) {
@@ -2495,9 +2493,9 @@ function nf_sub_policies_save() {
 		$_POST['nfw_options']['no_xmlrpc_multi'] = 0;
 	}
 	if ( empty( $_POST['nfw_options']['no_xmlrpc_multi']) ) {
-		// Default : no
 		$nfw_options['no_xmlrpc_multi'] = 0;
 	} else {
+		// Default : yes
 		$nfw_options['no_xmlrpc_multi'] = 1;
 	}
 
@@ -2657,10 +2655,10 @@ function nf_sub_policies_default() {
 	$nfw_options['wp_dir'] 				= '/wp-admin/(?:css|images|includes|js)/|' .
 		'/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
 		'/'. basename(WP_CONTENT_DIR) .'/(?:uploads|blogs\.dir)/';
-	$nfw_options['enum_archives']		= 1;
+	$nfw_options['enum_archives']		= 0;
 	$nfw_options['enum_login']			= 0;
 	$nfw_options['no_xmlrpc']			= 0;
-	$nfw_options['no_xmlrpc_multi']	= 0;
+	$nfw_options['no_xmlrpc_multi']	= 1;
 	$nfw_options['no_post_themes']	= 0;
 	$nfw_options['force_ssl'] 			= 0;
 	$nfw_options['disallow_edit'] 	= 0;
