@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 18:59:47                                       |
+ | REVISION: 2016-03-11 10:58:57                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -27,6 +27,13 @@ nf_not_allowed( 'block', __LINE__ );
 $nfw_options = get_option( 'nfw_options' );
 
 $log_dir = NFW_LOG_DIR . '/nfwlog/';
+$monthly_log = 'firewall_' . date( 'Y-m' ) . '.php';
+
+if ( isset($_GET['nfw_sort']) ) {
+	if ( empty($_GET['nfwnonce']) || ! wp_verify_nonce($_GET['nfwnonce'], 'log_select') ) {
+		wp_nonce_ays('log_select');
+	}
+}
 
 // Find all available logs :
 $avail_logs = array();
@@ -45,7 +52,7 @@ krsort($avail_logs);
 if (! empty($_GET['nfw_sort']) && isset( $avail_logs[$_GET['nfw_sort']] ) ) {
 	$selected_log = $_GET['nfw_sort'];
 } else {
-	$selected_log ='firewall_' . date( 'Y-m' ) . '.php';
+	$selected_log = $monthly_log;
 	// If there is no current log, we try to display the one
 	// from the previous month (if any) :
 	if (! file_exists( $log_dir . $selected_log ) && ! empty($avail_logs) ) {
@@ -90,7 +97,7 @@ if (! $fh = @fopen( $log_dir . $selected_log, 'r' ) ) {
 // We will only display the last $max_lines lines, and will warn about it
 // if the log is bigger :
 $count = 0;
-$max_lines = 500;
+$max_lines = 1500;
 while (! feof( $fh ) ) {
 	fgets( $fh );
 	$count++;
@@ -102,13 +109,13 @@ if ( $count < $max_lines ) {
 	$skip = 0;
 } else  {
 	echo '<div class="error notice is-dismissible"><p>' . __('Warning', 'ninjafirewall') . ' : ';
-	printf( __('your log has %s lines. I will display the last 500 lines only.', 'ninjafirewall'), $count );
+	printf( __('your log has %s lines. I will display the last %s lines only.', 'ninjafirewall'), $count, $max_lines );
 	echo '</p></div>';
 	$skip = $count - $max_lines;
 }
 
 // Add select box:
-echo '<center>' . __('Viewing :', 'ninjafirewall') . ' <select name="nfw_sort" onChange=\'window.location="?page=nfsublog&nfw_sort=" + this.value;\'>';
+echo '<center>' . __('Viewing:', 'ninjafirewall') . ' <select name="nfw_sort" onChange=\'window.location="?page=nfsublog&nfwnonce='. wp_create_nonce('log_select') .'&nfw_sort=" + this.value;\'>';
 foreach ($avail_logs as $log_name => $tmp) {
 	echo '<option value="' . $log_name . '"';
 	if ( $selected_log == $log_name ) {
@@ -134,7 +141,8 @@ while (! feof( $fh ) ) {
 	if ( $skip <= 0 ) {
 		if ( preg_match( '/^\[(\d{10})\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(#\d{7})\]\s+\[(\d+)\]\s+\[(\d)\]\s+\[([\d.:a-fA-F, ]+?)\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(.+)\]$/', $line, $match ) ) {
 			if ( empty( $match[4]) ) { $match[4] = '-'; }
-			$res = date( 'd/M/y H:i:s', $match[1] ) . '  ' . $match[3] . '  ' . str_pad( $levels[$match[5]], 8 , ' ', STR_PAD_RIGHT) .'  ' .
+			$res = date( 'd/M/y H:i:s', $match[1] ) . '  ' . $match[3] . '  ' .
+			str_pad( $levels[$match[5]], 8 , ' ', STR_PAD_RIGHT) .'  ' .
 			str_pad( $match[4], 4 , ' ', STR_PAD_LEFT) . '  ' . str_pad( $match[6], 15, ' ', STR_PAD_RIGHT) . '  ' .
 			$match[7] . ' ' . $match[8] . ' - ' .	$match[9] . ' - [' . $match[10] . ']';
 			// If multi-site mode, append the domain name :

@@ -23,7 +23,7 @@ NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to 
 
 = Powerful filtering engine =
 
-NinjaFirewall includes **the most powerful filtering engine available in a WordPress plugin**. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall 3.0 filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
+NinjaFirewall includes **the most powerful filtering engine available in a WordPress plugin**. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
 
 = Features =
 
@@ -227,6 +227,16 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.1 =
+
+* Added a new option to whitelist all logged in users in addition to the Administrator. This can be set up from the new "Firewall Policies > Users Whitelist" option. Note that this feature was added to the free WP Edition only, as the premium WP+ Edition can whitelist users depending on their Role, IP etc.
+* [WP+ Edition] Geolocation access control can apply to the whole site or to some specific URLs only (e.g., /wp-login.php, /xmlrpc.php etc). See the "Access Control > Geolocation Access Control > Geolocation should apply to the whole site or specific URLs" option.
+* [WP+ Edition] Added an option to the "Firewall Log" page to export the log as a TSV (tab-separated values) text file.
+* [WP+ Edition] The "Delete" button from the "Firewall Log" page was moved above the textarea, beside the "Export" new button, and can be used to delete the currently viewed log.
+* Minor fixes.
+* We launched NinjaFirewall Referral Program. If you are interested in joining the program, please follow this link: http://nin.link/referral/
+* Updated security rules.
 
 = 3.0.1 =
 

@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-11 16:49:21                                       |
+ | REVISION: 2016-03-08 22:51:58                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -226,7 +226,7 @@ function help_nfsubpolicies() {
 		<strong>' . __('Various', 'ninjafirewall'). '</strong>
 		<li>' . sprintf( __('Block the <code>DOCUMENT_ROOT</code> server variable (%s) in HTTP requests:', 'ninjafirewall'), '<code>' . $_SERVER['DOCUMENT_ROOT'] . '</code>'). '<span class="description"> ' . __('this option will block scripts attempting to pass the <code>DOCUMENT_ROOT</code> server variable in a <code>GET</code> or <code>POST</code> request. Hackers use shell scripts that often need to pass this value, but most legitimate programs do not.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Block ASCII character 0x00 (NULL byte):', 'ninjafirewall'). '<span class="description"> ' . __('this option will reject any <code>GET</code> or <code>POST</code> request, <code>COOKIE</code>, <code>HTTP_USER_AGENT</code>, <code>REQUEST_URI</code>, <code>PHP_SELF</code>, <code>PATH_INFO</code> variables containing the ASCII character 0x00 (NULL byte). Such a character is dangerous and should always be rejected.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Block ASCII control characters 1 to 8 and 14 to 31:', 'ninjafirewall'). '<span class="description"> ' . __('in most cases, those control characters are not needed and should be rejected as well.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Block ASCII control characters 1 to 8 and 14 to 31:', 'ninjafirewall'). '<span class="description"> ' . __('in most cases, those control characters are not needed.', 'ninjafirewall'). '</span></li>
 
 		<br />
 
@@ -243,9 +243,9 @@ function help_nfsubpolicies() {
 	) );
 	get_current_screen()->add_help_tab( array(
 		'id'        => 'policies03',
-		'title'     => __('Administrator', 'ninjafirewall'),
+		'title'     => __('Users Whitelist', 'ninjafirewall'),
 		'content'   => '<br />'.
-		sprintf( __('By default, any logged in WordPress administrator will not be blocked by NinjaFirewall. This applies to all Firewall Policies listed below, except <code>FORCE_SSL_ADMIN</code>, <code>DISALLOW_FILE_EDIT</code>, <code>DISALLOW_FILE_MODS</code> options and the <a href="%s">Login Protection</a> which, if enabled, are always enforced.', 'ninjafirewall'), '?page=nfsubloginprot').
+		sprintf( __('By default, any logged in WordPress administrator will not be blocked by NinjaFirewall. You can also add any logged in users to the whitelist (make sure you trust them all before doing so).<br />This feature applies to all Firewall Policies listed below, except <code>FORCE_SSL_ADMIN</code>, <code>DISALLOW_FILE_EDIT</code>, <code>DISALLOW_FILE_MODS</code> options and the <a href="%s">Login Protection</a> which, if enabled, are always enforced.', 'ninjafirewall'), '?page=nfsubloginprot').
 		'<br />'
 	) );
 

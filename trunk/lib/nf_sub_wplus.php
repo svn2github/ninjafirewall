@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 19:01:30                                       |
+ | REVISION: 2016-03-09 14:21:43                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -50,8 +50,8 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<br />
 
-				<p><?php _e('<b>Access Control</b> can use geolocation to block visitors from specific countries. If you have a theme or a plugin that needs to know your visitors location, you can even ask NinjaFirewall to append the country code to the PHP headers:', 'ninjafirewall') ?></p>
-				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/02_ac_geoip.png" width="471" height="428" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
+				<p><?php _e('<b>Access Control</b> can use geolocation to block visitors from specific countries. It can apply to the whole blog or only to specific folders or scripts (e.g., /wp-login.php, /xmlrpc.php etc). If you have a theme or a plugin that needs to know your visitors location, you can even ask NinjaFirewall to append the country code to the PHP headers:', 'ninjafirewall') ?></p>
+				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/02_ac_geoip.png" width="460" height="611" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />
 
@@ -102,8 +102,8 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<p><strong><?php _e('Firewall Log:', 'ninjafirewall') ?></strong>
 				<br />
-				<?php _e('The log menu has been revamped too. You can disable the firewall log, delete the current one, enable its rotation based on the size of the file and, if any, view each rotated log separately. Quick filtering options are easily accessible from checkboxes:', 'ninjafirewall') ?></p>
-				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/10_log.png" width="489" height="465" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
+				<?php _e('The log menu has been revamped too. You can disable the firewall log, delete the current one, enable its rotation based on the size of the file and, if any, view each rotated log separately. Quick filtering options are easily accessible from checkboxes. The log can also be exported as a TSV (tab-separated values) text file.', 'ninjafirewall') ?></p>
+				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/10_log.png" width="487" height="465" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />
 

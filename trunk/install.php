@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-28 11:05:46                                       |
+ | REVISION: 2016-03-11 12:28:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -96,16 +96,15 @@ function nfw_welcome() {
 	?>
 	<p><?php _e('Thank you for using NinjaFirewall', 'ninjafirewall') ?> (WP Edition).</p>
 	<p><?php _e('This installer will help you to make the setup process as quick and easy as possible. But before doing so, please read carefully the following lines:', 'ninjafirewall') ?></p>
-	<p><?php _e('Although NinjaFirewall looks like a regular plugin, it is not. It can be installed and configured from WordPress admin console, but it is a stand-alone Web Application Firewall that sits in front of WordPress. That means that it will hook, scan, reject and/or sanitise any HTTP/HTTPS request sent to a PHP script before it reaches WordPress and any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube) or any potential backdoor/shell script (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?></p>
-	<p><?php printf( __('That\'s cool and makes NinjaFirewall a true firewall. And probably <a href="%s" title="%s">the most powerful security applications for WordPress</a>. But just like any firewall, if you misuse it, you can get into serious problems and crash your site.', 'ninjafirewall'), 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine') ?></p>
-	<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:#46b450;">
+	<p><?php _e('Although NinjaFirewall looks like a regular plugin, it is not. It can be installed and configured from the WordPress admin console, but it is a stand-alone Web Application Firewall that sits in front of WordPress. That means that it will hook, scan, reject and/or sanitise any HTTP/HTTPS request sent to a PHP script before it reaches WordPress and any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube) or any potential backdoor/shell script (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?></p>
+	<p><?php printf( __('That\'s cool and makes NinjaFirewall a true firewall. And probably <a href="%s" title="%s">the most powerful security application for WordPress</a>. But you must be cautious:', 'ninjafirewall'), 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine') ?></p>
+	<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:#dc3232;">
 	<br />
-	1 - <?php _e('Do NOT rename, edit or delete its files or folders, even if it is disabled from the Plugins page.', 'ninjafirewall') ?>
+	1 - <?php _e('Do NOT rename, edit or delete its files or folders.', 'ninjafirewall') ?>
 	<br />
-	2 - <?php _e('Do NOT migrate your site with NinjaFirewall installed. Export its configuration, uninstall it, migrate your site, reinstall NinjaFirewall and reimport its configuration.', 'ninjafirewall') ?>
+	2 - <?php _e('Do NOT migrate your site with NinjaFirewall installed. Instead, export its configuration, uninstall it, migrate your site, reinstall NinjaFirewall and reimport its configuration.', 'ninjafirewall') ?>
 	<br />
 	<br />
-	<center><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ ) ?>" border="0" height="16" width="16">&nbsp;<strong><?php _e('Failure to do so will almost always cause you to be locked out of your own site and/or to crash it.', 'ninjafirewall') ?></strong><br />&nbsp;</center>
 	</div>
 	<h3><?php _e('Privacy Policy', 'ninjafirewall') ?></h3>
 	<?php printf( __('<a href="%s">NinTechNet</a> strictly follows the WordPress <a href="%s">Plugin Developer Guidelines</a>: our software, NinjaFirewall (WP Edition), is free, open source and fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home". It does not require a registration process or an activation key to be installed or used.', 'ninjafirewall'), 'http://nintechnet.com/', 'http://wordpress.org/plugins/about/guidelines/') ?>
@@ -123,7 +122,7 @@ function nfw_welcome() {
 	<?php _e('Doc, FAQ and How-To are also available from our site:', 'ninjafirewall') ?> <a href="http://ninjafirewall.com/">http://ninjafirewall.com/</a>
 	<br />
 	<?php _e('Updates info are available via Twitter:', 'ninjafirewall') ?><br /><a href="https://twitter.com/nintechnet"><img border="0" src="<?php echo plugins_url( '/images/twitter_ntn.png', __FILE__ ) ?>" width="116" height="28" target="_blank"></a>
-	<p style="color:red"><?php _e('Ensure that you have an FTP access to your website so that, if there was a problem during the installation of the firewall, you could undo the changes.', 'ninjafirewall') ?></p>
+	<p style="color:red"><?php _e('Ensure that you have FTP access to your website so that, if there were a problem during the installation of the firewall, you could undo the changes.', 'ninjafirewall') ?></p>
 	<form method="post">
 		<p><input class="button-primary" type="submit" name="Save" value="<?php _e('Enough chitchat, let\'s go!', 'ninjafirewall') ?> &#187;" /></p>
 		<input type="hidden" name="nfw_act" value="logdir" />
@@ -150,8 +149,20 @@ function nfw_logdir() {
 			mkdir( NFW_LOG_DIR . '/nfwlog/cache', 0755);
 		}
 
-		$deny_rules = <<<'DENY'
-<Files "*">
+		// Firewall loader:
+		$loader = "<?php
+// ===============================================================//
+// NinjaFirewall's loader.                                        //
+// DO NOT alter or remove it as long as NinjaFirewall is running! //
+// ===============================================================//
+if ( file_exists('" . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "') ) {
+	@include('" . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "');
+}
+// EOF
+";
+		file_put_contents(NFW_LOG_DIR . '/nfwlog/ninjafirewall.php', $loader, LOCK_EX);
+
+		$deny_rules = "<Files \"*\">
 	<IfModule mod_version.c>
 		<IfVersion < 2.4>
 			Order Deny,Allow
@@ -170,14 +181,13 @@ function nfw_logdir() {
 			Require all denied
 		</IfModule>
 	</IfModule>
-</Files>
-DENY;
+</Files>";
 
 		touch( NFW_LOG_DIR . '/nfwlog/index.html' );
 		touch( NFW_LOG_DIR . '/nfwlog/cache/index.html' );
 		@file_put_contents(NFW_LOG_DIR . '/nfwlog/.htaccess', $deny_rules, LOCK_EX);
 		@file_put_contents(NFW_LOG_DIR . '/nfwlog/cache/.htaccess', $deny_rules, LOCK_EX);
-		@file_put_contents(NFW_LOG_DIR . '/nfwlog/readme.txt', __("This is NinjaFirewall's logs and cache directory.", 'ninjafirewall'), LOCK_EX);
+		@file_put_contents(NFW_LOG_DIR . '/nfwlog/readme.txt', __("This is NinjaFirewall's logs, loader and cache directory. DO NOT alter or remove it as long as NinjaFirewall is running!", 'ninjafirewall'), LOCK_EX);
 	}
 	if ( empty($err) ) {
 		nfw_chk_docroot( 0 );
@@ -370,7 +380,7 @@ function nfw_presave($err) {
 					<option value="1"<?php selected($http_server, 1) ?>>Apache + PHP<?php echo PHP_MAJOR_VERSION ?> module<?php echo $s1 ?></option>
 					<option value="2"<?php selected($http_server, 2) ?>>Apache + CGI/FastCGI<?php echo $s2 ?></option>
 					<option value="6"<?php selected($http_server, 6) ?>>Apache + suPHP</option>
-					<option value="3"<?php selected($http_server, 3) ?>>Nginx<?php echo $s3 ?></option>
+					<option value="3"<?php selected($http_server, 3) ?>>Nginx + <?php _e('CGI or PHP-FPM', 'ninjafirewall') ?><?php echo $s3 ?></option>
 					<option value="4"<?php selected($http_server, 4) ?>>Litespeed<?php echo $s4 ?></option>
 					<option value="5"<?php selected($http_server, 5) ?>><?php _e('Other webserver + CGI/FastCGI', 'ninjafirewall') ?><?php echo $s5 ?></option>
 					<option value="7"<?php selected($http_server, 7) ?>><?php _e('Other webserver + HHVM', 'ninjafirewall') ?><?php echo $s7 ?></option>
@@ -694,7 +704,7 @@ function nfw_integration($err) {
 			echo '<p><label><input type="radio" name="makechange" onClick="diy_chg(this.value)" value="nfw" checked="checked">'.
 			__('Let NinjaFirewall make the above changes (recommended).', 'ninjafirewall') .'</label></p>
 			<p><font color="red" id="lnfw">'.
-			__('Ensure that you have an FTP access to your website so that, if there was a problem, you could undo the above changes.', 'ninjafirewall') .'</font>&nbsp;</p>
+			__('Ensure that you have FTP access to your website so that, if there were a problem, you could undo the above changes.', 'ninjafirewall') .'</font>&nbsp;</p>
 			<p><label><input type="radio" name="makechange" onClick="diy_chg(this.value)" value="usr">'.
 			__('I want to make the changes myself.', 'ninjafirewall') .'</label></p>
 			<p id="diy" style="display:none;">' . $chg_str . '</p>';
@@ -947,6 +957,9 @@ function welcome_email() {
 			$message.= __('-Keep your blog protected against the latest vulnerabilities:', 'ninjafirewall') . "\n";
 			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
 
+			$message.= __('-NinjaFirewall Referral Program:', 'ninjafirewall') . "\n";
+			$message.= 'http://nintechnet.com/referral/ ' . "\n\n";
+
 			$message.= '5) '. __('Help & Support Links:', 'ninjafirewall') . "\n\n";
 
 			$message.= __('-Each page of NinjaFirewall includes a contextual help: click on the "Help" menu tab located in the upper right corner of the corresponding page.', 'ninjafirewall') . "\n";
@@ -1027,15 +1040,15 @@ function nfw_ini_data() {
 	if (! defined('HTACCESS_BEGIN') ) {
 		define( 'HTACCESS_BEGIN', '# BEGIN NinjaFirewall' );
 		define( 'HTACCESS_DATA', '<IfModule mod_php' . PHP_MAJOR_VERSION . '.c>' . "\n" .
-									'   php_value auto_prepend_file ' . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "\n" .
+									'   php_value auto_prepend_file ' . NFW_LOG_DIR . '/nfwlog/ninjafirewall.php' . "\n" .
 									'</IfModule>');
-		define( 'LITESPEED_DATA', 'php_value auto_prepend_file ' . plugin_dir_path(__FILE__) . 'lib/firewall.php');
+		define( 'LITESPEED_DATA', 'php_value auto_prepend_file ' . NFW_LOG_DIR . '/nfwlog/ninjafirewall.php');
 		define( 'SUPHP_DATA', '<IfModule mod_suphp.c>' . "\n" .
 									'   suPHP_ConfigPath ' . rtrim($_SESSION['abspath'], '/') . "\n" .
 									'</IfModule>');
 		define( 'HTACCESS_END', '# END NinjaFirewall' );
 		define( 'PHPINI_BEGIN', '; BEGIN NinjaFirewall' );
-		define( 'PHPINI_DATA', 'auto_prepend_file = ' . plugin_dir_path(__FILE__) . 'lib/firewall.php' );
+		define( 'PHPINI_DATA', 'auto_prepend_file = ' . NFW_LOG_DIR . '/nfwlog/ninjafirewall.php' );
 		define( 'PHPINI_END', '; END NinjaFirewall' );
 	}
 	// set the admin goodguy flag :

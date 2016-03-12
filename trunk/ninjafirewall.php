@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.0.1
+Version: 3.1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-28 11:08:25                                       |
+ | REVISION: 2016-03-11 21:36:09                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.0.1' );
+define( 'NFW_ENGINE_VERSION', '3.1' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -255,7 +255,7 @@ function nfw_upgrade() {
 		}
 		$data = serialize($nfw_options) . "\n:-:\n" . serialize($nfw_rules) . "\n:-:\n" . $bd_data;
 		// Download :
-		header('Content-Type: application/txt');
+		header('Content-Type: text/plain');
 		header('Content-Length: '. strlen( $data ) );
 		header('Content-Disposition: attachment; filename="nfwp.' . NFW_ENGINE_VERSION . '.dat"');
 		echo $data;
@@ -272,7 +272,7 @@ function nfw_upgrade() {
 		} elseif (file_exists(NFW_LOG_DIR . '/nfwlog/cache/nfilecheck_diff.php.php') ) {
 			$download_file = NFW_LOG_DIR . '/nfwlog/cache/nfilecheck_diff.php.php';
 		} else {
-			exit;
+			wp_nonce_ays('filecheck_save');
 		}
 		$stat = stat($download_file);
 		nfw_get_blogtimezone();
@@ -302,7 +302,7 @@ function nfw_upgrade() {
 		$data .= "\n== EOF\n";
 
 		// Download :
-		header('Content-Type: application/txt');
+		header('Content-Type: text/plain');
 		header('Content-Length: '. strlen( $data ) );
 		header('Content-Disposition: attachment; filename="'. $_SERVER['SERVER_NAME'] .'_diff.txt"');
 		echo $data;
@@ -330,11 +330,13 @@ function nfw_upgrade() {
 			fclose($fh);
 			$data .= "\n== EOF\n";
 			// Download :
-			header('Content-Type: application/txt');
+			header('Content-Type: text/plain');
 			header('Content-Length: '. strlen( $data ) );
 			header('Content-Disposition: attachment; filename="'. $_SERVER['SERVER_NAME'] .'_snapshot.txt"');
 			echo $data;
 			exit;
+		} else {
+			wp_nonce_ays('filecheck_save');
 		}
 	}
 
@@ -677,13 +679,14 @@ function nfw_login_hook( $user_login, $user ) {
 	// Do some housework if needed :
 	nfw_housework();
 
-	if ( $admin_flag == 2 ) {
-		if (! empty( $nfw_options['wl_admin']) ) {
-			// Set the goodguy flag :
-			$_SESSION['nfw_goodguy'] = true;
+	// Set the goodguy flag?
+	if (! empty( $nfw_options['wl_admin']) ) {
+		if ( ( $nfw_options['wl_admin'] == 1 && $admin_flag == 2 ) || ( $nfw_options['wl_admin'] == 2 ) ) {
+			$_SESSION['nfw_goodguy'] = $nfw_options['wl_admin'];
 			return;
 		}
 	}
+
 	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
 		unset( $_SESSION['nfw_goodguy'] );
 	}
@@ -1411,6 +1414,8 @@ function sanitise_fn(cbox) {
 		$uploads = 1;
 	}
 	?>
+	<br />
+	<br />
 	<h3><?php _e('Uploads', 'ninjafirewall') ?></h3>
 	<table class="form-table">
 		<tr>
@@ -1711,7 +1716,7 @@ function sanitise_fn(cbox) {
 	<h3><?php _e('HTTP response headers', 'ninjafirewall')  ?></h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers" target="_blank">X-Content-Type-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes; ?></label>
@@ -1721,7 +1726,7 @@ function sanitise_fn(cbox) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<code><a href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers" target="_blank">X-Frame-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[x_frame_options]" value="1"<?php checked( $nfw_options['response_headers'][2], 1 ); disabled($err, 1); ?>><code>SAMEORIGIN</code></label></p>
@@ -1730,7 +1735,7 @@ function sanitise_fn(cbox) {
 			<td align="left" style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[x_frame_options]" value="0"<?php checked( $nfw_options['response_headers'][2], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __("Set %s to enable browser's built-in XSS filter (IE, Chrome and Safari)", 'ninjafirewall'), '<code><a href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers" target="_blank">X-XSS-Protection</a></code>') ?></th>
+			<th scope="row"><?php printf( __("Set %s to enable browser's built-in XSS filter (IE, Chrome and Safari)", 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a></code>') ?></th>
 			<td width="20"></td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?>><?php echo $yes ?></label>
@@ -1740,7 +1745,7 @@ function sanitise_fn(cbox) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="https://www.owasp.org/index.php/HttpOnly" target="_blank">HttpOnly</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> onclick="return httponly();">&nbsp;<?php echo $yes ?></label>
@@ -1760,7 +1765,7 @@ function sanitise_fn(cbox) {
 		}
 		?>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers" target="_blank">Strict-Transport-Security</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
@@ -1973,10 +1978,10 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php _e('Block ASCII control characters 1 to 8 and 14 to 31', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="1"<?php checked( $block_ctrl_chars, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="1"<?php checked( $block_ctrl_chars, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="0"<?php checked( $block_ctrl_chars, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="0"<?php checked( $block_ctrl_chars, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 	</table>
@@ -2181,22 +2186,26 @@ function sanitise_fn(cbox) {
 	</table>
 	<a name="donotblockadmin"></a>
 	<br />
+	<br />
 
 	<?php
 	if ( empty( $nfw_options['wl_admin']) ) {
 		$wl_admin = 0;
+	} elseif ( $nfw_options['wl_admin'] == 2 ) {
+		$wl_admin = 2;
 	} else {
 		$wl_admin = 1;
 	}
 	?>
 	<table class="form-table">
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
-			<th scope="row"><?php _e('Do not block WordPress administrator (must be logged in)', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('Users Whitelist', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
-			<p><label><input type="radio" name="nfw_options[wl_admin]" value="1"<?php checked( $wl_admin, 1 ) ?>>&nbsp;<?php _e('Yes, do not block the Administrator (default)', 'ninjafirewall') ?></label></p>
-			<p><label><input type="radio" name="nfw_options[wl_admin]" value="0"<?php checked( $wl_admin, 0 ) ?>>&nbsp;<?php _e('No, block everyone, including the Admin if needed!', 'ninjafirewall') ?></label></p>
-			<p><span class="description"><?php _e('Note : does not apply to <code>FORCE_SSL_ADMIN</code>, <code>DISALLOW_FILE_EDIT</code> and <code>DISALLOW_FILE_MODS</code> options which, if enabled, are always enforced.', 'ninjafirewall') ?></span></p>
+			<p><label><input type="radio" name="nfw_options[wl_admin]" value="1"<?php checked( $wl_admin, 1 ) ?>>&nbsp;<?php _e('Add the Administrator to the whitelist (default).', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[wl_admin]" value="2"<?php checked( $wl_admin, 2 ) ?>>&nbsp;<?php _e('Add all logged in users to the whitelist.', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[wl_admin]" value="0"<?php checked( $wl_admin, 0 ) ?>>&nbsp;<?php _e('Disable users whitelist.', 'ninjafirewall') ?></label></p>
+			<p><span class="description"><?php _e('Note: This feature  does not apply to <code>FORCE_SSL_ADMIN</code>, <code>DISALLOW_FILE_EDIT</code> and <code>DISALLOW_FILE_MODS</code> options which, if enabled, are always enforced.', 'ninjafirewall') ?></span></p>
 			</td>
 		</tr>
 	</table>
@@ -2540,10 +2549,15 @@ function nf_sub_policies_save() {
 			unset( $_SESSION['nfw_goodguy']);
 		}
 	} else {
-		// Default: don't block admin...
-		$nfw_options['wl_admin'] = 1;
-		// ...and set the goodguy flag :
-		$_SESSION['nfw_goodguy'] = true;
+		if ( $_POST['nfw_options']['wl_admin'] == 2 ) {
+			// Whitelist any logged in user:
+			$nfw_options['wl_admin'] = 2;
+		} else {
+			// Default: don't block admin...
+			$nfw_options['wl_admin'] = 1;
+		}
+		// ...and set the goodguy flag:
+		$_SESSION['nfw_goodguy'] = $nfw_options['wl_admin'];
 	}
 
 
@@ -2565,9 +2579,9 @@ function nf_sub_policies_save() {
 	}
 	// Block ASCII control characters 1 to 8 and 14 to 31 (#ID 500) :
 	if ( empty( $_POST['nfw_rules']['block_ctrl_chars']) ) {
+		// Default: no
 		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 0;
 	} else {
-		// Default: yes
 		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 1;
 	}
 
@@ -2682,7 +2696,7 @@ function nf_sub_policies_default() {
 	}
 
 	$nfw_rules[NFW_NULL_BYTE]['ena']  = 1;
-	$nfw_rules[NFW_ASCII_CTRL]['ena'] = 1;
+	$nfw_rules[NFW_ASCII_CTRL]['ena'] = 0;
 
 	update_option( 'nfw_options', $nfw_options);
 	update_option( 'nfw_rules', $nfw_rules);
