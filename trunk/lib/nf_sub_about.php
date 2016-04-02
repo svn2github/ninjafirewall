@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 18:59:16                                       |
+ | REVISION: 2016-04-01 19:50:33                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -37,7 +37,7 @@ if ( $data = @file_get_contents( dirname( plugin_dir_path(__FILE__) ) . '/readme
 // (e.g., changelog, privacy policy etc) :
 echo '<script>
 function show_table(table_id) {
-	var av_table = [11, 12, 13, 14];
+	var av_table = [11, 12, 13, 14, 15];
 	for (var i = 0; i < av_table.length; i++) {
 		if ( table_id == av_table[i] ) {
 			document.getElementById(table_id).style.display = "";
@@ -100,11 +100,11 @@ function nfw_eg() {
 	echo '
 		<br />
 		<br />
-		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word about the Ninja !', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Privacy Policy', 'ninjafirewall') . '" onclick="show_table(14);">
+		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Spread the word!', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Referral Program', 'ninjafirewall') . '" onclick="show_table(14);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Privacy Policy', 'ninjafirewall') . '" onclick="show_table(15);">
 		<br />
 		<br />
 
-		<table id="11" style="display:none;" border="0" width="500">
+		<table id="11" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="500">
 			<tr style="text-align:center;">
 				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
 				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
@@ -122,7 +122,7 @@ function nfw_eg() {
 			</tr>
 		</table>
 
-		<table id="13" border="0" style="display:none;" width="500">
+		<table id="13" border="0" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
 			<tr valign="top"><td width="47%;" align="right">REMOTE_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '</td></tr>
 			<tr valign="top"><td width="47%;" align="right">SERVER_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' .htmlspecialchars($_SERVER['SERVER_ADDR']) . '</td></tr>
 			<tr valign="top"><td width="47%;" align="right">SERVER_NAME</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['SERVER_NAME']) . '</td></tr>
@@ -175,10 +175,18 @@ if (! preg_match( '/^win/i', PHP_OS ) ) {
 
 echo '
 		</table>
-		<table id="14" style="display:none;" width="500">
+		<table id="14" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
 			<tr>
 				<td>
-					<textarea class="small-text code" cols="60" rows="8">' . __('NinTechNet strictly follows the WordPress Plugin Developer guidelines', 'ninjafirewall') . ' &lt;http://wordpress.org/plugins/about/guidelines/&gt;: ' . __('NinjaFirewall (WP Edition) is free, open source and fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home". It does not require a registration process or an activation key to be installed or used.', 'ninjafirewall') . "\n" .  __('Because we do not collect any user data, we do not even know that you are using (and hopefully enjoying !) our product.', 'ninjafirewall') . '</textarea>
+					' . sprintf(__('By joining our NinjaFirewall Referral Program you can earn up to %s for every payment made by a user who signs up using your personal referral link.', 'ninjafirewall'), '20%') . '</p>
+					<p>' . sprintf(__('For more info and subscription, please check our <a href="%s">Referral Program page</a>.', 'ninjafirewall'), 'http://nintechnet.com/referral/') . '
+				</td>
+			</tr>
+		</table>
+		<table id="15" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+			<tr>
+				<td>
+					' . sprintf( __('NinTechNet strictly follows the <a href="%s">WordPress Plugin Developer</a> guidelines:', 'ninjafirewall') , 'http://wordpress.org/plugins/about/guidelines/') . '<br />'. __('NinjaFirewall (WP Edition) is free, open source and fully functional, no "trialware", no "obfuscated code", no "crippleware", no "phoning home". It does not require a registration process or an activation key to be installed or used.', 'ninjafirewall') . "\n" .  __('Because we do not collect any user data, we do not even know that you are using (and hopefully enjoying !) our product.', 'ninjafirewall') . '
 				</td>
 			</tr>
 		</table>

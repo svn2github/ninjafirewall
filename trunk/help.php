@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-08 22:51:58                                       |
+ | REVISION: 2016-03-25 22:51:58                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -131,7 +131,7 @@ function help_nfsubpolicies() {
 		'content'   => '<br />'.
 		__('You can choose to scan and reject dangerous content but also to sanitise requests and variables. Those two actions are different and can be combined together for better security.', 'ninjafirewall') .
 		'<li>'. __('Scan : if anything suspicious is detected, NinjaFirewall will block the request and return an HTTP error code and message (defined in the "Firewall Options" page). The user request will fail and the connection will be closed immediately.', 'ninjafirewall') .'</li>
-		<li>'. sprintf( __('Sanitise : this option will not block but sanitise the user request by escaping characters that can be used to perform code or SQL injections (%s) and various exploits (XSS etc). If it is a variable, i.e. <code>?name=value</code>, both its name and value will be sanitised.', 'ninjafirewall'), '<code>\'</code>, <code>"</code>, <code>\\</code>, <code>\n</code>, <code>\r</code>, <code>`</code>, <code>\x1a</code>, <code>\x00</code>') .'
+		<li>'. sprintf( __('Sanitise : this option will not block but sanitise the user request by escaping characters that can be used to exploit vulnerabilities (%s) and replacing <code>&lt;</code> and <code>&gt;</code> with their corresponding HTML entities (<code>&amp;lt;</code>, <code>&amp;gt;</code>). If it is a variable, i.e. <code>?name=value</code>, both its name and value will be sanitised.', 'ninjafirewall'), '<code>\'</code>, <code>"</code>, <code>\\</code>, <code>\n</code>, <code>\r</code>, <code>`</code>, <code>\x1a</code>, <code>\x00</code>') .'
 		<br />' .
 		__('This action will be performed when the filtering process is over, right before NinjaFirewall forwards the request to your PHP script.', 'ninjafirewall') . '
 		<br />
@@ -263,6 +263,7 @@ function help_nfsubfileguard() {
 			'<br />' .
 			__('If a hacker uploaded a shell script to your site (or injected a backdoor into an already existing file) and tried to directly access that file using his browser or a script, NinjaFirewall would hook the HTTP request and immediately detect that the file was recently modified/created. It would send you a detailed alert (script name, IP, request, date and time). Alerts will be sent to the contact email address defined in the "Event Notifications" menu.', 'ninjafirewall') .
 			'<p>' . __('If you do not want to monitor a folder, you can exclude its full path or a part of it (e.g., <code>/var/www/public_html/cache/</code> or <code>/cache/</code> etc). NinjaFirewall will compare this value to the <code>$_SERVER["SCRIPT_FILENAME"]</code> server variable and, if it matches, will ignore it.', 'ninjafirewall') . '</p>' .
+			__('Multiple values must be comma-separated (e.g., <code>/foo/bar/,/cache/</code>).', 'ninjafirewall') .'</li>' .
 			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('File Guard real-time detection is a totally unique feature, because NinjaFirewall is the only plugin for WordPress that can hook HTTP requests sent to any PHP script, even if that script is not part of the WordPress package (third-party software, shell script, backdoor etc).', 'ninjafirewall') . '</span></p>'
 	) );
 }

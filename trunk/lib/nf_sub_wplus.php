@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-09 14:21:43                                       |
+ | REVISION: 2016-03-28 14:21:43                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -103,7 +103,7 @@ nf_not_allowed( 'block', __LINE__ );
 				<p><strong><?php _e('Firewall Log:', 'ninjafirewall') ?></strong>
 				<br />
 				<?php _e('The log menu has been revamped too. You can disable the firewall log, delete the current one, enable its rotation based on the size of the file and, if any, view each rotated log separately. Quick filtering options are easily accessible from checkboxes. The log can also be exported as a TSV (tab-separated values) text file.', 'ninjafirewall') ?></p>
-				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/10_log.png" width="487" height="465" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
+				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/10_log.png" width="490" height="519" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />
 

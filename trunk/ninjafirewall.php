@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.1
+Version: 3.1.2
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-11 21:36:09                                       |
+ | REVISION: 2016-04-02 18:44:37                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.1' );
+define( 'NFW_ENGINE_VERSION', '3.1.2' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -457,7 +457,8 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				$nfw_options['response_headers'] = '000000';
+				// We enable X-XSS-Protection and HttpOnly flag:
+				$nfw_options['response_headers'] = '100100';
 			}
 		}
 		// v1.3.3 update -------------------------------------------------
@@ -494,6 +495,13 @@ function nfw_upgrade() {
 				wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 			}
 			$nfw_options['no_xmlrpc_multi'] = 1;
+		}
+		// v3.2 update (file guard) --------------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.1', '<=' ) ) {
+			// Convert the current value for regex use:
+			if (! empty( $nfw_options['fg_exclude'] ) ) {
+				$nfw_options['fg_exclude'] = preg_quote( $nfw_options['fg_exclude'], '`');
+			}
 		}
 		// ---------------------------------------------------------------
 
@@ -1535,11 +1543,11 @@ function sanitise_fn(cbox) {
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>REQUEST</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td align="left" width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[request_sanitise]" value="1"<?php checked( $request_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[request_sanitise]" value="0"<?php checked( $request_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[request_sanitise]" value="0"<?php checked( $request_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Do not enable this option unless you know what you are doing!', 'ninjafirewall') ?></span>
 			</td>
 		</tr>
 	</table>
@@ -1738,20 +1746,20 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php printf( __("Set %s to enable browser's built-in XSS filter (IE, Chrome and Safari)", 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a></code>') ?></th>
 			<td width="20"></td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?>><?php echo $yes ?></label>
+				<label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?>><?php echo $yes . $default ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[x_xss_protection]" value="0"<?php checked( $nfw_options['response_headers'][3], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?>
+				<label><input type="radio" name="nfw_options[x_xss_protection]" value="0"<?php checked( $nfw_options['response_headers'][3], 0 ); disabled($err, 1); ?>><?php echo $no; ?></label><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> onclick="return httponly();">&nbsp;<?php echo $yes ?></label>
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> onclick="return httponly();">&nbsp;<?php echo $yes . $default ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no . $default; ?></label><?php echo $err_msg ?>
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no; ?></label><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<?php
@@ -2651,7 +2659,7 @@ function nf_sub_policies_default() {
 	$nfw_options['post_sanitise']		= 0;
 	$nfw_options['request_sanitise'] = 0;
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '000000';
+		$nfw_options['response_headers'] = '100100';
 	}
 	$nfw_options['cookies_scan']		= 1;
 	$nfw_options['cookies_sanitise']	= 0;
@@ -2771,9 +2779,11 @@ function nf_sub_fileguard() {
 		$nfw_options['fg_mtime'] = 10;
 	}
 	if ( empty($nfw_options['fg_exclude']) ) {
-		$nfw_options['fg_exclude'] = '';
+		$fg_exclude = '';
+	} else {
+		$tmp = str_replace('|', ',', $nfw_options['fg_exclude']);
+		$fg_exclude = preg_replace( '/\\\([`.\\/\\\+*?\[^\]$(){}=!<>:-])/', '$1', $tmp );
 	}
-
 	?>
 	<br />
 	<form method="post" name="nfwfilefuard" onSubmit="return check_fields();">
@@ -2802,8 +2812,8 @@ function nf_sub_fileguard() {
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><?php _e('Exclude the following folder (optional)', 'ninjafirewall') ?></th>
-				<td align="left"><input class="regular-text" type="text" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars($nfw_options['fg_exclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" maxlength="150"><br /><span class="description"><?php _e('A full or partial case-sensitive string, max 150 characters.', 'ninjafirewall') ?></span></td>
+				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
+				<td align="left"><input class="regular-text" type="text" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 			</tr>
 		</table>
 		<br />
@@ -2839,7 +2849,16 @@ function nf_sub_fileguard_save() {
 	if ( empty($_POST['nfw_options']['fg_exclude']) || strlen($_POST['nfw_options']['fg_exclude']) > 150 ) {
 		$nfw_options['fg_exclude'] = '';
 	} else {
-		$nfw_options['fg_exclude'] = stripslashes($_POST['nfw_options']['fg_exclude']);
+		$exclude = '';
+		$fg_exclude =  explode(',', $_POST['nfw_options']['fg_exclude'] );
+		foreach ($fg_exclude as $path) {
+			if ( $path ) {
+				// No space characteres allowed:
+				$path = str_replace( array(' ', '\\', '|'), '', $path);
+				$exclude .= preg_quote( rtrim($path, ','), '`') . '|';
+			}
+		}
+		$nfw_options['fg_exclude'] = rtrim($exclude, '|');
 	}
 
 	// Update :
@@ -3609,12 +3628,16 @@ function ninjafirewall_settings_link( $links ) {
 		$links[] = __('Access Restricted', 'ninjafirewall');
 	} else {
 		$links[] = '<a href="'. get_admin_url(null, 'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-		$links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/" target="_blank">WP+ Edition</a>';
+		$links[] = '<a href="http://nintechnet.com/referral/" target="_blank">'. __('Referral Program', 'ninjafirewall'). '</a>';
 	}
+	unset($links['edit']);
    return $links;
 }
-
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
+if ( is_multisite() ) {
+	add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
+} else {
+	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
+}
 
 /* ------------------------------------------------------------------ */ // i18n+
 

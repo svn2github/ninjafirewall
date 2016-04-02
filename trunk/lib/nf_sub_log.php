@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-11 10:58:57                                       |
+ | REVISION: 2016-03-27 10:58:57                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -102,16 +102,16 @@ while (! feof( $fh ) ) {
 	fgets( $fh );
 	$count++;
 }
-// Skip last empty line :
-$count--;
+// Skip the first (PHP code) and the last (empty) line :
+$count -= 2;
 fclose( $fh );
-if ( $count < $max_lines ) {
+if ( $count <= $max_lines ) {
 	$skip = 0;
 } else  {
 	echo '<div class="error notice is-dismissible"><p>' . __('Warning', 'ninjafirewall') . ' : ';
 	printf( __('your log has %s lines. I will display the last %s lines only.', 'ninjafirewall'), $count, $max_lines );
 	echo '</p></div>';
-	$skip = $count - $max_lines;
+	$skip = $count - $max_lines + 1;
 }
 
 // Add select box:

@@ -2,7 +2,7 @@
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
-Tested up to: 4.4.2
+Tested up to: 4.5
 Stable tag: 3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -227,6 +227,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.1.2 =
+
+* It is possible to exclude multiple files/folders in the "File Guard" options page (multiple values must be comma-separated).
+* The "Firewall Policies" sanitise options (GET, COOKIE etc) will replace all less-than and greater-than signs with their corresponding HTML entities.
+* The "X-XSS-Protection" and "HttpOnly flag" options from the "Firewall Policies" page will be enabled by default with new installations of NinjaFirewall.
+* [WP+ Edition] Added an option to select the number of log lines to display (see "Firewall Log > Log Options").
+* Minor fixes and adjustments.
 
 = 3.1 =
 

@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-24 13:50:42                                       |
+ | REVISION: 2016-03-21 17:10:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -242,5 +242,30 @@ function nf_get_dbdata() {
 	);
 
 }
+
+/* ------------------------------------------------------------------ */
+
+function nfw_get_option( $option ) {
+
+	// This function, and the two following ones, are only there
+	// for compatibility with some functions from the WP+ Edition.
+
+	return get_option($option);
+}
+
+/* ------------------------------------------------------------------ */
+
+function nfw_update_option( $option, $new_value ) {
+
+	update_option( $option, $new_value );
+}
+
+/* ------------------------------------------------------------------ */
+
+function nfw_delete_option( $option ) {
+
+	delete_option( $option );
+}
+
 /* ------------------------------------------------------------------ */
 // EOF

@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2016-02-28 11:28:08                                       |
+// | REVISION: 2016-04-01 18:23:19                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -20,7 +20,7 @@ if ( strpos($_SERVER['SCRIPT_NAME'], '/nfwlog/') !== FALSE ||
 	strpos($_SERVER['SCRIPT_NAME'], '/ninjafirewall/') !== FALSE ) { die('Forbidden'); }
 if (defined('NFW_STATUS')) { return; }
 
-// Used for benchmarks purpose :
+// Used for benchmarks purpose:
 $nfw_['fw_starttime'] = microtime(true);
 
 // Optional NinjaFirewall configuration file
@@ -285,42 +285,10 @@ if (! empty($_SESSION['nfw_goodguy']) ) {
 
 	// Look for Live Log AJAX request...
 	if (! empty($_SESSION['nfw_livelog']) &&  isset($_POST['livecls']) && isset($_POST['lines'])) {
-		$nfw_['livelog'] = $nfw_['log_dir'] . '/cache/livelog.php';
-		if ( file_exists($nfw_['livelog']) ) {
-			// Check if we need to flush it :
-			if ($_POST['livecls'] > 0) {
-				$fh = fopen($nfw_['livelog'],'w');
-				fclose($fh);
-			}
-			$count = 0;
-			$buffer = '';
-			if ( $fh = fopen($nfw_['livelog'], 'r' ) ) {
-				while (! feof($fh) ) {
-					if ( $count >= $_POST['lines'] ) {
-						$buffer .= fgets($fh);
-					} else {
-						fgets($fh);
-					}
-					$count++;
-				}
-				fclose($fh);
-			}
-
-			// Return the log content :
-			header('HTTP/1.0 200 OK');
-			if ( $buffer ) {
-				echo '^'.$buffer;
-			} else {
-				echo '*';
-			}
-			touch($nfw_['log_dir'] .'/cache/livelogrun.php');
-		} else {
-			// Something went wrong :
-			header('HTTP/1.0 503 Service Unavailable');
-		}
-		$nfw_['mysqli']->close();
-		exit;
+		include('fw_livelog.php');
+		fw_livelog_show();
 	}
+
 	// ...or go ahead :
 
 	// Check for specific rules that should apply to everyone, including whitelisted admin(s) :
@@ -364,65 +332,8 @@ define('NFW_SWL', 1);
 
 // Live Log : record the request if needed
 if ( file_exists($nfw_['log_dir'] .'/cache/livelogrun.php')) {
-	$nfw_['stats'] = stat($nfw_['log_dir'] .'/cache/livelogrun.php');
-
-	// If the file was not accessed for more than 100s, we assume
-	// the admin has stopped watching the live log from WordPress
-	// dashboard (max refresh rate is 45s) :
-	if ( $nfw_['fw_starttime'] - $nfw_['stats']['mtime'] > 100 ) {
-		unlink($nfw_['log_dir'] .'/cache/livelogrun.php');
-		// If the log was not modified for the past 10mn, we delete it as well :
-		$nfw_['livelog'] = $nfw_['log_dir'] . '/cache/livelog.php';
-		if ( file_exists($nfw_['livelog']) ) {
-			$nfw_['stats'] = stat($nfw_['livelog']);
-			if ( $nfw_['fw_starttime'] - $nfw_['stats']['mtime'] > 600 ) {
-				unlink( $nfw_['livelog'] );
-			}
-		}
-	} else {
-		// Check if we are supposed to log the request (http/https) :
-		if ( empty($nfw_['nfw_options']['liveport']) ||
-			($nfw_['nfw_options']['liveport'] == 1 && $_SERVER['SERVER_PORT'] != 443) ||
-			($nfw_['nfw_options']['liveport'] == 2 && $_SERVER['SERVER_PORT'] == 443) ) {
-
-			if ( empty($_SERVER['PHP_AUTH_USER']) ) { $PHP_AUTH_USER = '-'; }
-			else { $PHP_AUTH_USER = $_SERVER['PHP_AUTH_USER']; }
-			if ( empty($_SERVER['HTTP_REFERER']) ) { $HTTP_REFERER = '-'; }
-			else { $HTTP_REFERER = $_SERVER['HTTP_REFERER']; }
-			if ( empty($_SERVER['HTTP_USER_AGENT']) ) {	$HTTP_USER_AGENT = '-'; }
-			else { $HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT']; }
-			if ( empty($_SERVER['HTTP_X_FORWARDED_FOR']) ) { $HTTP_X_FORWARDED_FOR = '-'; }
-			else { $HTTP_X_FORWARDED_FOR = $_SERVER['HTTP_X_FORWARDED_FOR']; }
-			if ( empty($_SERVER['HTTP_HOST']) ) { $HTTP_HOST = '-'; }
-			else { $HTTP_HOST = $_SERVER['HTTP_HOST']; }
-
-			// Set the timezone :
-			if (! empty($nfw_['nfw_options']['livetz']) ) {
-				@date_default_timezone_set($nfw_['nfw_options']['livetz']);
-			} else {
-				if (! $nfw_['nfw_options']['tzstring'] = ini_get('date.timezone') ) {
-					$nfw_['nfw_options']['tzstring'] = 'UTC';
-				}
-				@date_default_timezone_set($nfw_['nfw_options']['tzstring']);
-			}
-
-			// Log the request :
-			if (! empty($nfw_['nfw_options']['liveformat']) ) {
-				// User-defined format :
-				$nfw_['tmp'] = str_replace(
-					array( '%time', '%name', '%client', '%method', '%uri', '%referrer', '%ua', '%forward', '%host' ),
-					array( date('d/M/y:H:i:s O', time()), $PHP_AUTH_USER, $_SERVER["REMOTE_ADDR"], $_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"], $HTTP_REFERER, $HTTP_USER_AGENT, $HTTP_X_FORWARDED_FOR, $HTTP_HOST ), $nfw_['nfw_options']['liveformat']	);
-				@file_put_contents( $nfw_['log_dir'] . '/cache/livelog.php', htmlentities($nfw_['tmp'], ENT_NOQUOTES) ."\n", FILE_APPEND | LOCK_EX);
-			} else {
-				// Default format :
-				@file_put_contents( $nfw_['log_dir'] . '/cache/livelog.php',
-				'['. @date('d/M/y:H:i:s O', time()) .'] '.	htmlentities(
-				$PHP_AUTH_USER .' '.	$_SERVER['REMOTE_ADDR'] .' "'. $_SERVER['REQUEST_METHOD'] .' '.
-				$_SERVER['REQUEST_URI'] .'" "'. $HTTP_REFERER .'" "'. $HTTP_USER_AGENT .'" "'.
-				$HTTP_X_FORWARDED_FOR .'" "'. $HTTP_HOST, ENT_NOQUOTES) ."\"\n", FILE_APPEND | LOCK_EX);
-			}
-		}
-	}
+	include('fw_livelog.php');
+	fw_livelog_record();
 }
 
 // Hide PHP notice/error messages ?
@@ -456,42 +367,8 @@ if ( (@$nfw_['nfw_options']['scan_protocol'] == 2) && ($_SERVER['SERVER_PORT'] !
 
 // File Guard :
 if (! empty($nfw_['nfw_options']['fg_enable']) ) {
-	// Look for exclusion :
-	if ( empty($nfw_['nfw_options']['fg_exclude']) || strpos($_SERVER['SCRIPT_FILENAME'], $nfw_['nfw_options']['fg_exclude']) === FALSE ) {
-		// Stat() the requested script :
-		if ( $nfw_['nfw_options']['fg_stat'] = stat( $_SERVER['SCRIPT_FILENAME'] ) ) {
-			// Was it created/modified lately ?
-			if ( time() - $nfw_['nfw_options']['fg_mtime'] * 3660 < $nfw_['nfw_options']['fg_stat']['ctime'] ) {
-				// Did we check it already ?
-				if (! file_exists( $nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php' ) ) {
-					// We need to alert the admin :
-					if (! $nfw_['nfw_options']['tzstring'] = ini_get('date.timezone') ) {
-						$nfw_['nfw_options']['tzstring'] = 'UTC';
-					}
-					date_default_timezone_set($nfw_['nfw_options']['tzstring']);
-					$nfw_['nfw_options']['m_headers'] = 'From: "NinjaFirewall" <postmaster@'. $_SERVER['SERVER_NAME'] . ">\r\n";
-					$nfw_['nfw_options']['m_headers'] .= "Content-Transfer-Encoding: 7bit\r\n";
-					$nfw_['nfw_options']['m_headers'] .= "Content-Type: text/plain; charset=\"UTF-8\"\r\n";
-					$nfw_['nfw_options']['m_headers'] .= "MIME-Version: 1.0\r\n";
-					$nfw_['nfw_options']['m_subject'] = '[NinjaFirewall] Alert: File Guard detection';
-					$nfw_['nfw_options']['m_msg'] = 	'Someone accessed a script that was modified or created less than ' .
-						$nfw_['nfw_options']['fg_mtime'] . ' hour(s) ago:' . "\n\n".
-						'SERVER_NAME    : ' . $_SERVER['SERVER_NAME'] . "\n" .
-						'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n" .
-						'Last changed on: ' . date('F j, Y @ H:i:s', $nfw_['nfw_options']['fg_stat']['ctime'] ) . ' (UTC '. date('O') . ")\n" .
-						'REQUEST_URI    : ' . $_SERVER['REQUEST_URI'] . "\n" .
-						'REMOTE_ADDR    : ' . $_SERVER['REMOTE_ADDR'] . "\n\n" .
-						'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
-						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
-					mail( $nfw_['nfw_options']['alert_email'], $nfw_['nfw_options']['m_subject'], $nfw_['nfw_options']['m_msg'], $nfw_['nfw_options']['m_headers']);
-					// Remember it so that we don't spam the admin each time the script is requested :
-					touch($nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php');
-					// Log it :
-					nfw_log('Access to a script modified/created less than ' . $nfw_['nfw_options']['fg_mtime'] . ' hour(s) ago', $_SERVER['SCRIPT_FILENAME'], 6, 0);
-				}
-			}
-		}
-	}
+	include('fw_fileguard.php');
+	fw_fileguard();
 }
 
 // HTTP_HOST is an IP ?
@@ -648,12 +525,22 @@ function nfw_check_upload() {
 		foreach ($f_uploaded as $key => $value) {
 			if (! $f_uploaded[$key]['name']) { continue; }
 
-			// Look for EICAR test file :
-			$data = file_get_contents($f_uploaded[$key]['tmp_name'], NULL, NULL, NULL, 68);
-			if ($data == 'X5O!P%@AP' . '[4\PZX54(P^)7CC)7}$EIC' . 'AR-STANDARD-ANTIVIRUS-TEST-FILE!$H' . '+H*') {
-				nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes', 3, 0);
-				// Always block it, even if we allow uploads:
-				nfw_block();
+			// Look for EICAR AV test file :
+			// -The file must start with the 68-bytes EICAR signature.
+			// -It can be appended by any combination of whitespace characters
+			//  with the total file length not exceeding 128 characters. The only
+			//  whitespace characters allowed are the Space character, Tab, LF, CR, CTRL-Z.
+			//	(See: http://blog.nintechnet.com/anatomy-of-the-eicar-antivirus-test-file/)
+			if ( $f_uploaded[$key]['size'] > 67 && $f_uploaded[$key]['size'] < 129 ) {
+				// Read it:
+				$data = file_get_contents( $f_uploaded[$key]['tmp_name'] );
+				if ( preg_match('`X5O!P%@AP' . '\[4\\\PZX54\(P\^\)7CC\)7}\$EIC' .
+				                'AR-STANDARD-ANTIVI' . 'RUS-TEST-FILE!\$H' . '\+H\*' .
+				                '[\x09\x10\x13\x20\x1A]*`', $data) ) {
+					nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes', 3, 0);
+					// Always block it, even if we allow uploads:
+					nfw_block();
+				}
 			}
 
 			// Sanitise filename ?
@@ -717,6 +604,10 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 
 		// Ignored disabled rules:
 		if ( empty( $rules['ena']) ) {
+			continue;
+		}
+		// Ignored admin-only rules:
+		if ( isset( $rules['adm']) ) {
 			continue;
 		}
 
@@ -936,10 +827,7 @@ function nfw_matching( $where, $key, $nfw_rules, $rules, $subid, $id, $RAW_POST 
 	}
 
 	// Check if it matches:
-	$res = nfw_operator( $val, $rules['cha'][$subid]['wha'], $rules['cha'][$subid]['ope']	);
-
-	// Matching rule?
-	if ( isset($res[0]) ) {
+	if ( nfw_operator( $val, $rules['cha'][$subid]['wha'], $rules['cha'][$subid]['ope']	) ) {
 		// Check if there is one or more subrules left to check:
 		if ( isset( $rules['cha'][$subid+1]) ) {
 			return 1;
@@ -965,40 +853,36 @@ function nfw_matching( $where, $key, $nfw_rules, $rules, $subid, $id, $RAW_POST 
 
 function nfw_operator( $val, $what, $op ) {
 
-	$ret = array ( null, null);
-
 	// Check operator:
 	if ( $op == 2 ) { // '!='
 		if ( $val != $what ) {
-			$ret[0] = true;
+			return true;
 		}
 	} elseif ( $op == 3 ) { // 'strpos'
 		if ( strpos($val, $what) !== FALSE ) {
-			$ret[0] = true;
+			return true;
 		}
 	} elseif ( $op == 4 ) { // 'stripos'
 		if ( stripos($val, $what) !== FALSE ) {
-			$ret[0] = true;
+			return true;
 		}
 	} elseif ( $op == 5 ) { // 'rx'
 		if ( preg_match("`$what`", $val ) ) {
-			$ret[0] = true;
+			return true;
 		}
 	} elseif ( $op == 6 ) { // '!rx'
 		if (! preg_match("`$what`", $val) ) {
-			$ret[0] = true;
+			return true;
 		}
 	} elseif ( $op == 7 ) { // '*'
 		// Always return true:
-		$ret[0] = true;
+		return true;
 
 	} else { // '=='
 		if ( $val == $what ) {
-			$ret[0] = true;
+			return true;
 		}
 	}
-
-	return $ret;
 }
 
 // =====================================================================
@@ -1323,13 +1207,13 @@ function nfw_sanitise( $str, $how, $msg ) {
 		// We sanitise variables **value** either with :
 		// -mysql_real_escape_string to escape [\x00], [\n], [\r], [\],
 		//	 ['], ["] and [\x1a]
-		//	-str_replace to escape backtick [`]
+		//	-str_replace to escape backtick [`] and replace '<', '>' with HTML entities.
 		//	Applies to $_GET, $_POST, $_SERVER['HTTP_USER_AGENT']
 		//	and $_SERVER['HTTP_REFERER']
 		//
 		// Or:
 		//
-		// -str_replace to escape [<], [>], ["], ['], [`] and , [\]
+		// -str_replace to escape ["], ['], [`], [\] and replace '<', '>' with HTML entities.
 		//	-str_replace to replace [\n], [\r], [\x1a] and [\x00] with [X]
 		//	Applies to $_SERVER['PATH_INFO'], $_SERVER['PATH_TRANSLATED']
 		//	and $_SERVER['PHP_SELF']
@@ -1338,17 +1222,18 @@ function nfw_sanitise( $str, $how, $msg ) {
 		//
 		// -str_replace to escape ['], [`] and , [\]
 		//	-str_replace to replace [\x1a] and [\x00] with [X]
+		//	-str_replace to replace [<] and with [&lt;]
 		//	Applies to $_COOKIE only
 		//
 		if ($how == 1) {
 			$str2 = $nfw_['mysqli']->real_escape_string($str);
-			$str2 = str_replace('`', '\`', $str2);
+			$str2 = str_replace(	array(  '`', '<', '>'), array( '\\`', '&lt;', '&gt;'),	$str2);
 		} elseif ($how == 2) {
 			$str2 = str_replace(	array('\\', "'", '"', "\x0d", "\x0a", "\x00", "\x1a", '`', '<', '>'),
-				array('\\\\', "\\'", '\\"', 'X', 'X', 'X', 'X', '\\`', '\\<', '\\>'),	$str);
+				array('\\\\', "\\'", '\\"', 'X', 'X', 'X', 'X', '\\`', '&lt;', '&gt;'),	$str);
 		} else {
-			$str2 = str_replace(	array('\\', "'", "\x00", "\x1a", '`'),
-				array('\\\\', "\\'", 'X', 'X', '\\`'),	$str);
+			$str2 = str_replace(	array('\\', "'", "\x00", "\x1a", '`', '<'),
+				array('\\\\', "\\'", 'X', 'X', '\\`', '&lt;'),	$str);
 		}
 		// Don't sanitise the string if we are running in Debugging Mode :
 		if (! empty($nfw_['nfw_options']['debug']) ) {

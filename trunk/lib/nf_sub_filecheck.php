@@ -156,7 +156,7 @@ if (! file_exists($nfmon_snapshot) ) {
 			</tr>
 
 			<tr>
-				<th scope="row"><?php _e('Exclude the following files/folders', 'ninjafirewall') ?></th>
+				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
 				<td align="left"><input class="regular-text" type="text" name="snapexclude" value="<?php echo htmlentities($nfw_options['snapexclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /wp-content/nfwlog/" maxlength="255"><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 			</tr>
 
