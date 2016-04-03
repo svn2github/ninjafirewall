@@ -31,7 +31,7 @@ function fw_fileguard() {
 	global $nfw_;
 
 	// Look for exclusion :
-	if ( empty($nfw_['nfw_options']['fg_exclude']) || ! preg_match( "`{$nfw_['nfw_options']['fg_exclude']}`", $_SERVER['SCRIPT_FILENAME'] ) ) {
+	if ( empty($nfw_['nfw_options']['fg_exclude']) || ! @preg_match( "`{$nfw_['nfw_options']['fg_exclude']}`", $_SERVER['SCRIPT_FILENAME'] ) ) {
 		// Stat() the requested script :
 		if ( $nfw_['nfw_options']['fg_stat'] = stat( $_SERVER['SCRIPT_FILENAME'] ) ) {
 			// Was it created/modified lately ?
