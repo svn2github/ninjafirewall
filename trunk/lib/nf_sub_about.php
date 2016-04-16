@@ -62,7 +62,7 @@ function nfw_eg() {
 			<td style="text-align:center">
 				<font style="font-size: 2em; font-weight: bold;">NinjaFirewall (WP Edition) v<?php echo NFW_ENGINE_VERSION ?></font>
 				<br />
-				<font onContextMenu="nfw_eg();return false;">&copy;</font> 2012-<?php echo date( 'Y' ) ?> <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
+				<font onContextMenu="nfw_eg();return false;">&copy;</font> <?php echo date( 'Y' ) ?> <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
 				<br />
 				The Ninja Technologies Network
 				<p><a href="https://twitter.com/nintechnet"><img border="1" src="<?php echo plugins_url() ?>/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></p>

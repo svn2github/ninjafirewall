@@ -25,18 +25,12 @@ if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
 function nfw_admin_notice(){
 
-	// display a big red warning and returned an error if:
-	// -the firewall is not enabled.
-	// -log dir does not exist or is not writable.
-
-	// we don't display any fatal error message to users :
 	if (nf_not_allowed( 0, __LINE__ ) ) { return; }
 
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
 
-	// Ensure we have our cache/log folder, or attempt to create it :
 	if (! file_exists(NFW_LOG_DIR . '/nfwlog') ) {
 		@mkdir( NFW_LOG_DIR . '/nfwlog', 0755);
 		@touch( NFW_LOG_DIR . '/nfwlog/index.html' );
@@ -57,22 +51,15 @@ function nfw_admin_notice(){
 	}
 
 	if (! NF_DISABLED) {
-		// OK
 		return;
 	}
 
-	// Don't display anything if we are looking at the main/options pages
-	// (error message will be displayed already) or during the installation
-	// process :
 	if (isset($_GET['page']) && preg_match('/^(?:NinjaFirewall|nfsubopt)$/', $_GET['page']) ) {
 		return;
 	}
 
 	$nfw_options = get_option('nfw_options');
-	// If we cannot find options and if the firewall did not return
-	// a #11 status code (corrupted DB/tables)...
 	if ( empty($nfw_options['ret_code']) && NF_DISABLED != 11 ) {
-		// ...we will assume that NinjaFirewall it is not installed yet :
 		return;
 	}
 
@@ -92,7 +79,6 @@ add_action('all_admin_notices', 'nfw_admin_notice');
 function nfw_query( $query ) { // i18n
 
 	$nfw_options = get_option( 'nfw_options' );
-	// Return if not enabled, or if we are accessing the dashboard (e.g., /wp-admin/edit.php):
 	if ( empty($nfw_options['enum_archives']) || empty($nfw_options['enabled']) || is_admin() ) {
 		return;
 	}
@@ -138,7 +124,6 @@ function nfw_authenticate( $user ) { // i18n
 add_filter( 'authenticate', 'nfw_authenticate', 90, 3 );
 
 function nfw_err_shake( $shake_codes ) {
-	// shake the login box :
 	$shake_codes[] = 'denied';
 	return $shake_codes;
 }
@@ -149,7 +134,6 @@ function nf_check_dbdata() {
 
 	$nfw_options = get_option( 'nfw_options' );
 
-	// Don't do anything if NinjaFirewall is disabled or DB monitoring option is off :
 	if ( empty( $nfw_options['enabled'] ) || empty($nfw_options['a_51']) ) { return; }
 
 	if ( is_multisite() ) {
@@ -164,34 +148,27 @@ function nf_check_dbdata() {
 	if (! $adm_users) { return; }
 
 	if (! file_exists($nfdbhash) ) {
-		// We don't have any hash yet, let's create one and quit
-		// (md5 is faster than sha1 or crc32 with long strings) :
 		@file_put_contents( $nfdbhash, md5( serialize( $adm_users) ), LOCK_EX );
 		return;
 	}
 
 	$old_hash = trim (file_get_contents($nfdbhash) );
 
-	// Compare both hashes :
 	if ( $old_hash == md5( serialize($adm_users)) ) {
 		return;
 	} else {
 		$fstat = stat($nfdbhash);
-		// We don't want to spam the admin, do we ?
 		if ( ( time() - $fstat['mtime']) < 60 ) {
 			return;
 		}
 
-		// Save the new hash :
 		$tmp = @file_put_contents( $nfdbhash, md5( serialize( $adm_users) ), LOCK_EX );
 		if ( $tmp === FALSE ) {
 			return;
 		}
 
-		// Get timezone :
 		nfw_get_blogtimezone();
 
-		// Send an email to the admin :
 		if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 			$recipient = get_option('admin_email');
 		} else {
@@ -220,7 +197,6 @@ function nf_check_dbdata() {
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 
-		// Log event if required :
 		if (! empty($nfw_options['a_41']) ) {
 			nfw_log2('Database changes detected', __('administrator account', 'ninjafirewall'), 4, 0);
 		}
@@ -246,9 +222,6 @@ function nf_get_dbdata() {
 /* ------------------------------------------------------------------ */
 
 function nfw_get_option( $option ) {
-
-	// This function, and the two following ones, are only there
-	// for compatibility with some functions from the WP+ Edition.
 
 	return get_option($option);
 }

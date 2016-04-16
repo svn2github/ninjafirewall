@@ -30,7 +30,6 @@ if (! defined('DONOTEMAIL') ) {
 	define('DONOTEMAIL', 0);
 }
 
-// Force errors display during the installation:
 @error_reporting(-1);
 @ini_set('display_errors', '1');
 
@@ -137,8 +136,6 @@ function nfw_welcome() {
 
 function nfw_logdir() {
 
-	// We need to create our log & cache folder in the wp-content
-	// directory or return an error right away if we cannot :
 	if (! is_writable(NFW_LOG_DIR) ) {
 		$err = sprintf( __('NinjaFirewall cannot create its <code>nfwlog/</code>log and cache folder; please make sure that the <code>%s</code> directory is writable', 'ninjafirewall'), htmlspecialchars(NFW_LOG_DIR) );
 	} else {
@@ -149,7 +146,6 @@ function nfw_logdir() {
 			mkdir( NFW_LOG_DIR . '/nfwlog/cache', 0755);
 		}
 
-		// Firewall loader:
 		$loader = "<?php
 // ===============================================================//
 // NinjaFirewall's loader.                                        //
@@ -214,18 +210,15 @@ if ( file_exists('" . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "') ) {
 
 function nfw_chk_docroot($err) {
 
-	// If the document_root is identical to ABSPATH, we jump to the next step :
 	if ( $_SERVER['DOCUMENT_ROOT'] . '/' == ABSPATH ) {
 		$_POST['abspath'] = ABSPATH;
 		nfw_presave(0);
 		return;
 	}
-	// Otherwise, ask the user for the full path to index.php :
 	echo '
 <div class="wrap">
 	<div style="width:33px;height:33px;background-image:url(' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>NinjaFirewall (WP Edition)</h1>';
-	// error ?
 	if ( $err ) {
 		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') .' '. $err . '</p></div>';
 	}
@@ -259,43 +252,32 @@ function nfw_presave($err) {
 
 	$_SESSION['abspath'] = $abspath . '/';
 
-	// If the user is sent back to the installer "System configuration" page,
-	// we don't download the rules again:
 	if ( empty($_SESSION['default_conf']) ) {
-		// Save the configuration to the DB :
 		nfw_default_conf();
 
-		// Send an welcome e-mail to the admin :
 		welcome_email();
 	}
 
-	// Let's try to detect the system configuration :
 	$s1 = $s2 = $s3 = $s4 = $s5 = $s7 = '';
 	$recommended = ' ' . __('(recommended)', 'ninjafirewall');
 	if ( defined('HHVM_VERSION') ) {
-		// HHVM
 		$http_server = 7;
 		$s7 = $recommended;
 		$htaccess = 0;
 		$php_ini = 0;
 	} elseif ( preg_match('/apache/i', PHP_SAPI) ) {
-		// Apache running php as a module :
 		$http_server = 1;
 		$s1 = $recommended;
 		$htaccess = 1;
 		$php_ini = 0;
 	} elseif ( preg_match( '/litespeed/i', PHP_SAPI ) ) {
-		// Because Litespeed can handle PHP INI and mod_php-like .htaccess,
-		// we will create both of them as we have no idea which one should be used:
 		$http_server = 4;
 		$php_ini = 1;
 		$htaccess = 1;
 		$s4 = $recommended;
 	} else {
-		// PHP CGI: we will only require a PHP INI file:
 		$php_ini = 1;
 		$htaccess = 0;
-		// Try to find out the HTTP server :
 		if ( preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ) {
 			$http_server = 2;
 			$s2 = $recommended;
@@ -303,7 +285,6 @@ function nfw_presave($err) {
 			$http_server = 3;
 			$s3 = $recommended;
 		} else {
-			// Mark it as unknown, that is not important :
 			$http_server = 5;
 			$s5 = $recommended;
 		}
@@ -320,7 +301,6 @@ function nfw_presave($err) {
 				break;
 			}
 		}
-		// Dont warn if user selected Apache/mod_php5/mod_php7 or HHVM
 		if (! ischecked && document.presave_form.http_server.value != 1 && document.presave_form.http_server.value != 7) {
 			alert('<?php
 			// translators: quotes (') must be escaped
@@ -350,13 +330,11 @@ function nfw_presave($err) {
 	<div style="width:33px;height:33px;background-image:url(' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>NinjaFirewall (WP Edition)</h1>';
 
-	// Ensure the log directory is writable :
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog' ) ) {
 		echo '<div class="error settings-error"><p>'. sprintf( __('Error: NinjaFirewall log directory is not writable (%s). Please chmod it to 0777 and reload this page.', 'ninjafirewall'), '<code>' . htmlspecialchars(NFW_LOG_DIR) . '/nfwlog/</code>') .'</p></div></div>';
 		return;
 	}
 
-	// Error ?
 	if ( $err ) {
 		echo '<div class="error settings-error"><p>'. __('Error:', 'ninjafirewall') . ' ' . $err . '</p></div>';
 	}
@@ -364,7 +342,6 @@ function nfw_presave($err) {
 	?>
 	<h3><?php _e('System configuration', 'ninjafirewall') ?></h3>
 	<?php
-	// Multisite ?
 	if ( is_multisite() ) {
 		echo '<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;<strong>'. __('Multisite network detected:', 'ninjafirewall') . '</strong> '. __('NinjaFirewall will protect all sites from your network and its configuration interface will be accessible only to the Super Admin from the network main site.', 'ninjafirewall') . '</p>';
 	}
@@ -397,7 +374,6 @@ function nfw_presave($err) {
 		</tr>
 
 		<?php
-		// We check in the document root if there is already a PHP INI file :
 		$f1 = $f2 = $f3 = $php_ini_type = '';
 		if ( file_exists( $_SESSION['abspath'] . 'php.ini') ) {
 			if (empty($_SESSION['php_ini_type']) ) {
@@ -417,7 +393,6 @@ function nfw_presave($err) {
 		}
 
 		if ($http_server == 1 || $http_server == 7) {
-			// We don't need PHP INI if the server is running Apache/mod_php5/mod_php7 or HHVM :
 			echo '<tr id="trini" style="display:none;">';
 		} else {
 			echo '<tr id="trini">';
@@ -452,20 +427,11 @@ function nfw_integration($err) {
 		return;
 	}
 
-	// HTTP server type:
-	// 1: Apache + PHP5/7 module
-	// 2: Apache + CGI/FastCGI
-	// 3: Nginx
-	// 4: Litespeed (either LSAPI or Apache-style configuration directives (php_value)
-	// 5: Other + CGI/FastCGI
-	// 6: Apache + suPHP
-	// 7: Other + HHVM
 	if ( empty($_POST['http_server']) || ! preg_match('/^[1-7]$/', $_POST['http_server']) ) {
 		nfw_presave( __('select your HTTP server and PHP SAPI.', 'ninjafirewall') );
 		return;
 	}
 
-	// We must have a PHP INI type, except if the server is running Apache/mod_php5/7 or HHVM:
 	if ( preg_match('/^[2-6]$/', $_POST['http_server']) ) {
 		if ( empty($_POST['php_ini_type']) || ! preg_match('/^[1-3]$/', $_POST['php_ini_type']) ) {
 			nfw_presave( __('select the PHP initialization file supported by your server.', 'ninjafirewall') );
@@ -491,7 +457,6 @@ function nfw_integration($err) {
 	} else {
 		$php_file = 0;
 	}
-	// Ensure WP directory is writable :
 	if ( is_writable($_SESSION['abspath']) ) {
 		$_SESSION['abspath_writable'] = 1;
 	} else {
@@ -521,14 +486,12 @@ function nfw_integration($err) {
 	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>NinjaFirewall (WP Edition)</h1>
 	<?php
-	// Error ?
 	if ( $err ) {
 		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') .' '. $err . '</p></div>';
 	}
 	?>
 	<h3><?php _e('Firewall Integration', 'ninjafirewall') ?></h3>
 	<?php
-	// Skip that section if we are running with HHVM:
 	if ($_SESSION['http_server'] != 7) {
 		?>
 		<p><?php echo $directives; ?> <?php _e('If your WordPress root directory is writable, the installer can make those changes for you.', 'ninjafirewall') ?></p>
@@ -550,20 +513,17 @@ function nfw_integration($err) {
 					__('All other lines, if any, are the actual content of the file:', 'ninjafirewall');
 	$not_writable = __('The file is not writable, I cannot make those changes for you.', 'ninjafirewall');
 
-	// Apache mod_php5/7 : only .htaccess changes are required :
 	if ($_SESSION['http_server'] == 1) {
 		if ( file_exists($_SESSION['abspath'] . '.htaccess') ) {
 			if (! is_writable($_SESSION['abspath'] . '.htaccess') ) {
 				$_SESSION['htaccess_write'] = $_SESSION['abspath_writable'] = 0;
 			}
-			// Edit it :
 			printf('<li>'. $add2file .'</li>', $_SESSION['abspath'] . '.htaccess');
 			$fdata = file_get_contents($_SESSION['abspath'] . '.htaccess');
 			$fdata = preg_replace( '/\s?'. HTACCESS_BEGIN .'.+?'. HTACCESS_END .'[^\r\n]*\s?/s' , "\n", $fdata);
 			$fdata = "\n<font color='#444'>" . htmlentities($fdata) . '</font>';
 			$height = 'height:150px;';
 		} else {
-			// Create it :
 			printf('<li>'. $createfile .'</li>', $_SESSION['abspath'] . '.htaccess');
 		}
 		echo '<pre style="background-color:#FFF;border:1px solid #ccc;margin:0px;padding:6px;overflow:auto;' .
@@ -574,11 +534,8 @@ function nfw_integration($err) {
 		if (empty($_SESSION['htaccess_write']) ) {
 			echo '<img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;' . $not_writable .'<br />';
 		}
-	// Litespeed : we create both INI and .htaccess files as we have
-	// no way to know which one will be used :
 	} elseif ($_SESSION['http_server'] == 4) {
 		if ( file_exists($_SESSION['abspath'] . '.htaccess') ) {
-			// Edit it :
 			if (! is_writable($_SESSION['abspath'] . '.htaccess') ) {
 				$_SESSION['htaccess_write'] = $_SESSION['abspath_writable'] = 0;
 			}
@@ -588,7 +545,6 @@ function nfw_integration($err) {
 			$fdata = "\n<font color='#444'>" . htmlentities($fdata) . '</font>';
 			$height = 'height:150px;';
 		} else {
-			// Create it :
 			printf('<li>'. $createfile .'</li>', $_SESSION['abspath'] . '.htaccess');
 		}
 		echo '<pre style="background-color:#FFF;border:1px solid #ccc;margin:0px;padding:6px;overflow:auto;' .
@@ -606,14 +562,12 @@ function nfw_integration($err) {
 			if (! is_writable($_SESSION['abspath'] . $php_file) ) {
 				$_SESSION['ini_write'] = $_SESSION['abspath_writable'] = 0;
 			}
-			// Edit it :
 			printf('<li>'. $add2file .'</li>', $_SESSION['abspath'] . $php_file);
 			$fdata = file_get_contents($_SESSION['abspath'] . $php_file);
 			$fdata = preg_replace( '/\s?'. PHPINI_BEGIN .'.+?'. PHPINI_END .'[^\r\n]*\s?/s' , "\n", $fdata);
 			$fdata = "\n<font color='#444'>" . htmlentities($fdata) . '</font>';
 			$height = 'height:150px;';
 		} else {
-			// Create it :
 			printf('<li>'. $createfile .'</li>', $_SESSION['abspath'] . $php_file);
 		}
 
@@ -626,7 +580,6 @@ function nfw_integration($err) {
 			echo '<img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;' . $not_writable .'<br />';
 		}
 
-	// HHVM
 	} elseif ($_SESSION['http_server'] == 7) {
 		?>
 		<li><?php _e('Add the following code to your <code>/etc/hhvm/php.ini</code> file, and restart HHVM afterwards:', 'ninjafirewall') ?></li>
@@ -634,15 +587,10 @@ function nfw_integration($err) {
 		<br />
 		<?php
 
-	// Other servers (nginx etc) :
 	} else {
 
-		// Apache + suPHP : we create both INI and .htaccess files as we need
-		// to add the suPHP_ConfigPath directive (otherwise the INI will not
-		// apply recursively) :
 		if ($_SESSION['http_server'] == 6) {
 			if ( file_exists($_SESSION['abspath'] . '.htaccess') ) {
-				// Edit it :
 				if (! is_writable($_SESSION['abspath'] . '.htaccess') ) {
 					$_SESSION['htaccess_write'] = $_SESSION['abspath_writable'] = 0;
 				}
@@ -652,7 +600,6 @@ function nfw_integration($err) {
 				$fdata = "\n<font color='#444'>" . htmlentities($fdata) . '</font>';
 				$height = 'height:150px;';
 			} else {
-				// Create it :
 				printf('<li>'. $createfile .'</li>', $_SESSION['abspath'] . '.htaccess');
 			}
 			echo '<pre style="background-color:#FFF;border:1px solid #ccc;margin:0px;padding:6px;overflow:auto;' .
@@ -665,21 +612,19 @@ function nfw_integration($err) {
 			}
 			echo '<br /><br />';
 			$fdata = $height = '';
-		} // Apache + suPHP
+		}
 
 
 		if ( file_exists($_SESSION['abspath'] . $php_file) ) {
 			if (! is_writable($_SESSION['abspath'] . $php_file) ) {
 				$_SESSION['ini_write'] = $_SESSION['abspath_writable'] = 0;
 			}
-			// Edit it :
 			printf('<li>'. $add2file .'</li>', $_SESSION['abspath'] . $php_file);
 			$fdata = file_get_contents($_SESSION['abspath'] . $php_file);
 			$fdata = preg_replace( '/\s?'. PHPINI_BEGIN .'.+?'. PHPINI_END .'[^\r\n]*\s?/s' , "\n", $fdata);
 			$fdata = "\n<font color='#444'>" . htmlentities($fdata) . '</font>';
 			$height = 'height:150px;';
 		} else {
-			// Create it :
 			printf('<li>'. $createfile .'</li>', $_SESSION['abspath'] . $php_file);
 		}
 
@@ -695,12 +640,9 @@ function nfw_integration($err) {
 
 	echo '<br /><form method="post" name="integration_form">';
 
-	// Skip that section if we are running with HHVM:
 	if ($_SESSION['http_server'] != 7) {
 		$chg_str = __('Please make those changes, then click on button below.', 'ninjafirewall');
 		if (! empty($_SESSION['abspath_writable']) ) {
-			// We offer to make the changes, or to let the user handle that (could be
-			// useful if the admin wants to use a PHP INI or .htaccess in another folder) :
 			echo '<p><label><input type="radio" name="makechange" onClick="diy_chg(this.value)" value="nfw" checked="checked">'.
 			__('Let NinjaFirewall make the above changes (recommended).', 'ninjafirewall') .'</label></p>
 			<p><font color="red" id="lnfw">'.
@@ -712,7 +654,6 @@ function nfw_integration($err) {
 			echo '<p style="font-weight:bold">'. $chg_str .'</p>';
 		}
 	} else {
-		// Unused but usefull...:
 		$_SESSION['php_ini_type'] = 1;
 		echo '<input type="hidden" name="makechange" value="usr">
 		<a href="http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/">' . __('Please check our blog if you want to install NinjaFirewall on HHVM.', 'ninjafirewall') . '</a>
@@ -756,7 +697,6 @@ NFW_INTEGRATION:
 		}
 	}
 
-	// The user decided to make the changes :
 	if ( $_POST['makechange'] == 'usr' ) {
 		goto DOITYOURSELF;
 	}
@@ -773,7 +713,6 @@ NFW_INTEGRATION:
 
 	$nfw_install['htaccess'] = $nfw_install['phpini'] = 0;
 
-	// Apache module or Litespeed or Apache/suPHP : create/modify .htaccess
 	if ($_SESSION['http_server'] == 1 || $_SESSION['http_server'] == 4 || $_SESSION['http_server'] == 6 ) {
 		$fdata = '';
 		if ( file_exists($_SESSION['abspath'] . '.htaccess') ) {
@@ -784,7 +723,6 @@ NFW_INTEGRATION:
 			}
 			$fdata = file_get_contents($_SESSION['abspath'] . '.htaccess');
 			$fdata = preg_replace( '/\s?'. HTACCESS_BEGIN .'.+?'. HTACCESS_END .'[^\r\n]*\s?/s' , "\n", $fdata);
-			// Backup the current .htaccess :
 			copy( $_SESSION['abspath'] . '.htaccess',	$_SESSION['abspath'] . '.htaccess.ninja' . $bakup_file );
 		}
 		if ($_SESSION['http_server'] == 6) {
@@ -801,11 +739,9 @@ NFW_INTEGRATION:
 			}
 		}
 		@chmod( $_SESSION['abspath'] . '.htaccess', 0644 );
-		// Save the htaccess path for the uninstaller :
 		$nfw_install['htaccess'] = $_SESSION['abspath'] . '.htaccess';
 	}
 
-	// Non-Apache HTTP servers: create/modify PHP INI
 	if ($_SESSION['http_server'] != 1) {
 		$fdata = '';
 		$ini_array = array('php.ini', '.user.ini','php5.ini');
@@ -827,16 +763,13 @@ NFW_INTEGRATION:
 			$fdata = file_get_contents($_SESSION['abspath'] . $php_file);
 			$fdata = preg_replace( '/auto_prepend_file/' , ";auto_prepend_file", $fdata);
 			$fdata = preg_replace( '/\s?'. PHPINI_BEGIN .'.+?'. PHPINI_END .'[^\r\n]*\s?/s' , "\n", $fdata);
-			// Backup the current .htaccess :
 			copy( $_SESSION['abspath'] . $php_file,	$_SESSION['abspath'] . $php_file . '.ninja' . $bakup_file );
 		}
 		@file_put_contents($_SESSION['abspath'] . $php_file,
 			PHPINI_BEGIN . "\n" . PHPINI_DATA . "\n" . PHPINI_END . "\n\n" . $fdata, LOCK_EX );
 		@chmod( $_SESSION['abspath'] . $php_file, 0644 );
-		// Save the htaccess path for the uninstaller :
 		$nfw_install['phpini'] = $_SESSION['abspath'] . $php_file;
 
-		// Look for other INI files, edit them to remove any NinjaFirewall instructions:
 		foreach ( $ini_array as $ini_file ) {
 			if ($ini_file == $php_file) { continue; }
 			if ( file_exists($_SESSION['abspath'] . $ini_file) ) {
@@ -892,9 +825,6 @@ DOITYOURSELF:
 function welcome_email() {
 
 	if ( empty($_SESSION['email_install']) ) {
-		// We send an email to the admin (or super admin) with some details
-		// about how to undo the changes if the site crashed after applying
-		// those changes :
 		if ( $recipient = get_option('admin_email') ) {
 			$subject = '[NinjaFirewall] ' . __('Quick Start, FAQ & Troubleshooting Guide', 'ninjafirewall');
 			$message = __('Hi,', 'ninjafirewall') . "\n\n";
@@ -988,17 +918,14 @@ function nfw_firewalltest() {
 	<br />
 	<?php
 	if (! defined('NFW_STATUS') || NFW_STATUS != 20 ) {
-		// The firewall is not loaded :
 		echo '<div class="error settings-error"><p>'. __('Error: the firewall is not loaded.', 'ninjafirewall'). '</p></div>
 		<h3>'. __('Suggestions:', 'ninjafirewall'). '</h3>
 		<ol>';
 		if ($_SESSION['http_server'] == 1) {
-			// User choosed Apache/mod_php instead of CGI/FCGI:
 			echo '<li>'. __('You selected <code>Apache + PHP module</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?', 'ninjafirewall'). '
 			<br />
 			'. __('You can click the "Go Back" button and try to select another HTTP server type.', 'ninjafirewall'). '</li><br />';
 		} else {
-			// Very likely a PHP INI issue :
 			if ($_SESSION['php_ini_type'] == 2) {
 				echo '<li>'. __('You have selected <code>.user.ini</code> as your PHP initialization file. Unlike <code>php.ini</code>, <code>.user.ini</code> files are not reloaded immediately by PHP, but every five minutes. If this is your own server, restart Apache (or PHP-FPM if applicable) to force PHP to reload it, otherwise please <strong>wait up to five minutes</strong> and then, click the "Test Again" button below.', 'ninjafirewall'). '</li>
 				<form method="POST">
@@ -1010,7 +937,6 @@ function nfw_firewalltest() {
 			}
 			if ($_SESSION['http_server'] == 2) {
 				if ( preg_match('/apache/i', PHP_SAPI) ) {
-					// User choosed Apache/CGI instead of mod_php:
 					echo '<li>'. __('You selected <code>Apache + CGI/FastCGI</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + PHP module</code>?', 'ninjafirewall'). '
 					<br />
 					'. __('You can click the "Go Back" button and try to select another HTTP server type.', 'ninjafirewall'). '</li><br />';
@@ -1020,7 +946,6 @@ function nfw_firewalltest() {
 			<br />
 			'. __('You can click the "Go Back" button and try to select another one.', 'ninjafirewall'). '</li>';
 		}
-		// Reload the page ?
 		echo '<form method="POST">
 		<p><input type="submit" class="button-primary" value="&#171; '. __('Go Back', 'ninjafirewall'). '" /></p>
 		<input type="hidden" name="abspath" value="' . $_SESSION['abspath'] . '" />
@@ -1051,7 +976,6 @@ function nfw_ini_data() {
 		define( 'PHPINI_DATA', 'auto_prepend_file = ' . NFW_LOG_DIR . '/nfwlog/ninjafirewall.php' );
 		define( 'PHPINI_END', '; END NinjaFirewall' );
 	}
-	// set the admin goodguy flag :
 	$_SESSION['nfw_goodguy'] = true;
 }
 
@@ -1061,7 +985,6 @@ function nfw_default_conf() {
 
 	$nfw_rules = array();
 
-	// Populate our options :
 	$nfw_options = array(
 		'logo'				=> plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png',
 		'enabled'			=> 1,
@@ -1143,11 +1066,9 @@ function nfw_default_conf() {
 	// 1. header_register_callback(): requires PHP >=5.4
 	// 2. headers_list() and header_remove(): some hosts may disable them.
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		// We enable X-XSS-Protection and HttpOnly flag:
 		$nfw_options['response_headers'] = '100100';
 	}
 
-	// Fetch the latest rules from the WordPress repo :
 	define('NFUPDATESDO', 2);
 	@nf_sub_updates();
 
@@ -1158,11 +1079,9 @@ function nfw_default_conf() {
 		exit("<br /><div class='error notice is-dismissible'>{$err_msg}</div></div></div></div></div></body></html>");
 	}
 
-	// Save engine and rules versions :
 	$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
 	$nfw_options['rules_version']  = NFW_NEWRULES_VERSION; // downloaded rules
 
-	// Add the correct DOCUMENT_ROOT :
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
 		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
 	} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
@@ -1171,22 +1090,18 @@ function nfw_default_conf() {
 		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
 
-	// Save to the DB :
 	update_option( 'nfw_options', $nfw_options);
 	update_option( 'nfw_rules', $nfw_rules);
 
-	// Remove any potential scheduled cron job (in case of a re-installation) :
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');
 	}
 	if ( wp_next_scheduled('nfsecupdates') ) {
 		wp_clear_scheduled_hook('nfsecupdates');
 	}
-	// Clear old daily report...
 	if ( wp_next_scheduled('nfdailyreport') ) {
 		wp_clear_scheduled_hook('nfdailyreport');
 	}
-	// and recreate a new one by default :
 	nfw_get_blogtimezone();
 	wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 

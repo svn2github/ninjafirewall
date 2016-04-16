@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.1.2
+Version: 3.1.3
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-04-02 18:44:37                                       |
+ | REVISION: 2016-04-16 18:44:37                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.1.2' );
+define( 'NFW_ENGINE_VERSION', '3.1.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -60,7 +60,6 @@ if (! defined('NFW_NOI18N') ) {
 $null = __('A true Web Application Firewall to protect and secure WordPress.', 'ninjafirewall');
 /* ------------------------------------------------------------------ */	// i18n+
 
-// Some constants & variables first :
 define('NFW_NULL_BYTE', 2);
 define('NFW_SCAN_BOTS', 531);
 define('NFW_ASCII_CTRL', 500);
@@ -97,51 +96,37 @@ require( plugin_dir_path(__FILE__) . 'lib/nfw_misc.php' );
 
 function nfw_activate() {
 
-	// Install/activate NinjaFirewall :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
-	// We need at least WP 3.3 :
 	global $wp_version;
 	if ( version_compare( $wp_version, '3.3', '<' ) ) {
 		exit( sprintf( __('NinjaFirewall requires WordPress 3.3 or greater but your current version is %s.', 'ninjafirewall'), $wp_version) );
 	}
 
-	// We need at least PHP 5.3 :
 	if ( version_compare( PHP_VERSION, '5.3.0', '<' ) ) {
 		exit( sprintf( __('NinjaFirewall requires PHP 5.3 or greater but your current version is %s.', 'ninjafirewall'), PHP_VERSION) );
 	}
 
-	// We need the mysqli extension loaded :
 	if (! function_exists('mysqli_connect') ) {
 		exit( sprintf( __('NinjaFirewall requires the PHP %s extension.', 'ninjafirewall'), '<code>mysqli</code>') );
 	}
 
-	// Yes, there are still some people who have SAFE_MODE enabled with
-	// PHP 5.3 ! We must check that right away otherwise the user may lock
-	// himself/herself out of the site as soon as NinjaFirewall will be
-	// activated :
 	if ( ini_get( 'safe_mode' ) ) {
 		exit( __('You have SAFE_MODE enabled. Please disable it, it is deprecated as of PHP 5.3.0 (see http://php.net/safe-mode).', 'ninjafirewall'));
 	}
 
-	// Multisite installation requires superadmin privileges :
 	if ( ( is_multisite() ) && (! current_user_can( 'manage_network' ) ) ) {
 		exit( __('You are not allowed to activate NinjaFirewall.', 'ninjafirewall') );
 	}
 
-	// We don't do Windows :
 	if ( PATH_SEPARATOR == ';' ) {
 		exit( __('NinjaFirewall is not compatible with Windows.', 'ninjafirewall') );
 	}
 
-	// If already installed/setup, just enable the firewall... :
 	if ( $nfw_options = get_option( 'nfw_options' ) ) {
 		$nfw_options['enabled'] = 1;
 		update_option( 'nfw_options', $nfw_options);
 
-		// Re-enable scheduled scan, if needed :
 		if (! empty($nfw_options['sched_scan']) ) {
 			if ($nfw_options['sched_scan'] == 1) {
 				$schedtype = 'hourly';
@@ -155,7 +140,6 @@ function nfw_activate() {
 			}
 			wp_schedule_event( time() + 3600, $schedtype, 'nfscanevent');
 		}
-		// Re-enable auto updates, if needed :
 		if (! empty($nfw_options['enable_updates']) ) {
 			if ($nfw_options['sched_updates'] == 1) {
 				$schedtype = 'hourly';
@@ -169,7 +153,6 @@ function nfw_activate() {
 			}
 			wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
 		}
-		// Re-enable daily report, if needed :
 		if (! empty($nfw_options['a_52']) ) {
 			if ( wp_next_scheduled('nfdailyreport') ) {
 				wp_clear_scheduled_hook('nfdailyreport');
@@ -177,12 +160,10 @@ function nfw_activate() {
 			nfw_get_blogtimezone();
 			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 		}
-		// Re-enable brute-force protection :
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php' ) ) {
 			rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php');
 		}
 
-		// ...and whitelist the admin if needed :
 		if (! empty( $nfw_options['wl_admin']) ) {
 			$_SESSION['nfw_goodguy'] = true;
 		}
@@ -195,27 +176,20 @@ register_activation_hook( __FILE__, 'nfw_activate' );
 
 function nfw_deactivate() {
 
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
-	// Disable the firewall (NinjaFirewall will keep running
-	// in the background but will not do anything) :
 	$nfw_options = get_option( 'nfw_options' );
 	$nfw_options['enabled'] = 0;
 
-	// Clear scheduled scan (if any) :
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');
 	}
-	// Clear auto updates (if any) :
 	if ( wp_next_scheduled('nfsecupdates') ) {
 		wp_clear_scheduled_hook('nfsecupdates');
 	}
-	// Clear daily report (if any) :
 	if ( wp_next_scheduled('nfdailyreport') ) {
 		wp_clear_scheduled_hook('nfdailyreport');
 	}
-	// and disable brute-force protection :
 	if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php');
 	}
@@ -230,10 +204,6 @@ register_deactivation_hook( __FILE__, 'nfw_deactivate' );
 
 function nfw_upgrade() {
 
-	// Only used when upgrading NinjaFirewall, sending alerts
-	// and exporting/downloading files :
-
-	// Return immediately if user is not allowed :
 	if ( nf_not_allowed(0, __LINE__) ) { return; }
 
 	$is_update = 0;
@@ -241,12 +211,10 @@ function nfw_upgrade() {
 	$nfw_options = get_option( 'nfw_options' );
 	$nfw_rules = get_option( 'nfw_rules' );
 
-	// Export configuration :
 	if ( isset($_POST['nf_export']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'options_save') ) {
 			wp_nonce_ays('options_save');
 		}
-		// Export login protection if it exists too :
 		$nfwbfd_log = NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php';
 		if ( file_exists($nfwbfd_log) ) {
 			$bd_data = serialize( file_get_contents($nfwbfd_log) );
@@ -254,7 +222,6 @@ function nfw_upgrade() {
 			$bd_data = '';
 		}
 		$data = serialize($nfw_options) . "\n:-:\n" . serialize($nfw_rules) . "\n:-:\n" . $bd_data;
-		// Download :
 		header('Content-Type: text/plain');
 		header('Content-Length: '. strlen( $data ) );
 		header('Content-Disposition: attachment; filename="nfwp.' . NFW_ENGINE_VERSION . '.dat"');
@@ -262,7 +229,6 @@ function nfw_upgrade() {
 		exit;
 	}
 
-	// Download File Check modified files list :
 	if ( isset($_POST['dlmods']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'filecheck_save') ) {
 			wp_nonce_ays('filecheck_save');
@@ -287,13 +253,10 @@ function nfw_upgrade() {
 		while (! feof($fh) ) {
 			$res = explode('::', fgets($fh) );
 			if ( empty($res[1]) ) { continue; }
-			// New file :
 			if ($res[1] == 'N') {
 				$data .= '[+] ' . $res[0] . "\n";
-			// Deleted file :
 			} elseif ($res[1] == 'D') {
 				$data .= '[-] ' . $res[0] . "\n";
-			// Modified file:
 			} elseif ($res[1] == 'M') {
 				$data .= '[!] ' . $res[0] . "\n";
 			}
@@ -301,7 +264,6 @@ function nfw_upgrade() {
 		fclose($fh);
 		$data .= "\n== EOF\n";
 
-		// Download :
 		header('Content-Type: text/plain');
 		header('Content-Length: '. strlen( $data ) );
 		header('Content-Disposition: attachment; filename="'. $_SERVER['SERVER_NAME'] .'_diff.txt"');
@@ -309,7 +271,6 @@ function nfw_upgrade() {
 		exit;
 	}
 
-	// Download File Check snapshot :
 	if ( isset($_POST['dlsnap']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'filecheck_save') ) {
 			wp_nonce_ays('filecheck_save');
@@ -329,7 +290,6 @@ function nfw_upgrade() {
 			}
 			fclose($fh);
 			$data .= "\n== EOF\n";
-			// Download :
 			header('Content-Type: text/plain');
 			header('Content-Length: '. strlen( $data ) );
 			header('Content-Disposition: attachment; filename="'. $_SERVER['SERVER_NAME'] .'_snapshot.txt"');
@@ -340,7 +300,6 @@ function nfw_upgrade() {
 		}
 	}
 
-	// update engine version number if needed :
 	if (! empty($nfw_options['engine_version']) && version_compare($nfw_options['engine_version'], NFW_ENGINE_VERSION, '<') ) {
 		// v1.0.4 update -------------------------------------------------
 		if ( empty( $nfw_options['alert_email']) ) {
@@ -385,13 +344,11 @@ function nfw_upgrade() {
 			$nfw_options['blocked_msg'] = base64_encode($nfw_options['blocked_msg']);
 		}
 		// v1.2.4 update -------------------------------------------------
-		// Error from v1.2.3 to delete :
 		if ( isset($nfw_options['$auth_msg']) ) {
 			unset($nfw_options['$auth_msg']);
 		}
 		// v1.2.7 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.2.7', '<' ) ) {
-			// Create 'wp-content/nfwlog/' directories and files :
 			if ( is_writable(NFW_LOG_DIR) ) {
 				if (! file_exists(NFW_LOG_DIR . '/nfwlog') ) {
 					mkdir( NFW_LOG_DIR . '/nfwlog', 0755);
@@ -404,7 +361,6 @@ function nfw_upgrade() {
 				@file_put_contents(NFW_LOG_DIR . '/nfwlog/.htaccess', "Order Deny,Allow\nDeny from all", LOCK_EX);
 				@file_put_contents(NFW_LOG_DIR . '/nfwlog/cache/.htaccess', "Order Deny,Allow\nDeny from all", LOCK_EX);
 
-				// Restore brute-force protection configuration from the DB:
 				$nfwbfd_log = NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php';
 				if ((! empty($nfw_options['bf_request'])) && (! empty($nfw_options['bf_bantime'])) &&
 					 (! empty($nfw_options['bf_attempt'])) && (! empty($nfw_options['bf_maxtime'])) &&
@@ -416,11 +372,9 @@ function nfw_upgrade() {
 					if ( empty($nfw_options['auth_msg']) ) {
 						$nfw_options['auth_msg'] = 'Access restricted';
 					}
-					// xmlrpc option (added to v1.2.3) :
 					if (! isset($nfw_options['bf_xmlrpc']) ) {
 						$nfw_options['bf_xmlrpc'] = 0;
 					}
-					// AUTH log (added to v1.2.6) :
 					if (! isset($nfw_options['bf_authlog']) ) {
 						$nfw_options['bf_authlog'] = 0;
 					}
@@ -440,8 +394,6 @@ function nfw_upgrade() {
 					fclose( $fh );
 				}
 			}
-			// We don't need to backup the brute-force protection data to the DB anymore
-			// because we're now using the new log/cache directory in the wp-content folder:
 			unset($nfw_options['bf_enable']);
 			unset($nfw_options['bf_request']);
 			unset($nfw_options['bf_bantime']);
@@ -457,7 +409,6 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				// We enable X-XSS-Protection and HttpOnly flag:
 				$nfw_options['response_headers'] = '100100';
 			}
 		}
@@ -477,7 +428,6 @@ function nfw_upgrade() {
 		}
 		// v1.3.6 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.6', '<' ) ) {
-			// Remove all old nfdbhash* files :
 			$path = NFW_LOG_DIR . '/nfwlog/cache/';
 			$glob = glob($path . "nfdbhash*php");
 			if ( is_array($glob)) {
@@ -487,7 +437,6 @@ function nfw_upgrade() {
 			}
 		}
 		// v1.7 update -------------------------------------------------
-		// Create daily report cronjob :
 		if ( version_compare( $nfw_options['engine_version'], '1.7', '<' ) ) {
 			$nfw_options['a_52'] = 1;
 			if ( ! wp_next_scheduled('nfdailyreport') ) {
@@ -498,7 +447,6 @@ function nfw_upgrade() {
 		}
 		// v3.2 update (file guard) --------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '3.1', '<=' ) ) {
-			// Convert the current value for regex use:
 			if (! empty( $nfw_options['fg_exclude'] ) ) {
 				$nfw_options['fg_exclude'] = preg_quote( $nfw_options['fg_exclude'], '`');
 			}
@@ -508,44 +456,32 @@ function nfw_upgrade() {
 		$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
 		$is_update = 1;
 
-		// Fetch the latest set of rules from wordpress.org:
 		define('NFUPDATESDO', 2);
 		@nf_sub_updates();
 
 		if (! defined('NFW_NEWRULES_VERSION') ) {
-			// If we weren't able to download the rules, set it to an older value:
 			define('NFW_NEWRULES_VERSION', '20160101.1');
 		}
 
-		// We update rules anyway:
 		if ( $nfw_rules_new = @unserialize(NFW_RULES) ) {
-			// Rules successfully downloaded :
 			foreach ( $nfw_rules_new as $new_key => $new_value ) {
 				foreach ( $new_value as $key => $value ) {
-					// if that rule exists already, we keep its 'ena' flag value
-					// as it may have been changed by the user with the rules editor :
-					// v3.x:
 					if ( ( isset( $nfw_rules[$new_key]['ena'] ) ) && ( $key == 'ena' ) ) {
 						$nfw_rules_new[$new_key]['ena'] = $nfw_rules[$new_key]['ena'];
 					}
-					// v1.x:
 					if ( ( isset( $nfw_rules[$new_key]['on'] ) ) && ( $key == 'ena' ) ) {
 						$nfw_rules_new[$new_key]['ena'] = $nfw_rules[$new_key]['on'];
 					}
 				}
 			}
-			//  Version 1.x:
 			if ( isset( $nfw_rules[NFW_DOC_ROOT]['what'] ) ) {
 				$nfw_rules_new[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $nfw_rules[NFW_DOC_ROOT]['what'] );
 				$nfw_rules_new[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['on'];
-			// Version 3.x:
 			} else {
 				$nfw_rules_new[NFW_DOC_ROOT]['cha'][1]['wha'] = $nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'];
 				$nfw_rules_new[NFW_DOC_ROOT]['ena']	= $nfw_rules[NFW_DOC_ROOT]['ena'];
 			}
 
-			// v1.2.7:20140925 update ----------------------------------------
-			// We delete rules #151 and #152
 			if ( version_compare( $nfw_options['rules_version'], '20140925', '<' ) ) {
 			if ( isset($nfw_rules_new[151]) ) {
 					unset($nfw_rules_new[151]);
@@ -556,20 +492,16 @@ function nfw_upgrade() {
 			}
 			// ---------------------------------------------------------------
 
-			// update rules... :
 			update_option( 'nfw_rules', $nfw_rules_new);
-			// ...and the latest rules version number:
 			$nfw_options['rules_version'] = NFW_NEWRULES_VERSION;
 
 		} else {
 
-			// We failed to download the rules, warn the admin:
 			if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 				$recipient = get_option('admin_email');
 			} else {
 				$recipient = $nfw_options['alert_email'];
 			}
-			// Get timezone :
 			nfw_get_blogtimezone();
 
 			$subject = '[NinjaFirewall] ' . __('ERROR: Failed to update rules', 'ninjafirewall');
@@ -596,20 +528,15 @@ function nfw_upgrade() {
 		$tmp_data = '';
 		// up to v1.2.7  -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.2.8', '<' ) ) {
-			// Check if we need to restore the log which was saved to the DB
-			// before starting NinjaFirewall's update :
 			if ( isset($nfw_options['nfw_tmp']) ) {
 				unset( $nfw_options['nfw_tmp'] );
-				// Fetch it, unpack it, and save it to disk...
 				$log_file = NFW_LOG_DIR . '/nfwlog/firewall_' . date( 'Y-m' ) . '.php';
 				if ( $tmp_data = @gzinflate( base64_decode( get_option('nfw_tmp') ) ) ) {
 					@file_put_contents( $log_file, $tmp_data, LOCK_EX);
 				}
-				// ... and clear it from the DB :
 				delete_option( 'nfw_tmp' );
 			}
 			if ( $tmp_data ) {
-				// Try to re-create the widget stats file :
 				$stat_file = NFW_LOG_DIR . '/nfwlog/stats_' . date( 'Y-m' ) . '.php';
 				$nfw_stat = array('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 				$stats_lines = explode( PHP_EOL, $tmp_data );
@@ -625,22 +552,17 @@ function nfw_upgrade() {
 			}
 		}
 
-		// Update options :
 		update_option( 'nfw_options', $nfw_options);
 	}
 
-	// E-mail alert ?
 	if ( defined( 'NFW_ALERT' ) ) {
 		nfw_check_emailalert();
 	}
 
-	// If admin is whitelisted, update the goodguy flag (helps to avoid
-	// potential session timeout) :
 	if (! empty( $nfw_options['wl_admin']) ) {
 		$_SESSION['nfw_goodguy'] = true;
 		return;
 	}
-	// clear it otherwise :
 	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
 		unset( $_SESSION['nfw_goodguy'] );
 	}
@@ -652,17 +574,11 @@ add_action('admin_init', 'nfw_upgrade' );
 
 function nfw_login_hook( $user_login, $user ) {
 
-	// Check if the user is an admin and if we must whitelist him/her :
-
 	$nfw_options = get_option( 'nfw_options' );
 
-	// Don't do anything if NinjaFirewall is disabled :
 	if ( empty( $nfw_options['enabled'] ) ) { return; }
 
 	if ( empty( $user->roles[0] ) ) {
-		// This can occur in multisite mode, when the Super Admin logs in
-		// to the admin console of a child site but is not in the users
-		// list of that site :
 		$whoami = __('not in users list', 'ninjafirewall');
 		$admin_flag = 1;
 	} elseif ( $user->roles[0] == 'administrator' ) {
@@ -673,9 +589,7 @@ function nfw_login_hook( $user_login, $user ) {
 		$admin_flag = 0;
 	}
 
-	// Are we supposed to send an alert ?
 	if (! empty($nfw_options['a_0']) ) {
-		// User login:
 		if ( ( ( $nfw_options['a_0'] == 1) && ( $admin_flag )  ) ||	( $nfw_options['a_0'] == 2 ) ) {
 			nfw_send_loginemail( $user_login, $whoami );
 			if (! empty($nfw_options['a_41']) ) {
@@ -684,10 +598,8 @@ function nfw_login_hook( $user_login, $user ) {
 		}
 	}
 
-	// Do some housework if needed :
 	nfw_housework();
 
-	// Set the goodguy flag?
 	if (! empty( $nfw_options['wl_admin']) ) {
 		if ( ( $nfw_options['wl_admin'] == 1 && $admin_flag == 2 ) || ( $nfw_options['wl_admin'] == 2 ) ) {
 			$_SESSION['nfw_goodguy'] = $nfw_options['wl_admin'];
@@ -705,18 +617,14 @@ add_action( 'wp_login', 'nfw_login_hook', 10, 2 );
 
 function nfw_housework() {
 
-	// Clean/delete cache folder & temp files :
-
 	$nfw_options = get_option( 'nfw_options' );
 
-	// File Guard temp files :
 	if (! empty( $nfw_options['fg_enable']) ) {
 		$path = NFW_LOG_DIR . '/nfwlog/cache/';
 		$glob = glob($path . "fg_*.php");
 		if ( is_array($glob)) {
 			foreach($glob as $file) {
 				$stat = stat( $file );
-				// Delete it if is too old :
 				if ( time() - $nfw_options['fg_mtime'] * 3660 > $stat['ctime'] ) {
 					unlink($file);
 				}
@@ -736,7 +644,6 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 		$recipient = $nfw_options['alert_email'];
 	}
 
-	// Get timezone :
 	nfw_get_blogtimezone();
 
 	$subject = '[NinjaFirewall] ' . __('Alert: WordPress console login', 'ninjafirewall');
@@ -759,11 +666,9 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 
 function nfw_logout_hook() {
 
-	// Whoever it was, we clear the goodguy flag :
 	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
 		unset( $_SESSION['nfw_goodguy'] );
 	}
-	// And the Live Log flag as well :
 	if (isset($_SESSION['nfw_livelog']) ) {
 		unset($_SESSION['nfw_livelog']);
 	}
@@ -775,38 +680,28 @@ add_action( 'wp_logout', 'nfw_logout_hook' );
 
 function is_nfw_enabled() {
 
-	// Checks whether NF is enabled and/or active and/or debugging mode :
-
 	$nfw_options = get_option( 'nfw_options' );
 
-	// Check whether NF is running.
-
-	// No communication from the firewall :
 	if (! defined('NFW_STATUS') ) {
 		define('NF_DISABLED', 10);
 		return;
 	}
 
-	// NF was disabled by the admin :
 	if ( isset($nfw_options['enabled']) && $nfw_options['enabled'] == '0' ) {
 		define('NF_DISABLED', 9);
 		return;
 	}
 
-	// There is another instance of NinjaFirewall firewall running,
-	// maybe in the parent directory:
 	if (NFW_STATUS == 21 || NFW_STATUS == 22 || NFW_STATUS == 23) {
 		define('NF_DISABLED', 10);
 		return;
 	}
 
-	// OK :
 	if (NFW_STATUS == 20) {
 		define('NF_DISABLED', 0);
 		return;
 	}
 
-	// Error :
 	define('NF_DISABLED', NFW_STATUS);
 	return;
 
@@ -816,10 +711,8 @@ function is_nfw_enabled() {
 
 function ninjafirewall_admin_menu() {
 
-	// Return immediately if user is not allowed :
 	if (nf_not_allowed( 0, __LINE__ ) ) { return; }
 
-	// Display phpinfo for the installer :
 	if (! empty($_REQUEST['nfw_act']) && $_REQUEST['nfw_act'] == 99) {
 		if ( empty($_GET['nfwnonce']) || ! wp_verify_nonce($_GET['nfwnonce'], 'show_phpinfo') ) {
 			wp_nonce_ays('show_phpinfo');
@@ -837,13 +730,10 @@ function ninjafirewall_admin_menu() {
 
 	define( 'NFW_DEFAULT_MSG', $message );
 
-	// Setup our admin menus :
-
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
 
-	// Run the install process if not installed yet :
 	if (NF_DISABLED == 10) {
 		add_menu_page( 'NinjaFirewall', 'NinjaFirewall', 'manage_options',
 			'NinjaFirewall', 'nf_menu_install',	plugins_url( '/images/nf_icon.png', __FILE__ )
@@ -853,87 +743,69 @@ function ninjafirewall_admin_menu() {
 		return;
 	}
 
-	// Our main menu :
 	add_menu_page( 'NinjaFirewall', 'NinjaFirewall', 'manage_options',
 		'NinjaFirewall', 'nf_menu_main',	plugins_url( '/images/nf_icon.png', __FILE__ )
 	);
 
-	// All our submenus :
 	global $menu_hook;
 
-	// Admin menus contextual help :
 	require_once( plugin_dir_path(__FILE__) . 'help.php' );
 
-	// Overview menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Overview', 'ninjafirewall'), __('Overview', 'ninjafirewall'), 'manage_options',
 		'NinjaFirewall', 'nf_menu_main' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubmain' );
 
-	// Stats menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Statistics', 'ninjafirewall'), __('Statistics', 'ninjafirewall'), 'manage_options',
 		'nfsubstat', 'nf_sub_statistics' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubstat' );
 
-	// Firewall options menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Firewall Options', 'ninjafirewall'), __('Firewall Options', 'ninjafirewall'), 'manage_options',
 		'nfsubopt', 'nf_sub_options' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubopt' );
 
-	// Firewall policies menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Firewall Policies', 'ninjafirewall'), __('Firewall Policies', 'ninjafirewall'), 'manage_options',
 		'nfsubpolicies', 'nf_sub_policies' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubpolicies' );
 
-	// File Guard menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall',  __('NinjaFirewall: File Guard', 'ninjafirewall'), __( 'File Guard', 'ninjafirewall'), 'manage_options',
 		'nfsubfileguard', 'nf_sub_fileguard' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubfileguard' );
 
-	// File Check menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall',  __('NinjaFirewall: File Check', 'ninjafirewall'),  __('File Check', 'ninjafirewall'), 'manage_options',
 		'nfsubfilecheck', 'nf_sub_filecheck' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubfilecheck' );
 
-	// Network menu (multisite only) :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Network', 'ninjafirewall'), __('Network', 'ninjafirewall'), 'manage_network',
 		'nfsubnetwork', 'nf_sub_network' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubnetwork' );
 
-	// Event Notifications menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Event Notifications', 'ninjafirewall'), __('Event Notifications', 'ninjafirewall'), 'manage_options',
 		'nfsubevent', 'nf_sub_event' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubevent' );
 
-	// Login protection menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Log-in Protection', 'ninjafirewall'), __('Login Protection', 'ninjafirewall'), 'manage_options',
 		'nfsubloginprot', 'nf_sub_loginprot' );
 	add_action( 'load-' . $menu_hook, 'help_nfsublogin' );
 
-	// Firewall log menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Firewall Log', 'ninjafirewall'), __('Firewall Log', 'ninjafirewall'), 'manage_options',
 		'nfsublog', 'nf_sub_log' );
 	add_action( 'load-' . $menu_hook, 'help_nfsublog' );
 
-	// Live log menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall',  __('NinjaFirewall: Live Log', 'ninjafirewall'),  __('Live Log', 'ninjafirewall'), 'manage_options',
 		'nfsublive', 'nf_sub_live' );
 	add_action( 'load-' . $menu_hook, 'help_nfsublivelog' );
 
-	// Rules Editor menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Rules Editor', 'ninjafirewall'), __('Rules Editor', 'ninjafirewall'), 'manage_options',
 		'nfsubedit', 'nf_sub_edit' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubedit' );
 
-	// Updates menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Updates', 'ninjafirewall'), __('Updates', 'ninjafirewall'), 'manage_options',
 		'nfsubupdates', 'nf_sub_updates' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubupdates' );
 
-	// WP+ menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', 'NinjaFirewall: WP+ Edition', 'WP+ Edition', 'manage_options',
 		'nfsubwplus', 'nf_sub_wplus' );
 
-	// About menu :
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: About', 'ninjafirewall'), __('About...', 'ninjafirewall'), 'manage_options',
 		'nfsubabout', 'nf_sub_about' );
 
@@ -942,7 +814,6 @@ function ninjafirewall_admin_menu() {
 if (! is_multisite() )  {
 	add_action( 'admin_menu', 'ninjafirewall_admin_menu' );
 } else {
-	// In multisite mode, menu is only available to the Super Admin:
 	add_action( 'network_admin_menu', 'ninjafirewall_admin_menu' );
 }
 
@@ -950,19 +821,15 @@ if (! is_multisite() )  {
 
 function nf_admin_bar_status() {
 
-	// Display the status icon to administrators (multi-site mode only) :
 	if (! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 
-	// Check whether the option is enabled or not :
 	$nfw_options = get_option( 'nfw_options' );
-	// Disable it, unless this is the superadmin :
 	if ( @$nfw_options['nt_show_status'] != 1 && ! current_user_can('manage_network') ) {
 		return;
 	}
 
-	// Obviously, we don't put any icon if NinjaFirewall isn't running :
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
@@ -975,7 +842,6 @@ function nf_admin_bar_status() {
 				'style="vertical-align:middle;margin-right:5px" />',
 	) );
 
-	// Add sub menu link for Super Admin only :
 	if ( current_user_can( 'manage_network' ) ) {
 		$wp_admin_bar->add_menu( array(
 			'parent' => 'nfw_ntw1',
@@ -983,7 +849,6 @@ function nf_admin_bar_status() {
 			'title'  => __( 'NinjaFirewall Settings', 'ninjafirewall'),
 			'href'   => network_admin_url() . 'admin.php?page=NinjaFirewall',
 		) );
-	// else, show status only (unless error) :
 	} else {
 		if ( defined('NFW_STATUS') ) {
 			$wp_admin_bar->add_menu( array(
@@ -1003,9 +868,6 @@ if ( is_multisite() )  {
 
 function nf_menu_install() {
 
-	// Installer :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	require_once( plugin_dir_path(__FILE__) . 'install.php' );
@@ -1015,14 +877,10 @@ function nf_menu_install() {
 
 function nf_menu_main() {
 
-	// Main menu (Overview) :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$nfw_options = get_option( 'nfw_options' );
 
-	// Is NF enabled/working ?
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
@@ -1033,7 +891,6 @@ function nf_menu_main() {
 	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1><?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 	<?php
-	// first run ?
 	if ( @NFW_STATUS == 20 && ! empty( $_REQUEST['nfw_firstrun']) ) {
 		echo '<br><div class="updated notice is-dismissible"><p>' .
 			__('Congratulations, NinjaFirewall is up and running!', 'ninjafirewall') .	'<br />' .
@@ -1108,7 +965,6 @@ function nf_menu_main() {
 			<td><?php echo NFW_ENGINE_VERSION . ' (' . __('security rules:', 'ninjafirewall' ) . ' ' . preg_replace('/(\d{4})(\d\d)(\d\d)/', '$1-$2-$3', $nfw_options['rules_version']) . ')' ?></td>
 		</tr>
 	<?php
-	// Check if the admin is whitelisted, and warn if it is not :
 	if ( empty($_SESSION['nfw_goodguy']) ) {
 		?>
 		<tr>
@@ -1127,7 +983,6 @@ function nf_menu_main() {
 		</tr>
 	<?php
 	}
-	// Display restrictions (not available to WPMU):
 	if ( defined('NFW_ALLOWED_ADMIN') && ! is_multisite() ) {
 	?>
 		<tr>
@@ -1138,9 +993,6 @@ function nf_menu_main() {
 	<?php
 	}
 
-	// Try to find out if there is any "lost" session between the firewall
-	// and the plugin part of NinjaFirewall (could be a buggy plugin killing
-	// the session etc), unless we just installed it :
 	if (! empty($_SESSION['nfw_st']) && ! NF_DISABLED && empty($_REQUEST['nfw_firstrun']) ) {
 		?>
 		<tr>
@@ -1161,7 +1013,6 @@ function nf_menu_main() {
 		<?php
 	}
 
-	// Check IP and warn if localhost or private IP :
 	if (! filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ) {
 		?>
 		<tr>
@@ -1171,10 +1022,7 @@ function nf_menu_main() {
 		</tr>
 		<?php
 	}
-	// Look for CDN's (Incapsula/Cloudflare) and warn the user about using
-	// the correct IPs, unless it was already copied to $_SERVER['REMOTE_ADDR'] :
 	if (! empty($_SERVER["HTTP_CF_CONNECTING_IP"]) ) {
-		// CloudFlare :
 		if ( $_SERVER['REMOTE_ADDR'] != $_SERVER["HTTP_CF_CONNECTING_IP"] ) {
 		?>
 		<tr>
@@ -1186,7 +1034,6 @@ function nf_menu_main() {
 		}
 	}
 	if (! empty($_SERVER["HTTP_INCAP_CLIENT_IP"]) ) {
-		// Incapsula :
 		if ( $_SERVER['REMOTE_ADDR'] != $_SERVER["HTTP_INCAP_CLIENT_IP"] ) {
 		?>
 		<tr>
@@ -1198,7 +1045,6 @@ function nf_menu_main() {
 		}
 	}
 
-	// Ensure /log/ dir is writable :
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog') ) {
 		?>
 			<tr>
@@ -1209,7 +1055,6 @@ function nf_menu_main() {
 	<?php
 	}
 
-	// Ensure /log/cache dir is writable :
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog/cache') ) {
 		?>
 			<tr>
@@ -1220,7 +1065,6 @@ function nf_menu_main() {
 	<?php
 	}
 
-	// check for NinjaFirewall optional config file :
 	$doc_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 	if ( @file_exists( $file = dirname( $doc_root ) . '/.htninja') ||
 		@file_exists( $file = $doc_root . '/.htninja') ) {
@@ -1239,9 +1083,6 @@ function nf_menu_main() {
 
 	$ro_msg = '<h3>' . __('System Files', 'ninjafirewall') . '</h3>
 	<table class="form-table">';
-	// If the user files (.htaccess & PHP INI) are read-only, we display a warning,
-	// otherwise, if (s)he wanted to uninstall NinjaFirewall, the uninstall process
-	// could not restore them to their initial state and the site would crash :/
 	$ro = 0;
 	if ( ( file_exists( ABSPATH . '.htaccess' ) ) && (! is_writable( ABSPATH . '.htaccess' ) ) ) {
 		$ro_msg .= '<tr>
@@ -1286,8 +1127,6 @@ function nf_menu_main() {
 
 function nf_sub_statistics() {
 
-	// Stats / benchmarks menu :
-
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_statistics.php' );
 
 }
@@ -1296,7 +1135,6 @@ function nf_sub_statistics() {
 
 function nf_sub_options() { // i18n
 
-	// Firewall Options menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_options.php' );
 
 }
@@ -1305,9 +1143,6 @@ function nf_sub_options() { // i18n
 
 function nf_sub_policies() {
 
-	// Firewall Policies menu :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$yes = __('Yes', 'ninjafirewall');
@@ -1336,7 +1171,6 @@ function chksubmenu() {
    }
 }
 function ssl_warn() {';
-	// Obviously, if we are already in HTTPS mode, we don't send any warning:
 	if ($_SERVER['SERVER_PORT'] == 443 ) {
 		echo 'return true;';
 	} else {
@@ -1368,7 +1202,6 @@ function sanitise_fn(cbox) {
 	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
 
-	// Saved options ?
 	if ( isset( $_POST['nfw_options']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'policies_save') ) {
 			wp_nonce_ays('policies_save');
@@ -1701,9 +1534,6 @@ function sanitise_fn(cbox) {
 	<br /><br />
 	<?php
 
-	// Some compatibility checks:
-	// 1. header_register_callback(): requires PHP >=5.4
-	// 2. headers_list() and header_remove(): some hosts may disable them.
 	$err_msg = $err = '';
 	$err_img = '<p><span class="description"><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;';
 	$msg = __('This option is disabled because the %s PHP function is not available on your server.', 'ninjafirewall');
@@ -1763,8 +1593,6 @@ function sanitise_fn(cbox) {
 			</td>
 		</tr>
 		<?php
-		// We don't send HSTS headers over HTTP (only display this message if there
-		// is no other warning to display, $err==0 ):
 		if ($_SERVER['SERVER_PORT'] != 443 && ! $err && (! isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https') ) {
 			$err = 1;
 			$hsts_msg = '<br /><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;<span class="description">' . __('HSTS headers can only be set when you are accessing your site over HTTPS.', 'ninjafirewall') . '</span>';
@@ -1930,7 +1758,6 @@ function sanitise_fn(cbox) {
 
 	<?php
 
-	// If the document root is < 5 characters, grey out that option:
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) < 5 ) {
 		$nfw_rules[NFW_DOC_ROOT]['ena'] = 0;
 		$greyed = 'style="color:#bbbbbb"';
@@ -2060,10 +1887,6 @@ function sanitise_fn(cbox) {
 		$disallow_mods = 1;
 	}
 
-	// We must disable these 2 options if their constants are already defined
-	// (e.g., in the wp-config.php). Note that even if they are defined as 'false',
-	// we must disable them because NinjaFirewall would define them first, and
-	// then WordPress would try as well. We would end up with a PHP error:
 	$force_ssl_already_enabled = $disallow_edit_already_enabled = $disallow_mods_already_enabled = 0;
 	if ( defined('DISALLOW_FILE_EDIT') && ! $disallow_edit ) {
 		$disallow_edit_already_enabled = 1;
@@ -2071,8 +1894,6 @@ function sanitise_fn(cbox) {
 	if ( defined('DISALLOW_FILE_MODS') && ! $disallow_mods ) {
 		$disallow_mods_already_enabled = 1;
 	}
-	// Because FORCE_SSL_ADMIN is always defined by WP (see wp-includes/default_constants.php),
-	// we disable this option only if it is set to 'true':
 	if ( defined('FORCE_SSL_ADMIN') && FORCE_SSL_ADMIN == true && ! $force_ssl ) {
 		$force_ssl_already_enabled = 1;
 	}
@@ -2233,98 +2054,73 @@ function sanitise_fn(cbox) {
 
 function nf_sub_policies_save() {
 
-	// Save policies :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$nfw_options = get_option( 'nfw_options' );
 	$nfw_rules = get_option( 'nfw_rules' );
 
-	// Options
-
-	// HTTP/S traffic to scan :
 	if ( (isset( $_POST['nfw_options']['scan_protocol'])) &&
 		( preg_match( '/^[123]$/', $_POST['nfw_options']['scan_protocol'])) ) {
 			$nfw_options['scan_protocol'] = $_POST['nfw_options']['scan_protocol'];
 	} else {
-		// Default : HTTP + HTTPS
 		$nfw_options['scan_protocol'] = 3;
 	}
 
-	// Allow uploads ?
 	if ( empty( $_POST['nfw_options']['uploads']) ) {
-		// Default: no
 		$nfw_options['uploads'] = 0;
 	} else {
 		$nfw_options['uploads'] = 1;
 	}
 
-	// Sanitise filenames (if uploads are allowed) ?
 	if ( (isset( $_POST['nfw_options']['sanitise_fn']) ) && ( $nfw_options['uploads'] == 1) ) {
 		$nfw_options['sanitise_fn'] = 1;
 	} else {
 		$nfw_options['sanitise_fn'] = 0;
 	}
 
-	// Scan GET requests ?
 	if ( empty( $_POST['nfw_options']['get_scan']) ) {
 		$nfw_options['get_scan'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['get_scan'] = 1;
 	}
-	// Sanitise GET requests ?
 	if ( empty( $_POST['nfw_options']['get_sanitise']) ) {
-		// Default: no
 		$nfw_options['get_sanitise'] = 0;
 	} else {
 		$nfw_options['get_sanitise'] = 1;
 	}
 
 
-	// Scan POST requests ?
 	if ( empty( $_POST['nfw_options']['post_scan']) ) {
 		$nfw_options['post_scan'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['post_scan'] = 1;
 	}
-	// Sanitise POST requests ?
 	if ( empty( $_POST['nfw_options']['post_sanitise']) ) {
-		// Default: no
 		$nfw_options['post_sanitise'] = 0;
 	} else {
 		$nfw_options['post_sanitise'] = 1;
 	}
-	// Decode base64 values in POST requests ?
 	if ( empty( $_POST['nfw_options']['post_b64']) ) {
 		$nfw_options['post_b64'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['post_b64'] = 1;
 	}
 
 
-	// Sanitise REQUEST requests ?
 	if ( empty( $_POST['nfw_options']['request_sanitise']) ) {
-		// Default: yes
 		$nfw_options['request_sanitise'] = 0;
 	} else {
 		$nfw_options['request_sanitise'] = 1;
 	}
 
 
-	// HTTP response headers:
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
 		$nfw_options['response_headers'] = '000000';
-		// X-Content-Type-Options
 		if ( empty( $_POST['nfw_options']['x_content_type_options']) ) {
 			$nfw_options['response_headers'][1] = 0;
 		} else {
 			$nfw_options['response_headers'][1] = 1;
 		}
-		// X-Frame-Options
 		if ( empty( $_POST['nfw_options']['x_frame_options']) ) {
 			$nfw_options['response_headers'][2] = 0;
 		} elseif ( $_POST['nfw_options']['x_frame_options'] == 1) {
@@ -2332,19 +2128,16 @@ function nf_sub_policies_save() {
 		} else {
 			$nfw_options['response_headers'][2] = 2;
 		}
-		// X-XSS-Protection
 		if ( empty( $_POST['nfw_options']['x_xss_protection']) ) {
 			$nfw_options['response_headers'][3] = 0;
 		} else {
 			$nfw_options['response_headers'][3] = 1;
 		}
-		// HttpOnly cookies ?
 		if ( empty( $_POST['nfw_options']['cookies_httponly']) ) {
 			$nfw_options['response_headers'][0] = 0;
 		} else {
 			$nfw_options['response_headers'][0] = 1;
 		}
-		// Strict-Transport-Security ?
 		if (! isset( $_POST['nfw_options']['strict_transport_sub']) ) {
 			$nfw_options['response_headers'][5] = 0;
 		} else {
@@ -2365,108 +2158,81 @@ function nf_sub_policies_save() {
 	}
 
 
-	// Scan COOKIES requests ?
 	if ( empty( $_POST['nfw_options']['cookies_scan']) ) {
 		$nfw_options['cookies_scan'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['cookies_scan'] = 1;
 	}
-	// Sanitise COOKIES requests ?
 	if ( empty( $_POST['nfw_options']['cookies_sanitise']) ) {
-		// Default: no
 		$nfw_options['cookies_sanitise'] = 0;
 	} else {
 		$nfw_options['cookies_sanitise'] = 1;
 	}
 
 
-	// Scan HTTP_USER_AGENT requests ?
 	if ( empty( $_POST['nfw_options']['ua_scan']) ) {
 		$nfw_options['ua_scan'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['ua_scan'] = 1;
 	}
-	// Sanitise HTTP_USER_AGENT requests ?
 	if ( empty( $_POST['nfw_options']['ua_sanitise']) ) {
 		$nfw_options['ua_sanitise'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['ua_sanitise'] = 1;
 	}
 
 
-	// Scan HTTP_REFERER requests ?
 	if ( empty( $_POST['nfw_options']['referer_scan']) ) {
 		$nfw_options['referer_scan'] = 0;
-		// Default: no
 	} else {
 		$nfw_options['referer_scan'] = 1;
 	}
-	// Sanitise HTTP_REFERER requests ?
 	if ( empty( $_POST['nfw_options']['referer_sanitise']) ) {
 		$nfw_options['referer_sanitise'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['referer_sanitise'] = 1;
 	}
-	// Block POST requests without HTTP_REFERER ?
 	if ( empty( $_POST['nfw_options']['referer_post']) ) {
-		// Default: NO
 		$nfw_options['referer_post'] = 0;
 	} else {
 		$nfw_options['referer_post'] = 1;
 	}
 
 
-	// Block HTTP requests with an IP in the Host header ?
 	if ( empty( $_POST['nfw_options']['no_host_ip']) ) {
-		// Default: NO
 		$nfw_options['no_host_ip'] = 0;
 	} else {
 		$nfw_options['no_host_ip'] = 1;
 	}
-	// Scan server/local IPs ?
 	if ( empty( $_POST['nfw_options']['allow_local_ip']) ) {
-		// Default: yes
 		$nfw_options['allow_local_ip'] = 0;
 	} else {
 		$nfw_options['allow_local_ip'] = 1;
 	}
 
 
-	// Hide PHP notice & error messages :
 	if ( empty( $_POST['nfw_options']['php_errors']) ) {
 		$nfw_options['php_errors'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['php_errors'] = 1;
 	}
 
-	// Sanitise PHP_SELF ?
 	if ( empty( $_POST['nfw_options']['php_self']) ) {
 		$nfw_options['php_self'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['php_self'] = 1;
 	}
-	// Sanitise PATH_TRANSLATED ?
 	if ( empty( $_POST['nfw_options']['php_path_t']) ) {
 		$nfw_options['php_path_t'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['php_path_t'] = 1;
 	}
-	// Sanitise PATH_INFO ?
 	if ( empty( $_POST['nfw_options']['php_path_i']) ) {
 		$nfw_options['php_path_i'] = 0;
 	} else {
-		// Default: yes
 		$nfw_options['php_path_i'] = 1;
 	}
 
-	// WordPress directories PHP restrictions :
 	$nfw_options['wp_dir'] = $tmp = '';
 	if ( isset( $_POST['nfw_options']['wp_admin']) ) {
 		$tmp .= '/wp-admin/(?:css|images|includes|js)/|';
@@ -2484,155 +2250,115 @@ function nf_sub_policies_save() {
 		$nfw_options['wp_dir'] = rtrim( $tmp, '|' );
 	}
 
-	// Protect against username enumeration attempts ?
 	if (! isset( $_POST['nfw_options']['enum_archives']) ) {
-		// Default : no
 		$nfw_options['enum_archives'] = 0;
 	} else {
 		$nfw_options['enum_archives'] = 1;
 	}
 	if (! isset( $_POST['nfw_options']['enum_login']) ) {
-		// Default : no
 		$nfw_options['enum_login'] = 0;
 	} else {
 		$nfw_options['enum_login'] = 1;
 	}
 
 
-	// Block WordPress XML-RPC API ?
 	if ( empty( $_POST['nfw_options']['no_xmlrpc']) ) {
-		// Default : no
 		$nfw_options['no_xmlrpc'] = 0;
 	} else {
 		$nfw_options['no_xmlrpc'] = 1;
-		// Clear no_xmlrpc_multi as we cannot offer both options
-		// at the same time !
 		$_POST['nfw_options']['no_xmlrpc_multi'] = 0;
 	}
 	if ( empty( $_POST['nfw_options']['no_xmlrpc_multi']) ) {
 		$nfw_options['no_xmlrpc_multi'] = 0;
 	} else {
-		// Default : yes
 		$nfw_options['no_xmlrpc_multi'] = 1;
 	}
 
-	// Block POST requests in the themes folder ?
 	if ( empty( $_POST['nfw_options']['no_post_themes']) ) {
-		// Default : no
 		$nfw_options['no_post_themes'] = 0;
 	} else {
 		$nfw_options['no_post_themes'] = '/'. basename(WP_CONTENT_DIR) .'/themes/';
 	}
 
-	// Force SSL for admin and logins ?
 	if ( empty( $_POST['nfw_options']['force_ssl']) ) {
-		// Default : no
 		$nfw_options['force_ssl'] = 0;
 	} else {
 		$nfw_options['force_ssl'] = 1;
 	}
 
-	// Disable the plugin and theme editor
 	if ( empty( $_POST['nfw_options']['disallow_edit']) ) {
-		// Default : no
 		$nfw_options['disallow_edit'] = 0;
 	} else {
 		$nfw_options['disallow_edit'] = 1;
 	}
 
-	// Disable plugin and theme update/installation
 	if ( empty( $_POST['nfw_options']['disallow_mods']) ) {
-		// Default : no
 		$nfw_options['disallow_mods'] = 0;
 	} else {
 		$nfw_options['disallow_mods'] = 1;
 	}
 
 
-	// Whitelist WP admin :
 	if ( empty( $_POST['nfw_options']['wl_admin']) ) {
 		$nfw_options['wl_admin'] = 0;
-		// Clear the goodguy flag :
 		if ( isset( $_SESSION['nfw_goodguy']) ) {
 			unset( $_SESSION['nfw_goodguy']);
 		}
 	} else {
 		if ( $_POST['nfw_options']['wl_admin'] == 2 ) {
-			// Whitelist any logged in user:
 			$nfw_options['wl_admin'] = 2;
 		} else {
-			// Default: don't block admin...
 			$nfw_options['wl_admin'] = 1;
 		}
-		// ...and set the goodguy flag:
 		$_SESSION['nfw_goodguy'] = $nfw_options['wl_admin'];
 	}
 
 
-	// Rules
-
-	// Block NULL byte 0x00 (#ID 2) :
 	if ( empty( $_POST['nfw_rules']['block_null_byte']) ) {
 		$nfw_rules[NFW_NULL_BYTE]['ena'] = 0;
 	} else {
-		// Default: yes
 		$nfw_rules[NFW_NULL_BYTE]['ena'] = 1;
 	}
-	// Block bots & script kiddies' scanners (#ID 531) :
 	if ( empty( $_POST['nfw_rules']['block_bots']) ) {
 		$nfw_rules[NFW_SCAN_BOTS]['ena'] = 0;
 	} else {
-		// Default: yes
 		$nfw_rules[NFW_SCAN_BOTS]['ena'] = 1;
 	}
-	// Block ASCII control characters 1 to 8 and 14 to 31 (#ID 500) :
 	if ( empty( $_POST['nfw_rules']['block_ctrl_chars']) ) {
-		// Default: no
 		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 0;
 	} else {
 		$nfw_rules[NFW_ASCII_CTRL]['ena'] = 1;
 	}
 
 
-	// Block the DOCUMENT_ROOT server variable in GET/POST requests (#ID 510) :
 	if ( empty( $_POST['nfw_rules']['block_doc_root']) ) {
 		$nfw_rules[NFW_DOC_ROOT]['ena'] = 0;
 	} else {
-		// Default: yes
 
-		// We need to ensure that the document root is at least
-		// 5 characters, otherwise this option could block a lot
-		// of legitimate requests:
 		if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
 			$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
 			$nfw_rules[NFW_DOC_ROOT]['ena']	= 1;
 		} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
 			$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', getenv( 'DOCUMENT_ROOT' ) );
 			$nfw_rules[NFW_DOC_ROOT]['ena']	= 1;
-		// we must disable that option:
 		} else {
 			$nfw_rules[NFW_DOC_ROOT]['ena']	= 0;
 		}
 	}
 
 
-	// Block PHP built-in wrappers (#ID 520) :
 	if ( empty( $_POST['nfw_rules']['php_wrappers']) ) {
 		$nfw_rules[NFW_WRAPPERS]['ena'] = 0;
 	} else {
-		// Default: yes
 		$nfw_rules[NFW_WRAPPERS]['ena'] = 1;
 	}
-	// Block localhost IP in GET/POST requests (#ID 540) :
 	if ( empty( $_POST['nfw_rules']['no_localhost_ip']) ) {
 		$nfw_rules[NFW_LOOPBACK]['ena'] = 0;
 	} else {
-		// Default: yes
 		$nfw_rules[NFW_LOOPBACK]['ena'] = 1;
 	}
 
 
-	// Save option + rules :
 	update_option( 'nfw_options', $nfw_options );
 	update_option( 'nfw_rules', $nfw_rules );
 
@@ -2642,9 +2368,6 @@ function nf_sub_policies_save() {
 
 function nf_sub_policies_default() {
 
-	// Restore default firewall policies :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$nfw_options = get_option( 'nfw_options' );
@@ -2715,9 +2438,6 @@ function nf_sub_policies_default() {
 
 function nf_sub_fileguard() {
 
-	// File Guard :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$nfw_options = get_option( 'nfw_options' );
@@ -2754,13 +2474,11 @@ function nf_sub_fileguard() {
 		<h1><?php _e('File Guard', 'ninjafirewall') ?></h1>
 	<?php
 
-	// Ensure cache folder is writable :
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog/cache/') ) {
 		echo '<div class="error notice is-dismissible"><p>' .
 			sprintf( __('The cache directory %s is not writable. Please change its permissions (0777 or equivalent).', 'ninjafirewall'), '('. htmlspecialchars(NFW_LOG_DIR) . '/nfwlog/cache/)' ) . '</p></div>';
 	}
 
-	// Saved ?
 	if ( isset( $_POST['nfw_options']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'fileguard_save') ) {
 			wp_nonce_ays('fileguard_save');
@@ -2828,12 +2546,10 @@ function nf_sub_fileguard() {
 
 function nf_sub_fileguard_save() {
 
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	$nfw_options = get_option( 'nfw_options' );
 
-	// Disable or enable the File Guard ?
 	if ( empty($_POST['nfw_options']['fg_enable']) ) {
 		$nfw_options['fg_enable'] = 0;
 	} else {
@@ -2853,7 +2569,6 @@ function nf_sub_fileguard_save() {
 		$fg_exclude =  explode(',', $_POST['nfw_options']['fg_exclude'] );
 		foreach ($fg_exclude as $path) {
 			if ( $path ) {
-				// No space characteres allowed:
 				$path = str_replace( array(' ', '\\', '|'), '', $path);
 				$exclude .= preg_quote( rtrim($path, ','), '`') . '|';
 			}
@@ -2861,7 +2576,6 @@ function nf_sub_fileguard_save() {
 		$nfw_options['fg_exclude'] = rtrim($exclude, '|');
 	}
 
-	// Update :
 	update_option( 'nfw_options', $nfw_options );
 
 }
@@ -2869,7 +2583,6 @@ function nf_sub_fileguard_save() {
 
 function nf_sub_network() {
 
-	// Network menu (multi-site only) :
 
 	if (! current_user_can( 'manage_network' ) ) {
 		die( '<br /><br /><br /><div class="error notice is-dismissible"><p>' .
@@ -2888,7 +2601,6 @@ function nf_sub_network() {
 		return;
 	}
 
-	// Saved ?
 	if ( isset( $_POST['nfw_options']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'network_save') ) {
 			wp_nonce_ays('network_save');
@@ -2898,7 +2610,6 @@ function nf_sub_network() {
 		} else {
 			$nfw_options['nt_show_status'] = 1;
 		}
-		// Update options :
 		update_option( 'nfw_options', $nfw_options );
 		echo '<div class="updated notice is-dismissible"><p>' . __('Your changes have been saved.', 'ninjafirewall') . '</p></div>';
 		$nfw_options = get_option( 'nfw_options' );
@@ -2931,7 +2642,6 @@ function nf_sub_network() {
 
 function nf_sub_filecheck() {
 
-	// File Check menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_filecheck.php' );
 
 }
@@ -2948,14 +2658,12 @@ function nfscando() {
 
 function nf_sub_event() {
 
-	// Event Notifications menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_event.php' );
 
 }
 
 add_action('init', 'nf_check_dbdata', 1);
 
-// Daily report cronjob :
 add_action('nfdailyreport', 'nfdailyreportdo');
 
 function nfdailyreportdo() {
@@ -2967,7 +2675,6 @@ function nfdailyreportdo() {
 
 function nf_sub_log() {
 
-	// Firewall Log menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_log.php' );
 
 }
@@ -2975,7 +2682,6 @@ function nf_sub_log() {
 
 function nf_sub_live() {
 
-	// Firewall Log menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_livelog.php' );
 
 }
@@ -2983,9 +2689,6 @@ function nf_sub_live() {
 
 function nf_sub_loginprot() {
 
-	// WordPress login form protection :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	echo '
@@ -2993,7 +2696,6 @@ function nf_sub_loginprot() {
 	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>' . __('Login Protection', 'ninjafirewall') . '</h1>';
 
-	// Saved ?
 	if ( isset( $_POST['nfw_options']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'bfd_save') ) {
 			wp_nonce_ays('bfd_save');
@@ -3006,7 +2708,6 @@ function nf_sub_loginprot() {
 		}
 	}
 
-	// Fetch the current configuration, if any :
 	if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		require( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' );
 
@@ -3049,7 +2750,6 @@ function nf_sub_loginprot() {
 	}
 
 	if ( empty( $bf_enable ) ) {
-		// Default values :
 		$bf_enable   = 0;
 		$get_post = $bf_request  = 'POST';
 		$bf_bantime  = 5;
@@ -3198,7 +2898,6 @@ function nf_sub_loginprot() {
 			<th scope="row"><?php _e('AUTH log', 'ninjafirewall') ?></th>
 			<td align="left">
 				<?php
-				// Ensure that openlog() and syslog() are not disabled:
 				if (! function_exists('syslog') || ! function_exists('openlog') ) {
 					$bf_authlog = 0;
 					$bf_msg = __('Your server configuration is not compatible with that option.', 'ninjafirewall');
@@ -3232,10 +2931,8 @@ function nf_sub_loginprot() {
 
 function nf_sub_loginprot_save() {
 
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
-	// The directory must be writable :
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog/cache' ) ) {
 		return( sprintf( __('Error: %s directory is not writable. Please chmod it to 0777.', 'ninjafirewall'), '<code>'. htmlspecialchars(NFW_LOG_DIR) .'/nfwlog/cache</code>') );
 	}
@@ -3247,9 +2944,7 @@ function nf_sub_loginprot_save() {
 		require( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' );
 	}
 
-	// Disable or enable the protection ?
 	if ( empty( $_POST['nfw_options']['bf_enable']) ) {
-		// Remove all files :
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			if (! unlink( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 				return( sprintf( __('Error: %s is read-only and cannot be deleted. Please chmod it to 0777.', 'ninjafirewall'), '<code>'. htmlspecialchars(NFW_LOG_DIR) .'/nfwlog/cache/bf_conf.php</code>') );
@@ -3274,30 +2969,25 @@ function nf_sub_loginprot_save() {
 		$bf_enable = 1;
 	}
 
-	// Ensure we have all values, otherwise set the default ones :
 	if ( @preg_match('/^(GET|POST|GETPOST)$/', $_POST['nfw_options']['bf_request'] ) ) {
 		$bf_request = $_POST['nfw_options']['bf_request'];
 	} else {
-		// Default value :
 		$bf_request = 'POST';
 	}
 
 	if ( @preg_match('/^[1-9][0-9]?$/', $_POST['nfw_options']['bf_bantime'] ) ) {
 		$bf_bantime = $_POST['nfw_options']['bf_bantime'];
 	} else {
-		// Default value :
 		$bf_bantime = 5;
 	}
 	if ( @preg_match('/^[1-9][0-9]?$/', $_POST['nfw_options']['bf_attempt'] ) ) {
 		$bf_attempt = $_POST['nfw_options']['bf_attempt'];
 	} else {
-		// Default value :
 		$bf_attempt = 8;
 	}
 	if ( @preg_match('/^[1-9][0-9]?$/', $_POST['nfw_options']['bf_maxtime'] ) ) {
 		$bf_maxtime = $_POST['nfw_options']['bf_maxtime'];
 	} else {
-		// Default value :
 		$bf_maxtime = 15;
 	}
 
@@ -3327,7 +3017,6 @@ function nf_sub_loginprot_save() {
 	} elseif ( (strlen($_POST['nfw_options']['auth_pass']) < 6 ) || (strlen($_POST['nfw_options']['auth_pass']) > 32 ) ) {
 		return( __('Error: password must be from 6 to 32 characters.', 'ninjafirewall') );
 	} else {
-		// Use stripslashes() to prevent WordPress from escaping the password:
 		$auth_pass = sha1( stripslashes( $_POST['nfw_options']['auth_pass'] ) );
 	}
 
@@ -3340,7 +3029,6 @@ function nf_sub_loginprot_save() {
 	if ( empty( $bf_rand ) ) {
 		$bf_rand = mt_rand(100000, 999999);
 	}
-	// Save it :
 	$data = '<?php $bf_enable=' . $bf_enable . ';$bf_request=\'' . $bf_request .
 		'\';$bf_bantime=' . $bf_bantime . ';' . '$bf_attempt=' . $bf_attempt .
 		';$bf_maxtime=' . $bf_maxtime . ';$bf_xmlrpc=' . $bf_xmlrpc. ';' .
@@ -3356,7 +3044,6 @@ function nf_sub_loginprot_save() {
 	fwrite( $fh, $data );
 	fclose( $fh );
 
-	// We reset the brute-force protection flag for the logged in user :
 	if (! empty($_SESSION['nfw_bfd']) ) {
 		unset($_SESSION['nfw_bfd']);
 	}
@@ -3367,7 +3054,6 @@ function nf_sub_loginprot_save() {
 
 function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 
-	// Write incident to the firewall log :
 
 	$nfw_options = get_option( 'nfw_options' );
 
@@ -3375,7 +3061,6 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 		$num_incident = '0000000';
 		$loglevel = 7;
 		$http_ret_code = '200';
-	// Create a random incident number :
 	} else {
 		$num_incident = mt_rand(1000000, 9000000);
 		$http_ret_code = $nfw_options['ret_code'];
@@ -3384,7 +3069,6 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 	$res = '';
 	$string = str_split($logdata);
 	foreach ( $string as $char ) {
-		// Allow only ASCII printable characters :
 		if ( ( ord($char) < 32 ) || ( ord($char) > 126 ) ) {
 			$res .= '%' . bin2hex($char);
 		} else {
@@ -3397,7 +3081,6 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 	$stat_file = NFW_LOG_DIR . '/nfwlog/stats_' . $cur_month . '.php';
 	$log_file  = NFW_LOG_DIR . '/nfwlog/firewall_' . $cur_month . '.php';
 
-	// Update stats :
 	if ( file_exists( $stat_file ) ) {
 		$nfw_stat = file_get_contents( $stat_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 	} else {
@@ -3410,7 +3093,6 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 		$nfw_stat_arr[5] . ':' . $nfw_stat_arr[6] . ':' . $nfw_stat_arr[7] . ':' .
 		$nfw_stat_arr[8] . ':' . $nfw_stat_arr[9], LOCK_EX );
 
-	// if $loglevel == 4, we don't log/need SCRIPT_NAME, IP and method :
 	if ( $loglevel == 4 ) {
 		$SCRIPT_NAME = '-';
 		$REQUEST_METHOD = 'N/A';
@@ -3442,9 +3124,6 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 
 function nf_sub_edit() {
 
-	// Rules Editor menu :
-
-	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
 	echo '
@@ -3514,7 +3193,6 @@ function nf_sub_edit() {
 	$desr = '';
 	foreach ( $enabled_rules as $key ) {
 		if ( $key == 999 ) { continue; }
-		// grey-out those ones, they can be changed in the Firewall Policies section:
 		if ( ( $key == 2 ) || ( $key > 499 ) && ( $key < 600 ) ) {
 			echo '<option value="0" disabled="disabled">' . __('Rule ID', 'ninjafirewall') .' : ' . htmlspecialchars($key) . ' ' . __('Firewall policy', 'ninjafirewall') .'</option>';
 		} else {
@@ -3549,7 +3227,6 @@ function nf_sub_edit() {
 	$count = 0;
 	foreach ( $disabled_rules as $key ) {
 		if ( $key == 999 ) { continue; }
-		// grey-out those ones, they can be changed in the Firewall Policies section:
 		if ( ( $key == 2 ) || ( $key > 499 ) && ( $key < 600 ) ) {
 			echo '<option value="0" disabled="disabled">' . __('Rule ID', 'ninjafirewall') .' #' . htmlspecialchars($key) . ' ' . __('Firewall policy', 'ninjafirewall') .'</option>';
 		} else {
@@ -3589,8 +3266,6 @@ function nf_sub_edit() {
 
 function nf_sub_updates() {
 
-	// Updates
-
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_updates.php');
 
 }
@@ -3606,8 +3281,6 @@ function nfupdatesdo() {
 
 function nf_sub_wplus() {
 
-	// WP+ intro
-
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_wplus.php' );
 }
 
@@ -3615,7 +3288,6 @@ function nf_sub_wplus() {
 
 function nf_sub_about() {
 
-	// About menu :
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_about.php' );
 
 }
@@ -3627,7 +3299,8 @@ function ninjafirewall_settings_link( $links ) {
 		unset($links);
 		$links[] = __('Access Restricted', 'ninjafirewall');
 	} else {
-		$links[] = '<a href="'. get_admin_url(null, 'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
+		if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
+		$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
 		$links[] = '<a href="http://nintechnet.com/referral/" target="_blank">'. __('Referral Program', 'ninjafirewall'). '</a>';
 	}
 	unset($links['edit']);
@@ -3643,17 +3316,13 @@ if ( is_multisite() ) {
 
 function nfw_get_blogtimezone() {
 
-	// Try to get the user timezone from WP configuration...
 	$tzstring = get_option( 'timezone_string' );
-	// ...or from PHP...
 	if (! $tzstring ) {
 		$tzstring = ini_get( 'date.timezone' );
-		// ...or use UTC :
 		if (! $tzstring ) {
 			$tzstring = 'UTC';
 		}
 	}
-	// Set the timezone :
 	date_default_timezone_set( $tzstring );
 }
 /* ------------------------------------------------------------------ */ // i18n+
@@ -3671,10 +3340,8 @@ function nfw_check_emailalert() {
 	global $current_user;
 	$current_user = wp_get_current_user();
 
-	// Check what it is :
 	list( $a_1, $a_2, $a_3 ) = explode( ':', NFW_ALERT . ':' );
 
-	// Shall we alert the admin ?
 	if (! empty($nfw_options['a_' . $a_1 . $a_2]) ) {
 		$alert_array = array(
 			'1' => array (
@@ -3690,7 +3357,6 @@ function nfw_check_emailalert() {
 			)
 		);
 
-		// Get timezone :
 		nfw_get_blogtimezone();
 
 		if ( substr_count($a_3, ',') ) {
@@ -3729,7 +3395,6 @@ function nfw_check_emailalert() {
 
 function nfw_dashboard_widgets() {
 
-	// Add dashboard widgets
 	require( plugin_dir_path(__FILE__) . 'lib/nfw_dashboard_widgets.php' );
 
 }
@@ -3751,8 +3416,6 @@ function nf_not_allowed($block, $line) {
 	} else {
 		if ( current_user_can('manage_options') &&
 		     current_user_can('unfiltered_html') ) {
-			// Check if that admin is allowed to use NinjaFirewall
-			// (see NFW_ALLOWED_ADMIN at http://nin.link/nfwaa ):
 			if ( defined('NFW_ALLOWED_ADMIN') ) {
 				$current_user = wp_get_current_user();
 				$admins = explode(',', NFW_ALLOWED_ADMIN);

@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-21 17:59:26                                       |
+ | REVISION: 2016-04-05 17:59:26                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -38,6 +38,8 @@ function fw_fileguard() {
 			if ( time() - $nfw_['nfw_options']['fg_mtime'] * 3660 < $nfw_['nfw_options']['fg_stat']['ctime'] ) {
 				// Did we check it already ?
 				if (! file_exists( $nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php' ) ) {
+					// Log it :
+					nfw_log('Access to a script modified/created less than ' . $nfw_['nfw_options']['fg_mtime'] . ' hour(s) ago', $_SERVER['SCRIPT_FILENAME'], 6, 0);
 					// We need to alert the admin :
 					if (! $nfw_['nfw_options']['tzstring'] = ini_get('date.timezone') ) {
 						$nfw_['nfw_options']['tzstring'] = 'UTC';
@@ -60,8 +62,6 @@ function fw_fileguard() {
 					mail( $nfw_['nfw_options']['alert_email'], $nfw_['nfw_options']['m_subject'], $nfw_['nfw_options']['m_msg'], $nfw_['nfw_options']['m_headers']);
 					// Remember it so that we don't spam the admin each time the script is requested :
 					touch($nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php');
-					// Log it :
-					nfw_log('Access to a script modified/created less than ' . $nfw_['nfw_options']['fg_mtime'] . ' hour(s) ago', $_SERVER['SCRIPT_FILENAME'], 6, 0);
 				}
 			}
 		}

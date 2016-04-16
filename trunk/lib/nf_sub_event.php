@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-21 18:59:23                                       |
+ | REVISION: 2016-04-13 18:59:23                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -376,10 +376,14 @@ function nf_daily_report() {
 function nf_daily_report_log() {
 
 	nfw_get_blogtimezone();
-	$cur_month = date('Y-m');
-	$previous_day = strtotime( date('Y-m-d 00:00:01', strtotime("-1 day")) );
 
-	$log_file  = NFW_LOG_DIR . '/nfwlog/firewall_' . $cur_month;
+	if (date('j') == 1) {
+		$cur_month_log = date('Y-m', strtotime(date('Y-m')." -1 month"));
+	} else {
+		$cur_month_log = date('Y-m');
+	}
+	$previous_day = strtotime( date('Y-m-d 00:00:01', strtotime("-1 day")) );
+	$log_file  = NFW_LOG_DIR . '/nfwlog/firewall_' . $cur_month_log;
 	$logstats = array( 0 => 0, 1 => 0, 2 => 0, 3 => 0, 5 => 0);
 
 	$glob = glob($log_file . "*.php");
