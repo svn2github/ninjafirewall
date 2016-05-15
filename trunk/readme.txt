@@ -2,7 +2,7 @@
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
-Tested up to: 4.5
+Tested up to: 4.5.2
 Stable tag: 3.1.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -34,6 +34,8 @@ NinjaFirewall includes **the most powerful filtering engine available in a WordP
 * Protects against remote file inclusion, local file inclusion, cross-site scripting, code execution, SQL injections, brute-force scanners, shell scripts, backdoors etc.
 * Scans and sanitises GET/POST requests, HTTP/HTTPS traffic, cookies, server variables (`HTTP_USER_AGENT`, `HTTP_REFERER`, `PHP_SELF`, `PATH_TRANSLATED`, `PATH_INFO`) and raw POST data.
 * Sanitises variables names and values.
+* Local privilege escalation protection.
+* Anti-Malware Scanner.
 * Advanced filtering options to block ASCII control characters, NULL bytes and PHP built-in wrappers.
 * Decodes and scans Base64-encoded POST requests to detect backdoors and code injection attempts.
 * Hooks and secures HTTP reponse headers to prevent XSS, phishing and clickjacking attempts (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`).
@@ -88,6 +90,10 @@ Monitored events:
 * Plugins upload, installation, (de)activation, update, deletion.
 * Themes upload, installation, activation, deletion.
 * WordPress update.
+
+= Anti-Malware Scanner =
+
+It allows you to scan your website for malware. The scanning engine is compatible with the popular [Linux Malware Detect LMD](https://www.rfxn.com/projects/linux-malware-detect/ "") (whose anti-malware signatures are included with this release) and with some [ClamAV](https://www.clamav.net/ "") signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that:  [Adding your own signatures to NinjaFirewall Anti-Malware](http://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/ "")
 
 = Stay protected against the latest WordPress security vulnerabilities =
 
@@ -227,6 +233,12 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.2 =
+
+* Added a new feature: "Anti-Malware". It allows you to scan your website for malware. The scanning engine is compatible with the popular Linux Malware Detect LMD (whose anti-malware signatures are included with this release) and with some ClamAV signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that: http://nin.link/maldet/
+* Fixed a JavaScript warning in the "File Check" page.
+* Minor fixes and adjustments.
 
 = 3.1.3 =
 

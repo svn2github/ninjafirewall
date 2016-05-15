@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-11-23 16:38:40                                       |
+ | REVISION: 2016-05-12 19:15:44                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -124,7 +124,7 @@ if ( empty($nfw_options['snapdir']) ) {
 	}
 }
 if (! isset($nfw_options['snapexclude']) ) {
-	$nfw_options['snapexclude'] = '/wp-content/nfwlog/';
+	$nfw_options['snapexclude'] = '/'. basename(WP_CONTENT_DIR) .'/nfwlog/';
 }
 
 echo '<div class="wrap">
@@ -146,7 +146,7 @@ if (! file_exists($nfmon_snapshot) ) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Create a snapshot of all files stored in that directory', 'ninjafirewall') ?></th>
-				<td align="left"><input class="regular-text" type="text" name="snapdir" value="<?php
+				<td align="left"><input class="large-text" type="text" name="snapdir" value="<?php
 				if (! empty($nfw_options['snapdir']) ) {
 					echo htmlspecialchars($nfw_options['snapdir']);
 				} else {
@@ -157,7 +157,7 @@ if (! file_exists($nfmon_snapshot) ) {
 
 			<tr>
 				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
-				<td align="left"><input class="regular-text" type="text" name="snapexclude" value="<?php echo htmlentities($nfw_options['snapexclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /wp-content/nfwlog/" maxlength="255"><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
+				<td align="left"><input class="large-text" type="text" name="snapexclude" value="<?php echo htmlentities($nfw_options['snapexclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /wp-content/nfwlog/" maxlength="255"><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 			</tr>
 
 			<tr>
@@ -234,6 +234,7 @@ if (file_exists($nfmon_diff) ) {
 	<script>
 	<?php if ($mod) { ?>
 	function file_info(what, where) {
+		if ( what == '' ) { return false; }
 		// New file :
 		if (where == 1) {
 			<?php if ($new_file) { ?>

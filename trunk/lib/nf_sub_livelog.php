@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-13 15:35:51                                       |
+ | REVISION: 2016-05-12 18:46:51                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -31,7 +31,7 @@ if (NF_DISABLED) {
 	$err_msg = __('Error: NinjaFirewall must be enabled and working in order to use the Live Log feature.', 'ninjafirewall');
 }
 if ( empty($_SESSION['nfw_goodguy']) ) {
-	$err_msg = __('Error: You must be whitelisted in order to use that feature: click on the <a href="?page=nfsubpolicies">Firewall Policies</a> menu and ensure that the "Do not block WordPress administrator" option is enabled.', 'ninjafirewall');
+	$err_msg = sprintf( __('Error: You must be whitelisted in order to use that feature: click on the <a href="%s">Firewall Policies</a> menu and ensure that the "Add the Administrator to the whitelist" option is enabled.', 'ninjafirewall'), '?page=nfsubpolicies' );
 }
 if (! empty($err_msg) ) {
 	?>

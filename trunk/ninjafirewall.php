@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.1.3
+Version: 3.2
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-04-16 18:44:37                                       |
+ | REVISION: 2016-05-15 12:29:47                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.1.3' );
+define( 'NFW_ENGINE_VERSION', '3.2' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -445,13 +445,20 @@ function nfw_upgrade() {
 			}
 			$nfw_options['no_xmlrpc_multi'] = 1;
 		}
-		// v3.2 update (file guard) --------------------------------------
-		if ( version_compare( $nfw_options['engine_version'], '3.1', '<=' ) ) {
+		// v3.1.2 update (file guard) ----------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.1.2', '<' ) ) {
 			if (! empty( $nfw_options['fg_exclude'] ) ) {
 				$nfw_options['fg_exclude'] = preg_quote( $nfw_options['fg_exclude'], '`');
 			}
 		}
-		// ---------------------------------------------------------------
+		// v3.2 update (anti-malware) ----------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.2', '<' ) ) {
+			$nfw_options['malware_dir'] = ABSPATH;
+			$nfw_options['malware_symlink'] = 1;
+			$nfw_options['malware_timestamp'] = 7;
+			$nfw_options['malware_size'] = 2048;
+		}
+		// -------------------------------------------------------------
 
 		$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
 		$is_update = 1;
@@ -774,6 +781,10 @@ function ninjafirewall_admin_menu() {
 	$menu_hook = add_submenu_page( 'NinjaFirewall',  __('NinjaFirewall: File Check', 'ninjafirewall'),  __('File Check', 'ninjafirewall'), 'manage_options',
 		'nfsubfilecheck', 'nf_sub_filecheck' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubfilecheck' );
+
+	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Anti-Malware', 'ninjafirewall'), __('Anti-Malware', 'ninjafirewall'), 'manage_options',
+		'nfsubmalwarescan', 'nf_sub_malwarescan' );
+	add_action( 'load-' . $menu_hook, 'help_nfsubmalwarescan' );
 
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Network', 'ninjafirewall'), __('Network', 'ninjafirewall'), 'manage_network',
 		'nfsubnetwork', 'nf_sub_network' );
@@ -2531,7 +2542,7 @@ function nf_sub_fileguard() {
 			</tr>
 			<tr>
 				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
-				<td align="left"><input class="regular-text" type="text" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
+				<td align="left"><input class="large-text" type="text" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 			</tr>
 		</table>
 		<br />
@@ -2652,6 +2663,39 @@ function nfscando() {
 
 	define('NFSCANDO', 1);
 	nf_sub_filecheck();
+}
+
+/* ------------------------------------------------------------------ */ // i18n+
+
+function nf_sub_malwarescan() {
+
+	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_malwarescan.php' );
+
+}
+
+add_action('nfmalwarescan', 'nfmalwarescando');
+function nfmalwarescando( $sigs) {
+
+	define('NFW_SCAN_SIGS', $sigs );
+	define('NFMALWARESCANDO', 1);
+	nf_sub_malwarescan();
+
+}
+
+add_action( 'wp_ajax_nfw_msajax', 'nfw_msajax_callback' );
+function nfw_msajax_callback() {
+
+	if ( check_ajax_referer( 'nfw_msajax_javascript', 'nfw_sc_nonce', false ) && ! empty( $_POST['sigs'] ) ){
+		delete_transient('doing_cron');
+		$sigs = rtrim( $_POST['sigs'], ':' );
+		wp_schedule_single_event( time() - 1, 'nfmalwarescan', array( $sigs ) );
+		spawn_cron();
+		echo 'OK';
+	} else {
+		echo '1';
+	}
+	wp_die();
+
 }
 
 /* ------------------------------------------------------------------ */ // i18n+
