@@ -2,11 +2,11 @@
 	<IfModule mod_version.c>
 		<IfVersion < 2.2>
 			RewriteEngine On
-			RewriteRule !\.png$ - [F,L]
+			RewriteRule !\.(png|gif)$ - [F,L]
 		</IfVersion>
 		<IfVersion >= 2.2>
 			RewriteEngine On
-			RewriteRule !\.png$ - [L,R=404]
+			RewriteRule !\.(png|gif)$ - [L,R=404]
 		</IfVersion>
 	</IfModule>
 </IfModule>

@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.5.2
-Stable tag: 3.2
+Stable tag: 3.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,11 +234,12 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.2 =
+= 3.2.1 =
 
-* Added a new feature: "Anti-Malware". It allows you to scan your website for malware. The scanning engine is compatible with the popular Linux Malware Detect LMD (whose anti-malware signatures are included with this release) and with some ClamAV signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that: http://nin.link/maldet/
-* Fixed a JavaScript warning in the "File Check" page.
-* Minor fixes and adjustments.
+* [v3.2.1] Fixed a small bug introduced in v3.2 (see below) in the "Anti-Malware" page: the animated GIF didn't load because it was blocked by the .htaccess mod_rewrite rules. This issue affected Apache users only. Sorry for the inconvenience.
+* [v3.2] Added a new feature: "Anti-Malware". It allows you to scan your website for malware. The scanning engine is compatible with the popular Linux Malware Detect LMD (whose anti-malware signatures are included with this release) and with some ClamAV signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that: http://nin.link/maldet/
+* [v3.2] Fixed a JavaScript warning in the "File Check" page.
+* [v3.2] Minor fixes and adjustments.
 
 = 3.1.3 =
 
