@@ -241,7 +241,7 @@ if ( isset($_POST['lf']) ) {
 		echo '<div class="updated notice is-dismissible"><p>'. __('Your changes have been saved.', 'ninjafirewall') .'</p></div>';
 	}
 }
-$nfw_options = get_option('nfw_options');
+$nfw_options = nfw_get_option('nfw_options');
 ?>
 <form name="liveform">
 	<table class="form-table">
@@ -336,7 +336,7 @@ function nf_sub_liveloge_save() {
 		wp_nonce_ays('livelog_save');
 	}
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	if ( empty($_POST['lf']) ) {
 		$nfw_options['liveformat'] = '';
@@ -363,7 +363,7 @@ function nf_sub_liveloge_save() {
 		$nfw_options['livetz'] = $_POST['livetz'];
 	}
 
-	$nfw_options = update_option('nfw_options', $nfw_options);
+	$nfw_options = nfw_update_option('nfw_options', $nfw_options);
 }
 
 /* ------------------------------------------------------------------ */

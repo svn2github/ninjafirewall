@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-04-01 19:50:33                                       |
+ | REVISION: 2016-05-18 19:50:33                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -165,10 +165,12 @@ if (! preg_match( '/^win/i', PHP_OS ) ) {
 		echo '<tr valign="top"><td width="47%;" align="right">' . __('RAM', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . number_format( $free ) . ' ' . __('MB free', 'ninjafirewall') . ' / '. number_format( $MemTotal ) . ' ' . __('MB total', 'ninjafirewall') . '</td></tr>';
 	}
 
-	$cpu = @explode( "\n", `grep 'model name' /proc/cpuinfo` );
+	$cpu = array_filter( @explode( "\n", `egrep 'model name|cpu cores' /proc/cpuinfo` ) );
 	if (! empty( $cpu[0] ) ) {
-		array_pop( $cpu );
-		echo '<tr valign="top"><td width="47%;" align="right">' . __('Processor(s)', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . count( $cpu ) . '</td></tr>';
+		$cpu_tot = count( $cpu ) / 2;
+		$core_tot = array_pop( $cpu );
+		$core_tot = preg_replace( '/^.+(\d+)/', '$1', $core_tot );
+		echo '<tr valign="top"><td width="47%;" align="right">' . _n('Processor', 'Processors', $cpu_tot, 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . $cpu_tot .' ('. _n('CPU core:', 'CPU cores:', $core_tot, 'ninjafirewall') .' '. $core_tot . ')</td></tr>';
 		echo '<tr valign="top"><td width="47%;" align="right">' . __('CPU model', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . str_replace ("model name\t:", '', htmlspecialchars($cpu[0])) . '</td></tr>';
 	}
 }

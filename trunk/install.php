@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-11 12:28:46                                       |
+ | REVISION: 2016-05-21 12:28:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -342,8 +342,12 @@ function nfw_presave($err) {
 	?>
 	<h3><?php _e('System configuration', 'ninjafirewall') ?></h3>
 	<?php
+	// auto_prepend_file already being used?
+	if ( $apf = ini_get('auto_prepend_file') ) {
+		echo '<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;'. sprintf( __('NinjaFirewall detected that the PHP <code>auto_prepend_file</code> directive seems to be used by another application: %s.', 'ninjafirewall'), '<code>'. htmlspecialchars($apf) .'</code>' ) . ' ' .  __('Because NinjaFirewall needs to use that directive, it will orverride your current one.', 'ninjafirewall') .'</p>';
+	}
 	if ( is_multisite() ) {
-		echo '<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;<strong>'. __('Multisite network detected:', 'ninjafirewall') . '</strong> '. __('NinjaFirewall will protect all sites from your network and its configuration interface will be accessible only to the Super Admin from the network main site.', 'ninjafirewall') . '</p>';
+		echo '<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) .'" border="0" height="16" width="16">&nbsp;'. __('Multisite network detected:', 'ninjafirewall') . ' '. __('NinjaFirewall will protect all sites from your network and its configuration interface will be accessible only to the Super Admin from the network main site.', 'ninjafirewall') . '</p>';
 	}
 	?>
 	<form method="post" name="presave_form" onSubmit="return check_fields();">
@@ -782,7 +786,7 @@ NFW_INTEGRATION:
 			}
 		}
 	}
-	update_option( 'nfw_install', $nfw_install);
+	nfw_update_option( 'nfw_install', $nfw_install);
 
 	?>
 <div class="wrap">
@@ -1095,8 +1099,8 @@ function nfw_default_conf() {
 		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
 
-	update_option( 'nfw_options', $nfw_options);
-	update_option( 'nfw_rules', $nfw_rules);
+	nfw_update_option( 'nfw_options', $nfw_options);
+	nfw_update_option( 'nfw_rules', $nfw_rules);
 
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');

@@ -81,7 +81,7 @@ if (! empty($_POST['nfw_act']) ) {
 	}
 }
 
-$nfw_options = get_option('nfw_options');
+$nfw_options = nfw_get_option('nfw_options');
 
 if ( empty($nfw_options['enable_updates']) ) {
 	$enable_updates = 0;
@@ -221,7 +221,7 @@ function toogle_table(off) {
 
 function nf_sub_updates_save() {
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	if ( empty($_POST['sched_updates']) || ! preg_match('/^[2-3]$/', $_POST['sched_updates']) ) {
 		$nfw_options['sched_updates'] = 1;
@@ -257,7 +257,7 @@ function nf_sub_updates_save() {
 		$nfw_options['notify_updates'] = 1;
 	}
 
-	update_option('nfw_options', $nfw_options);
+	nfw_update_option('nfw_options', $nfw_options);
 
 }
 
@@ -280,7 +280,7 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 		 return nf_sub_updates_download($update_url, $update_log, 0);
 	}
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	// Don't do anything if NinjaFirewall is disabled :
 	if ( empty( $nfw_options['enabled'] ) ) { return 0; }
@@ -313,7 +313,7 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 		return 0;
 	}
 
-	$nfw_rules = get_option('nfw_rules');
+	$nfw_rules = nfw_get_option('nfw_rules');
 
 	foreach ( $new_rules as $new_key => $new_value ) {
 		foreach ( $new_value as $key => $value ) {
@@ -340,11 +340,11 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 	}
 
 	// Update rules in the DB :
-	update_option('nfw_rules', $new_rules);
+	nfw_update_option('nfw_rules', $new_rules);
 
 	// Update rules version in the options table :
 	$nfw_options['rules_version'] = $new_rules_version;
-	update_option('nfw_options', $nfw_options);
+	nfw_update_option('nfw_options', $nfw_options);
 
 	nf_sub_updates_log(
 		$update_log,
@@ -491,7 +491,7 @@ function nf_sub_updates_log($update_log, $msg) {
 
 function nf_sub_updates_notification($new_rules_version) {
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 		$recipient = get_option('admin_email');

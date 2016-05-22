@@ -31,10 +31,10 @@ if (defined('NFSCANDO') ) {
 
 	$snapproc = microtime(true);
 	$err = nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff);
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 	if (empty($nfw_options['enabled']) ) { return; }
 	$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2 );
-	update_option('nfw_options', $nfw_options);
+	nfw_update_option('nfw_options', $nfw_options);
 
 	// Changes detected :
 	if (! $err && file_exists($nfmon_diff) ) {
@@ -81,10 +81,10 @@ if (! empty($_REQUEST['nfw_act'])) {
 			if ( wp_next_scheduled('nfscanevent') ) {
 				wp_clear_scheduled_hook('nfscanevent');
 			}
-			$nfw_options = get_option('nfw_options');
+			$nfw_options = nfw_get_option('nfw_options');
 			$nfw_options['report_scan'] = 0;
 			$nfw_options['sched_scan'] = 0;
-			update_option('nfw_options', $nfw_options);
+			nfw_update_option('nfw_options', $nfw_options);
 
 		} else {
 			$err = __('You did not create any snapshot yet.', 'ninjafirewall');
@@ -97,9 +97,9 @@ if (! empty($_REQUEST['nfw_act'])) {
 
 			$snapproc = microtime(true);
 			$err = nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff);
-			$nfw_options = get_option('nfw_options');
+			$nfw_options = nfw_get_option('nfw_options');
 			$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2);
-			update_option('nfw_options', $nfw_options);
+			nfw_update_option('nfw_options', $nfw_options);
 
 			if (! $err) {
 				if (file_exists($nfmon_diff) ) {
@@ -116,7 +116,7 @@ if (! empty($_REQUEST['nfw_act'])) {
 	}
 }
 
-$nfw_options = get_option('nfw_options');
+$nfw_options = nfw_get_option('nfw_options');
 if ( empty($nfw_options['snapdir']) ) {
 	$nfw_options['snapdir'] = '';
 	if ( file_exists($nfmon_snapshot) ) {
@@ -593,12 +593,12 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 		}
 
 		// Save scan dir :
-		$nfw_options = get_option('nfw_options');
+		$nfw_options = nfw_get_option('nfw_options');
 		$nfw_options['snapproc'] = round( microtime(true) - $snapproc, 2);
 		$nfw_options['snapexclude'] = $_POST['snapexclude'];
 		$nfw_options['snapdir'] = $_POST['snapdir'];
 		$nfw_options['snapnoslink'] = $snapnoslink;
-		update_option('nfw_options', $nfw_options);
+		nfw_update_option('nfw_options', $nfw_options);
 
 	} else {
 		return sprintf( __('Cannot write to %s.', 'ninjafirewall'), '<code>'. $nfmon_snapshot .'</code>');
@@ -642,7 +642,7 @@ function scd($snapdir, $snapexclude, $fh, $snapnoslink) {
 
 function nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff) {
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	if (empty($nfw_options['enabled']) ) { return; }
 
@@ -749,7 +749,7 @@ function nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff) {
 
 function nf_scheduled_scan() {
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 
 	if (! isset($_POST['sched_scan']) || ! preg_match('/^[1-3]$/', $_POST['sched_scan']) ) {
 		$nfw_options['sched_scan'] = 0;
@@ -778,7 +778,7 @@ function nf_scheduled_scan() {
 	} else {
 		$nfw_options['report_scan'] = 1;
 	}
-	update_option('nfw_options', $nfw_options);
+	nfw_update_option('nfw_options', $nfw_options);
 
 }
 
@@ -786,7 +786,7 @@ function nf_scheduled_scan() {
 
 function nf_scan_email($nfmon_diff, $log_dir) {
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 	if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 		$recipient = get_option('admin_email');
 	} else {

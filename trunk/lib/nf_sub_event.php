@@ -30,7 +30,7 @@ if ( defined('NFREPORTDO') ) {
 // Block immediately if user is not allowed :
 nf_not_allowed( 'block', __LINE__ );
 
-$nfw_options = get_option( 'nfw_options' );
+$nfw_options = nfw_get_option( 'nfw_options' );
 
 echo '<script>
 function ac_radio_toogle(on_off, rbutton) {
@@ -54,7 +54,7 @@ if ( isset( $_POST['nfw_options']) ) {
 	}
 	nf_sub_event_save();
 	echo '<div class="updated notice is-dismissible"><p>' . __('Your changes have been saved.', 'ninjafirewall') . '</p></div>';
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 }
 
 if (! isset( $nfw_options['a_0'] ) ) {
@@ -233,7 +233,7 @@ function nf_sub_event_save() {
 	// Block immediately if user is not allowed :
 	nf_not_allowed( 'block', __LINE__ );
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if (! preg_match('/^[012]$/', $_POST['nfw_options']['a_0']) ) {
 		$nfw_options['a_0'] = 1;
@@ -349,7 +349,7 @@ function nf_sub_event_save() {
 	}
 
 	// Update options :
-	update_option( 'nfw_options', $nfw_options );
+	nfw_update_option( 'nfw_options', $nfw_options );
 
 }
 
@@ -358,7 +358,7 @@ function nf_sub_event_save() {
 function nf_daily_report() {
 
 	// Send a daily report to the admin(s):
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( ( is_multisite() ) && ( @$nfw_options['alert_sa_only'] == 2 ) ) {
 		$recipient = get_option('admin_email');

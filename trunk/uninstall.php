@@ -53,9 +53,10 @@ function nfw_uninstall() {
 	define( 'PHPINI_END', '; END NinjaFirewall' );
 
 	// Retrieve installation info :
-	global $nfw_install;
-	if (! isset( $nfw_install) ) {
-		$nfw_install = get_option( 'nfw_install' );
+	if ( is_multisite() ) {
+		$nfw_install = get_site_option('nfw_install');
+	} else {
+		$nfw_install = get_option('nfw_install');
 	}
 
 	// clean-up .htaccess :
@@ -117,7 +118,14 @@ function nfw_uninstall() {
 	delete_option('nfw_options');
 	delete_option('nfw_rules');
 	delete_option('nfw_install');
-	delete_option( 'nfw_tmp' );
+	delete_option('nfw_tmp');
+	if ( is_multisite() ) {
+		// Delete those ones too :
+		delete_site_option('nfw_options');
+		delete_site_option('nfw_rules');
+		delete_site_option('nfw_install');
+		delete_site_option('nfw_tmp');
+	}
 
 }
 

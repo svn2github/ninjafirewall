@@ -24,7 +24,7 @@ if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 // Block immediately if user is not allowed :
 nf_not_allowed( 'block', __LINE__ );
 
-$nfw_options = get_option( 'nfw_options' );
+$nfw_options = nfw_get_option( 'nfw_options' );
 
 echo '
 <script>
@@ -62,7 +62,7 @@ if ( isset( $_POST['nfw_options']) ) {
 		wp_nonce_ays('options_save');
 	}
 	$res = nf_sub_options_save();
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 	if ($res) {
 		echo '<div class="error notice is-dismissible"><p>' . $res . '.</p></div>';
 	} else {
@@ -201,7 +201,7 @@ function nf_sub_options_save() {
 		return nf_sub_options_import();
 	}
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( empty( $_POST['nfw_options']['enabled']) ) {
 		if (! empty($nfw_options['enabled']) ) {
@@ -293,7 +293,7 @@ function nf_sub_options_save() {
 	}
 
 	// Save them :
-	update_option( 'nfw_options', $nfw_options);
+	nfw_update_option( 'nfw_options', $nfw_options);
 
 }
 /* ------------------------------------------------------------------ */
@@ -393,7 +393,7 @@ function nf_sub_options_import() {
 		}
 	}
 	// Save options :
-	update_option( 'nfw_options', $nfw_options);
+	nfw_update_option( 'nfw_options', $nfw_options);
 
 	// Add the correct DOCUMENT_ROOT :
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
@@ -404,7 +404,7 @@ function nf_sub_options_import() {
 		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
 	// Save rules :
-	update_option( 'nfw_rules', $nfw_rules);
+	nfw_update_option( 'nfw_rules', $nfw_rules);
 
 	// Alert the admin :
 	nf_sub_options_alert(3);
@@ -416,7 +416,7 @@ function nf_sub_options_import() {
 
 function nf_sub_options_alert( $what ) {
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 		$recipient = get_option('admin_email');

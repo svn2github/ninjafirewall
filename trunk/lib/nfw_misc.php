@@ -58,7 +58,7 @@ function nfw_admin_notice(){
 		return;
 	}
 
-	$nfw_options = get_option('nfw_options');
+	$nfw_options = nfw_get_option('nfw_options');
 	if ( empty($nfw_options['ret_code']) && NF_DISABLED != 11 ) {
 		return;
 	}
@@ -78,7 +78,7 @@ add_action('all_admin_notices', 'nfw_admin_notice');
 
 function nfw_query( $query ) { // i18n
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 	if ( empty($nfw_options['enum_archives']) || empty($nfw_options['enabled']) || is_admin() ) {
 		return;
 	}
@@ -106,7 +106,7 @@ if (! isset($_SESSION['nfw_goodguy']) ) {
 
 function nfw_authenticate( $user ) { // i18n
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( empty( $nfw_options['enum_login']) || empty($nfw_options['enabled']) ) {
 		return $user;
@@ -132,7 +132,7 @@ function nfw_err_shake( $shake_codes ) {
 
 function nf_check_dbdata() {
 
-	$nfw_options = get_option( 'nfw_options' );
+	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( empty( $nfw_options['enabled'] ) || empty($nfw_options['a_51']) ) { return; }
 
@@ -223,7 +223,11 @@ function nf_get_dbdata() {
 
 function nfw_get_option( $option ) {
 
-	return get_option($option);
+	if ( is_multisite() ) {
+		return get_site_option($option);
+	} else {
+		return get_option($option);
+	}
 }
 
 /* ------------------------------------------------------------------ */
@@ -231,6 +235,10 @@ function nfw_get_option( $option ) {
 function nfw_update_option( $option, $new_value ) {
 
 	update_option( $option, $new_value );
+	if ( is_multisite() ) {
+		update_site_option( $option, $new_value );
+	}
+	return;
 }
 
 /* ------------------------------------------------------------------ */
@@ -238,6 +246,10 @@ function nfw_update_option( $option, $new_value ) {
 function nfw_delete_option( $option ) {
 
 	delete_option( $option );
+	if ( is_multisite() ) {
+		delete_site_option( $option );
+	}
+	return;
 }
 
 /* ------------------------------------------------------------------ */

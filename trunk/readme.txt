@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.5.2
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,15 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.2.2 =
+
+* Fixed a bug in subdomain-based multisites: the Super Admin was not whitelisted when accessing a sub-site and could not upload files.
+* Added the last scan date to the Anti-Malware page.
+* Fixed a typo in the Anti-Malware JavaScript code.
+* Added a warning to the Anti-Malware page if the scanning process seems to have unexpectedly terminated or was killed because it reached the PHP max_execution_time value allowed by your host.
+* Renamed the signatures file from .php to .txt to prevent it from being wrongly flagged by some antivirus.
+* Minor fixes and adjustments.
 
 = 3.2.1 =
 

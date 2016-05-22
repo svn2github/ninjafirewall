@@ -24,7 +24,7 @@ if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 // Block immediately if user is not allowed :
 nf_not_allowed( 'block', __LINE__ );
 
-$nfw_options = get_option( 'nfw_options' );
+$nfw_options = nfw_get_option( 'nfw_options' );
 
 $log_dir = NFW_LOG_DIR . '/nfwlog/';
 $monthly_log = 'firewall_' . date( 'Y-m' ) . '.php';
