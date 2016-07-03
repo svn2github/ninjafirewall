@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-05-21 12:28:46                                       |
+ | REVISION: 2016-06-08 12:28:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -1047,7 +1047,7 @@ function nfw_default_conf() {
 
 		'alert_email'	 	=> get_option('admin_email'),
 		// v1.1.0 :
-		'alert_sa_only'	=> 2,
+		'alert_sa_only'	=> 1,
 		'nt_show_status'	=> 1,
 		'post_b64'			=> 1,
 		// v1.1.2 :

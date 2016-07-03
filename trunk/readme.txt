@@ -2,7 +2,7 @@
 Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 Stable tag: 3.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -11,13 +11,13 @@ A true Web Application Firewall to protect and secure WordPress.
 
 == Description ==
 
-> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features) or HHVM 3.4+, MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
-
 = A true Web Application Firewall =
 
 NinjaFirewall (WP Edition) is a true Web Application Firewall. Although it can be installed and configured just like a plugin, it is a stand-alone firewall that sits in front of WordPress.
 
 It allows any blog administrator to benefit from very advanced and powerful security features that usually aren't available at the WordPress level, but only in security applications such as the Apache [ModSecurity](http://www.modsecurity.org/ "") module or the PHP [Suhosin](http://suhosin.org/ "") extension.
+
+> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features) or HHVM 3.4+, MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
 
 NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to a PHP script before it reaches WordPress or any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren't part of the WordPress package. Even encoded PHP scripts, hackers shell scripts and backdoors will be filtered by NinjaFirewall.
 
@@ -233,6 +233,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.2.3 =
+
+* Fixed a bug that could prevent the Anti-Malware scanner to run if the ALTERNATE_WP_CRON method was enabled.
+* In a multisite environment, notifications will always be sent to the SuperAdmin by default, instead of the administrator of the site where originated the alert.
+* Fixed an issue where NinjaFirewall could wrongly flag a POST request as a BASE64 encoded injection attempt.
+* Updated Linux Malware Detect signatures.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 3.2.2 =
 

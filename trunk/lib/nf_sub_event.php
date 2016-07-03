@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-04-13 18:59:23                                       |
+ | REVISION: 2016-06-08 18:59:23                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -190,7 +190,7 @@ if (! is_multisite() ) {
 } else {
 	// Select which admin(s) will recevied alerts in multi-site mode :
 	if (! isset( $nfw_options['alert_sa_only'] ) ) {
-		$nfw_options['alert_sa_only'] = 2;
+		$nfw_options['alert_sa_only'] = 1;
 	}
 	if ($nfw_options['alert_sa_only'] == 3) {
 		$tmp_email = htmlspecialchars( $nfw_options['alert_email'] );
@@ -203,8 +203,8 @@ if (! is_multisite() ) {
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Alerts should be sent to', 'ninjafirewall') ?></th>
 			<td align="left">
-			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="1"<?php checked( $nfw_options['alert_sa_only'], 1 ) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('Only to me, the Super Admin', 'ninjafirewall') ?> (<?php echo htmlspecialchars(get_option('admin_email')); ?>)</label></p>
-			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="2"<?php checked( $nfw_options['alert_sa_only'], 2) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('To the administrator of the site where originated the alert (default)', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="1"<?php checked( $nfw_options['alert_sa_only'], 1 ) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('Only to me, the Super Admin', 'ninjafirewall') ?>, <?php echo '<code>'. htmlspecialchars(get_option('admin_email')) . '</code>'; ?> (<?php _e('default', 'ninjafirewall') ?>)</label></p>
+			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="2"<?php checked( $nfw_options['alert_sa_only'], 2) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('To the administrator of the site where originated the alert', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="3"<?php checked( $nfw_options['alert_sa_only'], 3) ?> onclick="ac_radio_toogle(1,'alert_multirec');" />&nbsp;<?php _e('Other(s):', 'ninjafirewall') ?> </label><input class="regular-text" type="text" name="nfw_options[alert_multirec]" size="45" maxlength="250" value="<?php echo $tmp_email ?>" <?php disabled($tmp_email, '') ?>></p>
 			<span class="description"><?php _e('Multiple recipients must be comma-separated (e.g., <code>joe@example.org,alice@example.org</code>).', 'ninjafirewall') ?></span>
 			<input type="hidden" name="nfw_options[alert_email]" value="<?php echo htmlspecialchars(get_option('admin_email')); ?>">
@@ -242,7 +242,7 @@ function nf_sub_event_save() {
 	}
 
 	if (! preg_match('/^[123]$/', $_POST['nfw_options']['alert_sa_only']) ) {
-		$nfw_options['alert_sa_only'] = 2;
+		$nfw_options['alert_sa_only'] = 1;
 	} else {
 		$nfw_options['alert_sa_only'] = $_POST['nfw_options']['alert_sa_only'];
 	}

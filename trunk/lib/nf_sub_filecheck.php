@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-05-12 19:15:44                                       |
+ | REVISION: 2016-06-08 19:15:44                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -386,11 +386,11 @@ if (file_exists($nfmon_diff) ) {
 							<td style="padding:0" id="new_uidgid"></td>
 						</tr>
 						<tr>
-							<th style="padding:0;width:25%;">' . __('Modify (mtime)', 'ninjafirewall') .'</th>
+							<th style="padding:0;width:25%;">' . __('Modify', 'ninjafirewall') .'</th>
 							<td style="padding:0" id="new_mtime"></td>
 						</tr>
 						<tr>
-							<th style="padding:0;width:25%;">' . __('Change', 'ninjafirewall') .' (<a href="http://en.wikipedia.org/wiki/Stat_%28system_call%29#ctime" target="_blank">ctime</a>)</th>
+							<th style="padding:0;width:25%;">' . __('Change', 'ninjafirewall') .'</th>
 							<td style="padding:0" id="new_ctime"></td>
 						</tr>
 					</table>
@@ -442,12 +442,12 @@ if (file_exists($nfmon_diff) ) {
 							<td style="padding:0" id="mod_uidgid2"></td>
 						</tr>
 						<tr>
-							<th style="padding:0;width:25%;">' . __('Modify (mtime)', 'ninjafirewall') .'</th>
+							<th style="padding:0;width:25%;">' . __('Modify', 'ninjafirewall') .'</th>
 							<td style="padding:0" id="mod_mtime"></td>
 							<td style="padding:0" id="mod_mtime2"></td>
 						</tr>
 						<tr>
-							<th style="padding:0;width:25%;">' . __('Change', 'ninjafirewall') .' (<a href="http://en.wikipedia.org/wiki/Stat_%28system_call%29#ctime" target="_blank">ctime</a>)</th>
+							<th style="padding:0;width:25%;">' . __('Change', 'ninjafirewall') .'</th>
 							<td style="padding:0" id="mod_ctime"></td>
 							<td style="padding:0" id="mod_ctime2"></td>
 						</tr>
