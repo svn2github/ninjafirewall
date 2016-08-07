@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-05-12 18:50:16                                       |
+ | REVISION: 2016-07-30 17:33:22                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -472,7 +472,7 @@ function help_nfsublivelog() {
 			'<li>'. __('<code>%time</code>: the server date, time and timezone.', 'ninjafirewall') . '</li>' .
 			'<li>'. __('<code>%name</code>: authenticated user (HTTP basic auth), if any.', 'ninjafirewall') . '</li>' .
 			'<li>'. __('<code>%client</code>: the client REMOTE_ADDR. If you are behind a load balancer or CDN, this will be its IP.', 'ninjafirewall') . '</li>' .
-			'<li>'. __('<code>%method</code>: HTTP method (i.e., GET, POST).', 'ninjafirewall') . '</li>' .
+			'<li>'. __('<code>%method</code>: HTTP method (e.g., GET, POST).', 'ninjafirewall') . '</li>' .
 			'<li>'. __('<code>%uri</code>: the URI which was given in order to access the page (REQUEST_URI).', 'ninjafirewall') . '</li>' .
 			'<li>'. __('<code>%referrer</code>: the referrer (HTTP_REFERER), if any.', 'ninjafirewall') . '</li>' .
 			'<li>'. __('<code>%ua</code>: the user-agent (HTTP_USER_AGENT), if any.', 'ninjafirewall') . '</li>' .

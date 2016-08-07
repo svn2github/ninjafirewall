@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.2.3
+Version: 3.2.4
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-05-31 12:29:47                                       |
+ | REVISION: 2016-08-07 13:36:50                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.2.3' );
+define( 'NFW_ENGINE_VERSION', '3.2.4' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -1209,12 +1209,6 @@ function ssl_warn() {';
 	}
 echo '
 }
-function httponly() {
-	if (confirm("' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep this option disabled. Go ahead?', 'ninjafirewall') . '")){
-		return true;
-	}
-	return false;
-}
 function sanitise_fn(cbox) {
 	if(cbox.checked) {
 		if (confirm("' . __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the [X] character. Go ahead?', 'ninjafirewall') . '")){
@@ -1262,9 +1256,9 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php _e('Enable NinjaFirewall for', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
-			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="3"<?php checked($scan_protocol, 3 ) ?>>&nbsp;<?php _e('<code>HTTP</code> and <code>HTTPS</code> traffic (default)', 'ninjafirewall') ?></label></p>
-			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="1"<?php checked($scan_protocol, 1 ) ?>>&nbsp;<?php _e('<code>HTTP</code> traffic only', 'ninjafirewall') ?></label></p>
-			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="2"<?php checked($scan_protocol, 2 ) ?>>&nbsp;<?php _e('<code>HTTPS</code> traffic only', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="3"<?php checked($scan_protocol, 3 ) ?>>&nbsp;<?php _e('HTTP and HTTPS traffic (default)', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="1"<?php checked($scan_protocol, 1 ) ?>>&nbsp;<?php _e('HTTP traffic only', 'ninjafirewall') ?></label></p>
+			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="2"<?php checked($scan_protocol, 2 ) ?>>&nbsp;<?php _e('HTTPS traffic only', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
@@ -1612,11 +1606,11 @@ function sanitise_fn(cbox) {
 		<tr>
 			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> onclick="return httponly();">&nbsp;<?php echo $yes . $default ?></label>
+			<td align="left" width="120" style="vertical-align:top;">
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes . $default ?></label>
 			</td>
-			<td align="left">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no; ?></label><?php echo $err_msg ?>
+			<td align="left" style="vertical-align:top;">
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no; ?></label><br /><span class="description"><?php _e('If your PHP scripts use cookies that need to be accessed from JavaScript, you should disable this option.', 'ninjafirewall') ?></span><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<?php
@@ -1978,6 +1972,14 @@ function sanitise_fn(cbox) {
 		</tr>
 	</table>
 
+	<?php
+	if ( is_dir( WP_PLUGIN_DIR . '/jetpack' ) ) {
+		$is_JetPack = '<br /><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;<span class="description">' . __('If you are using the Jetpack plugin, blocking <code>system.multicall</code> may prevent it from working correctly.', 'ninjafirewall') . '</span>';
+	} else {
+		$is_JetPack = '';
+	}
+	?>
+
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Protect against username enumeration', 'ninjafirewall') ?></th>
@@ -1993,6 +1995,7 @@ function sanitise_fn(cbox) {
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block only <code>system.multicall</code> method (default)', 'ninjafirewall') ?></label></p>
+				<?php echo $is_JetPack; ?>
 			</td>
 		</tr>
 	</table>
@@ -3371,7 +3374,7 @@ function ninjafirewall_settings_link( $links ) {
 	} else {
 		if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
 		$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-		$links[] = '<a href="http://nintechnet.com/referral/" target="_blank">'. __('Referral Program', 'ninjafirewall'). '</a>';
+		$links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to WP+ Edition', 'ninjafirewall'). '</a>';
 	}
 	unset($links['edit']);
    return $links;
