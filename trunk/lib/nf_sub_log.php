@@ -139,12 +139,13 @@ $logline = '';
 while (! feof( $fh ) ) {
 	$line = fgets( $fh );
 	if ( $skip <= 0 ) {
-		if ( preg_match( '/^\[(\d{10})\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(#\d{7})\]\s+\[(\d+)\]\s+\[(\d)\]\s+\[([\d.:a-fA-F, ]+?)\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(.+)\]$/', $line, $match ) ) {
+		if ( preg_match( '/^\[(\d{10})\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(#\d{7})\]\s+\[(\d+)\]\s+\[(\d)\]\s+\[([\d.:a-fA-F, ]+?)\]\s+\[.+?\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(.+?)\]\s+\[(hex:)?(.+)\]$/', $line, $match ) ) {
 			if ( empty( $match[4]) ) { $match[4] = '-'; }
+			if ( $match[10] == 'hex:' ) { $match[11] = pack('H*', $match[11]); }
 			$res = date( 'd/M/y H:i:s', $match[1] ) . '  ' . $match[3] . '  ' .
 			str_pad( $levels[$match[5]], 8 , ' ', STR_PAD_RIGHT) .'  ' .
 			str_pad( $match[4], 4 , ' ', STR_PAD_LEFT) . '  ' . str_pad( $match[6], 15, ' ', STR_PAD_RIGHT) . '  ' .
-			$match[7] . ' ' . $match[8] . ' - ' .	$match[9] . ' - [' . $match[10] . ']';
+			$match[7] . ' ' . $match[8] . ' - ' .	$match[9] . ' - [' . $match[11] . ']';
 			// If multi-site mode, append the domain name :
 			if ( is_multisite() ) {
 				$res .= ' - ' . $match[2];

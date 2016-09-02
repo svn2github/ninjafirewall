@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-04-05 17:59:26                                       |
+ | REVISION: 2016-08-19 17:59:26                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -53,7 +53,7 @@ function fw_fileguard() {
 					$nfw_['nfw_options']['m_msg'] = 	'Someone accessed a script that was modified or created less than ' .
 						$nfw_['nfw_options']['fg_mtime'] . ' hour(s) ago:' . "\n\n".
 						'SERVER_NAME    : ' . $_SERVER['SERVER_NAME'] . "\n" .
-						'REMOTE_ADDR    : ' . $_SERVER['REMOTE_ADDR'] . "\n" .
+						'USER IP        : ' . NFW_REMOTE_ADDR . "\n" .
 						'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n" .
 						'REQUEST_URI    : ' . $_SERVER['REQUEST_URI'] . "\n" .
 						'Last changed on: ' . date('F j, Y @ H:i:s', $nfw_['nfw_options']['fg_stat']['ctime'] ) . ' (UTC '. date('O') . ")\n\n" .

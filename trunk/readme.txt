@@ -234,6 +234,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 3.2.5 =
+
+* Updated Anti-Malware signatures.
+* [WP+ Edition] Fixed a bug where notifications sent or displayed by NinjaFirewall were showing the load balancer IP when an alternative address was defined in the "Access Control > Source IP" section.
+* Blocked threats written to the firewall log will be hexencoded, to lower false positives from antivirus scanners.
+* Improved local privilege escalation protection.
+* Minor fixes and adjustments.
+
 = 3.2.4 =
 
 * Added a warning about the XMLRPC `system.multicall` option if the Jetpack plugin is installed.

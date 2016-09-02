@@ -28,7 +28,7 @@ if (! defined('NF_DISABLED') ) {
 	is_nfw_enabled();
 }
 if (NF_DISABLED) {
-	$err_msg = __('Error: NinjaFirewall must be enabled and working in order to use the Live Log feature.', 'ninjafirewall');
+	$err_msg = __('Error: NinjaFirewall must be enabled and working in order to use this feature.', 'ninjafirewall');
 }
 if ( empty($_SESSION['nfw_goodguy']) ) {
 	$err_msg = sprintf( __('Error: You must be whitelisted in order to use that feature: click on the <a href="%s">Firewall Policies</a> menu and ensure that the "Add the Administrator to the whitelist" option is enabled.', 'ninjafirewall'), '?page=nfsubpolicies' );

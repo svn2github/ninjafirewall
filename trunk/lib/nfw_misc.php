@@ -5,7 +5,7 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-21 17:10:46                                       |
+ | REVISION: 2016-08-26 17:10:46                                       |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -21,6 +21,25 @@
 
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
+/* ------------------------------------------------------------------ */
+
+function nfw_select_ip() {
+	// Ensure we have a proper and single IP (a user may use the .htninja file
+	// to redirect HTTP_X_FORWARDED_FOR, which may contain more than one IP,
+	// to REMOTE_ADDR):
+	if (strpos($_SERVER['REMOTE_ADDR'], ',') !== false) {
+		$nfw_match = array_map('trim', @explode(',', $_SERVER['REMOTE_ADDR']));
+		foreach($nfw_match as $nfw_m) {
+			if ( filter_var($nfw_m, FILTER_VALIDATE_IP) )  {
+				define( 'NFW_REMOTE_ADDR', $nfw_m);
+				break;
+			}
+		}
+	}
+	if (! defined('NFW_REMOTE_ADDR') ) {
+		define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
+	}
+}
 /* ------------------------------------------------------------------ */
 
 function nfw_admin_notice(){
@@ -182,6 +201,7 @@ function nf_check_dbdata() {
 		} else {
 			$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 		}
+		$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
 		$message.= __('Date:', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n\n";
 		$message.= sprintf(__('Total administrators : %s', 'ninjafirewall'), count($adm_users) ) . "\n\n";
 		foreach( $adm_users as $obj => $adm ) {
@@ -252,5 +272,108 @@ function nfw_delete_option( $option ) {
 	return;
 }
 
+/* ------------------------------------------------------------------ */
+
+function nfwhook_update_option( $option, $new_value = '' ) {
+
+	nfwhook_option( $option, $new_value, 'update' );
+
+}
+add_filter('update_option', 'nfwhook_update_option', 1, 2);
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_delete_option( $option ) {
+
+	nfwhook_option( $option, null, 'delete' );
+
+}
+add_filter('delete_option', 'nfwhook_update_option', 1, 1);
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_option( $option, $new_value = '', $hook ) {
+
+	if (! defined('NF_DISABLED') ) {
+		is_nfw_enabled();
+	}
+	if ( NF_DISABLED || defined('NFW_DISABLE_PRVESC1') ) { return; }
+
+	global $wpdb;
+
+	if ( ( ($option == 'users_can_register' || $option == 'default_role' ||
+		$option == 'admin_email' ) &&	! current_user_can( 'manage_options' ) )
+		||
+		( $option ==  "{$wpdb->base_prefix}user_roles" && ! current_user_can( 'edit_users' ) ) ) {
+
+		$msg = sprintf( 'Unauthorized attempt to %s WordPress options', $hook );
+		if ( $new_value != '' ) {
+			if ( is_array( $new_value ) ) {
+				$new_value = ': ' . serialize( $new_value );
+			} else {
+				$new_value = ': ' . $new_value;
+			}
+		}
+		nfw_log2($msg, "$option$new_value", 3, 0);
+
+		$nfw_options = nfw_get_option( 'nfw_options' );
+
+		@session_destroy();
+
+		wp_die( "NinjaFirewall: $msg.", 'NinjaFirewall',
+			array( 'response' => $nfw_options['ret_code'] ) );
+	}
+}
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_update_user_meta( $user_id, $meta_key, $meta_value, $prev_value ) {
+
+	nfwhook_user_meta( $meta_value, $prev_value );
+
+}
+add_filter('update_user_meta', 'nfwhook_update_user_meta', 1, 4);
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_add_user_meta( $user_id, $meta_key, $meta_value ) {
+
+	nfwhook_user_meta( $meta_key, $meta_value );
+
+}
+add_filter('add_user_meta', 'nfwhook_add_user_meta', 1, 3);
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_user_meta( $key, $value ) {
+
+	if (! defined('NF_DISABLED') ) {
+		is_nfw_enabled();
+	}
+	if ( NF_DISABLED || defined('NFW_DISABLE_PRVESC2') ) { return; }
+
+	global $wpdb;
+
+	if ( is_array( $key ) ) {
+		$key = serialize( $key );
+	}
+	if ( strpos( $key, "{$wpdb->base_prefix}capabilities") !== FALSE && ! current_user_can('edit_users') ) {
+		if ( is_array( $value ) ) {
+			$value = serialize( $value );
+		}
+		if ( strpos( $value, "administrator") === FALSE ) { return; }
+
+		$msg = sprintf('WordPress %s %s attempt',	'privilege',
+			'escalation');
+		nfw_log2( $msg, "$key: $value", 3, 0);
+
+		$nfw_options = nfw_get_option( 'nfw_options' );
+
+		@session_destroy();
+
+		wp_die( "NinjaFirewall: $msg.", 'NinjaFirewall',
+			array( 'response' => $nfw_options['ret_code'] ) );
+	}
+}
 /* ------------------------------------------------------------------ */
 // EOF

@@ -4,7 +4,7 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2016-07-01 18:58:04                                       |
+// | REVISION: 2016-08-15 18:58:04                                       |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -235,13 +235,19 @@ if ( $nfw_['a_msg'] ) {
 }
 
 if (strpos($_SERVER['REMOTE_ADDR'], ',') !== false) {
+	// Ensure we have a proper and single IP (a user may use the .htninja file
+	// to redirect HTTP_X_FORWARDED_FOR, which may contain more than one IP,
+	// to REMOTE_ADDR):
 	$nfw_['match'] = array_map('trim', @explode(',', $_SERVER['REMOTE_ADDR']));
 	foreach($nfw_['match'] as $nfw_['m']) {
 		if ( filter_var($nfw_['m'], FILTER_VALIDATE_IP) )  {
-			$_SERVER['REMOTE_ADDR'] = $nfw_['m'];
+			define( 'NFW_REMOTE_ADDR', $nfw_['m']);
 			break;
 		}
 	}
+}
+if (! defined('NFW_REMOTE_ADDR') ) {
+	define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
 }
 
 nfw_check_session();
@@ -303,7 +309,7 @@ if (! empty($nfw_['nfw_options']['php_errors']) ) {
 	@ini_set('display_errors', 0);
 }
 
-if (! empty($nfw_['nfw_options']['allow_local_ip']) && ! filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ) {
+if (! empty($nfw_['nfw_options']['allow_local_ip']) && ! filter_var(NFW_REMOTE_ADDR, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ) {
 	$nfw_['mysqli']->close();
 	unset($nfw_);
 	define( 'NFW_STATUS', 20 );
@@ -1048,7 +1054,7 @@ function nfw_block() {
 	if (empty($nfw_['num_incident']) ) { $nfw_['num_incident'] = '000000'; }
 	$tmp = str_replace( '%%NUM_INCIDENT%%', $nfw_['num_incident'],  base64_decode($nfw_['nfw_options']['blocked_msg']) );
 	$tmp = @str_replace( '%%NINJA_LOGO%%', '<img title="NinjaFirewall" src="' . $nfw_['nfw_options']['logo'] . '" width="75" height="75">', $tmp );
-	$tmp = str_replace( '%%REM_ADDRESS%%', $_SERVER['REMOTE_ADDR'], $tmp );
+	$tmp = str_replace( '%%REM_ADDRESS%%', NFW_REMOTE_ADDR, $tmp );
 
 	@session_destroy();
 
@@ -1127,14 +1133,16 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 		$tmp = '';
 	}
 
+	if (! defined('NFW_REMOTE_ADDR') ) { define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']); }
+
 	@file_put_contents( $log_file,
 		$tmp . '[' . time() . '] ' . '[' . round( (microtime(true) - $nfw_['fw_starttime']), 5) . '] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $nfw_['num_incident'] . '] ' .
       '[' . $ruleid . '] ' .
-      '[' . $loglevel . '] ' . '[' . $_SERVER['REMOTE_ADDR'] . '] ' .
+      '[' . $loglevel . '] ' . '[' . NFW_REMOTE_ADDR . '] ' .
       '[' . $http_ret_code . '] ' . '[' . $_SERVER['REQUEST_METHOD'] . '] ' .
       '[' . $_SERVER['SCRIPT_NAME'] . '] ' . '[' . $loginfo . '] ' .
-      '[' . $res . ']' . "\n", FILE_APPEND | LOCK_EX );
+      '[hex:' . array_shift( unpack('H*', $res) ) . ']' . "\n", FILE_APPEND | LOCK_EX );
 }
 
 // =====================================================================

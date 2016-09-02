@@ -29,7 +29,7 @@ $nfw_options = nfw_get_option( 'nfw_options' );
 echo '
 <script>
 function preview_msg() {
-	var t1 = document.option_form.elements[\'nfw_options[blocked_msg]\'].value.replace(\'%%REM_ADDRESS%%\',\'' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '\');
+	var t1 = document.option_form.elements[\'nfw_options[blocked_msg]\'].value.replace(\'%%REM_ADDRESS%%\',\'' . htmlspecialchars(NFW_REMOTE_ADDR) . '\');
 	var t2 = t1.replace(\'%%NUM_INCIDENT%%\',\'1234567\');
 	var t3 = t2.replace(\'%%NINJA_LOGO%%\',\'<img src="' . plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png" width="75" height="75" title="NinjaFirewall">\');
 	var ns;
@@ -452,7 +452,7 @@ function nf_sub_options_alert( $what ) {
 	}
 
 	$message .= __('-User :', 'ninjafirewall') .' '. $current_user->user_login . ' (' . $current_user->roles[0] . ")\n" .
-		__('-IP   :', 'ninjafirewall') .' '. $_SERVER['REMOTE_ADDR'] . "\n" .
+		__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
 		__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
 		$url .
 		'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
