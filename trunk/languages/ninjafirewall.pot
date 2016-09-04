@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NinjaFirewall WP pot\n"
-"POT-Creation-Date: 2016-08-30 16:11+0700\n"
-"PO-Revision-Date: 2016-08-30 16:11+0700\n"
+"POT-Creation-Date: 2016-09-02 19:17+0700\n"
+"PO-Revision-Date: 2016-09-02 19:17+0700\n"
 "Last-Translator: NinTechNet <nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1228,7 +1228,7 @@ msgid ""
 "\"Firewall Policies\" page."
 msgstr ""
 
-#: help.php:512 lib/nf_sub_updates.php:50 ninjafirewall.php:833
+#: help.php:512 lib/nf_sub_updates.php:49 ninjafirewall.php:833
 msgid "Updates"
 msgstr ""
 
@@ -2042,7 +2042,7 @@ msgstr ""
 
 #: lib/nf_sub_event.php:56 lib/nf_sub_filecheck.php:115
 #: lib/nf_sub_livelog.php:241 lib/nf_sub_malwarescan.php:83
-#: lib/nf_sub_options.php:69 lib/nf_sub_updates.php:81 ninjafirewall.php:1236
+#: lib/nf_sub_options.php:69 lib/nf_sub_updates.php:80 ninjafirewall.php:1236
 #: ninjafirewall.php:2522 ninjafirewall.php:2648 ninjafirewall.php:2782
 msgid "Your changes have been saved."
 msgstr ""
@@ -2238,7 +2238,7 @@ msgstr ""
 
 #: lib/nf_sub_event.php:443 lib/nf_sub_filecheck.php:836
 #: lib/nf_sub_filecheck.php:853 lib/nf_sub_options.php:459
-#: lib/nf_sub_updates.php:515 ninjafirewall.php:3457
+#: lib/nf_sub_updates.php:514 ninjafirewall.php:3457
 msgid "Support forum:"
 msgstr ""
 
@@ -2442,15 +2442,15 @@ msgstr ""
 msgid "No (default)"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:507 lib/nf_sub_updates.php:143
+#: lib/nf_sub_filecheck.php:507 lib/nf_sub_updates.php:142
 msgid "Hourly"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:508 lib/nf_sub_updates.php:144
+#: lib/nf_sub_filecheck.php:508 lib/nf_sub_updates.php:143
 msgid "Twicedaily"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:509 lib/nf_sub_updates.php:145
+#: lib/nf_sub_filecheck.php:509 lib/nf_sub_updates.php:144
 msgid "Daily"
 msgstr ""
 
@@ -2553,13 +2553,13 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:829 lib/nf_sub_filecheck.php:831
 #: lib/nf_sub_filecheck.php:847 lib/nf_sub_filecheck.php:849
-#: lib/nf_sub_updates.php:508 lib/nf_sub_updates.php:510 lib/nfw_misc.php:200
+#: lib/nf_sub_updates.php:507 lib/nf_sub_updates.php:509 lib/nfw_misc.php:200
 #: lib/nfw_misc.php:202
 msgid "Blog:"
 msgstr ""
 
 #: lib/nf_sub_filecheck.php:833 lib/nf_sub_filecheck.php:851
-#: lib/nf_sub_updates.php:513
+#: lib/nf_sub_updates.php:512
 #, php-format
 msgid "Date: %s"
 msgstr ""
@@ -2761,7 +2761,7 @@ msgstr ""
 msgid "bytes"
 msgstr ""
 
-#: lib/nf_sub_log.php:168
+#: lib/nf_sub_log.php:169
 msgid "The log is rotated monthly"
 msgstr ""
 
@@ -3205,27 +3205,27 @@ msgstr ""
 msgid "Select monthly stats to view..."
 msgstr ""
 
-#: lib/nf_sub_updates.php:57
+#: lib/nf_sub_updates.php:56
 msgid "Security rules cannot be updated when NinjaFirewall is disabled."
 msgstr ""
 
-#: lib/nf_sub_updates.php:69
+#: lib/nf_sub_updates.php:68
 msgid "Security rules have been updated."
 msgstr ""
 
-#: lib/nf_sub_updates.php:71
+#: lib/nf_sub_updates.php:70
 msgid "No update available."
 msgstr ""
 
-#: lib/nf_sub_updates.php:120
+#: lib/nf_sub_updates.php:119
 msgid "Automatically update NinjaFirewall security rules"
 msgstr ""
 
-#: lib/nf_sub_updates.php:122 ninjafirewall.php:2547
+#: lib/nf_sub_updates.php:121 ninjafirewall.php:2547
 msgid "Yes (recommended)"
 msgstr ""
 
-#: lib/nf_sub_updates.php:125 ninjafirewall.php:1180 ninjafirewall.php:1322
+#: lib/nf_sub_updates.php:124 ninjafirewall.php:1180 ninjafirewall.php:1322
 #: ninjafirewall.php:1365 ninjafirewall.php:1385 ninjafirewall.php:1436
 #: ninjafirewall.php:1481 ninjafirewall.php:1491 ninjafirewall.php:1501
 #: ninjafirewall.php:1544 ninjafirewall.php:1674 ninjafirewall.php:1694
@@ -3235,123 +3235,123 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: lib/nf_sub_updates.php:134
+#: lib/nf_sub_updates.php:133
 #, php-format
 msgid ""
 "It seems that %s is enabled. Ensure you have another way to run WP-Cron, "
 "otherwise NinjaFirewall automatic updates will not work."
 msgstr ""
 
-#: lib/nf_sub_updates.php:141
+#: lib/nf_sub_updates.php:140
 msgid "Check for updates"
 msgstr ""
 
-#: lib/nf_sub_updates.php:152
+#: lib/nf_sub_updates.php:151
 #, php-format
 msgid ""
 "Next scheduled update will start in approximately %s day, %s hour(s), %s "
 "minute(s) and %s seconds."
 msgstr ""
 
-#: lib/nf_sub_updates.php:159
+#: lib/nf_sub_updates.php:158
 msgid ""
 "The next scheduled date is in the past! WordPress wp-cron may not be working "
 "or may have been disabled."
 msgstr ""
 
-#: lib/nf_sub_updates.php:167
+#: lib/nf_sub_updates.php:166
 msgid "Notification"
 msgstr ""
 
-#: lib/nf_sub_updates.php:169
+#: lib/nf_sub_updates.php:168
 msgid "Send me a report by email when security rules have been updated."
 msgstr ""
 
-#: lib/nf_sub_updates.php:170
+#: lib/nf_sub_updates.php:169
 msgid ""
 "Reports will be sent to the contact email address defined in the Event "
 "Notifications menu."
 msgstr ""
 
-#: lib/nf_sub_updates.php:176
+#: lib/nf_sub_updates.php:175
 msgid "Save Updates Options"
 msgstr ""
 
-#: lib/nf_sub_updates.php:176
+#: lib/nf_sub_updates.php:175
 msgid "Check For Updates Now!"
 msgstr ""
 
-#: lib/nf_sub_updates.php:185
+#: lib/nf_sub_updates.php:184
 msgid "The updates log is currently empty."
 msgstr ""
 
-#: lib/nf_sub_updates.php:193
+#: lib/nf_sub_updates.php:192
 msgid "Updates Log"
 msgstr ""
 
-#: lib/nf_sub_updates.php:202
+#: lib/nf_sub_updates.php:201
 msgid "Delete Log"
 msgstr ""
 
-#: lib/nf_sub_updates.php:208
+#: lib/nf_sub_updates.php:207
 msgid "Log is flushed automatically."
 msgstr ""
 
-#: lib/nf_sub_updates.php:304
+#: lib/nf_sub_updates.php:303
 msgid "Error: Unable to unserialize the new rules."
 msgstr ""
 
-#: lib/nf_sub_updates.php:312
+#: lib/nf_sub_updates.php:311
 msgid "Error: Unserialized rules seem corrupted."
 msgstr ""
 
-#: lib/nf_sub_updates.php:352
+#: lib/nf_sub_updates.php:351
 #, php-format
 msgid "Security rules updated to version %s."
 msgstr ""
 
-#: lib/nf_sub_updates.php:386
+#: lib/nf_sub_updates.php:385
 msgid ""
 "Error: Your version of NinjaFirewall is too old and is not compatible with "
 "those rules. Please upgrade it."
 msgstr ""
 
-#: lib/nf_sub_updates.php:395
+#: lib/nf_sub_updates.php:394
 msgid "Error: Unable to retrieve the new rules version."
 msgstr ""
 
-#: lib/nf_sub_updates.php:406
+#: lib/nf_sub_updates.php:405
 msgid "Security rules are up-to-date."
 msgstr ""
 
-#: lib/nf_sub_updates.php:413
+#: lib/nf_sub_updates.php:412
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#1)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:420 lib/nf_sub_updates.php:468
+#: lib/nf_sub_updates.php:419 lib/nf_sub_updates.php:467
 msgid "Error: Unable to connect to WordPress server"
 msgstr ""
 
-#: lib/nf_sub_updates.php:448
+#: lib/nf_sub_updates.php:447
 #, php-format
 msgid "Error: The new rules versions do not match (%s != %s)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:461
+#: lib/nf_sub_updates.php:460
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#2)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:505
+#: lib/nf_sub_updates.php:504
 msgid "[NinjaFirewall] Security rules update"
 msgstr ""
 
-#: lib/nf_sub_updates.php:506
+#: lib/nf_sub_updates.php:505
 msgid "NinjaFirewall security rules have been updated:"
 msgstr ""
 
-#: lib/nf_sub_updates.php:512
+#: lib/nf_sub_updates.php:511
 msgid "Rules version:"
 msgstr ""
 

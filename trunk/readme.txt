@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.6
-Stable tag: 3.2.4
+Stable tag: 3.2.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -237,8 +237,9 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 = 3.2.5 =
 
 * Updated Anti-Malware signatures.
-* [WP+ Edition] Fixed a bug where notifications sent or displayed by NinjaFirewall were showing the load balancer IP when an alternative address was defined in the "Access Control > Source IP" section.
+* [WP+ Edition] Fixed a bug where notifications sent or displayed by NinjaFirewall were showing the load balancer IP when an alternate address was defined in the "Access Control > Source IP" section.
 * Blocked threats written to the firewall log will be hexencoded, to lower false positives from antivirus scanners.
+* The "Anti-Malware" operations and errors will be written to the `/wp-content/nfwlog/cache/malscan.log` log.
 * Improved local privilege escalation protection.
 * Minor fixes and adjustments.
 

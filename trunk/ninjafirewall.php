@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.2.5-RC1
+Version: 3.2.5
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -21,7 +21,7 @@ Domain Path: /languages
  | REVISION: 2016-09-02 15:43:32                                       |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.2.5-RC1' );
+define( 'NFW_ENGINE_VERSION', '3.2.5' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -2708,6 +2708,8 @@ function nfmalwarescando( $sigs ) {
 add_action( 'wp_ajax_nfw_msajax', 'nfw_msajax_callback' );
 function nfw_msajax_callback() {
 
+	@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] Entering ajax callback\n" );
+
 	if ( check_ajax_referer( 'nfw_msajax_javascript', 'nfw_sc_nonce', false ) && ! empty( $_POST['sigs'] ) ){
 		$sigs = rtrim( $_POST['sigs'], ':' );
 		wp_schedule_single_event( time() - 1, 'nfmalwarescan', array( $sigs ) );
@@ -2724,7 +2726,9 @@ function nfw_msajax_callback() {
 		), $doing_wp_cron );
 		wp_remote_post( $cron_request['url'], $cron_request['args'] );
 		echo 'OK';
+		@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] POSTing request to " . site_url( 'wp-cron.php' ) . "\n", FILE_APPEND );
 	} else {
+		@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] ERROR: security nonces do not match\n", FILE_APPEND );
 		echo '1';
 	}
 	wp_die();
