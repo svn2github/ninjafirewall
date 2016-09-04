@@ -279,7 +279,7 @@ function nfwhook_update_option( $option, $new_value = '' ) {
 	nfwhook_option( $option, $new_value, 'update' );
 
 }
-add_filter('update_option', 'nfwhook_update_option', 1, 2);
+//add_filter('update_option', 'nfwhook_update_option', 1, 2);
 
 /* ------------------------------------------------------------------ */
 
@@ -288,7 +288,7 @@ function nfwhook_delete_option( $option ) {
 	nfwhook_option( $option, null, 'delete' );
 
 }
-add_filter('delete_option', 'nfwhook_update_option', 1, 1);
+//add_filter('delete_option', 'nfwhook_update_option', 1, 1);
 
 /* ------------------------------------------------------------------ */
 

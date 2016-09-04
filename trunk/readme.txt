@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.6
-Stable tag: 3.2.5
+Stable tag: 3.2.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -233,6 +233,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.2.6 =
+
+* Fixed a bug introduced in v3.2.5 where the firewall could block attempts to update WordPress options.
 
 = 3.2.5 =
 
