@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.6
-Stable tag: 3.3
+Stable tag: 3.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -235,7 +235,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.3 =
+= 3.3.1 =
 
 * [WP+ Edition] Added a new feature: "Centralized Logging". It allows you to remotely access the firewall log of all your NinjaFirewall protected websites from one single installation, without having to log in to individual servers to analyse your log data (see our blog for more info about that: http://nin.link/centlog/ ).
 * Added a new "Content-Security-Policy" option that can be set up separately for the frontend and backend of the site (see "Firewall Policies > HTTP response headers > Content-Security-Policy").
@@ -245,7 +245,6 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * [WP+ Edition] Fixed a bug in the firewall log: blocked threats were not hex-decoded before exporting the log.
 * [WP+ Edition] Fixed a bug in the shared memory feature where, in some cases, deactivating NinjaFirewall from the "Plugins" page would not disable the firewall because the shared memory segment used to store its rules was not deleted upon exit.
 * The "SERVER_NAME" environment variable will be always appended to each firewall log line (it was previously available only on multisite installations).
-* The security rules updates option will be enabled by default with new installations of NinjaFirewall.
 * The "X-Content-Type-Options" header will be enabled by default with new installations of NinjaFirewall.
 * Updated Anti-Malware signatures.
 * Minor fixes and adjustments.

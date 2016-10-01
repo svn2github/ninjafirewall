@@ -1068,7 +1068,7 @@ function nfw_default_conf() {
 		'malware_timestamp'	=> 7,
 		'malware_size'		=> 2048,
 		// Updates :
-		'enable_updates'	=>	1,
+		'enable_updates'	=>	0,
 		'sched_updates'	=>	1,
 		'notify_updates'	=>	1,
 		// Centralized Logging:
