@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.2.6
+Version: 3.3
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -18,10 +18,8 @@ Domain Path: /languages
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-09-02 15:43:32                                       |
- +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.2.6' );
+define( 'NFW_ENGINE_VERSION', '3.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -52,14 +50,24 @@ if (! headers_sent() ) {
 	}
 }
 
-/* ------------------------------------------------------------------ */	// i18n+
-
-if (! defined('NFW_NOI18N') ) {
+/* ------------------------------------------------------------------ */
+// WordPress < 4.6:
+add_action( 'init', 'nfw_load_translation' );
+function nfw_load_translation() {
 	load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 }
-$null = __('A true Web Application Firewall to protect and secure WordPress.', 'ninjafirewall');
-/* ------------------------------------------------------------------ */	// i18n+
+// WordPress >=4.6:
+function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
+	if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
+		load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
+		return true;
+	}
+	return false;
+}
+add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
+/* ------------------------------------------------------------------ */
 
+$null = __('A true Web Application Firewall to protect and secure WordPress.', 'ninjafirewall');
 define('NFW_NULL_BYTE', 2);
 define('NFW_SCAN_BOTS', 531);
 define('NFW_ASCII_CTRL', 500);
@@ -419,7 +427,7 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				$nfw_options['response_headers'] = '100100';
+				$nfw_options['response_headers'] = '01010000';
 			}
 		}
 		// v1.3.3 update -------------------------------------------------
@@ -473,6 +481,14 @@ function nfw_upgrade() {
 			if ( is_multisite() ) {
 				update_site_option('nfw_options', $nfw_options);
 				update_site_option('nfw_rules', $nfw_rules_new);
+			}
+		}
+		// v3.3 update ---------------------------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.3', '<' ) ) {
+			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
+				if (! empty( $nfw_options['response_headers'] ) && strlen( $nfw_options['response_headers'] ) == 6 ) {
+					$nfw_options['response_headers'] .= '00';
+				}
 			}
 		}
 		// -------------------------------------------------------------
@@ -1044,6 +1060,44 @@ function nf_menu_main() {
 		<?php
 	}
 
+	if ( ! empty( $nfw_options['clogs_pubkey'] ) ) {
+		$err_msg = $ok_msg = '';
+		if (! preg_match( '/^[a-f0-9]{40}:([a-f0-9:.]{3,39}|\*)$/', $nfw_options['clogs_pubkey'], $match ) ) {
+			$err_msg = sprintf( __('the public key is invalid. Please <a href="%s">check your configuration</a>.', 'ninjafirewall'), '?page=nfsublog#clogs');
+
+		} else {
+			if ( $match[1] == '*' ) {
+				$ok_msg = __( "No IP address restriction.", 'ninjafirewall');
+
+			} elseif ( filter_var( $match[1], FILTER_VALIDATE_IP ) ) {
+				$ok_msg = sprintf( __("IP address %s is allowed to access NinjaFirewall's log on this server.", 'ninjafirewall'), htmlspecialchars( $match[1]) );
+
+			} else {
+				$err_msg = sprintf( __('the whitelisted IP is not valid. Please <a href="%s">check your configuration</a>.', 'ninjafirewall'), '?page=nfsublog#clogs');
+			}
+		}
+		?>
+		<tr>
+			<th scope="row"><?php _e('Centralized Logging', 'ninjafirewall') ?></th>
+		<?php
+		if ( $err_msg ) {
+			?>
+				<td width="20" align="left"><img src="<?php echo plugins_url() . '/ninjafirewall/images/icon_error_16.png' ?>" border="0" height="16" width="16"></td>
+				<td><?php printf( __('Error: %s', 'ninjafirewall'), $err_msg) ?></td>
+			</tr>
+			<?php
+			$err_msg = '';
+		} else {
+			?>
+				<td width="20" align="left">&nbsp;</td>
+				<td><a href="?page=nfsublog#clogs"><?php _e('Enabled', 'ninjafirewall'); echo "</a>. $ok_msg"; ?></td>
+			</tr>
+		<?php
+		}
+	}
+
+
+
 	if (! filter_var(NFW_REMOTE_ADDR, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ) {
 		?>
 		<tr>
@@ -1200,6 +1254,14 @@ function chksubmenu() {
       document.fwrules.san.disabled = true;
       document.getElementById("santxt").style.color = "#bbbbbb";
    }
+}
+function csp_onoff(what, csp) {
+	if (what == 0) {
+		document.getElementById(csp).readOnly = true;
+	} else {
+		document.getElementById(csp).readOnly = false;
+		document.getElementById(csp).focus();
+	}
 }
 function ssl_warn() {';
 	if ($_SERVER['SERVER_PORT'] == 443 ) {
@@ -1572,8 +1634,8 @@ function sanitise_fn(cbox) {
 		$err_msg = $err_img . sprintf($msg, '<code>header_remove()</code>') . '</span></p>';
 		$err = 1;
 	}
-	if ( empty($nfw_options['response_headers']) || strlen($nfw_options['response_headers']) != 6 || $err_msg ) {
-		$nfw_options['response_headers'] = '000000';
+	if ( empty($nfw_options['response_headers']) || strlen($nfw_options['response_headers']) != 8 || $err_msg ) {
+		$nfw_options['response_headers'] = '00000000';
 	}
 	?>
 	<h3><?php _e('HTTP response headers', 'ninjafirewall')  ?></h3>
@@ -1582,10 +1644,10 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes; ?></label>
+				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes . $default; ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[x_content_type_options]" value="0"<?php checked( $nfw_options['response_headers'][1], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?>
+				<label><input type="radio" name="nfw_options[x_content_type_options]" value="0"<?php checked( $nfw_options['response_headers'][1], 0 ); disabled($err, 1); ?>><?php echo $no; ?></label><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<tr>
@@ -1611,36 +1673,81 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes . $default ?></label>
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes ?></label>
 			</td>
 			<td align="left" style="vertical-align:top;">
-				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no; ?></label><br /><span class="description"><?php _e('If your PHP scripts use cookies that need to be accessed from JavaScript, you should disable this option.', 'ninjafirewall') ?></span><?php echo $err_msg ?>
+				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no . $default; ?></label><br /><span class="description"><?php _e('If your PHP scripts use cookies that need to be accessed from JavaScript, you should disable this option.', 'ninjafirewall') ?></span><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<?php
 		if ($_SERVER['SERVER_PORT'] != 443 && ! $err && (! isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) || $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https') ) {
-			$err = 1;
+			$hsts_err = 1;
 			$hsts_msg = '<br /><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;<span class="description">' . __('HSTS headers can only be set when you are accessing your site over HTTPS.', 'ninjafirewall') . '</span>';
 		} else {
 			$hsts_msg = '';
+			$hsts_err = 0;
 		}
 		?>
 		<tr>
 			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
-				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
-				<p><label><input type="radio" name="nfw_options[strict_transport]" value="2"<?php checked( $nfw_options['response_headers'][4], 2 ); disabled($err, 1); ?>><?php _e('6 months', 'ninjafirewall') ?></label></p>
-				<p><label><input type="radio" name="nfw_options[strict_transport]" value="3"<?php checked( $nfw_options['response_headers'][4], 3 ); disabled($err, 1); ?>><?php _e('1 year', 'ninjafirewall') ?></label></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($hsts_err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="2"<?php checked( $nfw_options['response_headers'][4], 2 ); disabled($hsts_err, 1); ?>><?php _e('6 months', 'ninjafirewall') ?></label></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="3"<?php checked( $nfw_options['response_headers'][4], 3 ); disabled($hsts_err, 1); ?>><?php _e('1 year', 'ninjafirewall') ?></label></p>
 				<br />
-				<label><input type="checkbox" name="nfw_options[strict_transport_sub]" value="1"<?php checked( $nfw_options['response_headers'][5], 1 ); disabled($err, 1); ?>><?php _e('Apply to subdomains', 'ninjafirewall') ?></label>
+				<label><input type="checkbox" name="nfw_options[strict_transport_sub]" value="1"<?php checked( $nfw_options['response_headers'][5], 1 ); disabled($hsts_err, 1); ?>><?php _e('Apply to subdomains', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left" style="vertical-align:top;">
-				<p><label><input type="radio" name="nfw_options[strict_transport]" value="0"<?php checked( $nfw_options['response_headers'][4], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label></p>
-				<p><label><input type="radio" name="nfw_options[strict_transport]" value="4"<?php checked( $nfw_options['response_headers'][4], 4 ); disabled($err, 1); ?>><?php _e('Set <code>max-age</code> to 0', 'ninjafirewall'); ?></label><?php echo $err_msg ?></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="0"<?php checked( $nfw_options['response_headers'][4], 0 ); disabled($hsts_err, 1); ?>><?php echo $no . $default; ?></label></p>
+				<p><label><input type="radio" name="nfw_options[strict_transport]" value="4"<?php checked( $nfw_options['response_headers'][4], 4 ); disabled($hsts_err, 1); ?>><?php _e('Set <code>max-age</code> to 0', 'ninjafirewall'); ?></label><?php echo $err_msg ?></p>
 				<?php echo $hsts_msg; ?>
 			</td>
 		</tr>
+
+		<?php
+			if (! isset( $nfw_options['csp_frontend_data'] ) ) {
+				$nfw_options['csp_frontend_data'] = '';
+			}
+			if (! isset( $nfw_options['csp_backend_data'] ) ) {
+				$nfw_options['csp_backend_data'] = nf_sub_policies_csp();
+			}
+			if (! isset( $nfw_options['response_headers'][6] ) ) {
+				$nfw_options['response_headers'][6] = 0;
+			}
+			if (! isset( $nfw_options['response_headers'][7] ) ) {
+				$nfw_options['response_headers'][7] = 0;
+			}
+		?>
+		<tr>
+			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left" width="120" style="vertical-align:top;">
+				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_frontend')" name="nfw_options[csp_frontend]" value="1"<?php checked( $nfw_options['response_headers'][6], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
+				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_frontend')" name="nfw_options[csp_frontend]" value="0"<?php checked( $nfw_options['response_headers'][6], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
+			</td>
+			<td align="left" style="vertical-align:top;">
+				<textarea name="nfw_options[csp_frontend_data]" id="csp_frontend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][6], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_frontend_data'] ) ?></textarea>
+				<span class="description"><?php _e('This CSP header will apply to the website frontend only.', 'ninjafirewall') ?></span>
+				<?php echo $err_msg ?>
+			</td>
+		</tr>
+
+		<tr>
+			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left" width="120" style="vertical-align:top;">
+				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_backend')" name="nfw_options[csp_backend]" value="1"<?php checked( $nfw_options['response_headers'][7], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
+				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_backend')" name="nfw_options[csp_backend]" value="0"<?php checked( $nfw_options['response_headers'][7], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
+			</td>
+			<td align="left" style="vertical-align:top;">
+				<textarea name="nfw_options[csp_backend_data]" id="csp_backend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][7], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_backend_data'] ) ?></textarea>
+				<span class="description"><?php _e('This CSP header will apply to the WordPress admin dashboard only.', 'ninjafirewall') ?></span>
+				<?php echo $err_msg ?>
+			</td>
+		</tr>
+
+
 	</table>
 
 	<br /><br />
@@ -2149,7 +2256,9 @@ function nf_sub_policies_save() {
 
 
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '000000';
+		$nfw_options['response_headers'] = '00000000';
+		$nfw_options['csp_frontend_data'] = '';
+		$nfw_options['csp_backend_data'] = '';
 		if ( empty( $_POST['nfw_options']['x_content_type_options']) ) {
 			$nfw_options['response_headers'][1] = 0;
 		} else {
@@ -2188,6 +2297,18 @@ function nf_sub_policies_save() {
 			$nfw_options['response_headers'][4] = 3;
 		} else {
 			$nfw_options['response_headers'][4] = 4;
+		}
+		$nfw_options['csp_frontend_data'] = stripslashes( str_replace( array( '<', '>', "\x0a", "\x0d", '%', '$', '&') , '', $_POST['nfw_options']['csp_frontend_data'] ) );
+		if ( empty( $_POST['nfw_options']['csp_frontend']) || empty( $nfw_options['csp_frontend_data'] ) ) {
+			$nfw_options['response_headers'][6] = 0;
+		} else {
+			$nfw_options['response_headers'][6] = 1;
+		}
+		$nfw_options['csp_backend_data'] = stripslashes( str_replace( array( '<', '>', "\x0a", "\x0d", '%', '$', '&') , '', $_POST['nfw_options']['csp_backend_data'] ) );
+		if ( empty( $_POST['nfw_options']['csp_backend']) || empty( $nfw_options['csp_backend_data'] ) ) {
+			$nfw_options['response_headers'][7] = 0;
+		} else {
+			$nfw_options['response_headers'][7] = 1;
 		}
 	}
 
@@ -2398,7 +2519,13 @@ function nf_sub_policies_save() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
+
+function nf_sub_policies_csp() {
+	return "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.videopress.com *.google.com *.wp.com; style-src 'self' 'unsafe-inline' *.googleapis.com *.google.com *.jquery.com; connect-src 'self'; media-src 'self' *.youtube.com *.w.org; child-src 'self' *.videopress.com *.google.com; object-src 'self'; form-action 'self'; img-src 'self' *.gravatar.com *.wp.com *.w.org *.cldup.com woocommerce.com data:;";
+}
+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_policies_default() {
 
@@ -2416,7 +2543,9 @@ function nf_sub_policies_default() {
 	$nfw_options['post_sanitise']		= 0;
 	$nfw_options['request_sanitise'] = 0;
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '100100';
+		$nfw_options['response_headers'] = '01010000';
+		$nfw_options['csp_backend_data'] = nf_sub_policies_csp();
+		$nfw_options['csp_frontend_data'] = '';
 	}
 	$nfw_options['cookies_scan']		= 1;
 	$nfw_options['cookies_sanitise']	= 0;
@@ -2724,15 +2853,23 @@ function nfw_msajax_callback() {
 				'sslverify' => apply_filters( 'https_local_ssl_verify', false )
 			)
 		), $doing_wp_cron );
-		wp_remote_post( $cron_request['url'], $cron_request['args'] );
-		echo 'OK';
+
 		@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] POSTing request to " . site_url( 'wp-cron.php' ) . "\n", FILE_APPEND );
+
+		$res = wp_remote_post( $cron_request['url'], $cron_request['args'] );
+
+		if ( is_wp_error( $res ) ) {
+			@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] ERROR: ". $res->get_error_message() . "\n", FILE_APPEND );
+			echo '2';
+		} else {
+			echo 'OK';
+		}
 	} else {
 		@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] ERROR: security nonces do not match\n", FILE_APPEND );
+		// Nonces do not match:
 		echo '1';
 	}
 	wp_die();
-
 }
 
 /* ------------------------------------------------------------------ */ // i18n+

@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-07-30 17:33:22                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -206,6 +204,7 @@ function help_nfsubpolicies() {
 		<li>' . __('Force <code>HttpOnly</code> flag on all cookies to mitigate XSS attacks:', 'ninjafirewall'). '<span class="description"> ' . __('adding this flag to cookies helps to mitigate the risk of cross-site scripting by preventing them from being accessed through client-side script. NinjaFirewall can hook all cookies sent by your blog, its plugins or any other PHP script, add the <code>HttpOnly</code> flag if it is missing, and re-inject those cookies back into your server HTTP response headers right before they are sent to your visitors. Note that WordPress sets that flag on the logged in user cookies only.', 'ninjafirewall'). '</span></li>
 		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep that option disabled.', 'ninjafirewall'). '</span></p>
 		<li>' . __('Set <code>Strict-Transport-Security</code> (HSTS) to enforce secure connections to the server:', 'ninjafirewall'). '<span class="description"> ' . __('this policy enforces secure HTTPS connections to the server. Web browsers will not allow the user to access the web application over insecure HTTP protocol. It helps to defend against cookie hijacking and Man-in-the-middle attacks. Most recent browsers support HSTS headers.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Set <code>Content-Security-Policy</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this policy helps to mitigate threats such as XSS, phishing and clickjacking attacks. It covers JavaScript, CSS, HTML frames, web workers, fonts, images, objects (Java, ActiveX, audio and video files), and other HTML5 features.', 'ninjafirewall'). ' ' . __('NinjaFirewall lets you configure the CSP policy separately for the frontend (blog, website) and the backend (WordPress admin dashboard).', 'ninjafirewall') . '</span></li>
 
 		<br />
 
@@ -444,6 +443,20 @@ function help_nfsublog() {
 			<li>' . __('IP : the blocked user remote address.', 'ninjafirewall') . '</li>
 			<li>' . __('REQUEST : the HTTP request including offending variables and values as well as the reason the action was logged.', 'ninjafirewall') . '</li>'
 	) );
+
+	// Centralized Logging tab:
+	get_current_screen()->add_help_tab( array(
+		'id'        => 'log04',
+		'title'     => __('Centralized Logging', 'ninjafirewall'),
+		'content'   =>
+			'<p>'. __('Centralized Logging lets you remotely access the firewall log of all your NinjaFirewall protected websites from one single installation. You do not need any more to log in to individual servers to analyse your log data.', 'ninjafirewall') .	' ' . sprintf( __('<a href="%s">Consult our blog</a> for more info about it.', 'ninjafirewall'), 'http://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) . '</p>' .
+			'<li>' .	 __('Enter your public key (optional): This is the public key that was created from your main server.', 'ninjafirewall') . '</li>' .
+
+			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'.
+			__('Centralized Logging will keep working even if NinjaFirewall is disabled. Delete your public key below if you want to disable it.', 'ninjafirewall') .
+			'</span></p>'
+	) );
+
 }
 /* ------------------------------------------------------------------ */ // i18n+
 

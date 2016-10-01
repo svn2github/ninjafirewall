@@ -4,8 +4,6 @@
 // |                                                                     |
 // | (c) NinTechNet - http://nintechnet.com/                             |
 // +---------------------------------------------------------------------+
-// | REVISION: 2016-08-15 18:58:04                                       |
-// +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
 // | published by the Free Software Foundation, either version 3 of      |
@@ -15,7 +13,7 @@
 // | but WITHOUT ANY WARRANTY; without even the implied warranty of      |
 // | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the       |
 // | GNU General Public License for more details.                        |
-// +---------------------------------------------------------------------+
+// +---------------------------------------------------------------------+ sa
 if ( strpos($_SERVER['SCRIPT_NAME'], '/nfwlog/') !== FALSE ||
 	strpos($_SERVER['SCRIPT_NAME'], '/ninjafirewall/') !== FALSE ) { die('Forbidden'); }
 if (defined('NFW_STATUS')) { return; }
@@ -131,6 +129,12 @@ if (! $nfw_['nfw_options'] = @unserialize($nfw_['options']->option_value) ) {
 	return;
 }
 
+if (! empty($nfw_['nfw_options']['clogs_pubkey']) && isset($_POST['clogs_req']) ) {
+	include('fw_centlog.php');
+	fw_centlog();
+	exit;
+}
+
 if ( empty($nfw_['nfw_options']['enabled']) ) {
 	$nfw_['mysqli']->close();
 	define( 'NFW_STATUS', 20 );
@@ -140,6 +144,12 @@ if ( empty($nfw_['nfw_options']['enabled']) ) {
 
 if (! empty($nfw_['nfw_options']['response_headers']) && function_exists('header_register_callback')) {
 	define('NFW_RESHEADERS', $nfw_['nfw_options']['response_headers']);
+	if (! empty( $nfw_['nfw_options']['response_headers'][6] ) && ! empty( $nfw_['nfw_options']['csp_frontend_data'] ) ) {
+		define( 'CSP_FRONTEND_DATA', $nfw_['nfw_options']['csp_frontend_data']);
+	}
+	if (! empty( $nfw_['nfw_options']['response_headers'][7] ) && ! empty( $nfw_['nfw_options']['csp_backend_data'] )  ) {
+		define( 'CSP_BACKEND_DATA', $nfw_['nfw_options']['csp_backend_data'] );
+	}
 	header_register_callback('nfw_response_headers');
 }
 
@@ -234,21 +244,7 @@ if ( $nfw_['a_msg'] ) {
 	define('NFW_ALERT', $nfw_['a_msg']);
 }
 
-if (strpos($_SERVER['REMOTE_ADDR'], ',') !== false) {
-	// Ensure we have a proper and single IP (a user may use the .htninja file
-	// to redirect HTTP_X_FORWARDED_FOR, which may contain more than one IP,
-	// to REMOTE_ADDR):
-	$nfw_['match'] = array_map('trim', @explode(',', $_SERVER['REMOTE_ADDR']));
-	foreach($nfw_['match'] as $nfw_['m']) {
-		if ( filter_var($nfw_['m'], FILTER_VALIDATE_IP) )  {
-			define( 'NFW_REMOTE_ADDR', $nfw_['m']);
-			break;
-		}
-	}
-}
-if (! defined('NFW_REMOTE_ADDR') ) {
-	define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
-}
+nfw_check_ip();
 
 nfw_check_session();
 if (! empty($_SESSION['nfw_goodguy']) ) {
@@ -446,6 +442,31 @@ function nfw_check_session() {
 
 // =====================================================================
 
+function nfw_check_ip() {
+
+	if ( defined('NFW_REMOTE_ADDR') ) { return; }
+
+	global $nfw_;
+
+	if (strpos($_SERVER['REMOTE_ADDR'], ',') !== false) {
+		// Ensure we have a proper and single IP (a user may use the .htninja file
+		// to redirect HTTP_X_FORWARDED_FOR, which may contain more than one IP,
+		// to REMOTE_ADDR):
+		$nfw_['match'] = array_map('trim', @explode(',', $_SERVER['REMOTE_ADDR']));
+		foreach($nfw_['match'] as $nfw_['m']) {
+			if ( filter_var($nfw_['m'], FILTER_VALIDATE_IP) )  {
+				define( 'NFW_REMOTE_ADDR', $nfw_['m']);
+				break;
+			}
+		}
+	}
+	if (! defined('NFW_REMOTE_ADDR') ) {
+		define('NFW_REMOTE_ADDR', htmlspecialchars($_SERVER['REMOTE_ADDR']) );
+	}
+}
+
+// =====================================================================
+
 function nfw_check_upload() {
 
 	if ( defined('NFW_STATUS') ) { return; }
@@ -458,7 +479,7 @@ function nfw_check_upload() {
 		$tmp = '';
 		foreach ($f_uploaded as $key => $value) {
 			if (! $f_uploaded[$key]['name']) { continue; }
-         $tmp .= $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes ';
+         $tmp .= $f_uploaded[$key]['name'] . ' (' . number_format($f_uploaded[$key]['size']) . ' bytes) ';
       }
       if ( $tmp ) {
 			nfw_log('Blocked file upload attempt', rtrim($tmp, ' '), 3, 0);
@@ -473,9 +494,15 @@ function nfw_check_upload() {
 				if ( preg_match('`X5O!P%@AP' . '\[4\\\PZX54\(P\^\)7CC\)7}\$EIC' .
 				                'AR-STANDARD-ANTIVI' . 'RUS-TEST-FILE!\$H' . '\+H\*' .
 				                '[\x09\x10\x13\x20\x1A]*`', $data) ) {
-					nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes', 3, 0);
+					nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ' (' . number_format($f_uploaded[$key]['size']) . ' bytes)', 3, 0);
 					nfw_block();
 				}
+			}
+
+			if (! defined('NFW_NO_MIMECHECK') && isset( $f_uploaded[$key]['type'] ) && ! preg_match('/\/.*\bphp\d?\b/i', $f_uploaded[$key]['type']) &&
+			preg_match('/\.ph(?:p[345]?|t|tml)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
+				nfw_log('Blocked file upload attempt (MIME-type mismatch)', $f_uploaded[$key]['type'] .' != '. $f_uploaded[$key]['name'], 3, 0);
+				nfw_block();
 			}
 
 			if (! empty($nfw_['nfw_options']['sanitise_fn']) ) {
@@ -493,7 +520,7 @@ function nfw_check_upload() {
 					}
 				}
 			}
-			nfw_log('Allowing file upload' . $tmp , $f_uploaded[$key]['name'] . ', ' . number_format($f_uploaded[$key]['size']) . ' bytes', 5, 0);
+			nfw_log('File upload detected, no action taken' . $tmp , $f_uploaded[$key]['name'] . ' (' . number_format($f_uploaded[$key]['size']) . ' bytes)', 5, 0);
 		}
 	}
 }
@@ -508,6 +535,7 @@ function nfw_fetch_uploads() {
 		if ( is_array($file['name']) ) {
 			foreach($file['name'] as $key => $value) {
 				$f_uploaded[$count]['name'] = $file['name'][$key];
+				$f_uploaded[$count]['type'] = $file['type'][$key];
 				$f_uploaded[$count]['size'] = $file['size'][$key];
 				$f_uploaded[$count]['tmp_name'] = $file['tmp_name'][$key];
 				$f_uploaded[$count]['where'] = $nm . '::1::' . $key;
@@ -515,6 +543,7 @@ function nfw_fetch_uploads() {
 			}
 		} else {
 			$f_uploaded[$count]['name'] = $file['name'];
+			$f_uploaded[$count]['type'] = $file['type'];
 			$f_uploaded[$count]['size'] = $file['size'];
 			$f_uploaded[$count]['tmp_name'] = $file['tmp_name'];
 			$f_uploaded[$count]['where'] = $nm . '::0::0' ;
@@ -534,9 +563,7 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 
 	foreach ( $nfw_rules as $id => $rules ) {
 
-		if ( empty( $rules['ena']) || isset( $rules['adm']) ) {
-			continue;
-		}
+		if ( empty( $rules['ena']) ) { continue; }
 
 		$wherelist = explode('|', $rules['cha'][1]['whe']);
 
@@ -783,7 +810,7 @@ function nfw_normalize( $string, $nfw_rules ) {
 		return;
 	}
 
-	$norm = rawurldecode( rawurldecode( $string ) );
+	$norm = rawurldecode( $string );
 	if (! $norm ) {
 		return $string;
 	}
@@ -1279,9 +1306,10 @@ function nfw_response_headers() {
 
 	if (! defined('NFW_RESHEADERS') ) { return; }
 	$NFW_RESHEADERS = NFW_RESHEADERS;
+
 	$rewrite = array();
 
-	if ($NFW_RESHEADERS[0] == 1) {
+	if (! empty( $NFW_RESHEADERS[0] ) ) {
 		foreach (@headers_list() as $header) {
 			if (strpos($header, 'Set-Cookie:') === false) { continue; }
 			if (stripos($header, '; httponly') !== false) {
@@ -1298,21 +1326,31 @@ function nfw_response_headers() {
 		}
 	}
 
-	if ($NFW_RESHEADERS[1] == 1) {
+	if (! empty( $NFW_RESHEADERS[1] ) ) {
 		header('X-Content-Type-Options: nosniff');
 	}
 
-	if ($NFW_RESHEADERS[2] == 1) {
-		header('X-Frame-Options: SAMEORIGIN');
-	} elseif ($NFW_RESHEADERS[2] == 2) {
-		header('X-Frame-Options: DENY');
+	if (! empty( $NFW_RESHEADERS[2] ) ) {
+		if ($NFW_RESHEADERS[2] == 1) {
+			header('X-Frame-Options: SAMEORIGIN');
+		} else {
+			header('X-Frame-Options: DENY');
+		}
 	}
 
-	if ($NFW_RESHEADERS[3] == 1) {
+	if (! empty( $NFW_RESHEADERS[3] ) ) {
 		header('X-XSS-Protection: 1; mode=block');
 	}
 
-	if ($NFW_RESHEADERS[4] == 0) { return; }
+	if (! empty( $NFW_RESHEADERS[6] ) && strpos($_SERVER['SCRIPT_NAME'], '/wp-admin/') === FALSE ) {
+		header('Content-Security-Policy: ' . CSP_FRONTEND_DATA);
+	}
+	if (! empty( $NFW_RESHEADERS[7] ) && strpos($_SERVER['SCRIPT_NAME'], '/wp-admin/') !== FALSE ) {
+		header('Content-Security-Policy: ' . CSP_BACKEND_DATA);
+	}
+
+	if ( empty($NFW_RESHEADERS[4] ) ) { return; }
+
 	if ( $_SERVER['SERVER_PORT'] != 443 &&
 	(! isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) ||
 	$_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https') ) {
@@ -1327,7 +1365,7 @@ function nfw_response_headers() {
 	} elseif ($NFW_RESHEADERS[4] == 4) {
 		$max_age = 'max-age=0';
 	}
-	if ($NFW_RESHEADERS[5] == 1) {
+	if (! empty( $NFW_RESHEADERS[5] ) ) {
 		$max_age .= ' ; includeSubDomains';
 	}
 	header('Strict-Transport-Security: '. $max_age);

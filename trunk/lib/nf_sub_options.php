@@ -94,7 +94,7 @@ if (! empty( $nfw_options['enabled']) ) {
 				<select name="nfw_options[enabled]" style="width:200px">
 					<option value="1">' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0" selected>' . __('Disabled', 'ninjafirewall') . '</option>
-				</select>&nbsp;<span class="description">&nbsp;' . __('Warning: your site is not protected !', 'ninjafirewall') . '</span>';
+				</select>&nbsp;<span class="description">&nbsp;' . __('Warning: your site is not protected!', 'ninjafirewall') . '</span>';
 }
 echo '
 			</td>
@@ -109,7 +109,7 @@ echo '<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/
 				<select name="nfw_options[debug]" style="width:200px">
 				<option value="1" selected>' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0">' . __('Disabled (default)', 'ninjafirewall') . '</option>
-				</select>&nbsp;<span class="description">&nbsp;' . __('Warning: your site is not protected !', 'ninjafirewall') . '</span>
+				</select>&nbsp;<span class="description">&nbsp;' . __('Warning: your site is not protected!', 'ninjafirewall') . '</span>
 			</td>';
 
 } else {

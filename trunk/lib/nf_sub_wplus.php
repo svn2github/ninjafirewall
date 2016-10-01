@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-03-28 14:21:43                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -85,11 +83,20 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<br />
 
-				<h3>Antispam</h3>
+				<h3><?php _e('Antispam', 'ninjafirewall') ?></h3>
 				<p><?php _e('NinjaFirewall (<font color="#21759B">WP+</font> Edition) can protect your blog comment and registration forms against spam. The protection is totally transparent to your visitors and does not require any interaction: no CAPTCHA, no math puzzles or trivia questions. Extremely easy to activate, but powerful enough to make spam bots life as miserable as possible:', 'ninjafirewall') ?></p>
 				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/08_antispam.png" width="490" height="323" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;">
 				<br />
 				<p class="description"><?php _e('NinjaFirewall antispam feature works only with WordPress built-in comment and registration forms.', 'ninjafirewall') ?></p></center>
+
+				<br />
+
+				<h3><?php _e('Centralized Logging', 'ninjafirewall') ?></h3>
+				<p><?php printf( __('NinjaFirewall (<font color="#21759B">WP+</font> Edition) lets you remotely access the firewall log of all your NinjaFirewall protected websites from one single installation, using the <a href="%s">Centralized Logging</a> feature. You do not need any more to log in to individual servers to analyse your log data.', 'ninjafirewall'), 'http://blog.nintechnet.com/centralized-logging-with-ninjafirewall/') ?>
+				<br />
+				<?php _e('There is no limit to the number of websites you can connect to, and they can be running any edition of NinjaFirewall: WP, <font color="#21759B">WP+</font>, Pro or <font color="red">Pro+</font>.', 'ninjafirewall') ?>
+				</p>
+				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/12_centlog.png" width="490" height="367" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />
 

@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-02-17 00:28:32                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -118,7 +116,7 @@ function toogle_table(off) {
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Automatically update NinjaFirewall security rules', 'ninjafirewall') ?></th>
 			<td align="left">
-			<label><input type="radio" name="enable_updates" value="1"<?php checked($enable_updates, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes (recommended)', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="enable_updates" value="1"<?php checked($enable_updates, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
 			<label><input type="radio" name="enable_updates" value="0"<?php checked($enable_updates, 0) ?> onclick="toogle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
@@ -510,6 +508,7 @@ function nf_sub_updates_notification($new_rules_version) {
 	}
 	$msg .=__('Rules version:', 'ninjafirewall') .' '. preg_replace('/(\d{4})(\d\d)(\d\d)/', '$1-$2-$3', $new_rules_version) . "\n";
 	$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) ) . "\n\n" .
+			__('This notification can be turned off from NinjaFirewall "Updates" page.', 'ninjafirewall') ."\n\n" .
 			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $msg );

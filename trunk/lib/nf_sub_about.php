@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-05-18 19:50:33                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -74,21 +72,21 @@ function nfw_eg() {
 					<tr>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaFirewall</font>
-							<p>Web Application Firewall<br />for PHP and WordPress.</p>
+							<p><?php _e('Web Application Firewall<br />for PHP and WordPress.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_pro_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;">Free Download</a></p>
+							<p><a href="http://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;text-shadow:none"><?php _e('Free Download', 'ninjafirewall') ?></a></p>
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaMonitoring</font>
-							<p>Website Monitoring<br />for just $4.99/month.</p>
+							<p><?php _e('Website Monitoring<br />for just $4.99/month.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nm_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjamonitoring/" class="button-primary" style="color:#FFF;background-color:#EC971F;border-color:#D58512;">7-Day Free Trial</a></p>
+							<p><a href="http://nintechnet.com/ninjamonitoring/" class="button-primary" style="color:#FFF;background-color:#EC971F;border-color:#D58512;text-shadow:none"><?php _e('7-Day Free Trial', 'ninjafirewall') ?></a></p>
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaRecovery</font>
-							<p>Malware removal<br />and hack recovery.</p>
+							<p><?php _e('Malware removal<br />and hack recovery.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nr_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;">Clean Your Site!</a></p>
+							<p><a href="http://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;text-shadow:none"><?php _e('Clean Your Site!', 'ninjafirewall') ?></a></p>
 						</td>
 					</tr>
 				</table>

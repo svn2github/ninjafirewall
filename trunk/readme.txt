@@ -1,9 +1,9 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: admin, attack, backdoor, botnet, brute force, brute force attack, brute force protection, denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, phishing, prevention, protection, security, shellshock, soaksoak, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: admin, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.6
-Stable tag: 3.2.6
+Stable tag: 3.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,7 +38,7 @@ NinjaFirewall includes **the most powerful filtering engine available in a WordP
 * Anti-Malware Scanner.
 * Advanced filtering options to block ASCII control characters, NULL bytes and PHP built-in wrappers.
 * Decodes and scans Base64-encoded POST requests to detect backdoors and code injection attempts.
-* Hooks and secures HTTP reponse headers to prevent XSS, phishing and clickjacking attempts (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`).
+* Hooks and secures HTTP reponse headers to prevent XSS, phishing and clickjacking attempts (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`, `Content-Security-Policy`).
 * Hooks and modifies cookies to set the `HttpOnly` flag.
 * Blocks username enumeration scanning attempts through the author archives and the login page.
 * Blocks/allows uploads, sanitises uploaded file names.
@@ -147,6 +147,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.co
 * Country-based Access Control via geolocation.
 * URL-based Access Control.
 * Bot-based Access Control.
+* Centralized Logging.
 * Antispam for comment and user regisration forms.
 * Rate limiting option to block aggressive bots, crawlers, web scrapers and HTTP attacks.
 * Response body filter to scan the output of the HTML page right before it is sent to your visitors browser.
@@ -234,9 +235,24 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 3.3 =
+
+* [WP+ Edition] Added a new feature: "Centralized Logging". It allows you to remotely access the firewall log of all your NinjaFirewall protected websites from one single installation, without having to log in to individual servers to analyse your log data (see our blog for more info about that: http://nin.link/centlog/ ).
+* Added a new "Content-Security-Policy" option that can be set up separately for the frontend and backend of the site (see "Firewall Policies > HTTP response headers > Content-Security-Policy").
+* On French language installations running WordPress 4.6 or above, NinjaFirewall will force WordPress to use the fr_FR translation file that is fully translated and included with this release, instead of the partially translated one from wordpress.org.
+* [WP+ Edition] Added "PUT" and "DELETE" methods to the "NinjaFirewall > Access Control > HTTP Methods" section.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Fixed a bug in the firewall log: blocked threats were not hex-decoded before exporting the log.
+* [WP+ Edition] Fixed a bug in the shared memory feature where, in some cases, deactivating NinjaFirewall from the "Plugins" page would not disable the firewall because the shared memory segment used to store its rules was not deleted upon exit.
+* The "SERVER_NAME" environment variable will be always appended to each firewall log line (it was previously available only on multisite installations).
+* The security rules updates option will be enabled by default with new installations of NinjaFirewall.
+* The "X-Content-Type-Options" header will be enabled by default with new installations of NinjaFirewall.
+* Updated Anti-Malware signatures.
+* Minor fixes and adjustments.
+
 = 3.2.6 =
 
-* Fixed a bug introduced in v3.2.5 where the firewall could block attempts to update WordPress options.
+* Fixed a bug introduced in v3.2.5 where the firewall could block some third-party plugins to update WordPress options.
 
 = 3.2.5 =
 
@@ -244,7 +260,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * [WP+ Edition] Fixed a bug where notifications sent or displayed by NinjaFirewall were showing the load balancer IP when an alternate address was defined in the "Access Control > Source IP" section.
 * Blocked threats written to the firewall log will be hexencoded, to lower false positives from antivirus scanners.
 * The "Anti-Malware" operations and errors will be written to the `/wp-content/nfwlog/cache/malscan.log` log.
-* Improved local privilege escalation protection.
+* Improved privilege escalation protection.
 * Minor fixes and adjustments.
 
 = 3.2.4 =

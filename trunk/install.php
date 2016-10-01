@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-06-08 12:28:46                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -95,7 +93,7 @@ function nfw_welcome() {
 	?>
 	<p><?php _e('Thank you for using NinjaFirewall', 'ninjafirewall') ?> (WP Edition).</p>
 	<p><?php _e('This installer will help you to make the setup process as quick and easy as possible. But before doing so, please read carefully the following lines:', 'ninjafirewall') ?></p>
-	<p><?php _e('Although NinjaFirewall looks like a regular plugin, it is not. It can be installed and configured from the WordPress admin console, but it is a stand-alone Web Application Firewall that sits in front of WordPress. That means that it will hook, scan, reject and/or sanitise any HTTP/HTTPS request sent to a PHP script before it reaches WordPress and any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube) or any potential backdoor/shell script (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?></p>
+	<p><?php _e('Although NinjaFirewall looks like a regular plugin, it is not. It can be installed and configured from the WordPress admin console, but it is a stand-alone Web Application Firewall that sits in front of WordPress. That means that it will hook, scan, reject or sanitise any HTTP and HTTPS request sent to a PHP script before it reaches WordPress and any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube), potential backdoors and shell scripts (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?></p>
 	<p><?php printf( __('That\'s cool and makes NinjaFirewall a true firewall. And probably <a href="%s" title="%s">the most powerful security application for WordPress</a>. But you must be cautious:', 'ninjafirewall'), 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine') ?></p>
 	<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:#dc3232;">
 	<br />
@@ -1065,17 +1063,24 @@ function nfw_default_conf() {
 		'fg_mtime'			=>	10,
 		'fg_exclude'		=>	'',
 		// v3.2 :
-		'malware_dir'		=> ABSPATH,
+		'malware_dir'		=> htmlspecialchars( rtrim( ABSPATH, '/\\ ' ) ),
 		'malware_symlink'	=> 1,
 		'malware_timestamp'	=> 7,
 		'malware_size'		=> 2048,
+		// Updates :
+		'enable_updates'	=>	1,
+		'sched_updates'	=>	1,
+		'notify_updates'	=>	1,
+		// Centralized Logging:
+		'clogs_enable'		=>	0,
+		'clogs_pubkey'		=>	'',
 	);
 	// v1.3.1 :
 	// Some compatibility checks:
 	// 1. header_register_callback(): requires PHP >=5.4
 	// 2. headers_list() and header_remove(): some hosts may disable them.
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '100100';
+		$nfw_options['response_headers'] = '01010000';
 	}
 
 	define('NFUPDATESDO', 2);
