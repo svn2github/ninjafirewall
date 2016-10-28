@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.3.1
+Version: 3.3.2-RC1
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.3.1' );
+define( 'NFW_ENGINE_VERSION', '3.3.2-RC1' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -51,18 +51,20 @@ if (! headers_sent() ) {
 }
 
 /* ------------------------------------------------------------------ */
-// WordPress < 4.6:
-add_action( 'init', 'nfw_load_translation' );
-function nfw_load_translation() {
-	load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
-}
-// WordPress >=4.6:
-function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
-	if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
-		load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
-		return true;
+global $wp_version;
+if ( version_compare( $wp_version, '4.6', '<' ) ) {
+	add_action( 'init', 'nfw_load_translation' );
+	function nfw_load_translation() {
+		load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 	}
-	return false;
+} else {
+	function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
+		if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
+			load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
+			return true;
+		}
+		return false;
+	}
 }
 add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
 /* ------------------------------------------------------------------ */
@@ -96,7 +98,7 @@ if (! defined('NFW_LOG_DIR') ) {
 if (! empty($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] != '/' ) {
 	$_SERVER['DOCUMENT_ROOT'] = rtrim( $_SERVER['DOCUMENT_ROOT'] , '/' );
 }
-/* ------------------------------------------------------------------ */	// i18n+
+/* ------------------------------------------------------------------ */
 
 require( plugin_dir_path(__FILE__) . 'lib/nfw_misc.php' );
 
@@ -104,7 +106,7 @@ if (! defined( 'NFW_REMOTE_ADDR') ) {
 	nfw_select_ip();
 }
 
-/* ------------------------------------------------------------------ */	// i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_activate() {
 
@@ -184,7 +186,7 @@ function nfw_activate() {
 
 register_activation_hook( __FILE__, 'nfw_activate' );
 
-/* ------------------------------------------------------------------ */	// i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_deactivate() {
 
@@ -212,7 +214,7 @@ function nfw_deactivate() {
 
 register_deactivation_hook( __FILE__, 'nfw_deactivate' );
 
-/* ------------------------------------------------------------------ */	// i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_upgrade() {
 
@@ -601,6 +603,9 @@ function nfw_upgrade() {
 
 	if (! empty( $nfw_options['wl_admin']) ) {
 		$_SESSION['nfw_goodguy'] = true;
+		if (! empty( $nfw_options['bf_enable'] ) && ! empty( $nfw_options['bf_rand'] ) ) {
+			$_SESSION['nfw_bfd'] = $nfw_options['bf_rand'];
+		}
 		return;
 	}
 	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
@@ -610,7 +615,7 @@ function nfw_upgrade() {
 
 add_action('admin_init', 'nfw_upgrade' );
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_login_hook( $user_login, $user ) {
 
@@ -653,7 +658,7 @@ function nfw_login_hook( $user_login, $user ) {
 }
 
 add_action( 'wp_login', 'nfw_login_hook', 10, 2 );
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_housework() {
 
@@ -672,7 +677,7 @@ function nfw_housework() {
 		}
 	}
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_send_loginemail( $user_login, $whoami ) {
 
@@ -702,7 +707,7 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 	wp_mail( $recipient, $subject, $message );
 
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_logout_hook() {
 
@@ -719,7 +724,7 @@ function nfw_logout_hook() {
 
 add_action( 'wp_logout', 'nfw_logout_hook' );
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function is_nfw_enabled() {
 
@@ -750,7 +755,7 @@ function is_nfw_enabled() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function ninjafirewall_admin_menu() {
 
@@ -864,7 +869,7 @@ if (! is_multisite() )  {
 	add_action( 'network_admin_menu', 'ninjafirewall_admin_menu' );
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_admin_bar_status() {
 
@@ -911,7 +916,7 @@ if ( is_multisite() )  {
 	add_action('admin_bar_menu', 'nf_admin_bar_status', 95);
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_menu_install() {
 
@@ -920,7 +925,7 @@ function nf_menu_install() {
 	require_once( plugin_dir_path(__FILE__) . 'install.php' );
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_menu_main() {
 
@@ -1208,7 +1213,7 @@ function nf_menu_main() {
 <?php
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_statistics() {
 
@@ -1216,7 +1221,7 @@ function nf_sub_statistics() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_options() { // i18n
 
@@ -1224,7 +1229,7 @@ function nf_sub_options() { // i18n
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_policies() {
 
@@ -2191,7 +2196,7 @@ function sanitise_fn(cbox) {
 <?php
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_policies_save() {
 
@@ -2597,7 +2602,7 @@ function nf_sub_policies_default() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_fileguard() {
 
@@ -2619,13 +2624,19 @@ function nf_sub_fileguard() {
 		var e = document.getElementById(id);
 		if (! e.value ) { return }
 		if (! /^[1-9][0-9]?$/.test(e.value) ) {
-			alert("<?php _e('Please enter a number from 1 to 99.', 'ninjafirewall') ?>");
+			alert("<?php
+			// translators: quotes (') must be escaped
+			_e('Please enter a number from 1 to 99.', 'ninjafirewall')
+			?>");
 			e.value = e.value.substring(0, e.value.length-1);
 		}
 	}
 	function check_fields() {
 		if (! document.nfwfilefuard.elements["nfw_options[fg_mtime]"]){
-			alert("<?php _e('Please enter a number from 1 to 99.', 'ninjafirewall') ?>");
+			alert("<?php
+			// translators: quotes (') must be escaped
+			_e('Please enter a number from 1 to 99.', 'ninjafirewall')
+			?>");
 			return false;
 		}
 		return true;
@@ -2705,7 +2716,7 @@ function nf_sub_fileguard() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_fileguard_save() {
 
@@ -2742,7 +2753,7 @@ function nf_sub_fileguard_save() {
 	nfw_update_option( 'nfw_options', $nfw_options );
 
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_network() {
 
@@ -2801,7 +2812,7 @@ function nf_sub_network() {
 <?php
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_filecheck() {
 
@@ -2817,7 +2828,7 @@ function nfscando() {
 	nf_sub_filecheck();
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_malwarescan() {
 
@@ -2872,7 +2883,7 @@ function nfw_msajax_callback() {
 	wp_die();
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_event() {
 
@@ -2889,21 +2900,21 @@ function nfdailyreportdo() {
 	nf_sub_event();
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_log() {
 
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_log.php' );
 
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_live() {
 
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_livelog.php' );
 
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_loginprot() {
 
@@ -3145,7 +3156,7 @@ function nf_sub_loginprot() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_loginprot_save() {
 
@@ -3168,17 +3179,15 @@ function nf_sub_loginprot_save() {
 				return( sprintf( __('Error: %s is read-only and cannot be deleted. Please chmod it to 0777.', 'ninjafirewall'), '<code>'. htmlspecialchars(NFW_LOG_DIR) .'/nfwlog/cache/bf_conf.php</code>') );
 			}
 		}
-		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_blocked' . $_SERVER['SERVER_NAME'] . $bf_rand ) ) {
-			if (! unlink( NFW_LOG_DIR . '/nfwlog/cache/bf_blocked' . $_SERVER['SERVER_NAME'] . $bf_rand )) {
-				return( sprintf( __('Error: %s is read-only and cannot be deleted. Please chmod it to 0777.', 'ninjafirewall'), '<code>'. htmlspecialchars(NFW_LOG_DIR) .'/nfwlog/cache/bf_blocked' . $_SERVER['SERVER_NAME'] . $bf_rand . '</code>') );
-			}
-		}
-		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_' . $_SERVER['SERVER_NAME'] . $bf_rand ) ) {
-			if (! unlink( NFW_LOG_DIR . '/nfwlog/cache/bf_' . $_SERVER['SERVER_NAME'] . $bf_rand )) {
-				return( sprintf( __('Error: %s is read-only and cannot be deleted. Please chmod it to 0777.', 'ninjafirewall'), '<code>' . htmlspecialchars(NFW_LOG_DIR) . '/nfwlog/cache/bf_' . $_SERVER['SERVER_NAME'] . $bf_rand . '</code>') );
-			}
-		}
 		return 0;
+	}
+
+	$path = NFW_LOG_DIR . '/nfwlog/cache/';
+	$glob = glob($path . "bf_*");
+	if ( is_array($glob)) {
+		foreach($glob as $file) {
+			unlink($file);
+		}
 	}
 
 	if ( preg_match( '/^[12]$/', $_POST['nfw_options']['bf_enable'] ) ) {
@@ -3244,9 +3253,8 @@ function nf_sub_loginprot_save() {
 		$auth_msg = str_replace( array('\\', "'", '"', '<', '>', '&'),	"",  stripslashes( $_POST['nfw_options']['auth_msg']) );
 	}
 
-	if ( empty( $bf_rand ) ) {
-		$bf_rand = mt_rand(100000, 999999);
-	}
+	$bf_rand = mt_rand(100000, 999999);
+
 	$data = '<?php $bf_enable=' . $bf_enable . ';$bf_request=\'' . $bf_request .
 		'\';$bf_bantime=' . $bf_bantime . ';' . '$bf_attempt=' . $bf_attempt .
 		';$bf_maxtime=' . $bf_maxtime . ';$bf_xmlrpc=' . $bf_xmlrpc. ';' .
@@ -3262,13 +3270,11 @@ function nf_sub_loginprot_save() {
 	fwrite( $fh, $data );
 	fclose( $fh );
 
-	if (! empty($_SESSION['nfw_bfd']) ) {
-		unset($_SESSION['nfw_bfd']);
-	}
+	$_SESSION['nfw_bfd'] = $bf_rand;
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 
@@ -3338,7 +3344,7 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
       '[hex:' . array_shift( unpack('H*', $res) ) . ']' . "\n", FILE_APPEND | LOCK_EX);
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_edit() {
 
@@ -3480,7 +3486,7 @@ function nf_sub_edit() {
 
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_updates() {
 
@@ -3495,21 +3501,21 @@ function nfupdatesdo() {
 	nf_sub_updates();
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_wplus() {
 
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_wplus.php' );
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_sub_about() {
 
 	require( plugin_dir_path(__FILE__) . 'lib/nf_sub_about.php' );
 
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function ninjafirewall_settings_link( $links ) {
 
@@ -3530,7 +3536,7 @@ if ( is_multisite() ) {
 	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_get_blogtimezone() {
 
@@ -3543,7 +3549,7 @@ function nfw_get_blogtimezone() {
 	}
 	date_default_timezone_set( $tzstring );
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_check_emailalert() {
 
@@ -3609,7 +3615,7 @@ function nfw_check_emailalert() {
 
 	}
 }
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nfw_dashboard_widgets() {
 
@@ -3623,7 +3629,7 @@ if ( is_multisite() ) {
 	add_action( 'wp_dashboard_setup', 'nfw_dashboard_widgets' );
 }
 
-/* ------------------------------------------------------------------ */ // i18n+
+/* ------------------------------------------------------------------ */
 
 function nf_not_allowed($block, $line = 0) {
 

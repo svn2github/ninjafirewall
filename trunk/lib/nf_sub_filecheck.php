@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-06-08 19:15:44                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -572,6 +570,7 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 		$snapexclude = str_replace(',', '|', $tmp);
 	}
 
+	@ini_set('max_execution_time', 0);
 	$snapproc = microtime(true);
 
 	if ($fh = fopen($nfmon_snapshot, 'w') ) {
@@ -645,6 +644,8 @@ function nf_sub_monitoring_scan($nfmon_snapshot, $nfmon_diff) {
 	$nfw_options = nfw_get_option('nfw_options');
 
 	if (empty($nfw_options['enabled']) ) { return; }
+
+	@ini_set('max_execution_time', 0);
 
 	if (! isset($nfw_options['snapexclude']) || ! isset($nfw_options['snapdir']) || ! isset($nfw_options['snapnoslink']) ) {
 		return sprintf( __('Missing options line %s, please try again.', 'ninjafirewall'), __LINE__ );

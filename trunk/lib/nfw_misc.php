@@ -216,7 +216,7 @@ function nf_check_dbdata() {
 		wp_mail( $recipient, $subject, $message );
 
 		if (! empty($nfw_options['a_41']) ) {
-			nfw_log2('Database changes detected', __('administrator account', 'ninjafirewall'), 4, 0);
+			nfw_log2('Database changes detected', 'administrator account', 4, 0);
 		}
 	}
 
@@ -274,7 +274,7 @@ function nfw_delete_option( $option ) {
 
 function nfwhook_update_user_meta( $user_id, $meta_key, $meta_value, $prev_value ) {
 
-	nfwhook_user_meta( $meta_value, $prev_value );
+	nfwhook_user_meta( $meta_key, $meta_value, $prev_value );
 
 }
 add_filter('update_user_meta', 'nfwhook_update_user_meta', 1, 4);
@@ -283,14 +283,14 @@ add_filter('update_user_meta', 'nfwhook_update_user_meta', 1, 4);
 
 function nfwhook_add_user_meta( $user_id, $meta_key, $meta_value ) {
 
-	nfwhook_user_meta( $meta_key, $meta_value );
+	nfwhook_user_meta( $user_id, $meta_key, $meta_value );
 
 }
 add_filter('add_user_meta', 'nfwhook_add_user_meta', 1, 3);
 
 /* ------------------------------------------------------------------ */
 
-function nfwhook_user_meta( $key, $value ) {
+function nfwhook_user_meta( $id, $key, $value ) {
 
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
@@ -307,15 +307,29 @@ function nfwhook_user_meta( $key, $value ) {
 			$value = serialize( $value );
 		}
 		if ( strpos( $value, "administrator") === FALSE ) { return; }
+		$msg = 'WordPress: Blocked privilege escalation attempt';
 
-		$msg = 'WordPress privilege escalation attempt';
-		nfw_log2( $msg, "$key: $value", 3, 0);
+		$user_info = get_userdata( $id );
+		if (! empty( $user_info->user_login ) ) {
+			nfw_log2( $msg, "Username: {$user_info->user_login}, ID: $id", 3, 0);
+		} else {
+			nfw_log2( $msg, "$key: $value", 3, 0);
+		}
 
 		@session_destroy();
 
-		die( 	"<script>document.body.innerHTML = 'NinjaFirewall: $msg.';</script>" .
-				"<noscript>NinjaFirewall: $msg.</noscript>" );
+		die("<script>if(document.body===null||document.body===undefined){document.write('NinjaFirewall: $msg.');}else{document.body.innerHTML='NinjaFirewall: $msg.';}</script><noscript>NinjaFirewall: $msg.</noscript>");
 	}
 }
+/* ------------------------------------------------------------------ */
+
+function nfw_login_form_hook() {
+
+	if (! empty( $_SESSION['nfw_bfd'] ) ) {
+		echo '<p class="message">'. __('NinjaFirewall brute-force protection is enabled and you are temporarily whitelisted.', 'ninjafirewall' ) . '</p><br />';
+	}
+}
+add_filter( 'login_message', 'nfw_login_form_hook');
+
 /* ------------------------------------------------------------------ */
 // EOF

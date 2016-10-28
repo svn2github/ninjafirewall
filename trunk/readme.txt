@@ -235,6 +235,16 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 3.3.2 =
+
+* Added "max_execution_time" directive to "File Check" to prevent time-out.
+* Updated Anti-Malware signatures.
+* The security rules updates option will be enabled by default with new installations of NinjaFirewall.
+* If the administrator is whitelisted by the brute-force protection, a notice will be displayed on the WordPress login page.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] The "Block scripts, ELF and system files upload" will also block Microsoft executable files (MZ header).
+* Minor fixes and adjustments.
+
 = 3.3.1 =
 
 * [WP+ Edition] Added a new feature: "Centralized Logging". It allows you to remotely access the firewall log of all your NinjaFirewall protected websites from one single installation, without having to log in to individual servers to analyse your log data (see our blog for more info about that: http://nin.link/centlog/ ).

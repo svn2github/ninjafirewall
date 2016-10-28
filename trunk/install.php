@@ -864,7 +864,7 @@ function welcome_email() {
 			$message.= __('-Will NinjaFirewall detect the correct IP of my visitors if I am behind a CDN service like Cloudflare or Incapsula?', 'ninjafirewall') . "\n";
 			$message.= __('-I moved my wp-config.php file to another directory. Will it work with NinjaFirewall?', 'ninjafirewall') . "\n";
 			$message.= __('-Will it slow down my site?', 'ninjafirewall') . "\n";
-			$message.= __('-Is there any Windows version?', 'ninjafirewall') . "\n";
+			$message.= __('-Is there a Microsoft Windows version?', 'ninjafirewall') . "\n";
 			$message.= __('-Can I add/write my own security rules?', 'ninjafirewall') . "\n";
 			$message.= __('-Can I migrate my site(s) with NinjaFirewall installed?', 'ninjafirewall') . "\n\n";
 
@@ -1068,7 +1068,7 @@ function nfw_default_conf() {
 		'malware_timestamp'	=> 7,
 		'malware_size'		=> 2048,
 		// Updates :
-		'enable_updates'	=>	0,
+		'enable_updates'	=>	1,
 		'sched_updates'	=>	1,
 		'notify_updates'	=>	1,
 		// Centralized Logging:
@@ -1118,6 +1118,7 @@ function nfw_default_conf() {
 	}
 	nfw_get_blogtimezone();
 	wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
+	wp_schedule_event( time() + 3600, 'hourly', 'nfsecupdates');
 
 	$_SESSION['default_conf'] = 1;
 }
