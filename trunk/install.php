@@ -1052,6 +1052,8 @@ function nfw_default_conf() {
 		'no_xmlrpc'			=> 0,
 		// v1.7 :
 		'no_xmlrpc_multi'	=> 1,
+		// v3.3.2
+		'no_xmlrpc_pingback'=> 0,
 
 		// v1.1.3 :
 		'enum_archives'	=> 0,

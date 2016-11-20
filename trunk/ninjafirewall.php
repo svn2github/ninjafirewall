@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.3.2
+Version: 3.3.3
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.3.2' );
+define( 'NFW_ENGINE_VERSION', '3.3.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -54,19 +54,19 @@ if (! headers_sent() ) {
 global $wp_version;
 if ( version_compare( $wp_version, '4.6', '<' ) ) {
 	add_action( 'init', 'nfw_load_translation' );
-	function nfw_load_translation() {
-		load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
-	}
 } else {
-	function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
-		if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
-			load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
-			return true;
-		}
-		return false;
-	}
+	add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
 }
-add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
+function nfw_load_translation() {
+	load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
+}
+function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
+	if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
+		load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
+		return true;
+	}
+	return false;
+}
 /* ------------------------------------------------------------------ */
 
 $null = __('A true Web Application Firewall to protect and secure WordPress.', 'ninjafirewall');
@@ -2002,6 +2002,11 @@ function sanitise_fn(cbox) {
 	} else {
 		$no_xmlrpc_multi = 1;
 	}
+	if ( empty( $nfw_options['no_xmlrpc_pingback']) ) {
+		$no_xmlrpc_pingback = 0;
+	} else {
+		$no_xmlrpc_pingback = 1;
+	}
 	if ( empty( $nfw_options['no_post_themes']) ) {
 		$no_post_themes = 0;
 	} else {
@@ -2110,8 +2115,9 @@ function sanitise_fn(cbox) {
 			<td width="20">&nbsp;</td>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
-				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block only <code>system.multicall</code> method (default)', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block <code>system.multicall</code> method (default)', 'ninjafirewall') ?></label></p>
 				<?php echo $is_JetPack; ?>
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_pingback]" value="1"<?php checked( $no_xmlrpc_pingback, 1 ) ?>>&nbsp;<?php _e('Block Pingbacks', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
@@ -2427,11 +2433,17 @@ function nf_sub_policies_save() {
 	} else {
 		$nfw_options['no_xmlrpc'] = 1;
 		$_POST['nfw_options']['no_xmlrpc_multi'] = 0;
+		$_POST['nfw_options']['no_xmlrpc_pingback'] = 0;
 	}
 	if ( empty( $_POST['nfw_options']['no_xmlrpc_multi']) ) {
 		$nfw_options['no_xmlrpc_multi'] = 0;
 	} else {
 		$nfw_options['no_xmlrpc_multi'] = 1;
+	}
+	if ( empty( $_POST['nfw_options']['no_xmlrpc_pingback']) ) {
+		$nfw_options['no_xmlrpc_pingback'] = 0;
+	} else {
+		$nfw_options['no_xmlrpc_pingback'] = 1;
 	}
 
 	if ( empty( $_POST['nfw_options']['no_post_themes']) ) {
@@ -2572,6 +2584,7 @@ function nf_sub_policies_default() {
 	$nfw_options['enum_login']			= 0;
 	$nfw_options['no_xmlrpc']			= 0;
 	$nfw_options['no_xmlrpc_multi']	= 1;
+	$nfw_options['no_xmlrpc_pingback']= 0;
 	$nfw_options['no_post_themes']	= 0;
 	$nfw_options['force_ssl'] 			= 0;
 	$nfw_options['disallow_edit'] 	= 0;
@@ -2871,7 +2884,7 @@ function nfw_msajax_callback() {
 
 		if ( is_wp_error( $res ) ) {
 			@file_put_contents( NFW_LOG_DIR . '/nfwlog/cache/malscan.log', time() . ": [AX] ERROR: ". $res->get_error_message() . "\n", FILE_APPEND );
-			echo '2';
+			echo htmlspecialchars( $res->get_error_message() );
 		} else {
 			echo 'OK';
 		}

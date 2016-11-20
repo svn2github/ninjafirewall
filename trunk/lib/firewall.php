@@ -351,10 +351,18 @@ if ( strpos($_SERVER['SCRIPT_NAME'], '/xmlrpc.php' ) !== FALSE ) {
 		nfw_log('Access to WordPress XML-RPC API', $_SERVER['SCRIPT_NAME'], 2, 0);
 		nfw_block();
 	}
-	if (! empty($nfw_['nfw_options']['no_xmlrpc_multi']) && ($_SERVER['REQUEST_METHOD'] == 'POST') ) {
-		if ( @strpos( @file_get_contents('php://input'), 'system.multicall') !== FALSE ) {
-			nfw_log('Access to WordPress XML-RPC API (system.multicall method)', $_SERVER['SCRIPT_NAME'], 2, 0);
-			nfw_block();
+	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+		if (! empty($nfw_['nfw_options']['no_xmlrpc_multi']) ) {
+			if ( @strpos( @file_get_contents('php://input'), '<methodName>system.multicall</methodName>') !== FALSE ) {
+				nfw_log('Access to WordPress XML-RPC API (system.multicall method)', $_SERVER['SCRIPT_NAME'], 2, 0);
+				nfw_block();
+			}
+		}
+		if (! empty($nfw_['nfw_options']['no_xmlrpc_pingback']) ) {
+			if ( @strpos( @file_get_contents('php://input'), '<methodName>pingback.ping</methodName>') !== FALSE ) {
+				nfw_log('Access to WordPress XML-RPC API (pingback.ping)', $_SERVER['SCRIPT_NAME'], 2, 0);
+				nfw_block();
+			}
 		}
 	}
 }
@@ -721,38 +729,39 @@ function nfw_matching( $where, $key, $nfw_rules, $rules, $subid, $id, $RAW_POST 
 		$val = @$rules['cha'][$subid]['exe']($val);
 	}
 
+	$t = '';
+
 	if ( isset( $rules['cha'][$subid]['nor'] ) ) {
-		if ( isset( $nfw_['normalized'][$where][$key] ) && ! isset( $rules['cha'][$subid]['exe'] ) ) {
-			$val = $nfw_['normalized'][$where][$key];
+		$t .= 'N';
+		if ( isset( $nfw_[$t][$where][$key] ) && ! isset( $rules['cha'][$subid]['exe'] ) ) {
+			$val = $nfw_[$t][$where][$key];
 		} else {
 			$val = nfw_normalize( $val, $nfw_rules );
 			if (! isset( $rules['cha'][$subid]['exe']) ) {
-				$nfw_['normalized'][$where][$key] = $val;
+				$nfw_[$t][$where][$key] = $val;
 			}
 		}
 	}
 
 	if ( isset( $rules['cha'][$subid]['tra'] ) ) {
-		if ( isset( $nfw_['transformed'][$where][$key][ $rules['cha'][$subid]['tra'] ] )  && ! isset( $rules['cha'][$subid]['exe'] ) ) {
-			$val = $nfw_['transformed'][$where][$key][ $rules['cha'][$subid]['tra'] ];
+		$t .= 'T' . $rules['cha'][$subid]['tra'];
+		if ( isset( $nfw_[$t][$where][$key] )  && ! isset( $rules['cha'][$subid]['exe'] ) ) {
+			$val = $nfw_[$t][$where][$key];
 		} else {
 			$val = nfw_transform_string( $val, $rules['cha'][$subid]['tra'] );
-			if ( empty( $rules['cha'][$subid]['noc']) ) {
-				$val = nfw_compress_string( $val, $rules['cha'][$subid]['tra'] );
-				if (! isset( $rules['cha'][$subid]['exe']) ) {
-					$nfw_['transformed'][$where][$key][ $rules['cha'][$subid]['tra'] ] = $val;
-				}
+			if (! isset( $rules['cha'][$subid]['exe']) ) {
+				$nfw_[$t][$where][$key] = $val;
 			}
 		}
-	} else {
-		if ( empty( $rules['cha'][$subid]['noc']) ) {
-			if ( isset( $nfw_['compressed'][$where][$key] ) && ! isset( $rules['cha'][$subid]['exe'] ) ) {
-				$val = $nfw_['compressed'][$where][$key];
-			} else {
-				$val = nfw_compress_string( $val );
-				if (! isset( $rules['cha'][$subid]['exe']) ) {
-					$nfw_['compressed'][$where][$key] = $val;
-				}
+	}
+	if ( empty( $rules['cha'][$subid]['noc']) ) {
+		$t .= 'C';
+		if ( isset( $nfw_[$t][$where][$key] ) && ! isset( $rules['cha'][$subid]['exe'] ) ) {
+			$val = $nfw_[$t][$where][$key];
+		} else {
+			$val = nfw_compress_string( $val );
+			if (! isset( $rules['cha'][$subid]['exe']) ) {
+				$nfw_[$t][$where][$key] = $val;
 			}
 		}
 	}
@@ -1095,7 +1104,7 @@ function nfw_block() {
 		header('HTTP/1.1 ' . $http_codes[$nfw_['nfw_options']['ret_code']] );
 		header('Status: ' .  $http_codes[$nfw_['nfw_options']['ret_code']] );
 		header('Pragma: no-cache');
-		header('Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
 		header('Expires: Mon, 01 Sep 2014 01:01:01 GMT');
 	}
 

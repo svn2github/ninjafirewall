@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.6
-Stable tag: 3.3.2
+Stable tag: 3.3.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,6 +234,15 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.3.3 =
+
+* Improved the filtering engine cache for better reliability and speed.
+* Added an option to block Pingbacks without having to disable the whole XML-RPC API (see "Firewall Policies > WordPress XML-RPC API > Block Pingbacks").
+* Fixed a "nfwhook_load_textdomain invalid function name" PHP error (WP Edition only).
+* Fixed "Cache-Control" header in the firewall blocked message.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Improved verbose logging in case of error during the "Anti-Malware" scan.
 
 = 3.3.2 =
 

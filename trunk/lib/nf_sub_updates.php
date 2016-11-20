@@ -400,7 +400,7 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 			} else {
 				nf_sub_updates_log(
 				$update_log,
-				__('Security rules are up-to-date.', 'ninjafirewall')
+				__('No update available.', 'ninjafirewall')
 				);
 			}
 		// Not a 200 OK ret code :
