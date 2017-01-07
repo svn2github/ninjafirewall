@@ -331,7 +331,7 @@ if ( (@$nfw_['nfw_options']['scan_protocol'] == 2) && ($_SERVER['SERVER_PORT'] !
 	return;
 }
 
-if (! empty($nfw_['nfw_options']['fg_enable']) ) {
+if (! empty($nfw_['nfw_options']['fg_enable']) && ! defined('NFW_WPWAF') ) {
 	include('fw_fileguard.php');
 	fw_fileguard();
 }
@@ -366,8 +366,12 @@ if ( strpos($_SERVER['SCRIPT_NAME'], '/xmlrpc.php' ) !== FALSE ) {
 		}
 	}
 }
+if (! empty($nfw_['nfw_options']['no_xmlrpc_pingback']) && strpos($_SERVER['HTTP_USER_AGENT'], '; verifying pingback from ') !== FALSE) {
+	nfw_log('Blocked pingback verification', $_SERVER['HTTP_USER_AGENT'], 2, 0);
+   nfw_block();
+}
 
-if ( (! empty($nfw_['nfw_options']['no_post_themes'])) && ($_SERVER['REQUEST_METHOD'] == 'POST') && (strpos($_SERVER['SCRIPT_NAME'], $nfw_['nfw_options']['no_post_themes']) !== FALSE) ) {
+if (! empty($nfw_['nfw_options']['no_post_themes']) && $_SERVER['REQUEST_METHOD'] == 'POST' && strpos($_SERVER['SCRIPT_NAME'], $nfw_['nfw_options']['no_post_themes']) !== FALSE ) {
 	nfw_log('POST request in the themes folder', $_SERVER['SCRIPT_NAME'], 2, 0);
    nfw_block();
 }
@@ -514,7 +518,7 @@ function nfw_check_upload() {
 			}
 
 			if (! defined('NFW_NO_MIMECHECK') && isset( $f_uploaded[$key]['type'] ) && ! preg_match('/\/.*\bphp\d?\b/i', $f_uploaded[$key]['type']) &&
-			preg_match('/\.ph(?:p[345]?|t|tml)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
+			preg_match('/\.ph(?:p([34x]|5\d?)?|t(ml)?)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
 				nfw_log('Blocked file upload attempt (MIME-type mismatch)', $f_uploaded[$key]['type'] .' != '. $f_uploaded[$key]['name'], 3, 0);
 				nfw_block();
 			}
@@ -1287,7 +1291,7 @@ function nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand) {
 	header('HTTP/1.0 401 Unauthorized');
 	header('Content-Type: text/html; charset=utf-8');
 	header('X-Frame-Options: DENY');
-	echo '<html><head><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msg . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	echo '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msg . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
 	exit;
 }
 

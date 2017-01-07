@@ -253,7 +253,7 @@ function nf_sub_options_save() {
 			if ( wp_next_scheduled('nfsecupdates') ) {
 				wp_clear_scheduled_hook('nfsecupdates');
 			}
-			wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
+			wp_schedule_event( time() + 15, $schedtype, 'nfsecupdates');
 		}
 		// Re-enable daily report, if needed :
 		if (! empty($nfw_options['a_52']) ) {
@@ -360,7 +360,7 @@ function nf_sub_options_import() {
 		} else {
 			$schedtype = 'daily';
 		}
-		wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
+		wp_schedule_event( time() + 15, $schedtype, 'nfsecupdates');
 	}
 	// Re-enable daily report, if needed :
 	if ( wp_next_scheduled('nfdailyreport') ) {

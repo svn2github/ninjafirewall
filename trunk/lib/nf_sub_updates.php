@@ -46,7 +46,7 @@ echo '<div class="wrap">
 	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1>' . __('Updates', 'ninjafirewall') . '</h1>';
 
-// We stop and warn the user if the firewall is diabled:
+// We stop and warn the user if the firewall is disabled:
 if (! defined('NF_DISABLED') ) {
 	is_nfw_enabled();
 }
@@ -245,8 +245,8 @@ function nf_sub_updates_save() {
 		if ( wp_next_scheduled('nfsecupdates') ) {
 			wp_clear_scheduled_hook('nfsecupdates');
 		}
-		// Start next cron in 90 seconds:
-		wp_schedule_event( time() + 90, $schedtype, 'nfsecupdates');
+		// Start next cron in 15 seconds:
+		wp_schedule_event( time() + 15, $schedtype, 'nfsecupdates');
 	}
 
 	if ( empty($_POST['notify_updates']) ) {

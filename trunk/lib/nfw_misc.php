@@ -121,6 +121,47 @@ if (! isset($_SESSION['nfw_goodguy']) ) {
 
 /* ------------------------------------------------------------------ */
 
+// WP >= 4.7:
+function nfwhook_rest_authentication_errors() {
+
+	if (! defined('NF_DISABLED') ) {
+		is_nfw_enabled();
+	}
+	if ( NF_DISABLED ) { return; }
+
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+
+	if (! empty( $nfw_options['no_restapi']) && ! isset($_SESSION['nfw_goodguy']) ) {
+
+		return new WP_Error( 'nfw_rest_api_access_restricted', __('Forbidden access', 'ninjafirewall'), array('status' => $nfw_options['ret_code']) );
+	}
+}
+add_filter( 'rest_authentication_errors', 'nfwhook_rest_authentication_errors' );
+
+/* ------------------------------------------------------------------ */
+
+function nfwhook_rest_request_before_callbacks( $res, $hnd, $req ) {
+
+	if (! defined('NF_DISABLED') ) {
+		is_nfw_enabled();
+	}
+	if ( NF_DISABLED ) { return $res; }
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+
+	if (! empty( $nfw_options['enum_restapi']) && ! isset($_SESSION['nfw_goodguy']) ) {
+
+		if ( strpos( $req->get_route(), '/wp/v2/users' ) !== false && ! current_user_can('list_users') ) {
+			return new WP_Error('nfw_rest_api_access_restricted', __('Forbidden access', 'ninjafirewall'), array('status' => $nfw_options['ret_code']) );
+		}
+	}
+	return $res;
+}
+add_filter('rest_request_before_callbacks', 'nfwhook_rest_request_before_callbacks', 999, 3);
+
+/* ------------------------------------------------------------------ */
+
 function nfw_authenticate( $user ) { // i18n
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
@@ -307,18 +348,48 @@ function nfwhook_user_meta( $id, $key, $value ) {
 			$value = serialize( $value );
 		}
 		if ( strpos( $value, "administrator") === FALSE ) { return; }
-		$msg = 'WordPress: Blocked privilege escalation attempt';
+		$subject = __('Blocked privilege escalation attempt', 'ninjafirewall');
 
 		$user_info = get_userdata( $id );
 		if (! empty( $user_info->user_login ) ) {
-			nfw_log2( $msg, "Username: {$user_info->user_login}, ID: $id", 3, 0);
+			nfw_log2( 'WordPress: ' . $subject, "Username: {$user_info->user_login}, ID: $id", 3, 0);
 		} else {
-			nfw_log2( $msg, "$key: $value", 3, 0);
+			nfw_log2( 'WordPress: ' . $subject, "$key: $value", 3, 0);
 		}
 
 		@session_destroy();
 
-		die("<script>if(document.body===null||document.body===undefined){document.write('NinjaFirewall: $msg.');}else{document.body.innerHTML='NinjaFirewall: $msg.';}</script><noscript>NinjaFirewall: $msg.</noscript>");
+		// Alert the admin if needed:
+		if (! empty( $nfw_options['a_53'] ) ) {
+
+			$nfw_options = nfw_get_option( 'nfw_options' );
+			nfw_get_blogtimezone();
+
+			if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
+				$recipient = get_option('admin_email');
+			} else {
+				$recipient = $nfw_options['alert_email'];
+			}
+			$subject = '[NinjaFirewall] ' . $subject;
+			$message = __('NinjaFirewall has blocked an attempt to gain administrative privileges:', 'ninjafirewall') . "\n\n";
+			if ( is_multisite() ) {
+				$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
+			} else {
+				$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
+			}
+			$message.= __('Username:', 'ninjafirewall') .' '. $user_info->user_login . " (ID: $id)\n";
+			$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
+			$message.= 'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n";
+			$message.= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . "\n";
+			$message.= __('Date:', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n\n";
+			$message.= __('This notification can be turned off from NinjaFirewall "Event Notifications" page.', 'ninjafirewall') . "\n\n";
+			$message.= 	'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+			wp_mail( $recipient, $subject, $message );
+
+		}
+
+		die("<script>if(document.body===null||document.body===undefined){document.write('NinjaFirewall: $subject.');}else{document.body.innerHTML='NinjaFirewall: $subject.';}</script><noscript>NinjaFirewallL $subject.</noscript>");
 	}
 }
 /* ------------------------------------------------------------------ */

@@ -1,6 +1,6 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: admin, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
 Stable tag: 3.3.3
@@ -23,7 +23,7 @@ NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to 
 
 = Powerful filtering engine =
 
-NinjaFirewall includes **the most powerful filtering engine available in a WordPress plugin**. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
+NinjaFirewall includes the most powerful filtering engine available in a WordPress plugin. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
 
 = Features =
 
@@ -99,15 +99,13 @@ It allows you to scan your website for malware. The scanning engine is compatibl
 
 To get the most efficient protection, NinjaFirewall can automatically update its security rules daily, twice daily or even hourly. Each time a new vulnerability is found in WordPress or one of its plugins/themes, a new set of security rules will be made available to protect your blog immediately.
 
-Because we respect our users privacy, security rules updates are downloaded from wordpress.org repo only. There is no connection to NinTechNet's servers (A.K.A "phoning home") during the update process.
-
 = Strong Privacy =
 
-Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and **filters the traffic on your own server** and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remain on your server and **is not routed through a third-party company's servers**, which could pose unnecessary risks (e.g., employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
+Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and filters the traffic on your own server and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remain on your server and is not routed through a third-party company's servers, which could pose unnecessary risks (e.g., employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
 
 = IPv6 compatibility =
 
-IPv6 compatibility is a mandatory feature for a security plugin: if it supports only IPv4, **hackers can easily bypass the plugin by using an IPv6**. NinjaFirewall natively supports IPv4 and IPv6 protocols, for both public and private addresses.
+IPv6 compatibility is a mandatory feature for a security plugin: if it supports only IPv4, hackers can easily bypass the plugin by using an IPv6. NinjaFirewall natively supports IPv4 and IPv6 protocols, for both public and private addresses.
 
 = Multi-site support =
 
@@ -115,7 +113,7 @@ NinjaFirewall is multi-site compatible. It will protect all sites from your netw
 
 = Possibility to prepend your own PHP code to the firewall =
 
-You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed **before WordPress and all its plugins are loaded**. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulated HTTP requests, variables etc.
+You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulated HTTP requests, variables etc.
 
 = Low Footprint Firewall =
 
@@ -234,6 +232,17 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.4 =
+
+* NinjaFirewall can now be installed in two different modes: either "Full WAF mode" (via the PHP `auto_prepend_file` directive, as usual) or "WordPress WAF mode" (via the `wp-config.php` script). See our blog for more info: http://nin.link/wafmode/ .
+* Added two options regarding the new WP REST API: to block any access to the API (see "Firewall Policies > WordPress REST API") or only username enumeration (see "Firewall Policies > Protect against username enumeration").
+* Added an option to block serialized PHP objects found inside a GET or POST request, cookies, user agent and referrer variables. (see the "Firewall Policies > PHP" section).
+* Added an option to send a notification to the administrator when NinjaFirewall detects and blocks a privilege escalation attempt (see the "Event Notifications > Administrator account" section)
+* The "File Guard" files/folders exclusion list can contain now up to 255 characters (vs 155 previously).
+* Updated Anti-Malware signatures.
+* Several small fixes and adjustments.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 3.3.3 =
 

@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2016-06-08 18:59:23                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -128,13 +126,17 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	if (! isset( $nfw_options['a_52']) ) {
 		$nfw_options['a_52'] = 1;
 	}
+	if (! isset( $nfw_options['a_53']) ) {
+		$nfw_options['a_53'] = 1;
+	}
 	?>
-	<h3><?php _e('Database', 'ninjafirewall') ?></h3>
+	<h3><?php _e('Administrator account', 'ninjafirewall') ?></h3>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever', 'ninjafirewall') ?></th>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[a_51]" value="1"<?php checked( $nfw_options['a_51'], 1) ?>>&nbsp;<?php _e('An administrator account is created, modified or deleted in the database (default)', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[a_53]" value="1"<?php checked( $nfw_options['a_53'], 1) ?>>&nbsp;<?php _e('A user attempts to gain administrative privileges (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
@@ -329,6 +331,11 @@ function nf_sub_event_save() {
 			nfw_get_blogtimezone();
 			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 		}
+	}
+	if ( empty( $_POST['nfw_options']['a_53']) ) {
+		$nfw_options['a_53'] = 0;
+	} else {
+		$nfw_options['a_53'] = 1;
 	}
 
 	// Multiple recipients (WPMU only) ?

@@ -5,8 +5,6 @@
  |                                                                     |
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
- | REVISION: 2015-10-10 00:14:45                                       |
- +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
  | published by the Free Software Foundation, either version 3 of      |
@@ -51,6 +49,8 @@ function nfw_uninstall() {
 	define( 'HTACCESS_END', '# END NinjaFirewall' );
 	define( 'PHPINI_BEGIN', '; BEGIN NinjaFirewall' );
 	define( 'PHPINI_END', '; END NinjaFirewall' );
+	define( 'WP_CONFIG_BEGIN', '// BEGIN NinjaFirewall' );
+	define( 'WP_CONFIG_END', '// END NinjaFirewall' );
 
 	// Retrieve installation info :
 	if ( is_multisite() ) {
@@ -59,7 +59,16 @@ function nfw_uninstall() {
 		$nfw_install = get_option('nfw_install');
 	}
 
-	// clean-up .htaccess :
+
+	// Clean-up wp-config.php:
+	if (! empty( $nfw_install['wp_config'] ) && file_exists( $nfw_install['wp_config'] ) && is_writable( $nfw_install['wp_config'] ) ) {
+		$wp_config_content = @file_get_contents( $nfw_install['wp_config'] );
+		$wp_config_content = preg_replace( '`\s?'. WP_CONFIG_BEGIN .'.+?'. WP_CONFIG_END .'[^\r\n]*\s?`s' , "\n", $wp_config_content);
+		@file_put_contents( $nfw_install['wp_config'], $wp_config_content, LOCK_EX );
+	}
+
+
+	// Clean-up .htaccess :
 	if (! empty($nfw_install['htaccess']) && file_exists($nfw_install['htaccess']) ) {
 		$htaccess_file = $nfw_install['htaccess'];
 	} elseif ( file_exists( ABSPATH . '.htaccess' ) ) {
@@ -72,7 +81,7 @@ function nfw_uninstall() {
 	if (! empty($htaccess_file) && is_writable( $htaccess_file ) ) {
 		$data = file_get_contents( $htaccess_file );
 		// Find / delete instructions :
-		$data = preg_replace( '/\s?'. HTACCESS_BEGIN .'.+?'. HTACCESS_END .'[^\r\n]*\s?/s' , "\n", $data);
+		$data = preg_replace( '`\s?'. HTACCESS_BEGIN .'.+?'. HTACCESS_END .'[^\r\n]*\s?`s' , "\n", $data);
 		@file_put_contents( $htaccess_file,  $data, LOCK_EX );
 	}
 
@@ -99,7 +108,7 @@ function nfw_uninstall() {
 	}
 	foreach( $phpini as $ini ) {
 		$data = file_get_contents( $ini );
-		$data = preg_replace( '/\s?'. PHPINI_BEGIN .'.+?'. PHPINI_END .'[^\r\n]*\s?/s' , "\n", $data);
+		$data = preg_replace( '`\s?'. PHPINI_BEGIN .'.+?'. PHPINI_END .'[^\r\n]*\s?`s' , "\n", $data);
 		@file_put_contents( $ini, $data, LOCK_EX );
 	}
 
