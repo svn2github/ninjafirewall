@@ -133,7 +133,7 @@ function nfwhook_rest_authentication_errors() {
 	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if (! empty( $nfw_options['no_restapi']) && ! isset($_SESSION['nfw_goodguy']) ) {
-
+		nfw_log2( 'WordPress: Blocked access to the WP REST API', $_SERVER['REQUEST_URI'], 2, 0);
 		return new WP_Error( 'nfw_rest_api_access_restricted', __('Forbidden access', 'ninjafirewall'), array('status' => $nfw_options['ret_code']) );
 	}
 }
@@ -153,6 +153,7 @@ function nfwhook_rest_request_before_callbacks( $res, $hnd, $req ) {
 	if (! empty( $nfw_options['enum_restapi']) && ! isset($_SESSION['nfw_goodguy']) ) {
 
 		if ( strpos( $req->get_route(), '/wp/v2/users' ) !== false && ! current_user_can('list_users') ) {
+			nfw_log2('User enumeration scan (WP REST API)', $_SERVER['REQUEST_URI'], 2, 0);
 			return new WP_Error('nfw_rest_api_access_restricted', __('Forbidden access', 'ninjafirewall'), array('status' => $nfw_options['ret_code']) );
 		}
 	}
@@ -359,10 +360,11 @@ function nfwhook_user_meta( $id, $key, $value ) {
 
 		@session_destroy();
 
+		$nfw_options = nfw_get_option( 'nfw_options' );
+
 		// Alert the admin if needed:
 		if (! empty( $nfw_options['a_53'] ) ) {
 
-			$nfw_options = nfw_get_option( 'nfw_options' );
 			nfw_get_blogtimezone();
 
 			if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {

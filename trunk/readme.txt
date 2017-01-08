@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
-Stable tag: 3.3.3
+Stable tag: 3.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -235,12 +235,12 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 = 3.4 =
 
-* NinjaFirewall can now be installed in two different modes: either "Full WAF mode" (via the PHP `auto_prepend_file` directive, as usual) or "WordPress WAF mode" (via the `wp-config.php` script). See our blog for more info: http://nin.link/wafmode/ .
+* NinjaFirewall can now be installed in two different modes: either "Full WAF" mode (via the PHP `auto_prepend_file` directive, as usual) or "WordPress WAF" mode (via the `wp-config.php` script). See our blog for more info: http://nin.link/wafmode/
 * Added two options regarding the new WP REST API: to block any access to the API (see "Firewall Policies > WordPress REST API") or only username enumeration (see "Firewall Policies > Protect against username enumeration").
-* Added an option to block serialized PHP objects found inside a GET or POST request, cookies, user agent and referrer variables. (see the "Firewall Policies > PHP" section).
-* Added an option to send a notification to the administrator when NinjaFirewall detects and blocks a privilege escalation attempt (see the "Event Notifications > Administrator account" section)
+* Added an option to block serialized PHP objects found inside a `GET` or `POST` request, cookies, user agent and referrer variables. (see the "Firewall Policies > PHP" section).
+* Added an option to send a notification to the administrator when NinjaFirewall detects and blocks a privilege escalation attempt (see the "Event Notifications > Administrator account" section).
 * The "File Guard" files/folders exclusion list can contain now up to 255 characters (vs 155 previously).
-* Updated Anti-Malware signatures.
+* Updated "Anti-Malware" signatures.
 * Several small fixes and adjustments.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 

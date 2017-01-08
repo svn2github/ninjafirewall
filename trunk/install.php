@@ -146,9 +146,9 @@ function nfw_welcome() {
 
 	<p><?php _e('The <b>WordPress WAF</b> mode requires to load NinjaFirewall via the WordPress wp-config.php script. This process makes it easy to setup and the installation will always be successful, regardless of your hosting plan restrictions.', 'ninjafirewall') ?> <?php _e('NinjaFirewall will still load before WordPress, its plugins and the database and will run as fast as the <b>Full WAF</b> mode.', 'ninjafirewall') ?>
 	<br />
-	<?php _e('However, the downside of this mode is that NinjaFirewall will only be able to hook and filter HTTP requests sent to WordPress only. A few features such as File Guard, the URL Access Control and Web Filter (WP+ Edition only) will be limited.', 'ninjafirewall') ?>
+	<?php _e('However, the downside of this mode is that NinjaFirewall will be able to hook and filter HTTP requests sent to WordPress only. A few features such as File Guard, the URL Access Control and Web Filter (WP+ Edition only) will be limited.', 'ninjafirewall') ?>
 	<br />
-	<?php _e('Despite being less powerful than the <b>Full WAF</b> mode, it still offers a level of security and performance higher than any other plugin.', 'ninjafirewall') ?></p>
+	<?php _e('Despite being less powerful than the <b>Full WAF</b> mode, it still offers a level of protection and performance higher than any other security plugin.', 'ninjafirewall') ?></p>
 
 
 	<h3><?php _e('Installation', 'ninjafirewall') ?></h3>

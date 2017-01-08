@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Stable (latest release)\n"
-"POT-Creation-Date: 2017-01-07 19:52+0700\n"
-"PO-Revision-Date: 2017-01-07 19:52+0700\n"
+"POT-Creation-Date: 2017-01-08 12:44+0700\n"
+"PO-Revision-Date: 2017-01-08 12:44+0700\n"
 "Last-Translator: NinTechNet <contact@nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -1412,16 +1412,16 @@ msgstr ""
 
 #: install.php:149
 msgid ""
-"However, the downside of this mode is that NinjaFirewall will only be able "
-"to hook and filter HTTP requests sent to WordPress only. A few features such "
-"as File Guard, the URL Access Control and Web Filter (WP+ Edition only) will "
-"be limited."
+"However, the downside of this mode is that NinjaFirewall will be able to "
+"hook and filter HTTP requests sent to WordPress only. A few features such as "
+"File Guard, the URL Access Control and Web Filter (WP+ Edition only) will be "
+"limited."
 msgstr ""
 
 #: install.php:151
 msgid ""
 "Despite being less powerful than the <b>Full WAF</b> mode, it still offers a "
-"level of security and performance higher than any other plugin."
+"level of protection and performance higher than any other security plugin."
 msgstr ""
 
 #: install.php:154 ninjafirewall.php:794
@@ -2301,7 +2301,7 @@ msgstr ""
 msgid "Blocked brute-force attacks:"
 msgstr ""
 
-#: lib/nf_sub_event.php:446 lib/nfw_misc.php:385
+#: lib/nf_sub_event.php:446 lib/nfw_misc.php:387
 msgid ""
 "This notification can be turned off from NinjaFirewall \"Event Notifications"
 "\" page."
@@ -2625,8 +2625,8 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:830 lib/nf_sub_filecheck.php:832
 #: lib/nf_sub_filecheck.php:848 lib/nf_sub_filecheck.php:850
-#: lib/nf_sub_updates.php:505 lib/nf_sub_updates.php:507 lib/nfw_misc.php:239
-#: lib/nfw_misc.php:241 lib/nfw_misc.php:376 lib/nfw_misc.php:378
+#: lib/nf_sub_updates.php:505 lib/nf_sub_updates.php:507 lib/nfw_misc.php:240
+#: lib/nfw_misc.php:242 lib/nfw_misc.php:378 lib/nfw_misc.php:380
 msgid "Blog:"
 msgstr ""
 
@@ -3724,59 +3724,59 @@ msgstr ""
 msgid "Review your installation, your site is not protected."
 msgstr ""
 
-#: lib/nfw_misc.php:137 lib/nfw_misc.php:156
+#: lib/nfw_misc.php:137 lib/nfw_misc.php:157
 msgid "Forbidden access"
 msgstr ""
 
-#: lib/nfw_misc.php:175
+#: lib/nfw_misc.php:176
 #, php-format
 msgid ""
 "<strong>ERROR</strong>: Invalid username or password.<br /><a href=\"%s"
 "\">Lost your password</a>?"
 msgstr ""
 
-#: lib/nfw_misc.php:236
+#: lib/nfw_misc.php:237
 msgid "[NinjaFirewall] Alert: Database changes detected"
 msgstr ""
 
-#: lib/nfw_misc.php:237
+#: lib/nfw_misc.php:238
 msgid ""
 "NinjaFirewall has detected that one or more administrator accounts were "
 "modified in the database:"
 msgstr ""
 
-#: lib/nfw_misc.php:243 lib/nfw_misc.php:381
+#: lib/nfw_misc.php:244 lib/nfw_misc.php:383
 msgid "User IP:"
 msgstr ""
 
-#: lib/nfw_misc.php:244 lib/nfw_misc.php:384
+#: lib/nfw_misc.php:245 lib/nfw_misc.php:386
 msgid "Date:"
 msgstr ""
 
-#: lib/nfw_misc.php:245
+#: lib/nfw_misc.php:246
 #, php-format
 msgid "Total administrators : %s"
 msgstr ""
 
-#: lib/nfw_misc.php:254
+#: lib/nfw_misc.php:255
 msgid ""
 "If you cannot see any modifications in the above fields, it is likely that "
 "the administrator password was changed."
 msgstr ""
 
-#: lib/nfw_misc.php:351
+#: lib/nfw_misc.php:352
 msgid "Blocked privilege escalation attempt"
 msgstr ""
 
-#: lib/nfw_misc.php:374
+#: lib/nfw_misc.php:376
 msgid "NinjaFirewall has blocked an attempt to gain administrative privileges:"
 msgstr ""
 
-#: lib/nfw_misc.php:380
+#: lib/nfw_misc.php:382
 msgid "Username:"
 msgstr ""
 
-#: lib/nfw_misc.php:400
+#: lib/nfw_misc.php:402
 msgid ""
 "NinjaFirewall brute-force protection is enabled and you are temporarily "
 "whitelisted."
