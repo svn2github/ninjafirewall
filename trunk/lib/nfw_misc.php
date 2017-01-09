@@ -122,13 +122,12 @@ if (! isset($_SESSION['nfw_goodguy']) ) {
 /* ------------------------------------------------------------------ */
 
 // WP >= 4.7:
-function nfwhook_rest_authentication_errors() {
+function nfwhook_rest_authentication_errors( $ret ) {
 
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
-	if ( NF_DISABLED ) { return; }
-
+	if ( NF_DISABLED ) { return $ret; }
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
 
@@ -136,6 +135,8 @@ function nfwhook_rest_authentication_errors() {
 		nfw_log2( 'WordPress: Blocked access to the WP REST API', $_SERVER['REQUEST_URI'], 2, 0);
 		return new WP_Error( 'nfw_rest_api_access_restricted', __('Forbidden access', 'ninjafirewall'), array('status' => $nfw_options['ret_code']) );
 	}
+
+	return $ret;
 }
 add_filter( 'rest_authentication_errors', 'nfwhook_rest_authentication_errors' );
 

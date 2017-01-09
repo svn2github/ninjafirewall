@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
-Stable tag: 3.4
+Stable tag: 3.4.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -232,6 +232,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.4.1 =
+
+* Fixed a bug introduced yesterday in v3.4, where some JetPack users could get a "Sorry, you are not allowed to access this page" error message.
 
 = 3.4 =
 
