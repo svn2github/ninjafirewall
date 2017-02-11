@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: http://NinjaFirewall.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.4.1
+Version: 3.4.2
 Author: The Ninja Technologies Network
 Author URI: http://NinTechNet.com/
 License: GPLv2 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - http://nintechnet.com/                             |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.4.1' );
+define( 'NFW_ENGINE_VERSION', '3.4.2' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -90,7 +90,7 @@ $err_fw = array(
 	10	=> __('Unable to communicate with the firewall. Please check your settings', 'ninjafirewall'),
 	11	=>	__('Cannot retrieve user options from database (#1)', 'ninjafirewall'),
 	12	=>	__('Cannot retrieve user rules from database (#1)', 'ninjafirewall'),
-	13 => sprintf( __("The firewall cannot access its log and cache folders. If you changed the name of WordPress %s or %s folders, you must define NinjaFirewall's built-in %s constant (see %s for more info)", 'ninjafirewall'), '<code>/wp-content/</code>', '<code>/plugins/</code>', '<code>NFW_LOG_DIR</code>', "<a href='http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja' target='_blank'>Path to NinjaFirewall's log and cache directory</a>"),
+	13 => sprintf( __("The firewall cannot access its log and cache folders. If you changed the name of WordPress %s or %s folders, you must define NinjaFirewall's built-in %s constant (see %s for more info)", 'ninjafirewall'), '<code>/wp-content/</code>', '<code>/plugins/</code>', '<code>NFW_LOG_DIR</code>', "<a href='https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja' target='_blank'>Path to NinjaFirewall's log and cache directory</a>"),
 );
 
 if (! defined('NFW_LOG_DIR') ) {
@@ -1002,7 +1002,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('Mode', 'ninjafirewall') ?></th>
 			<td width="20" align="left">&nbsp;</td>
-			<td><?php printf( __('NinjaFirewall is running in %s mode.', 'ninjafirewall'), '<a href="http://blog.nintechnet.com/full_waf-vs-wordpress_waf/">'. $mode .'</a>'); ?></td>
+			<td><?php printf( __('NinjaFirewall is running in %s mode.', 'ninjafirewall'), '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">'. $mode .'</a>'); ?></td>
 		</tr>
 	<?php
 
@@ -1041,7 +1041,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('Admin user', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td>: <?php printf( __('You are not whitelisted. Ensure that the "Do not block WordPress administrator" option is enabled in the <a href="%s">Firewall Policies</a> menu, otherwise you will likely get blocked by the firewall while working from your administration dashboard.', 'ninjafirewall'), '?page=nfsubpolicies') ?></td>
+			<td><?php printf( __('You are not whitelisted. Ensure that the "Do not block WordPress administrator" option is enabled in the <a href="%s">Firewall Policies</a> menu, otherwise you will likely get blocked by the firewall while working from your administration dashboard.', 'ninjafirewall'), '?page=nfsubpolicies') ?></td>
 		</tr>
 	<?php
 	} else {
@@ -1127,7 +1127,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('Source IP', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('You have a private IP : %s', 'ninjafirewall') .'<br />'. __('If your site is behind a reverse proxy or a load balancer, ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), htmlentities(NFW_REMOTE_ADDR), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
+			<td><?php printf( __('You have a private IP : %s', 'ninjafirewall') .'<br />'. __('If your site is behind a reverse proxy or a load balancer, ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), htmlentities(NFW_REMOTE_ADDR), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 	}
@@ -1137,7 +1137,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('CDN detection', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('%s detected: you seem to be using Cloudflare CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_CF_CONNECTING_IP</code>', '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
+			<td><?php printf( __('%s detected: you seem to be using Cloudflare CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_CF_CONNECTING_IP</code>', '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 		}
@@ -1148,7 +1148,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('CDN detection', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
-			<td><?php printf( __('%s detected: you seem to be using Incapsula CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_INCAP_CLIENT_IP</code>', '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
+			<td><?php printf( __('%s detected: you seem to be using Incapsula CDN services. Ensure that you have setup your HTTP server or PHP to forward the correct visitor IP, otherwise use the NinjaFirewall %s configuration file.', 'ninjafirewall'), '<code>HTTP_INCAP_CLIENT_IP</code>', '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja">.htninja</a></code>') ?></td>
 		</tr>
 		<?php
 		}
@@ -1223,7 +1223,7 @@ function nf_menu_main() {
 		echo $ro_msg . '<tr>
 			<th scope="row">&nbsp;</th>
 			<td width="20">&nbsp;</td>
-			<td><span class="description">&nbsp;' . sprintf( __('Warning: you have some read-only system files; please <a href="%s">read this</a> if you want to uninstall NinjaFirewall.', 'ninjafirewall'), 'http://nintechnet.com/ninjafirewall/wp-edition/help/?uninstall') . '</span></td>
+			<td><span class="description">&nbsp;' . sprintf( __('Warning: you have some read-only system files; please <a href="%s">read this</a> if you want to uninstall NinjaFirewall.', 'ninjafirewall'), 'https://nintechnet.com/ninjafirewall/wp-edition/help/?uninstall') . '</span></td>
 			</tr></table>';
 	}
 	?>
@@ -1257,7 +1257,7 @@ function nf_sub_policies() {
 	$yes = __('Yes', 'ninjafirewall');
 	$no =  __('No', 'ninjafirewall');
 	$default =  ' ' . __('(default)', 'ninjafirewall');
-	$full_waf_msg = '<br /><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;<span class="description">' . sprintf( __('This feature is only available when NinjaFirewall is running in %s mode.', 'ninjafirewall'), '<a href="http://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') . '</span>';
+	$full_waf_msg = '<br /><img src="' . plugins_url() . '/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16">&nbsp;<span class="description">' . sprintf( __('This feature is only available when NinjaFirewall is running in %s mode.', 'ninjafirewall'), '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') . '</span>';
 	if ( defined('NFW_WPWAF') ) {
 		$option_disabled = 1;
 	} else {
@@ -1671,7 +1671,7 @@ function sanitise_fn(cbox) {
 	<h3><?php _e('HTTP response headers', 'ninjafirewall')  ?></h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes . $default; ?></label>
@@ -1681,7 +1681,7 @@ function sanitise_fn(cbox) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[x_frame_options]" value="1"<?php checked( $nfw_options['response_headers'][2], 1 ); disabled($err, 1); ?>><code>SAMEORIGIN</code></label></p>
@@ -1690,7 +1690,7 @@ function sanitise_fn(cbox) {
 			<td align="left" style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[x_frame_options]" value="0"<?php checked( $nfw_options['response_headers'][2], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __("Enforce %s (IE, Chrome and Safari browsers)", 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a></code>') ?></th>
+			<th scope="row"><?php printf( __("Enforce %s (IE, Chrome and Safari browsers)", 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a></code>') ?></th>
 			<td width="20"></td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?>><?php echo $yes . $default ?></label>
@@ -1700,7 +1700,7 @@ function sanitise_fn(cbox) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes ?></label>
@@ -1719,7 +1719,7 @@ function sanitise_fn(cbox) {
 		}
 		?>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($hsts_err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
@@ -1750,7 +1750,7 @@ function sanitise_fn(cbox) {
 			}
 		?>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_frontend')" name="nfw_options[csp_frontend]" value="1"<?php checked( $nfw_options['response_headers'][6], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
@@ -1764,7 +1764,7 @@ function sanitise_fn(cbox) {
 		</tr>
 
 		<tr>
-			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<code><a href="http://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_backend')" name="nfw_options[csp_backend]" value="1"<?php checked( $nfw_options['response_headers'][7], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
@@ -2765,7 +2765,7 @@ function nf_sub_fileguard() {
 	if ( defined('NFW_WPWAF') ) {
 		?>
 		<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:orange;">
-			<p><?php printf( __('You are running NinjaFirewall in <i>WordPress WAF</i> mode. The %s feature will be limited to a few WordPress files only (e.g., index.php, wp-login.php, xmlrpc.php, admin-ajax.php, wp-load.php etc). If you want it to apply to any PHP script, you will need to run NinjaFirewall in %s mode.', 'ninjafirewall'), 'File Guard', '<a href="http://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') ?></p>
+			<p><?php printf( __('You are running NinjaFirewall in <i>WordPress WAF</i> mode. The %s feature will be limited to a few WordPress files only (e.g., index.php, wp-login.php, xmlrpc.php, admin-ajax.php, wp-load.php etc). If you want it to apply to any PHP script, you will need to run NinjaFirewall in %s mode.', 'ninjafirewall'), 'File Guard', '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') ?></p>
 		</div>
 		<?php
 	}
@@ -3269,7 +3269,7 @@ function nf_sub_loginprot() {
 	<input id="save_login" class="button-primary" type="submit" name="Save" value="<?php _e('Save Login Protection', 'ninjafirewall') ?>" />
 	<div align="right"><?php _e('See our benchmark and stress-test:', 'ninjafirewall') ?>
 	<br />
-	Brute-force attack detection plugins comparison <a href="http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/">2013 benchmarks</a>, <a href="http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/">2015 benchmarks</a>.
+	<a href="https://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/">Brute-force attack detection plugins comparison</a>
 	</div>
 </form>
 </div>
@@ -3647,7 +3647,7 @@ function ninjafirewall_settings_link( $links ) {
 	} else {
 		if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
 		$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-		$links[] = '<a href="http://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to WP+ Edition', 'ninjafirewall'). '</a>';
+		$links[] = '<a href="https://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to WP+ Edition', 'ninjafirewall'). '</a>';
 	}
 	unset($links['edit']);
    return $links;
@@ -3729,7 +3729,7 @@ function nfw_check_emailalert() {
 		if (! empty($nfw_options['a_41']) ) {
 			nfw_log2(
 				$alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2] . ' by '. $current_user->user_login,
-				$alert_array[$a_1]['label'] . ' : ' . $a_3,
+				$alert_array[$a_1]['label'] . ': ' . $a_3,
 				6,
 				0
 			);

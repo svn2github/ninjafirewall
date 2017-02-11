@@ -1,9 +1,9 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninja, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, segurança, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -34,7 +34,7 @@ NinjaFirewall includes the most powerful filtering engine available in a WordPre
 * Protects against remote file inclusion, local file inclusion, cross-site scripting, code execution, SQL injections, brute-force scanners, shell scripts, backdoors etc.
 * Scans and sanitises GET/POST requests, HTTP/HTTPS traffic, cookies, server variables (`HTTP_USER_AGENT`, `HTTP_REFERER`, `PHP_SELF`, `PATH_TRANSLATED`, `PATH_INFO`) and raw POST data.
 * Sanitises variables names and values.
-* Local privilege escalation protection.
+* Privilege escalation protection.
 * Anti-Malware Scanner.
 * Advanced filtering options to block ASCII control characters, NULL bytes and PHP built-in wrappers.
 * Decodes and scans Base64-encoded POST requests to detect backdoors and code injection attempts.
@@ -57,13 +57,7 @@ NinjaFirewall includes the most powerful filtering engine available in a WordPre
 
 By processing incoming HTTP requests before your blog and any of its plugins, NinjaFirewall is the only plugin for WordPress able to protect it against very large brute-force attacks, including distributed attacks coming from several thousands of different IPs.
 
-See our benchmarks and stress-tests:
-
-* WordPress brute-force attack detection plugins comparison [2013 benchmarks](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ ""), [2015 benchmarks](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/ "")
-
-* [WordPress brute-force attack protection in a production environment](http://blog.nintechnet.com/brute-force-attack-protection-in-a-production-environment/ "")
-
-* [Benchmarks with PHP 5.5.6 and Hip-Hop VM 3.4.2](http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/#benchmarks "")
+See our benchmarks and stress-tests: [Brute-force attack detection plugins comparison](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/ "")
 
 The protection applies to the `wp-login.php` script but can be extended to the `xmlrpc.php` one. The incident can also be written to the server `AUTH` log, which can be useful to the system administrator for monitoring purposes or banning IPs at the server level (e.g., Fail2ban).
 
@@ -101,7 +95,7 @@ To get the most efficient protection, NinjaFirewall can automatically update its
 
 = Strong Privacy =
 
-Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and filters the traffic on your own server and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remain on your server and is not routed through a third-party company's servers, which could pose unnecessary risks (e.g., employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
+Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and filters the traffic on your own server and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remains on your server and is not routed through a third-party company's servers, which could pose unnecessary risks (e.g., employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
 
 = IPv6 compatibility =
 
@@ -113,12 +107,12 @@ NinjaFirewall is multi-site compatible. It will protect all sites from your netw
 
 = Possibility to prepend your own PHP code to the firewall =
 
-You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulated HTTP requests, variables etc.
+You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulate HTTP requests, variables etc.
 
 = Low Footprint Firewall =
 
 NinjaFirewall is very fast, optimised, compact, and requires very low system resource.
-See for yourself: download and install [P3 Plugin Performance Profiler](http://wordpress.org/plugins/p3-profiler/ "") or [Query Monitor](https://wordpress.org/plugins/query-monitor/ "") and compare NinjaFirewall performances with other security plugins.
+See for yourself: download and install [P3 Plugin Performance Profiler](http://wordpress.org/plugins/p3-profiler/ ""), [Query Monitor](https://wordpress.org/plugins/query-monitor/ "") or [Xdebug Profiler](https://xdebug.org/ "") and compare NinjaFirewall performances with other security plugins.
 
 = Non-Intrusive User Interface =
 
@@ -232,6 +226,16 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 
 == Changelog ==
+
+= 3.4.2 =
+
+* Updated "Anti-Malware" signatures.
+* [WP+ Edition] Improved PHP scripts detection to cover more extensions and to prevent, in some rare cases, uploaded images to be wrongly detected as PHP scripts.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] The Access Control rate limiting feature will always return a "429 Too Many Requests" HTTP status code.
+* Tweaked list of suspicious bots to prevent potential false-positives.
+* Added missing multisite detection notice when running the installer in "WordPress WAF" mode.
+* Small fixes and minor adjustments.
 
 = 3.4.1 =
 

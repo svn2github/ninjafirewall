@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Stable (latest release)\n"
-"POT-Creation-Date: 2017-01-08 12:44+0700\n"
-"PO-Revision-Date: 2017-01-08 12:44+0700\n"
+"POT-Creation-Date: 2017-02-10 16:44+0700\n"
+"PO-Revision-Date: 2017-02-10 16:44+0700\n"
 "Last-Translator: NinTechNet <contact@nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2301,7 +2301,7 @@ msgstr ""
 msgid "Blocked brute-force attacks:"
 msgstr ""
 
-#: lib/nf_sub_event.php:446 lib/nfw_misc.php:387
+#: lib/nf_sub_event.php:446 lib/nfw_misc.php:388
 msgid ""
 "This notification can be turned off from NinjaFirewall \"Event Notifications"
 "\" page."
@@ -2309,7 +2309,7 @@ msgstr ""
 
 #: lib/nf_sub_event.php:450 lib/nf_sub_filecheck.php:837
 #: lib/nf_sub_filecheck.php:854 lib/nf_sub_options.php:459
-#: lib/nf_sub_updates.php:513 ninjafirewall.php:3726
+#: lib/nf_sub_updates.php:522 ninjafirewall.php:3726
 msgid "Support forum:"
 msgstr ""
 
@@ -2625,13 +2625,13 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:830 lib/nf_sub_filecheck.php:832
 #: lib/nf_sub_filecheck.php:848 lib/nf_sub_filecheck.php:850
-#: lib/nf_sub_updates.php:505 lib/nf_sub_updates.php:507 lib/nfw_misc.php:240
-#: lib/nfw_misc.php:242 lib/nfw_misc.php:378 lib/nfw_misc.php:380
+#: lib/nf_sub_updates.php:514 lib/nf_sub_updates.php:516 lib/nfw_misc.php:241
+#: lib/nfw_misc.php:243 lib/nfw_misc.php:379 lib/nfw_misc.php:381
 msgid "Blog:"
 msgstr ""
 
 #: lib/nf_sub_filecheck.php:834 lib/nf_sub_filecheck.php:852
-#: lib/nf_sub_updates.php:510
+#: lib/nf_sub_updates.php:519
 #, php-format
 msgid "Date: %s"
 msgstr ""
@@ -3327,7 +3327,7 @@ msgstr ""
 msgid "Security rules have been updated."
 msgstr ""
 
-#: lib/nf_sub_updates.php:68 lib/nf_sub_updates.php:403
+#: lib/nf_sub_updates.php:68 lib/nf_sub_updates.php:412
 msgid "No update available."
 msgstr ""
 
@@ -3408,60 +3408,64 @@ msgid "Log is flushed automatically."
 msgstr ""
 
 #: lib/nf_sub_updates.php:301
+msgid "Error: Wrong rules format."
+msgstr ""
+
+#: lib/nf_sub_updates.php:310
 msgid "Error: Unable to unserialize the new rules."
 msgstr ""
 
-#: lib/nf_sub_updates.php:309
+#: lib/nf_sub_updates.php:318
 msgid "Error: Unserialized rules seem corrupted."
 msgstr ""
 
-#: lib/nf_sub_updates.php:349
+#: lib/nf_sub_updates.php:358
 #, php-format
 msgid "Security rules updated to version %s."
 msgstr ""
 
-#: lib/nf_sub_updates.php:383
+#: lib/nf_sub_updates.php:392
 msgid ""
 "Error: Your version of NinjaFirewall is too old and is not compatible with "
 "those rules. Please upgrade it."
 msgstr ""
 
-#: lib/nf_sub_updates.php:392
+#: lib/nf_sub_updates.php:401
 msgid "Error: Unable to retrieve the new rules version."
 msgstr ""
 
-#: lib/nf_sub_updates.php:410
+#: lib/nf_sub_updates.php:419
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#1)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:417 lib/nf_sub_updates.php:465
+#: lib/nf_sub_updates.php:426 lib/nf_sub_updates.php:474
 msgid "Error: Unable to connect to WordPress server"
 msgstr ""
 
-#: lib/nf_sub_updates.php:445
+#: lib/nf_sub_updates.php:454
 #, php-format
 msgid "Error: The new rules versions do not match (%s != %s)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:458
+#: lib/nf_sub_updates.php:467
 #, php-format
 msgid "Error: Server returned a %s HTTP error code (#2)."
 msgstr ""
 
-#: lib/nf_sub_updates.php:502
+#: lib/nf_sub_updates.php:511
 msgid "[NinjaFirewall] Security rules update"
 msgstr ""
 
-#: lib/nf_sub_updates.php:503
+#: lib/nf_sub_updates.php:512
 msgid "NinjaFirewall security rules have been updated:"
 msgstr ""
 
-#: lib/nf_sub_updates.php:509
+#: lib/nf_sub_updates.php:518
 msgid "Rules version:"
 msgstr ""
 
-#: lib/nf_sub_updates.php:511
+#: lib/nf_sub_updates.php:520
 msgid ""
 "This notification can be turned off from NinjaFirewall \"Updates\" page."
 msgstr ""
@@ -3724,59 +3728,59 @@ msgstr ""
 msgid "Review your installation, your site is not protected."
 msgstr ""
 
-#: lib/nfw_misc.php:137 lib/nfw_misc.php:157
+#: lib/nfw_misc.php:136 lib/nfw_misc.php:158
 msgid "Forbidden access"
 msgstr ""
 
-#: lib/nfw_misc.php:176
+#: lib/nfw_misc.php:177
 #, php-format
 msgid ""
 "<strong>ERROR</strong>: Invalid username or password.<br /><a href=\"%s"
 "\">Lost your password</a>?"
 msgstr ""
 
-#: lib/nfw_misc.php:237
+#: lib/nfw_misc.php:238
 msgid "[NinjaFirewall] Alert: Database changes detected"
 msgstr ""
 
-#: lib/nfw_misc.php:238
+#: lib/nfw_misc.php:239
 msgid ""
 "NinjaFirewall has detected that one or more administrator accounts were "
 "modified in the database:"
 msgstr ""
 
-#: lib/nfw_misc.php:244 lib/nfw_misc.php:383
+#: lib/nfw_misc.php:245 lib/nfw_misc.php:384
 msgid "User IP:"
 msgstr ""
 
-#: lib/nfw_misc.php:245 lib/nfw_misc.php:386
+#: lib/nfw_misc.php:246 lib/nfw_misc.php:387
 msgid "Date:"
 msgstr ""
 
-#: lib/nfw_misc.php:246
+#: lib/nfw_misc.php:247
 #, php-format
 msgid "Total administrators : %s"
 msgstr ""
 
-#: lib/nfw_misc.php:255
+#: lib/nfw_misc.php:256
 msgid ""
 "If you cannot see any modifications in the above fields, it is likely that "
 "the administrator password was changed."
 msgstr ""
 
-#: lib/nfw_misc.php:352
+#: lib/nfw_misc.php:353
 msgid "Blocked privilege escalation attempt"
 msgstr ""
 
-#: lib/nfw_misc.php:376
+#: lib/nfw_misc.php:377
 msgid "NinjaFirewall has blocked an attempt to gain administrative privileges:"
 msgstr ""
 
-#: lib/nfw_misc.php:382
+#: lib/nfw_misc.php:383
 msgid "Username:"
 msgstr ""
 
-#: lib/nfw_misc.php:402
+#: lib/nfw_misc.php:403
 msgid ""
 "NinjaFirewall brute-force protection is enabled and you are temporarily "
 "whitelisted."

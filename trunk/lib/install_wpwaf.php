@@ -89,6 +89,16 @@ function nfw_integration_wpwaf( $err_msg = null ) {
 
 	?><h3><?php _e('Firewall Integration', 'ninjafirewall') ?> (WordPress WAF)</h3>
 
+	<?php
+	if ( is_multisite() ) {
+		?>
+			<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:green;">
+				<p><?php _e('Multisite network detected:', 'ninjafirewall'); echo ' '; _e('NinjaFirewall will protect all sites from your network and its configuration interface will be accessible only to the Super Admin from the network main site.', 'ninjafirewall') ?></p>
+			</div>
+		<?php
+	}
+	?>
+
 	<p><?php printf( __('The following <font color="green">green lines</font> of code must be added to your %s file.', 'ninjafirewall'), '<code>'. htmlentities( $wp_config ) . '</code>' ) ?> <?php _e('All other lines, if any, are the actual content of the file:', 'ninjafirewall') ?>
 	</p>
 

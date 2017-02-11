@@ -294,6 +294,15 @@ function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 		return;
 	}
 
+	// Make sure we received the right format:
+	if (! preg_match('/^a:\d+:{i:\d/', $data ) ) {
+		nf_sub_updates_log(
+			$update_log,
+			__('Error: Wrong rules format.', 'ninjafirewall')
+		);
+		return 0;
+	}
+
 	// Unserialize the new rules :
 	if (! $new_rules = @unserialize($data) ) {
 		nf_sub_updates_log(

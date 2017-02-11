@@ -38,7 +38,7 @@ function help_nfsubmain() {
 	) );
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:', 'ninjafirewall') . '</strong></p>' .
-		'<p><a href="http://nintechnet.com/ninjafirewall/wp-edition/help/">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
+		'<p><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
 		'<p><a href="http://wordpress.org/support/plugin/ninjafirewall/">' . __( 'Support Forum', 'ninjafirewall') . '</a></p>' .
 		'<p>'. __('Updates via Twitter', 'ninjafirewall') . '<br /><a href="https://twitter.com/nintechnet"><img border="0" src="' . plugins_url( '/images/twitter_ntn.png', __FILE__ ) . '" width="116" height="28"></a></p>'
 	);
@@ -328,7 +328,7 @@ function help_nfsubmalwarescan() {
 		__('It is important to note that its main goal is not to detect a hidden iframe redirecting to a porn site, but applications that could harm the site or even the server such as backdoors or shell scripts. It can also scan and detect dangerous Linux binary files (trojan, IRC bot etc).', 'ninjafirewall') . "</p>" .
 		'<p>' . sprintf( __('The scanning engine is compatible with the popular <a href="%s">Linux Malware Detect (LMD)</a>, whose anti-malware signatures are included with this release.', 'ninjafirewall'), 'https://www.rfxn.com/projects/linux-malware-detect/' ) . ' ' .
 		 __('Linux Malware Detect is a malware scanner for Linux released under the GNU GPLv2 license, that is "<span class="description">designed around the threats faced in shared hosted environments. It uses threat data from network edge intrusion detection systems to extract malware that is actively being used in attacks and generates signatures for detection. In addition, threat data is also derived from user submissions with the LMD checkout feature and from malware community resources.</span>"', 'ninjafirewall') . '</p>' .
-		 '<p>' . __('The Anti-Malware engine is also compatible with some ClamAV signatures and it is possible to create and include your own ones.', 'ninjafirewall') . ' ' . sprintf( __('<a href="%s">See our blog for more info about this</a>.', 'ninjafirewall'), 'http://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/' ) . '</p>'
+		 '<p>' . __('The Anti-Malware engine is also compatible with some ClamAV signatures and it is possible to create and include your own ones.', 'ninjafirewall') . ' ' . sprintf( __('<a href="%s">See our blog for more info about this</a>.', 'ninjafirewall'), 'https://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/' ) . '</p>'
 
 	) );
 
@@ -421,7 +421,7 @@ function help_nfsublogin() {
 		__('Sample loglines:', 'ninjafirewall') .
 		'<br />
 		<textarea class="small-text code" style="width:100%;height:80px;" wrap="off">Aug 31 01:40:35 www ninjafirewall[6191]: Possible brute-force attack from 172.16.0.1 on mysite.com (wp-login.php). Blocking access for 5mn.'. "\n" . 'Aug 31 01:45:28 www ninjafirewall[6192]: Possible brute-force attack from fe80::6e88:14ff:fe3e:86f0 on blog.domain.com (XML-RPC API). Blocking access for 25mn.</textarea>
-		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja') . '</span></p>
+		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja') . '</span></p>
 		</div>'
 	) );
 
@@ -451,7 +451,7 @@ function help_nfsublog() {
 		'id'        => 'log04',
 		'title'     => __('Centralized Logging', 'ninjafirewall'),
 		'content'   =>
-			'<p>'. __('Centralized Logging lets you remotely access the firewall log of all your NinjaFirewall protected websites from one single installation. You do not need any longer to log in to individual servers to analyse your log data.', 'ninjafirewall') .	' ' . sprintf( __('<a href="%s">Consult our blog</a> for more info about it.', 'ninjafirewall'), 'http://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) . '</p>' .
+			'<p>'. __('Centralized Logging lets you remotely access the firewall log of all your NinjaFirewall protected websites from one single installation. You do not need any longer to log in to individual servers to analyse your log data.', 'ninjafirewall') .	' ' . sprintf( __('<a href="%s">Consult our blog</a> for more info about it.', 'ninjafirewall'), 'https://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) . '</p>' .
 			'<li>' .	 __('Enter your public key (optional): This is the public key that was created from your main server.', 'ninjafirewall') . '</li>' .
 
 			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'.

@@ -195,7 +195,7 @@ function nfw_presave( $err = '' ) {
 					echo '<p id="hhvm" style="display:none;">';
 				}
 				?>
-				<?php sprintf( __('Please <a href="%s">check our blog</a> if you want to install NinjaFirewall on HHVM.', 'ninjafirewall'), '<a href="http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/">') ?></p>
+				<?php sprintf( __('Please <a href="%s">check our blog</a> if you want to install NinjaFirewall on HHVM.', 'ninjafirewall'), '<a href="https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/">') ?></p>
 			</td>
 		</tr>
 
@@ -486,7 +486,7 @@ function nfw_integration( $err = '' ) {
 
 		$_SESSION['php_ini_type'] = 1;
 		echo '<input type="hidden" name="makechange" value="usr">
-		<a href="http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/">' . __('Please check our blog if you want to install NinjaFirewall on HHVM.', 'ninjafirewall') . '</a>
+		<a href="https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/">' . __('Please check our blog if you want to install NinjaFirewall on HHVM.', 'ninjafirewall') . '</a>
 		<br />';
 	}
 	?>

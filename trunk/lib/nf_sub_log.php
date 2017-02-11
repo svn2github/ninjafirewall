@@ -165,7 +165,7 @@ if ( isset( $data['log'] ) && is_array( $data['log'] ) ) {
 			<th scope="row"><?php _e('Enter your public key (optional)', 'ninjafirewall') ?></th>
 			<td align="left">
 				<input class="large-text" type="text" maxlength="80" name="nfw_options[clogs_pubkey]" value="<?php echo htmlspecialchars( $nfw_options['clogs_pubkey'] ) ?>" autocomplete="off" />
-				<p><span class="description"><?php printf( __('<a href="%s">Consult our blog</a> if you want to enable centralized logging.', 'ninjafirewall'), 'http://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) ?></span></p>
+				<p><span class="description"><?php printf( __('<a href="%s">Consult our blog</a> if you want to enable centralized logging.', 'ninjafirewall'), 'https://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) ?></span></p>
 			</td>
 		</tr>
 	</table>

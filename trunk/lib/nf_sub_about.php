@@ -35,7 +35,7 @@ if ( $data = @file_get_contents( dirname( plugin_dir_path(__FILE__) ) . '/readme
 // (e.g., changelog, privacy policy etc) :
 echo '<script>
 function show_table(table_id) {
-	var av_table = [11, 12, 13, 14, 15];
+	var av_table = [11, 12, 13, 14];
 	for (var i = 0; i < av_table.length; i++) {
 		if ( table_id == av_table[i] ) {
 			document.getElementById(table_id).style.display = "";
@@ -60,7 +60,7 @@ function nfw_eg() {
 			<td style="text-align:center">
 				<font style="font-size: 2em; font-weight: bold;">NinjaFirewall (WP Edition) v<?php echo NFW_ENGINE_VERSION ?></font>
 				<br />
-				<font onContextMenu="nfw_eg();return false;">&copy;</font> <?php echo date( 'Y' ) ?> <a href="http://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
+				<font onContextMenu="nfw_eg();return false;">&copy;</font> <?php echo date( 'Y' ) ?> <a href="https://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
 				<br />
 				The Ninja Technologies Network
 				<p><a href="https://twitter.com/nintechnet"><img border="1" src="<?php echo plugins_url() ?>/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></p>
@@ -74,19 +74,19 @@ function nfw_eg() {
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaFirewall</font>
 							<p><?php _e('Web Application Firewall<br />for PHP and WordPress.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_pro_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;text-shadow:none"><?php _e('Free Download', 'ninjafirewall') ?></a></p>
+							<p><a href="https://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;text-shadow:none"><?php _e('Free Download', 'ninjafirewall') ?></a></p>
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaMonitoring</font>
 							<p><?php _e('Website Monitoring<br />for just $4.99/month.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nm_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjamonitoring/" class="button-primary" style="color:#FFF;background-color:#EC971F;border-color:#D58512;text-shadow:none"><?php _e('7-Day Free Trial', 'ninjafirewall') ?></a></p>
+							<p><a href="https://nintechnet.com/ninjamonitoring/" class="button-primary" style="color:#FFF;background-color:#EC971F;border-color:#D58512;text-shadow:none"><?php _e('7-Day Free Trial', 'ninjafirewall') ?></a></p>
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaRecovery</font>
 							<p><?php _e('Malware removal<br />and hack recovery.', 'ninjafirewall') ?></p>
 							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_nr_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="http://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;text-shadow:none"><?php _e('Clean Your Site!', 'ninjafirewall') ?></a></p>
+							<p><a href="https://nintechnet.com/ninjarecovery/" class="button-primary" style="color:#FFF;background-color:#C9302C;border-color:#AC2925;text-shadow:none"><?php _e('Clean Your Site!', 'ninjafirewall') ?></a></p>
 						</td>
 					</tr>
 				</table>
@@ -179,7 +179,7 @@ echo '
 			<tr>
 				<td>
 					' . sprintf(__('By joining our NinjaFirewall Referral Program you can earn up to %s for every payment made by a user who signs up using your personal referral link.', 'ninjafirewall'), '20%') . '</p>
-					<p>' . sprintf(__('For more info and subscription, please check our <a href="%s">Referral Program page</a>.', 'ninjafirewall'), 'http://nintechnet.com/referral/') . '
+					<p>' . sprintf(__('For more info and subscription, please check our <a href="%s">Referral Program page</a>.', 'ninjafirewall'), 'https://nintechnet.com/referral/') . '
 				</td>
 			</tr>
 		</table>

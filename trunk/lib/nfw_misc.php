@@ -368,7 +368,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 
 			nfw_get_blogtimezone();
 
-			if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
+			if ( is_multisite() && $nfw_options['alert_sa_only'] == 2 ) {
 				$recipient = get_option('admin_email');
 			} else {
 				$recipient = $nfw_options['alert_email'];

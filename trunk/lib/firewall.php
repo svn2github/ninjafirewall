@@ -1114,7 +1114,7 @@ function nfw_block() {
 
 	echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">' . "\n" .
 		'<html><head><title>NinjaFirewall: ' . $http_codes[$nfw_['nfw_options']['ret_code']] .
-		'</title><style>body{font-family:sans-serif;font-size:13px;color:#000000;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body bgcolor="white">' . $tmp . '</body></html>';
+		'</title><style>body{font-family:sans-serif;font-size:13px;color:#000;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body bgcolor="white">' . $tmp . '</body></html>';
 	exit;
 }
 

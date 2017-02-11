@@ -138,9 +138,9 @@ function nfw_welcome() {
 
 	<p><?php _e('In <b>Full WAF</b> mode, NinjaFirewall will hook, scan, reject or sanitise any HTTP and HTTPS request sent to a PHP script before it reaches WordPress, its plugins or even the database. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren\'t part of the WordPress package. Even encoded PHP scripts (e.g., ionCube), potential backdoors and shell scripts (e.g., c99, r57) will be filtered by NinjaFirewall.', 'ninjafirewall') ?>
 	<br />
-	<?php printf( __('That makes it a true firewall and gives you the highest possible level of protection: <a href="%s" title="%s">security without compromise</a>.', 'ninjafirewall'), 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine.') ?>
+	<?php printf( __('That makes it a true firewall and gives you the highest possible level of protection: <a href="%s" title="%s">security without compromise</a>.', 'ninjafirewall'), 'https://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/', 'An introduction to NinjaFirewall filtering engine.') ?>
 	<br />
-	<?php printf( __('To run NinjaFirewall in <b>Full WAF</b> mode, your server must allow the use of the <code>auto_prepend_file</code> PHP directive. It is required to instruct the PHP interpreter to load the firewall before WordPress or any other script. Most of the time it works right out of the box, or may require <a href="%s" title="%s">some very little tweaks</a>. But in a few cases, mostly because of some shared hosting plans restrictions, it may simply not work at all.','ninjafirewall'), 'http://blog.nintechnet.com/troubleshoot-ninjafirewall-installation-problems/', 'Troubleshoot NinjaFirewall installation problems.') ?></p>
+	<?php printf( __('To run NinjaFirewall in <b>Full WAF</b> mode, your server must allow the use of the <code>auto_prepend_file</code> PHP directive. It is required to instruct the PHP interpreter to load the firewall before WordPress or any other script. Most of the time it works right out of the box, or may require <a href="%s" title="%s">some very little tweaks</a>. But in a few cases, mostly because of some shared hosting plans restrictions, it may simply not work at all.','ninjafirewall'), 'https://blog.nintechnet.com/troubleshoot-ninjafirewall-installation-problems/', 'Troubleshoot NinjaFirewall installation problems.') ?></p>
 
 	<h3><?php _e('WordPress WAF mode', 'ninjafirewall') ?></h3>
 
@@ -264,7 +264,7 @@ function welcome_email() {
 			$message.= __('This is NinjaFirewall\'s installer. Below are some helpful info and links you may consider reading before using NinjaFirewall.', 'ninjafirewall') . "\n\n";
 
 			$message.= '1) ' . __('Troubleshooting:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?troubleshooting ' . "\n\n";
+			$message.= 'https://nintechnet.com/ninjafirewall/wp-edition/help/?troubleshooting ' . "\n\n";
 
 			$message.= __('-Locked out of your site / Fatal error / WordPress crash?', 'ninjafirewall') . "\n";
 			$message.= __('-Failed installation ("Error: The firewall is not loaded")?', 'ninjafirewall') . "\n";
@@ -277,14 +277,14 @@ function welcome_email() {
 			$message.= __('-Blocked visitors (see below)?', 'ninjafirewall') . "\n\n";
 
 			$message.= '2) ' . __('-NinjaFirewall (WP Edition) troubleshooter script', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/share/wp-check.txt ' . "\n\n";
+			$message.= 'https://nintechnet.com/share/wp-check.txt ' . "\n\n";
 			$message.=  __('-Rename this file to "wp-check.php".', 'ninjafirewall') . "\n";
 			$message.=  __('-Upload it into your WordPress root folder.', 'ninjafirewall') . "\n";
 			$message.=  __('-Goto http://YOUR WEBSITE/wp-check.php.', 'ninjafirewall') . "\n";
 			$message.=  __('-Delete it afterwards.', 'ninjafirewall') . "\n\n";
 
 			$message.= '3) '. __('FAQ:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?faq ' . "\n\n";
+			$message.= 'https://nintechnet.com/ninjafirewall/wp-edition/help/?faq ' . "\n\n";
 
 			$message.= __('-Why is NinjaFirewall different from other security plugins for WordPress?', 'ninjafirewall') . "\n";
 			$message.= __('-Do I need root privileges to install NinjaFirewall?', 'ninjafirewall') . "\n";
@@ -300,30 +300,30 @@ function welcome_email() {
 			$message.= '4) '. __('Must Read:', 'ninjafirewall') . "\n\n";
 
 			$message.= __('-An introduction to NinjaFirewall filtering engine:', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ ' . "\n\n";
+			$message.= 'https://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ ' . "\n\n";
 
 			$message.= __('-Testing NinjaFirewall without blocking your visitors:', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n\n";
+			$message.= 'https://blog.nintechnet.com/testing-ninjafirewall-without-blocking-your-visitors/ ' . "\n\n";
 
 			$message.= __('-Add your own code to the firewall: the ".htninja" file:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n\n";
+			$message.= 'https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ' . "\n\n";
 
 			$message.= __('-Restricting access to NinjaFirewall settings:', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/ ' . "\n\n";
+			$message.= 'https://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/ ' . "\n\n";
 
 			$message.= __('-Upgrading to PHP 7 with NinjaFirewall installed:', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/upgrading-to-php-7-with-ninjafirewall-installed/ ' . "\n\n";
+			$message.= 'https://blog.nintechnet.com/upgrading-to-php-7-with-ninjafirewall-installed/ ' . "\n\n";
 
 			$message.= __('-Keep your blog protected against the latest vulnerabilities:', 'ninjafirewall') . "\n";
-			$message.= 'http://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
+			$message.= 'https://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
 
 			$message.= __('-NinjaFirewall Referral Program:', 'ninjafirewall') . "\n";
-			$message.= 'http://nintechnet.com/referral/ ' . "\n\n";
+			$message.= 'https://nintechnet.com/referral/ ' . "\n\n";
 
 			$message.= '5) '. __('Help & Support Links:', 'ninjafirewall') . "\n\n";
 
 			$message.= __('-Each page of NinjaFirewall includes a contextual help: click on the "Help" menu tab located in the upper right corner of the corresponding page.', 'ninjafirewall') . "\n";
-			$message.= __('-Online documentation is also available here:', 'ninjafirewall'). ' http://nintechnet.com/ninjafirewall/wp-edition/doc/ ' . "\n";
+			$message.= __('-Online documentation is also available here:', 'ninjafirewall'). ' https://nintechnet.com/ninjafirewall/wp-edition/doc/ ' . "\n";
 			$message.= __('-The WordPress support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall ' . "\n";
 			$message.= __('-Updates info are available via Twitter:', 'ninjafirewall') .' https://twitter.com/nintechnet ' . "\n\n";
 
@@ -387,7 +387,7 @@ function nfw_firewalltest() {
 		<input type="hidden" name="nfw_firstrun" value="1" />'. wp_nonce_field('presave', 'nfwnonce', 0) .'
 		</form>
 		<br />
-			<li>&#8729; '. sprintf( __('If none of the above suggestions work, you can still install NinjaFirewall in %s mode by clicking the button below. Setup is easy and will always work.', 'ninjafirewall'), '<a href="http://blog.nintechnet.com/full_waf-vs-wordpress_waf/">WordPress WAF</a>' ) . '</li>
+			<li>&#8729; '. sprintf( __('If none of the above suggestions work, you can still install NinjaFirewall in %s mode by clicking the button below. Setup is easy and will always work.', 'ninjafirewall'), '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">WordPress WAF</a>' ) . '</li>
 				<form method="post">
 					<input type="hidden" name="select_mode" value="wpwaf" />
 					<input type="hidden" name="nfw_act" value="create_log_dir" />
@@ -396,7 +396,7 @@ function nfw_firewalltest() {
 				</form>
 		</ul>
 		<br />
-		<h3>'. __('Need help? Check our blog:', 'ninjafirewall'). ' <a href="http://blog.nintechnet.com/troubleshoot-ninjafirewall-installation-problems/" target="_blank">Troubleshoot NinjaFirewall installation problems</a>.</h3>
+		<h3>'. __('Need help? Check our blog:', 'ninjafirewall'). ' <a href="https://blog.nintechnet.com/troubleshoot-ninjafirewall-installation-problems/" target="_blank">Troubleshoot NinjaFirewall installation problems</a>.</h3>
 </div>';
 	}
 }
