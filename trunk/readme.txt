@@ -1,6 +1,6 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: admin, antivirus, attack, backdoor, botnet, brute force,  denial, firewall, hack, hhvm, infection, injection, login, malware, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, protection, security, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, WAF, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
 Stable tag: 3.4.2
@@ -112,7 +112,7 @@ You can prepend your own PHP code to the firewall with the help of an [optional 
 = Low Footprint Firewall =
 
 NinjaFirewall is very fast, optimised, compact, and requires very low system resource.
-See for yourself: download and install [P3 Plugin Performance Profiler](http://wordpress.org/plugins/p3-profiler/ ""), [Query Monitor](https://wordpress.org/plugins/query-monitor/ "") or [Xdebug Profiler](https://xdebug.org/ "") and compare NinjaFirewall performances with other security plugins.
+See for yourself: download and install [Query Monitor](https://wordpress.org/plugins/query-monitor/ "") and [Xdebug Profiler](https://xdebug.org/ "") and compare NinjaFirewall performances with other security plugins.
 
 = Non-Intrusive User Interface =
 
@@ -213,17 +213,22 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Screenshots ==
 
-1. The firewall options page.
-2. NinjaFirewall Statistics. A dashboard widget is also available.
-3. Firewall Policies page (1/2): NinjaFirewall has a large list of powerful and unique policies that you can tweak accordingly to your needs.
-4. Firewall Policies page (2/2): NinjaFirewall has a large list of powerful and unique policies that you can tweak accordingly to your needs.
-5. File Guard is a totally unique feature, because it can detect, in real-time, any access to a PHP file that was recently modified or created, and alert you about this.
-6. File Check lets you perform file integrity monitoring upon request or on a specific interval (hourly, twicedaily, daily).
-7. Live Log lets you watch your website traffic in real time. It is fast, light and it does not affect your server load, even if you set its refresh rate to the lowest value (5 seconds).
-8. NinjaFirewall Login Protection is the fastest and most efficient brute-force attack protection for WordPress.
-9. Event Notifications can alert you by email on specific events triggered within your blog.
-10. The firewall log displays blocked and sanitised requests as well as some useful information.
-
+1. Overview page.
+2. Statistics and benchmarks page.
+3. Options page.
+4. Policies pages: NinjaFirewall has a large list of powerful and unique policies that you can tweak accordingly to your needs.
+5. Contextual help.
+6. Event notifications can alert you by email on specific events triggered within your blog.
+7. Login page protection: the fastest and most efficient brute-force attack protection for WordPress.
+8. Live Log: lets you watch your website traffic in real time. It is fast, light and it does not affect your server load.
+9. Firewall Log.
+10. Dashboard widget.
+11. File Guard: this is a totally unique feature, because it can detect, in real-time, any access to a PHP file that was recently modified or created, and alert you about this.
+12. Network.
+13. Rules Editor.
+14. File Check: lets you perform file integrity monitoring upon request or on a specific interval (hourly, twicedaily, daily).
+15. Security rules updates.
+16. Anti-Malware.
 
 == Changelog ==
 
