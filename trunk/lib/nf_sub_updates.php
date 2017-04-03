@@ -102,9 +102,9 @@ if ( empty($nfw_options['notify_updates']) && isset($nfw_options['notify_updates
 <script type="text/javascript">
 function toogle_table(off) {
 	if ( off == 1 ) {
-		document.getElementById('upd_table').style.display = '';
+		jQuery("#upd_table").slideDown();
 	} else if ( off == 2 ) {
-		document.getElementById('upd_table').style.display = 'none';
+		jQuery("#upd_table").slideUp();
 	}
 	return;
 }
@@ -132,42 +132,43 @@ function toogle_table(off) {
 	<?php
 	}
 	?>
-
-	<table class="form-table" id="upd_table"<?php echo $enable_updates == 1 ? '' : ' style="display:none"' ?>>
-		<tr>
-			<th scope="row"><?php _e('Check for updates', 'ninjafirewall') ?></th>
-				<td align="left">
-					<p><label><input type="radio" name="sched_updates" value="1"<?php checked($sched_updates, 1) ?> /><?php _e('Hourly', 'ninjafirewall') ?></label></p>
-					<p><label><input type="radio" name="sched_updates" value="2"<?php checked($sched_updates, 2) ?> /><?php _e('Twicedaily', 'ninjafirewall') ?></label></p>
-					<p><label><input type="radio" name="sched_updates" value="3"<?php checked($sched_updates, 3) ?> /><?php _e('Daily', 'ninjafirewall') ?></label></p>
-					<?php
-					if ( $nextcron = wp_next_scheduled('nfsecupdates') ) {
-						$sched = new DateTime( date('M d, Y H:i:s', $nextcron) );
-						$now = new DateTime( date('M d, Y H:i:s', time() ) );
-						$diff = $now->diff($sched);
-					?>
-						<p><span class="description"><?php printf( __('Next scheduled update will start in approximately %s day, %s hour(s), %s minute(s) and %s seconds.', 'ninjafirewall'), $diff->format('%a') % 7, $diff->format('%h'), $diff->format('%i'), $diff->format('%s') ) ?></span></p>
-					<?php
-						// Ensure that the scheduled scan time is in the future,
-						// not in the past, otherwise send a warning because wp-cron
-						// is obviously not working as expected :
-						if ( $nextcron < time() ) {
-						?>
-							<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" height="16" border="0" width="16">&nbsp;<span class="description"><?php _e('The next scheduled date is in the past! WordPress wp-cron may not be working or may have been disabled.', 'ninjafirewall'); ?></span>
+	<div id="upd_table"<?php echo $enable_updates == 1 ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><?php _e('Check for updates', 'ninjafirewall') ?></th>
+					<td align="left">
+						<p><label><input type="radio" name="sched_updates" value="1"<?php checked($sched_updates, 1) ?> /><?php _e('Hourly', 'ninjafirewall') ?></label></p>
+						<p><label><input type="radio" name="sched_updates" value="2"<?php checked($sched_updates, 2) ?> /><?php _e('Twicedaily', 'ninjafirewall') ?></label></p>
+						<p><label><input type="radio" name="sched_updates" value="3"<?php checked($sched_updates, 3) ?> /><?php _e('Daily', 'ninjafirewall') ?></label></p>
 						<?php
+						if ( $nextcron = wp_next_scheduled('nfsecupdates') ) {
+							$sched = new DateTime( date('M d, Y H:i:s', $nextcron) );
+							$now = new DateTime( date('M d, Y H:i:s', time() ) );
+							$diff = $now->diff($sched);
+						?>
+							<p><span class="description"><?php printf( __('Next scheduled update will start in approximately %s day, %s hour(s), %s minute(s) and %s seconds.', 'ninjafirewall'), $diff->format('%a') % 7, $diff->format('%h'), $diff->format('%i'), $diff->format('%s') ) ?></span></p>
+						<?php
+							// Ensure that the scheduled scan time is in the future,
+							// not in the past, otherwise send a warning because wp-cron
+							// is obviously not working as expected :
+							if ( $nextcron < time() ) {
+							?>
+								<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" height="16" border="0" width="16">&nbsp;<span class="description"><?php _e('The next scheduled date is in the past! WordPress wp-cron may not be working or may have been disabled.', 'ninjafirewall'); ?></span>
+							<?php
+							}
 						}
-					}
-					?>
+						?>
+					</td>
+				</tr>
+			<tr>
+				<th scope="row"><?php _e('Notification', 'ninjafirewall') ?></th>
+				<td align="left">
+					<p><label><input type="checkbox" name="notify_updates" value="1"<?php checked($notify_updates, 1) ?> /><?php _e('Send me a report by email when security rules have been updated.', 'ninjafirewall') ?></label></p>
+					<span class="description"><?php _e('Reports will be sent to the contact email address defined in the Event Notifications menu.', 'ninjafirewall') ?></span>
 				</td>
 			</tr>
-		<tr>
-			<th scope="row"><?php _e('Notification', 'ninjafirewall') ?></th>
-			<td align="left">
-				<p><label><input type="checkbox" name="notify_updates" value="1"<?php checked($notify_updates, 1) ?> /><?php _e('Send me a report by email when security rules have been updated.', 'ninjafirewall') ?></label></p>
-				<span class="description"><?php _e('Reports will be sent to the contact email address defined in the Event Notifications menu.', 'ninjafirewall') ?></span>
-			</td>
-		</tr>
-	</table>
+		</table>
+	</div>
 
 	<input type="hidden" name="nfw_act" value="1" />
 	<p><input type="submit" class="button-primary" value="<?php _e('Save Updates Options', 'ninjafirewall') ?>" />&nbsp;&nbsp;<input type="submit" class="button-secondary" onClick="document.fupdates.nfw_act.value=3" value="<?php _e('Check For Updates Now!', 'ninjafirewall') ?>" /></p>
@@ -189,7 +190,7 @@ function toogle_table(off) {
 			<tr>
 				<th scope="row"><?php _e('Updates Log', 'ninjafirewall') ?></th>
 				<td align="left">
-					<textarea class="small-text code" style="width:100%;height:150px;" wrap="off"><?php
+					<textarea class="small-text code" style="width:100%;height:150px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php
 						$reversed = array_reverse($log_data);
 						foreach ($reversed as $key) {
 							echo htmlentities($key);

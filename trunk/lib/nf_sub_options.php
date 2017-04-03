@@ -44,7 +44,7 @@ function preview_msg() {
 		return false;
 	}
 	document.getElementById(\'out_msg\').innerHTML = t3;
-	document.getElementById(\'td_msg\').style.display = \'\';
+	jQuery("#td_msg").slideDown();
 	document.getElementById(\'btn_msg\').value = \'' . __('Refresh preview', 'ninjafirewall') . '\';
 }
 function default_msg() {
@@ -149,7 +149,7 @@ echo '
 			<th scope="row">' . __('Blocked user message', 'ninjafirewall') . '</th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
-				<textarea name="nfw_options[blocked_msg]" class="small-text code" cols="60" rows="5">';
+				<textarea name="nfw_options[blocked_msg]" class="small-text code" cols="60" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">';
 
 if (! empty( $nfw_options['blocked_msg']) ) {
 	echo htmlentities(base64_decode($nfw_options['blocked_msg']));
@@ -162,9 +162,11 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 		</tr>
 	</table>
 
-	<table class="form-table" border=1>
-		<tr id="td_msg" style="display:none"><td id="out_msg" style="border:1px solid #DFDFDF;background-color:#ffffff;" width="100%"></td></tr>
-	</table>
+	<div id="td_msg" style="display:none">
+		<table class="form-table" border="1">
+			<tr><td id="out_msg" style="border:1px solid #DFDFDF;background-color:#ffffff;" width="100%"></td></tr>
+		</table>
+	</div>
 
 	<table class="form-table">
 		<tr>
@@ -339,6 +341,12 @@ function nf_sub_options_import() {
 									 '/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
 									 '/'. basename(WP_CONTENT_DIR) .'/uploads/|/cache/';
 	// $nfw_options['alert_email'] = get_option('admin_email');
+
+	// Anti-Malware: if the path doest not exist on this server,
+	// set it to ABSPATH:
+	if (! is_dir( $nfw_options['malware_dir'] ) ) {
+		$nfw_options['malware_dir'] = rtrim( ABSPATH, '/\\ ' );
+	}
 
 	// We don't import the File Check 'snapshot directory' path:
 	$nfw_options['snapdir'] = '';

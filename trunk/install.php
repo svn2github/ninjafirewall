@@ -356,6 +356,17 @@ function nfw_firewalltest() {
 			echo '<li>&#8729; '. __('You selected <code>Apache + PHP module</code> as your HTTP server and PHP SAPI. Maybe your HTTP server is <code>Apache + CGI/FastCGI</code>?', 'ninjafirewall'). '
 			<br />
 			'. __('You can click the "Go Back" button and try to select another HTTP server type.', 'ninjafirewall'). '</li><br /><br />';
+
+
+		} elseif( $_SESSION['http_server'] == 4 ) {
+			echo '<li>&#8729; '. __('You have selected LiteSpeed as your HTTP server. Did you enable the "AllowOverride" directive from its admin panel? Make sure it is enabled, restart LiteSpeed and then, click the "Test Again" button below.', 'ninjafirewall'). '</li>
+				<form method="POST">
+					<input type="submit" class="button-secondary" value="'. __('Test Again', 'ninjafirewall'). '" />
+					<input type="hidden" name="nfw_act" value="postsave" />
+					<input type="hidden" name="makechange" value="usr" />
+					<input type="hidden" name="nfw_firstrun" value="1" />'. wp_nonce_field('postsave', 'nfwnonce', 0) .'
+				</form><br />';
+
 		} else {
 
 			if ($_SESSION['php_ini_type'] == 2) {

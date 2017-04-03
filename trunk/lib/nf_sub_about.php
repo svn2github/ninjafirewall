@@ -38,9 +38,9 @@ function show_table(table_id) {
 	var av_table = [11, 12, 13, 14];
 	for (var i = 0; i < av_table.length; i++) {
 		if ( table_id == av_table[i] ) {
-			document.getElementById(table_id).style.display = "";
+			jQuery("#" + table_id).slideDown();
 		} else {
-			document.getElementById(av_table[i]).style.display = "none";
+			jQuery("#" + av_table[i]).slideUp();
 		}
 	};
 }
@@ -102,29 +102,34 @@ function nfw_eg() {
 		<br />
 		<br />
 
-		<table id="11" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="500">
-			<tr style="text-align:center;">
-				<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="http://twitter.com/share?text=NinjaFirewall&url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() .  '/ninjafirewall/images/twitter.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
-				<td><a href="https://wordpress.org/support/view/plugin-reviews/ninjafirewall?rate=5#postform"><img title="Rate it" border="0" src="'. plugins_url() .'/ninjafirewall/images/rate.png" width="116" height="28" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"><br />Rate it on WordPress.org!</a>
-				</td>
-			</tr>
-		</table>
+		<div id="11" style="display:none;">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="500">
+				<tr style="text-align:center;">
+					<td><a href="http://www.facebook.com/sharer.php?u=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+					<td><a href="https://plus.google.com/share?url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+					<td><a href="http://twitter.com/share?text=NinjaFirewall&url=http://ninjafirewall.com/" target="_blank"><img title="Share it" src="' . plugins_url() .  '/ninjafirewall/images/twitter.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
+					<td><a href="https://wordpress.org/support/view/plugin-reviews/ninjafirewall?rate=5#postform"><img title="Rate it" border="0" src="'. plugins_url() .'/ninjafirewall/images/rate.png" width="116" height="28" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"><br />Rate it on WordPress.org!</a>
+					</td>
+				</tr>
+			</table>
+		</div>
 
-		<table id="12" style="display:none;" width="500">
-			<tr>
-				<td>
-					<textarea class="small-text code" cols="60" rows="8">' . htmlspecialchars($changelog) . '</textarea>
-				</td>
-			</tr>
-		</table>
+		<div id="12" style="display:none;">
+			<table width="500">
+				<tr>
+					<td>
+						<textarea class="small-text code" cols="60" rows="8" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">' . htmlspecialchars($changelog) . '</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
 
-		<table id="13" border="0" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
-			<tr valign="top"><td width="47%;" align="right">REMOTE_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '</td></tr>
-			<tr valign="top"><td width="47%;" align="right">SERVER_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' .htmlspecialchars($_SERVER['SERVER_ADDR']) . '</td></tr>
-			<tr valign="top"><td width="47%;" align="right">SERVER_NAME</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['SERVER_NAME']) . '</td></tr>
-			<tr valign="top"><td width="47%;" align="right">HTTP_HOST</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['HTTP_HOST']) . '</td></tr>';
+		<div id="13" style="display:none;">
+			<table border="0" style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+				<tr valign="top"><td width="47%;" align="right">REMOTE_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '</td></tr>
+				<tr valign="top"><td width="47%;" align="right">SERVER_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' .htmlspecialchars($_SERVER['SERVER_ADDR']) . '</td></tr>
+				<tr valign="top"><td width="47%;" align="right">SERVER_NAME</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['SERVER_NAME']) . '</td></tr>
+				<tr valign="top"><td width="47%;" align="right">HTTP_HOST</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['HTTP_HOST']) . '</td></tr>';
 
 if ( PHP_VERSION ) {
 	echo '<tr valign="top"><td width="47%;" align="right">' . __('PHP version', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">'. PHP_VERSION . ' (';
@@ -174,15 +179,19 @@ if (! preg_match( '/^win/i', PHP_OS ) ) {
 }
 
 echo '
-		</table>
-		<table id="14" style="display:none;text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
-			<tr>
-				<td>
-					' . sprintf(__('By joining our NinjaFirewall Referral Program you can earn up to %s for every payment made by a user who signs up using your personal referral link.', 'ninjafirewall'), '20%') . '</p>
-					<p>' . sprintf(__('For more info and subscription, please check our <a href="%s">Referral Program page</a>.', 'ninjafirewall'), 'https://nintechnet.com/referral/') . '
-				</td>
-			</tr>
-		</table>
+			</table>
+		</div>
+
+		<div id="14" style="display:none;">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+				<tr>
+					<td>
+						' . sprintf(__('By joining our NinjaFirewall Referral Program you can earn up to %s for every payment made by a user who signs up using your personal referral link.', 'ninjafirewall'), '20%') .
+						'<p>' . sprintf(__('For more info and subscription, please check our <a href="%s">Referral Program page</a>.', 'ninjafirewall'), 'https://nintechnet.com/referral/') . '</p>
+					</td>
+				</tr>
+			</table>
+		</div>
 	</center>
 </div>';
 

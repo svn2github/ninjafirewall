@@ -72,18 +72,18 @@ function fw_livelog_record() {
 
 	global $nfw_;
 
-	$nfw_['stats'] = stat($nfw_['log_dir'] .'/cache/livelogrun.php');
+	$nfw_['mtime'] = filemtime($nfw_['log_dir'] .'/cache/livelogrun.php');
 
 	// If the file was not accessed for more than 100s, we assume
 	// the admin has stopped watching the live log from WordPress
 	// dashboard (max refresh rate is 45s) :
-	if ( $nfw_['fw_starttime'] - $nfw_['stats']['mtime'] > 100 ) {
+	if ( $nfw_['fw_starttime'] - $nfw_['mtime'] > 100 ) {
 		unlink($nfw_['log_dir'] .'/cache/livelogrun.php');
 		// If the log was not modified for the past 10mn, we delete it as well :
 		$nfw_['livelog'] = $nfw_['log_dir'] . '/cache/livelog.php';
 		if ( file_exists($nfw_['livelog']) ) {
-			$nfw_['stats'] = stat($nfw_['livelog']);
-			if ( $nfw_['fw_starttime'] - $nfw_['stats']['mtime'] > 600 ) {
+			$nfw_['mtime'] = filemtime($nfw_['livelog']);
+			if ( $nfw_['fw_starttime'] - $nfw_['mtime'] > 600 ) {
 				unlink( $nfw_['livelog'] );
 			}
 		}

@@ -341,7 +341,7 @@ if (! empty($nfw_['nfw_options']['no_host_ip']) && @filter_var(parse_url('http:/
    nfw_block();
 }
 
-if ( (! empty($nfw_['nfw_options']['referer_post']) ) && ($_SERVER['REQUEST_METHOD'] == 'POST') && (! isset($_SERVER['HTTP_REFERER'])) ) {
+if (! empty($nfw_['nfw_options']['referer_post']) && $_SERVER['REQUEST_METHOD'] == 'POST' && ! isset($_SERVER['HTTP_REFERER']) ) {
 	nfw_log('POST method without Referer header', $_SERVER['REQUEST_METHOD'], 1, 0);
    nfw_block();
 }
@@ -352,14 +352,21 @@ if ( strpos($_SERVER['SCRIPT_NAME'], '/xmlrpc.php' ) !== FALSE ) {
 		nfw_block();
 	}
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+		if (! isset( $HTTP_RAW_POST_DATA ) ) {
+			$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+		}
+
 		if (! empty($nfw_['nfw_options']['no_xmlrpc_multi']) ) {
-			if ( @strpos( @file_get_contents('php://input'), '<methodName>system.multicall</methodName>') !== FALSE ) {
+
+			if ( @strpos( $HTTP_RAW_POST_DATA, '<methodName>system.multicall</methodName>') !== FALSE ) {
 				nfw_log('Access to WordPress XML-RPC API (system.multicall method)', $_SERVER['SCRIPT_NAME'], 2, 0);
 				nfw_block();
 			}
 		}
+
 		if (! empty($nfw_['nfw_options']['no_xmlrpc_pingback']) ) {
-			if ( @strpos( @file_get_contents('php://input'), '<methodName>pingback.ping</methodName>') !== FALSE ) {
+
+			if ( @strpos( $HTTP_RAW_POST_DATA, '<methodName>pingback.ping</methodName>') !== FALSE ) {
 				nfw_log('Access to WordPress XML-RPC API (pingback.ping)', $_SERVER['SCRIPT_NAME'], 2, 0);
 				nfw_block();
 			}
@@ -376,7 +383,7 @@ if (! empty($nfw_['nfw_options']['no_post_themes']) && $_SERVER['REQUEST_METHOD'
    nfw_block();
 }
 
-if ( (! empty($nfw_['nfw_options']['wp_dir'])) && (preg_match( '`' . $nfw_['nfw_options']['wp_dir'] . '`', $_SERVER['SCRIPT_NAME'])) ) {
+if (! empty($nfw_['nfw_options']['wp_dir']) && preg_match( '`' . $nfw_['nfw_options']['wp_dir'] . '`', $_SERVER['SCRIPT_NAME']) ) {
 	nfw_log('Forbidden direct access to PHP script', $_SERVER['SCRIPT_NAME'], 2, 0);
    nfw_block();
 }
@@ -509,7 +516,7 @@ function nfw_check_upload() {
 
 			if ( $f_uploaded[$key]['size'] > 67 && $f_uploaded[$key]['size'] < 129 ) {
 				$data = file_get_contents( $f_uploaded[$key]['tmp_name'] );
-				if ( preg_match('`X5O!P%@AP' . '\[4\\\PZX54\(P\^\)7CC\)7}\$EIC' .
+				if ( preg_match('`^X5O!P%@AP' . '\[4\\\PZX54\(P\^\)7CC\)7}\$EIC' .
 				                'AR-STANDARD-ANTIVI' . 'RUS-TEST-FILE!\$H' . '\+H\*' .
 				                '[\x09\x10\x13\x20\x1A]*`', $data) ) {
 					nfw_log('EICAR Standard Anti-Virus Test File blocked', $f_uploaded[$key]['name'] . ' (' . number_format($f_uploaded[$key]['size']) . ' bytes)', 3, 0);
@@ -577,7 +584,7 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 
 	if ( defined('NFW_STATUS') ) { return; }
 
-	global $nfw_;
+	global $nfw_, $HTTP_RAW_POST_DATA;
 
 	foreach ( $nfw_rules as $id => $rules ) {
 
@@ -591,12 +598,12 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 
 			// =================================================================
 			if ( $where == 'RAW' ) {
-				if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) { continue; }
+				if (! isset( $HTTP_RAW_POST_DATA ) ) {
+					$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+				}
 
-				$RAW_POST = file_get_contents( 'php://input' );
-
-				if ( nfw_matching( 'RAW', 'POST', $nfw_rules, $rules, 1, $id, $RAW_POST, $nfw_options ) ) {
-					nfw_check_subrule( 'RAW', 'POST', $nfw_rules, $nfw_options, $rules, $id );
+				if ( nfw_matching( 'RAW', $_SERVER['REQUEST_METHOD'], $nfw_rules, $rules, 1, $id, $HTTP_RAW_POST_DATA, $nfw_options ) ) {
+					nfw_check_subrule( 'RAW', $_SERVER['REQUEST_METHOD'], $nfw_rules, $nfw_options, $rules, $id );
 				}
 				continue;
 			}
@@ -660,11 +667,16 @@ function nfw_check_subrule( $w0, $w1, $nfw_rules, $nfw_options, $rules, $id ) {
 		$w = explode(':', $rules['cha'][2]['whe']);
 
 		if (! isset( $w[1] ) ) {
+
 			if ( $w[0] == 'RAW' ) {
-				if ( nfw_disabled_scan( 'POST', $nfw_options) || $_SERVER['REQUEST_METHOD'] != 'POST' ) {
+				if ( nfw_disabled_scan( 'POST', $nfw_options) && $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 					return;
 				}
-				nfw_matching( 'POST', 'RAW', $nfw_rules, $rules, 2, $id, file_get_contents( 'php://input' ), $nfw_options );
+				global $HTTP_RAW_POST_DATA;
+				if (! isset( $HTTP_RAW_POST_DATA ) ) {
+					$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+				}
+				nfw_matching( $_SERVER['REQUEST_METHOD'], 'RAW', $nfw_rules, $rules, 2, $id, $HTTP_RAW_POST_DATA, $nfw_options );
 				return;
 			}
 			$w[2] = $w[1] = $w[0];
@@ -814,6 +826,14 @@ function nfw_operator( $val, $what, $op ) {
 	} elseif ( $op == 7 ) {
 		return true;
 
+	} elseif ( $op == 8 ) {
+		if ( strpos($val, $what) === FALSE ) {
+			return true;
+		}
+	} elseif ( $op == 9 ) {
+		if ( stripos($val, $what) === FALSE ) {
+			return true;
+		}
 	} else {
 		if ( $val == $what ) {
 			return true;
@@ -1015,7 +1035,7 @@ function nfw_check_b64( $key, $string ) {
 	$decoded = base64_decode($string);
 	if ( strlen($decoded) < 4 ) { return; }
 
-	if ( preg_match( '`\b(?:\$?_(COOKIE|ENV|FILES|(?:GE|POS|REQUES)T|SE(RVER|SSION))|HTTP_(?:(?:POST|GET)_VARS|RAW_POST_DATA)|GLOBALS)\s*[=\[)]|\b(?i:array_map|assert|base64_(?:de|en)code|chmod|curl_exec|(?:ex|im)plode|error_reporting|eval|file(?:_get_contents)?|f(?:open|write|close)|fsockopen|function_exists|gzinflate|md5|move_uploaded_file|ob_start|passthru|preg_replace|phpinfo|stripslashes|strrev|(?:shell_)?exec|substr|system|unlink)\s*\(|\becho\s*[\'"]|<(?i:a[\s/]|applet|div|embed|i?frame(?:set)?|img|link|meta|marquee|object|script|style|textarea)\b|\W\$\{\s*[\'"]\w+[\'"]|<\?(?i:php|=)|(?i:(?:\b|\d)select\b.+?from\b.+?(?:\b|\d)where|(?:\b|\d)insert\b.+?into\b|(?:\b|\d)union\b.+?(?:\b|\d)select\b|(?:\b|\d)update\b.+?(?:\b|\d)set\b)`', $decoded) ) {
+	if ( preg_match( '`\b(?:\$?_(COOKIE|ENV|FILES|(?:GE|POS|REQUES)T|SE(RVER|SSION))|HTTP_(?:(?:POST|GET)_VARS|RAW_POST_DATA)|GLOBALS)\s*[=\[)]|\b(?i:array_map|assert|base64_(?:de|en)code|chmod|curl_exec|(?:ex|im)plode|error_reporting|eval|file(?:_get_contents)?|f(?:open|write|close)|fsockopen|function_exists|gzinflate|md5|move_uploaded_file|ob_start|passthru|[ep]reg_replace|phpinfo|stripslashes|strrev|(?:shell_)?exec|substr|system|unlink)\s*\(|\becho\s*[\'"]|<(?i:a[\s/]|applet|div|embed|i?frame(?:set)?|img|link|meta|marquee|object|script|style|textarea)\b|\W\$\{\s*[\'"]\w+[\'"]|<\?(?i:php|=)|(?i:(?:\b|\d)select\b.+?from\b.+?(?:\b|\d)where|(?:\b|\d)insert\b.+?into\b|(?:\b|\d)union\b.+?(?:\b|\d)select\b|(?:\b|\d)update\b.+?(?:\b|\d)set\b)`', $decoded) ) {
 		nfw_log('BASE64-encoded injection', 'POST:' . $key . ' = ' . $string, '3', 0);
 		nfw_block();
 	}
@@ -1108,8 +1128,8 @@ function nfw_block() {
 		header('HTTP/1.1 ' . $http_codes[$nfw_['nfw_options']['ret_code']] );
 		header('Status: ' .  $http_codes[$nfw_['nfw_options']['ret_code']] );
 		header('Pragma: no-cache');
-		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
-		header('Expires: Mon, 01 Sep 2014 01:01:01 GMT');
+		header('Cache-Control: no-cache, no-store, must-revalidate');
+		header('Expires: 0');
 	}
 
 	echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">' . "\n" .
@@ -1182,7 +1202,7 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 	if (! defined('NFW_REMOTE_ADDR') ) { define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']); }
 
 	@file_put_contents( $log_file,
-		$tmp . '[' . time() . '] ' . '[' . round( (microtime(true) - $nfw_['fw_starttime']), 5) . '] ' .
+		$tmp . '[' . time() . '] ' . '[' . round( microtime(true) - $nfw_['fw_starttime'], 5) . '] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $nfw_['num_incident'] . '] ' .
       '[' . $ruleid . '] ' .
       '[' . $loglevel . '] ' . '[' . NFW_REMOTE_ADDR . '] ' .
@@ -1214,15 +1234,24 @@ function nfw_bfd($where) {
 		return;
 	}
 
+	// NinjaFirewall <= 3.4.2:
+	if (! isset( $auth_msgtxt ) ) {
+		$auth_msgtxt = $auth_msg;
+		$b64 = 0;
+	// NinjaFirewall > 3.4.2:
+	} else {
+		$b64 = 1;
+	}
+
 	if ( $bf_enable == 2 ) {
-		nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand);
+		nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
 		return;
 	}
 
 	if ( file_exists($bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand) ) {
-		$fstat = stat( $bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
-		if ( ($now - $fstat['mtime']) < $bf_bantime * 60 ) {
-			nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand);
+		$mtime = filemtime( $bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
+		if ( ($now - $mtime) < $bf_bantime * 60 ) {
+			nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
 			return;
 		} else {
 			@unlink($bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand);
@@ -1255,13 +1284,13 @@ function nfw_bfd($where) {
 							' on '. $_SERVER['SERVER_NAME'] .' ('. $where .'). Blocking access for ' . $bf_bantime . 'mn.');
 					@closelog();
 				}
-				nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand);
+				nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
 				return;
 
 			}
 		}
-		$fstat = stat( $bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
-		if ( ($now - $fstat['mtime']) > $bf_bantime * 60 ) {
+		$mtime = filemtime( $bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
+		if ( ($now - $mtime) > $bf_bantime * 60 ) {
 			unlink( $bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
 		}
 	}
@@ -1271,7 +1300,7 @@ function nfw_bfd($where) {
 }
 // =====================================================================
 
-function nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand) {
+function nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64) {
 
 	if ( defined('NFW_STATUS') ) { return; }
 
@@ -1288,10 +1317,12 @@ function nfw_check_auth($auth_name, $auth_pass, $auth_msg, $bf_rand) {
 	}
 	session_destroy();
 
+	if ( $b64 ) { $auth_msgtxt = base64_decode( $auth_msgtxt ); }
+
 	header('HTTP/1.0 401 Unauthorized');
 	header('Content-Type: text/html; charset=utf-8');
-	header('X-Frame-Options: DENY');
-	echo '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msg . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	header('X-Frame-Options: SAMEORIGIN');
+	echo '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msgtxt . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
 	exit;
 }
 

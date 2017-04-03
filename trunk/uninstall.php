@@ -17,8 +17,7 @@
  +---------------------------------------------------------------------+ sa
 */
 
-if (! defined('WP_UNINSTALL_PLUGIN') || ! WP_UNINSTALL_PLUGIN ||
-	dirname( WP_UNINSTALL_PLUGIN ) != dirname( plugin_basename( __FILE__ )) ) {
+if (! defined('WP_UNINSTALL_PLUGIN') ) {
 	exit;
 }
 
@@ -134,6 +133,11 @@ function nfw_uninstall() {
 		delete_site_option('nfw_rules');
 		delete_site_option('nfw_install');
 		delete_site_option('nfw_tmp');
+	}
+
+	// Clear session flag:
+	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
+		unset( $_SESSION['nfw_goodguy'] );
 	}
 
 }

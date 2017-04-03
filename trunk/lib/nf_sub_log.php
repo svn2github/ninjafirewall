@@ -125,7 +125,7 @@ if ( isset( $data['log'] ) && is_array( $data['log'] ) ) {
 	<table class="form-table">
 		<tr>
 			<td width="100%">
-				<textarea name="txtlog" class="small-text code" style="width:100%;height:300px;" wrap="off"><?php
+				<textarea name="txtlog" class="small-text code" style="width:100%;height:300px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php
 				if ( ! empty( $logline ) ) {
 					echo '       DATE         INCIDENT  LEVEL     RULE     IP            REQUEST' . "\n";
 					echo $logline;

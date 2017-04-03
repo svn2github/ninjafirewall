@@ -292,7 +292,7 @@ if (file_exists($nfmon_diff) ) {
 		return false;
 	}
 	function nftoogle() {
-		document.getElementById('changes_table').style.display = '';
+		jQuery("#changes_table").slideDown();
 		document.getElementById('vcbtn').disabled = true;
 	}
 	</script>
@@ -355,10 +355,12 @@ if (file_exists($nfmon_diff) ) {
 				<br />
 			<?php
 				if (empty($changes)) {
-					echo '<table border="0" width="100%" id="changes_table" style="display:none">';
+					echo '<div id="changes_table" style="display:none">';
 				} else {
-					echo '<table border="0" width="100%" id="changes_table">';
+					echo '<div id="changes_table">';
 				}
+
+				echo '<table border="0" width="100%">';
 
 				$more_info = __('Click a file to get more info about it.', 'ninjafirewall');
 				if ($new_file) {
@@ -455,6 +457,8 @@ if (file_exists($nfmon_diff) ) {
 				}
 				echo '
 		</table>
+		</div>
+
 		</td>
 		</tr>
 		</table>';

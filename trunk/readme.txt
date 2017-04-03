@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
-Stable tag: 3.4.2
+Stable tag: 3.4.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -231,6 +231,22 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 16. Anti-Malware.
 
 == Changelog ==
+
+= v3.4.3 =
+
+* Updated Anti-Malware signatures.
+* The "Block PHP built-in wrappers" firewall policy has been extended to "expect://", "file://" and "zip://" streams. Previously, it covered only "php://", "phar://" and "data://" streams.
+* All "textarea" HTML elements will attempt to turn browsers spell checking off to prevent annoying highlighting.
+* When importing the configuration, if the Anti-Malware scan directory does not exist it will be set to the WordPress ABSPATH.
+* When NinjaFirewall's settings are restricted using the "NFW_ALLOWED_ADMIN" constant, it will no longer be visible to other admins in the "Plugins" page.
+* The "Block ASCII character 0x00" and "Block ASCII control characters" policies will no longer apply to COOKIE to prevent false positives.
+* The "Login Protection" HTTP authentication message can now be up to 1024 characters and can include HTML tags. Previously, it accepted 150 ASCII characters only.
+* When turning the "Login Protection" off, the current configuration will be kept instead of being deleted.
+* Two new constants are introduced in this version in order to debug PHP session issues (e.g., whitelisted users blocked by the firewall): "NFW_SESSION_DEBUG_USER" and "NFW_SESSION_DEBUG_CAPS". See our blog about how to use them ( http://nin.link/dbgs/ ).
+* Added two new comparison operators to the firewall fitering engine.
+* Several small fixes and adjustments.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* [WP+ Edition] Added "PATCH" method to the "NinjaFirewall > Access Control > HTTP Methods" section.
 
 = 3.4.2 =
 

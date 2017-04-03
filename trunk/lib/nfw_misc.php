@@ -406,4 +406,60 @@ function nfw_login_form_hook() {
 add_filter( 'login_message', 'nfw_login_form_hook');
 
 /* ------------------------------------------------------------------ */
+
+function nfw_session_debug() {
+
+	// Make sure NinjaFirewall is running :
+	if (! defined('NF_DISABLED') ) {
+		is_nfw_enabled();
+	}
+	if ( NF_DISABLED ) { return; }
+
+	$show_session_icon = 0;
+	$current_user = wp_get_current_user();
+	// Check users first:
+	if ( defined( 'NFW_SESSION_DEBUG_USER' ) ) {
+		$users = explode( ',', NFW_SESSION_DEBUG_USER );
+		foreach ( $users as $user ) {
+			if ( trim( $user ) == $current_user->user_login ) {
+				$show_session_icon = 1;
+				break;
+			}
+		}
+	// Check capabilities:
+	} elseif ( defined( 'NFW_SESSION_DEBUG_CAPS' ) ) {
+		$caps = explode( ',', NFW_SESSION_DEBUG_CAPS );
+		foreach ( $caps as $cap ) {
+			if (! empty( $current_user->caps[ trim( $cap ) ] ) ) {
+				$show_session_icon = 1;
+				break;
+			}
+		}
+	}
+
+	if ( empty( $show_session_icon ) ) { return; }
+
+	// Check if the user whitelisted?
+	if ( empty( $_SESSION['nfw_goodguy'] ) ) {
+		// No:
+		$font = 'ff0000';
+	} else {
+		// Yes:
+		$font = '00ff00';
+	}
+
+	global $wp_admin_bar;
+	$wp_admin_bar->add_menu( array(
+		'id'    => 'nfw_session_dbg',
+		'title' => "<font color='#{$font}'>NF</font>",
+	) );
+
+}
+
+// Check if the session debug option is enabled:
+if ( defined( 'NFW_SESSION_DEBUG_USER' ) || defined( 'NFW_SESSION_DEBUG_CAPS' ) ) {
+	add_action( 'admin_bar_menu', 'nfw_session_debug', 500 );
+}
+
+/* ------------------------------------------------------------------ */
 // EOF

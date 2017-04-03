@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: NinjaFirewall (WP Edition)
-Plugin URI: http://NinjaFirewall.com/
+Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.4.2
+Version: 3.4.3
 Author: The Ninja Technologies Network
-Author URI: http://NinTechNet.com/
-License: GPLv2 or later
+Author URI: https://nintechnet.com/
+License: GPLv3 or later
 Network: true
 Text Domain: ninjafirewall
 Domain Path: /languages
@@ -16,10 +16,10 @@ Domain Path: /languages
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.4.2' );
+define( 'NFW_ENGINE_VERSION', '3.4.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -135,7 +135,7 @@ function nfw_activate() {
 	}
 
 	if ( PATH_SEPARATOR == ';' ) {
-		exit( __('NinjaFirewall is not compatible with Windows.', 'ninjafirewall') );
+		exit( __('NinjaFirewall is not compatible with Microsoft Windows.', 'ninjafirewall') );
 	}
 
 	if ( $nfw_options = nfw_get_option( 'nfw_options' ) ) {
@@ -629,7 +629,7 @@ function nfw_login_hook( $user_login, $user ) {
 	if ( empty( $nfw_options['enabled'] ) ) { return; }
 
 	if ( empty( $user->roles[0] ) ) {
-		$whoami = __('not in users list', 'ninjafirewall');
+		$whoami = '';
 		$admin_flag = 1;
 	} elseif ( $user->roles[0] == 'administrator' ) {
 		$whoami = 'administrator';
@@ -702,8 +702,11 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 	} else {
 		$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
 	}
+	if (! empty( $whoami ) ) {
+		$whoami = " ($whoami)";
+	}
 	$message = __('Someone just logged in to your WordPress admin console:', 'ninjafirewall') . "\n\n".
-				__('-User :', 'ninjafirewall') .' '. $user_login . ' (' . $whoami . ")\n" .
+				__('-User :', 'ninjafirewall') .' '. $user_login . $whoami . "\n" .
 				__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
 				__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 				$url .
@@ -764,7 +767,7 @@ function is_nfw_enabled() {
 
 function ninjafirewall_admin_menu() {
 
-	if (nf_not_allowed( 0, __LINE__ ) ) { return; }
+	if ( nf_not_allowed( 0, __LINE__ ) ) { return; }
 
 	if (! empty($_REQUEST['nfw_act']) && $_REQUEST['nfw_act'] == 99) {
 		if ( empty($_GET['nfwnonce']) || ! wp_verify_nonce($_GET['nfwnonce'], 'show_phpinfo') ) {
@@ -1757,7 +1760,7 @@ function sanitise_fn(cbox) {
 				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_frontend')" name="nfw_options[csp_frontend]" value="0"<?php checked( $nfw_options['response_headers'][6], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 			</td>
 			<td align="left" style="vertical-align:top;">
-				<textarea name="nfw_options[csp_frontend_data]" id="csp_frontend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][6], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_frontend_data'] ) ?></textarea>
+				<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="nfw_options[csp_frontend_data]" id="csp_frontend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][6], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_frontend_data'] ) ?></textarea>
 				<span class="description"><?php _e('This CSP header will apply to the website frontend only.', 'ninjafirewall') ?></span>
 				<?php echo $err_msg ?>
 			</td>
@@ -1771,7 +1774,7 @@ function sanitise_fn(cbox) {
 				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_backend')" name="nfw_options[csp_backend]" value="0"<?php checked( $nfw_options['response_headers'][7], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 			</td>
 			<td align="left" style="vertical-align:top;">
-				<textarea name="nfw_options[csp_backend_data]" id="csp_backend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][7], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_backend_data'] ) ?></textarea>
+				<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="nfw_options[csp_backend_data]" id="csp_backend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][7], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_backend_data'] ) ?></textarea>
 				<span class="description"><?php _e('This CSP header will apply to the WordPress admin dashboard only.', 'ninjafirewall') ?></span>
 				<?php echo $err_msg ?>
 			</td>
@@ -2729,9 +2732,9 @@ function nf_sub_fileguard() {
 	<script>
 	function toogle_table(off) {
 		if ( off == 1 ) {
-			document.getElementById('fg_table').style.display = '';
+			jQuery("#fg_table").slideDown();
 		} else if ( off == 2 ) {
-			document.getElementById('fg_table').style.display = 'none';
+			jQuery("#fg_table").slideUp();
 		}
 		return;
 	}
@@ -2816,20 +2819,22 @@ function nf_sub_fileguard() {
 
 		<br />
 
-		<table class="form-table" border="0" id="fg_table"<?php echo $nfw_options['fg_enable'] == 1 ? '' : ' style="display:none"' ?>>
-			<tr valign="top">
-				<th scope="row"><?php _e('Real-time detection', 'ninjafirewall') ?></th>
-				<td align="left">
-				<?php
-					printf( __('Monitor file activity and send an alert when someone is accessing a PHP script that was modified or created less than %s hour(s) ago.', 'ninjafirewall'), '<input maxlength="2" size="2" value="'. $nfw_options['fg_mtime'] .'" name="nfw_options[fg_mtime]" id="mtime" onkeyup="is_number(\'mtime\')" type="text" />');
-				?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
-				<td align="left"><input class="large-text" type="text" maxlength="255" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s), max. 255 characters. Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
-			</tr>
-		</table>
+		<div id="fg_table"<?php echo $nfw_options['fg_enable'] == 1 ? '' : ' style="display:none"' ?>>
+			<table class="form-table" border="0">
+				<tr valign="top">
+					<th scope="row"><?php _e('Real-time detection', 'ninjafirewall') ?></th>
+					<td align="left">
+					<?php
+						printf( __('Monitor file activity and send an alert when someone is accessing a PHP script that was modified or created less than %s hour(s) ago.', 'ninjafirewall'), '<input maxlength="2" size="2" value="'. $nfw_options['fg_mtime'] .'" name="nfw_options[fg_mtime]" id="mtime" onkeyup="is_number(\'mtime\')" type="text" />');
+					?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
+					<td align="left"><input class="large-text" type="text" maxlength="255" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s), max. 255 characters. Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
+				</tr>
+			</table>
+		</div>
 		<br />
 		<input class="button-primary" type="submit" name="Save" value="<?php _e('Save File Guard options', 'ninjafirewall') ?>" />
 	</form>
@@ -2974,7 +2979,7 @@ function nfw_msajax_callback() {
 
 	if ( check_ajax_referer( 'nfw_msajax_javascript', 'nfw_sc_nonce', false ) && ! empty( $_POST['sigs'] ) ){
 		$sigs = rtrim( $_POST['sigs'], ':' );
-		wp_schedule_single_event( time() - 1, 'nfmalwarescan', array( $sigs ) );
+		wp_schedule_single_event( time() - 10, 'nfmalwarescan', array( $sigs ) );
 		$doing_wp_cron = sprintf( '%.22F', microtime( true ) );
 		set_transient( 'doing_cron', $doing_wp_cron );
 		$cron_request = apply_filters( 'cron_request', array(
@@ -3082,11 +3087,21 @@ function nf_sub_loginprot() {
 		if (! @preg_match('/^[1-9][0-9]?$/', $bf_maxtime ) ) {
 			$bf_maxtime = 15;
 		}
-		if ( ( empty($auth_name) ) ||  ( @strlen( $auth_pass ) != 40 ) ) {
+		if ( empty($auth_name) || @strlen( $auth_pass ) != 40 ) {
 			$auth_name= '';
 		}
-		if ( ( empty($auth_msg) ) || ( @strlen( $auth_msg ) > 150 ) ) {
-			$auth_msg = __('Access restricted', 'ninjafirewall');
+		if ( empty( $auth_msgtxt ) ) {
+			// NinjaFirewall <= 3.4.2
+			if (! empty( $auth_msg ) ) {
+				$auth_msgtxt = $auth_msg;
+			} else {
+				$auth_msgtxt = __('Access restricted', 'ninjafirewall');
+			}
+		} else {
+			$auth_msgtxt = base64_decode( $auth_msgtxt );
+		}
+		if ( strlen( $auth_msgtxt ) > 1024 ) {
+			$auth_msgtxt = mb_substr( $auth_msgtxt, 0, 1024, 'utf-8' );
 		}
 		if (empty($bf_xmlrpc) ) {
 			$bf_xmlrpc = 0;
@@ -3098,16 +3113,16 @@ function nf_sub_loginprot() {
 		} else {
 			$bf_authlog = 1;
 		}
-	}
 
-	if ( empty( $bf_enable ) ) {
+	} else {
 		$bf_enable   = 0;
-		$get_post = $bf_request  = 'POST';
+		$get_post = 'POST';
+		$bf_request = 'POST';
 		$bf_bantime  = 5;
 		$bf_attempt  = 8;
 		$bf_maxtime  = 15;
 		$auth_name = '';
-		$auth_msg = __('Access restricted', 'ninjafirewall');
+		$auth_msgtxt = __('Access restricted', 'ninjafirewall');
 		$bf_xmlrpc = 0;
 		$bf_authlog = 0;
 	}
@@ -3141,31 +3156,28 @@ function nf_sub_loginprot() {
 		}
 	}
 	function realm_valid() {
-		var e = document.bp_form.elements['nfw_options[auth_msg]'];
-		if ( e.value.match(/[^\x20-\x7e\x80-\xff]/) ) {
-			alert('<?php
-			// translators: quotes (') must be escaped
-			_e('Invalid character.', 'ninjafirewall') ?>');
-			e.value = e.value.replace(/[^\x20-\x7e\x80-\xff]/g,'');
+		var e = document.getElementById("realm").value;
+		if ( e.length >= 1024 ) {
+			alert('<?php _e('Please enter max 1024 character only.', 'ninjafirewall') ?>');
 			return false;
 		}
 	}
 	function toogle_table(off) {
 		if ( off == 1 ) {
-			document.getElementById('bf_table').style.display = '';
-			document.getElementById('bf_table1').style.display = '';
-			document.getElementById('bf_table2').style.display = '';
-			document.getElementById('bf_table3').style.display = '';
+			jQuery("#bf_table").slideDown();
+			jQuery("#bf_table1").slideDown();
+			jQuery("#bf_table2").slideDown();
+			jQuery("#bf_table3").slideDown();
 		} else if ( off == 2 ) {
-			document.getElementById('bf_table').style.display = 'none';
-			document.getElementById('bf_table3').style.display = 'none';
-			document.getElementById('bf_table1').style.display = '';
-			document.getElementById('bf_table2').style.display = '';
+			jQuery("#bf_table").slideUp();
+			jQuery("#bf_table3").slideUp();
+			jQuery("#bf_table1").slideDown();
+			jQuery("#bf_table2").slideDown();
 		} else {
-			document.getElementById('bf_table').style.display = 'none';
-			document.getElementById('bf_table1').style.display = 'none';
-			document.getElementById('bf_table2').style.display = 'none';
-			document.getElementById('bf_table3').style.display = 'none';
+			jQuery("#bf_table").slideUp();
+			jQuery("#bf_table1").slideUp();
+			jQuery("#bf_table2").slideUp();
+			jQuery("#bf_table3").slideUp();
 		}
 		return;
 	}
@@ -3195,36 +3207,42 @@ function nf_sub_loginprot() {
 		</tr>
 	</table>
 	<br />
-	<table class="form-table" id="bf_table"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
-		<tr>
-			<th scope="row"><?php _e('Protect the login page against', 'ninjafirewall') ?></th>
-			<td align="left">
-			<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GET"<?php checked($bf_request, 'GET') ?>>&nbsp;<?php _e('<code>GET</code> request attacks', 'ninjafirewall') ?></label></p>
-			<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="POST"<?php checked($bf_request, 'POST') ?>>&nbsp;<?php _e('<code>POST</code> request attacks (default)', 'ninjafirewall') ?></label></p>
-			<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GETPOST"<?php checked($bf_request, 'GETPOST') ?>>&nbsp;<?php _e('<code>GET</code> and <code>POST</code> requests attacks', 'ninjafirewall') ?></label></p>
-			</td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php _e('Password-protect it', 'ninjafirewall') ?></th>
-			<td align="left">
-			<?php
-				printf( __('For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds.', 'ninjafirewall'),
-					'<input maxlength="2" size="2" value="'. $bf_bantime .'" name="nfw_options[bf_bantime]" id="ban1" onkeyup="is_number(\'ban1\')" type="text" />',
-					'<input maxlength="2" size="2" value="'. $bf_attempt .'" name="nfw_options[bf_attempt]" id="ban2" onkeyup="is_number(\'ban2\')" type="text" />', '<code id="get_post">'. $get_post .'</code>',
-					'<input maxlength="2" size="2" value="'. $bf_maxtime .'" name="nfw_options[bf_maxtime]" id="ban3" onkeyup="is_number(\'ban3\')" type="text" />'
-				);
-			?>
-			</td>
-		</tr>
-	</table>
-	<table class="form-table" id="bf_table1"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
-		<tr>
-			<th scope="row">&nbsp;</th>
-			<td align="left">
-			<label><input type="checkbox" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bf_xmlrpc, 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label>
-			</td>
-		</tr>
-	</table>
+
+	<div id="bf_table"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><?php _e('Protect the login page against', 'ninjafirewall') ?></th>
+				<td align="left">
+				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GET"<?php checked($bf_request, 'GET') ?>>&nbsp;<?php _e('<code>GET</code> request attacks', 'ninjafirewall') ?></label></p>
+				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="POST"<?php checked($bf_request, 'POST') ?>>&nbsp;<?php _e('<code>POST</code> request attacks (default)', 'ninjafirewall') ?></label></p>
+				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GETPOST"<?php checked($bf_request, 'GETPOST') ?>>&nbsp;<?php _e('<code>GET</code> and <code>POST</code> requests attacks', 'ninjafirewall') ?></label></p>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><?php _e('Password-protect it', 'ninjafirewall') ?></th>
+				<td align="left">
+				<?php
+					printf( __('For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds.', 'ninjafirewall'),
+						'<input maxlength="2" size="2" value="'. $bf_bantime .'" name="nfw_options[bf_bantime]" id="ban1" onkeyup="is_number(\'ban1\')" type="text" />',
+						'<input maxlength="2" size="2" value="'. $bf_attempt .'" name="nfw_options[bf_attempt]" id="ban2" onkeyup="is_number(\'ban2\')" type="text" />', '<code id="get_post">'. $get_post .'</code>',
+						'<input maxlength="2" size="2" value="'. $bf_maxtime .'" name="nfw_options[bf_maxtime]" id="ban3" onkeyup="is_number(\'ban3\')" type="text" />'
+					);
+				?>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="bf_table1"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+			<tr>
+				<th scope="row">&nbsp;</th>
+				<td align="left">
+				<label><input type="checkbox" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bf_xmlrpc, 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<?php
 	if ( empty($auth_pass) ) {
@@ -3233,37 +3251,41 @@ function nf_sub_loginprot() {
 		$placeholder = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
 	}
 	?>
-	<table class="form-table" id="bf_table2"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
-		<tr valign="top">
-			<th scope="row"><?php _e('HTTP authentication', 'ninjafirewall') ?></th>
-			<td align="left">
-				<?php _e('User:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" type="text" autocomplete="off" value="<?php echo $auth_name ?>" size="12" name="nfw_options[auth_name]" onkeyup="auth_user_valid();" />&nbsp;&nbsp;&nbsp;&nbsp;<?php _e('Password:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" placeholder="<?php echo $placeholder ?>" type="password" autocomplete="off" value="" size="12" name="nfw_options[auth_pass]" />
-				<br /><span class="description">&nbsp;<?php _e('User and Password must be from 6 to 32 characters.', 'ninjafirewall') ?></span>
-				<br /><br /><?php _e('Message (max. 150 ASCII characters)', 'ninjafirewall') ?>:<br />
-				<input type="text" autocomplete="off" value="<?php echo htmlspecialchars($auth_msg) ?>" maxlength="150" size="50" name="nfw_options[auth_msg]" onkeyup="realm_valid();" />
-			</td>
-		</tr>
-	</table>
-	<table class="form-table" id="bf_table3"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
-		<tr valign="top">
-			<th scope="row"><?php _e('AUTH log', 'ninjafirewall') ?></th>
-			<td align="left">
-				<?php
-				if (! function_exists('syslog') || ! function_exists('openlog') ) {
-					$bf_authlog = 0;
-					$bf_msg = __('Your server configuration is not compatible with that option.', 'ninjafirewall');
-					$enabled = 0;
-				} else {
-					$bf_msg = __('See contextual help before enabling this option.', 'ninjafirewall');
-					$enabled = 1;
-				}
-				?>
-				<label><input type="checkbox" name="nfw_options[bf_authlog]" value="1"<?php checked($bf_authlog, 1) ?><?php disabled($enabled, 0)?>>&nbsp;<?php _e('Write incident to the server <code>AUTH</code> log.', 'ninjafirewall') ?></label>
-				<br />
-				<span class="description"><?php echo $bf_msg ?></span>
-			</td>
-		</tr>
-	</table>
+	<div id="bf_table2"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><?php _e('HTTP authentication', 'ninjafirewall') ?></th>
+				<td align="left">
+					<?php _e('User:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" type="text" autocomplete="off" value="<?php echo $auth_name ?>" size="12" name="nfw_options[auth_name]" onkeyup="auth_user_valid();" />&nbsp;&nbsp;&nbsp;&nbsp;<?php _e('Password:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" placeholder="<?php echo $placeholder ?>" type="password" autocomplete="off" value="" size="12" name="nfw_options[auth_pass]" />
+					<br /><span class="description">&nbsp;<?php _e('User and Password must be from 6 to 32 characters.', 'ninjafirewall') ?></span>
+					<br /><br /><?php _e('Message (max. 1024 characters, HTML tags allowed)', 'ninjafirewall') ?>:<br />
+					<textarea id="realm" name="nfw_options[auth_msgtxt]" class="small-text code" cols="60" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="realm_valid();"><?php echo htmlspecialchars( $auth_msgtxt ) ?></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="bf_table3"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><?php _e('AUTH log', 'ninjafirewall') ?></th>
+				<td align="left">
+					<?php
+					if (! function_exists('syslog') || ! function_exists('openlog') ) {
+						$bf_authlog = 0;
+						$bf_msg = __('Your server configuration is not compatible with that option.', 'ninjafirewall');
+						$enabled = 0;
+					} else {
+						$bf_msg = __('See contextual help before enabling this option.', 'ninjafirewall');
+						$enabled = 1;
+					}
+					?>
+					<label><input type="checkbox" name="nfw_options[bf_authlog]" value="1"<?php checked($bf_authlog, 1) ?><?php disabled($enabled, 0)?>>&nbsp;<?php _e('Write incident to the server <code>AUTH</code> log.', 'ninjafirewall') ?></label>
+					<br />
+					<span class="description"><?php echo $bf_msg ?></span>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<br />
 	<br />
 	<input id="save_login" class="button-primary" type="submit" name="Save" value="<?php _e('Save Login Protection', 'ninjafirewall') ?>" />
@@ -3295,14 +3317,6 @@ function nf_sub_loginprot_save() {
 		require( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' );
 	}
 
-	if ( empty( $_POST['nfw_options']['bf_enable']) ) {
-		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
-			if (! unlink( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
-				return( sprintf( __('Error: %s is read-only and cannot be deleted. Please chmod it to 0777.', 'ninjafirewall'), '<code>'. htmlspecialchars(NFW_LOG_DIR) .'/nfwlog/cache/bf_conf.php</code>') );
-			}
-		}
-		return 0;
-	}
 
 	$path = NFW_LOG_DIR . '/nfwlog/cache/';
 	$glob = glob($path . "bf_*");
@@ -3312,7 +3326,7 @@ function nf_sub_loginprot_save() {
 		}
 	}
 
-	if ( preg_match( '/^[12]$/', $_POST['nfw_options']['bf_enable'] ) ) {
+	if ( preg_match( '/^[012]$/', $_POST['nfw_options']['bf_enable'] ) ) {
 		$bf_enable = $_POST['nfw_options']['bf_enable'];
 	} else {
 		$bf_enable = 1;
@@ -3369,10 +3383,14 @@ function nf_sub_loginprot_save() {
 		$auth_pass = sha1( stripslashes( $_POST['nfw_options']['auth_pass'] ) );
 	}
 
-	if ( ( empty($_POST['nfw_options']['auth_msg']) ) || ( @strlen( $_POST['nfw_options']['auth_msg'] ) > 150 ) ) {
-		$auth_msg =  __('Access restricted', 'ninjafirewall');
+	if ( empty( $_POST['nfw_options']['auth_msgtxt'] ) ) {
+		$auth_msgtxt =  base64_encode( __('Access restricted', 'ninjafirewall') );
 	} else {
-		$auth_msg = str_replace( array('\\', "'", '"', '<', '>', '&'),	"",  stripslashes( $_POST['nfw_options']['auth_msg']) );
+		$auth_msgtxt = stripslashes( $_POST['nfw_options']['auth_msgtxt'] );
+		if ( strlen( $auth_msgtxt ) > 1024 ) {
+			$auth_msgtxt = mb_substr( $auth_msgtxt, 0, 1024, 'utf-8' );
+		}
+		$auth_msgtxt = base64_encode( $auth_msgtxt );
 	}
 
 	$bf_rand = mt_rand(100000, 999999);
@@ -3381,7 +3399,7 @@ function nf_sub_loginprot_save() {
 		'\';$bf_bantime=' . $bf_bantime . ';' . '$bf_attempt=' . $bf_attempt .
 		';$bf_maxtime=' . $bf_maxtime . ';$bf_xmlrpc=' . $bf_xmlrpc. ';' .
 		'$auth_name=\'' . $auth_name . '\';$auth_pass=\'' . $auth_pass . '\';' .
-		'$auth_msg=\'' . $auth_msg . '\';$bf_rand=\'' . $bf_rand . '\';' .
+		'$auth_msgtxt=\'' . $auth_msgtxt . '\';$bf_rand=\'' . $bf_rand . '\';' .
 		'$bf_authlog=' . $bf_authlog . '; ?>';
 
 	$fh = fopen( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php', 'w' );
@@ -3641,22 +3659,36 @@ function nf_sub_about() {
 
 function ninjafirewall_settings_link( $links ) {
 
-	if ( nf_not_allowed(0, __LINE__) ) {
-		unset($links);
-		$links[] = __('Access Restricted', 'ninjafirewall');
-	} else {
-		if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
-		$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
-		$links[] = '<a href="https://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to WP+ Edition', 'ninjafirewall'). '</a>';
-	}
+	if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
+
+	$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
+	$links[] = '<a href="https://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to WP+ Edition', 'ninjafirewall'). '</a>';
 	unset($links['edit']);
    return $links;
+
 }
+
 if ( is_multisite() ) {
 	add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
 } else {
 	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
 }
+
+/* ------------------------------------------------------------------ */
+
+function ninjafirewall_all_plugins( $plugins ) {
+
+	// Cf https://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/
+	if ( nf_not_allowed( 0, __LINE__ ) ) {
+
+		if ( isset( $plugins['ninjafirewall/ninjafirewall.php'] ) ) {
+			unset( $plugins['ninjafirewall/ninjafirewall.php'] );
+		}
+	}
+	return $plugins;
+}
+
+add_filter( 'all_plugins', 'ninjafirewall_all_plugins' );
 
 /* ------------------------------------------------------------------ */
 
