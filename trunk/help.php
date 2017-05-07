@@ -134,7 +134,7 @@ function help_nfsubpolicies() {
 		__('This action will be performed when the filtering process is over, right before NinjaFirewall forwards the request to your PHP script.', 'ninjafirewall') . '
 		<br />
 		<br />
-		<img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16">&nbsp;<span class="description">'. __('If you enabled <code>POST</code> requests sanitising, articles and messages posted by your visitors could be corrupted with excessive backslashes or substitute characters.', 'ninjafirewall'). '</span></li>'
+		<img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16">&nbsp;<span class="description">'. __('If you enabled <code>POST</code> requests sanitising, articles and messages posted by your visitors could be corrupted with excessive backslashes or substitution characters.', 'ninjafirewall'). '</span></li>'
 	) );
 	get_current_screen()->add_help_tab( array(
 		'id'			=> 'policies04',
@@ -149,7 +149,7 @@ function help_nfsubpolicies() {
 
 		<strong>' . __('Uploads', 'ninjafirewall'). '</strong>
 		<li>' . __('File Uploads:', 'ninjafirewall'). '<span class="description"> ' . __('whether to allow/disallow file uploads.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Sanitise filenames:', 'ninjafirewall'). '<span class="description"> ' . __('any character that is not a letter <code>a-zA-Z</code>, a digit <code>0-9</code>, a dot <code>.</code>, a hyphen <code>-</code> or an underscore <code>_</code> will be removed from the filename and replaced with the <code>X</code> character.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Sanitise filenames:', 'ninjafirewall'). '<span class="description"> ' . __('any character that is not a letter <code>a-zA-Z</code>, a digit <code>0-9</code>, a dot <code>.</code>, a hyphen <code>-</code> or an underscore <code>_</code> will be removed from the filename and replaced with the substitution character.', 'ninjafirewall'). '</span></li>
 
 		<br />
 
@@ -370,31 +370,23 @@ function help_nfsublogin() {
 		<div style="height:250px;">
 
 		<p>' . __('By processing incoming HTTP requests before your blog and any of its plugins, NinjaFirewall is the only plugin for WordPress able to protect it against very large brute-force attacks, including distributed attacks coming from several thousands of different IPs.', 'ninjafirewall') .
-		'<br />' .
-		__('The protection applies to the <code>wp-login.php</code> script but can be extended to the <code>xmlrpc.php</code> one.', 'ninjafirewall') . '</p>
 
-		<p>' . __('You can select to enable the protection only if an attack is detected or to keep it always activated:', 'ninjafirewall') . '</p>
+		'<p>' . __('You can choose two different types of protection: a password or a captcha. You can enable the protection only if an attack is detected or to keep it always activated.', 'ninjafirewall') . '</p>
 
-		<strong>' . __('Yes, if under attack :', 'ninjafirewall') . '</strong>
+		<strong>' . __('Yes, if under attack:', 'ninjafirewall') . '</strong>
 		<br />' .
-		__('When too many login attempts are detected, it password-protects the login page immediately, regardless of the offending IP. It blocks the attack instantly and prevents it from reaching WordPress, but still allows you to access your administration console using a predefined username/password combination. NinjaFirewall uses its own very fast authentication scheme and it is compatible with any HTTP server (Apache, Nginx, Lighttpd etc).', 'ninjafirewall') . '
+		__('The protection will be triggered when too many login attempts are detected, regardless of the offending IP. It blocks the attack instantly and prevents it from reaching WordPress, but still allows you to access your administration console using either the predefined username/password combination or the captcha code. ', 'ninjafirewall') . '
 		<br />
-		<ul>
-		<li>' . __('Protect the login page against:', 'ninjafirewall') . '<span class="description"> ' . __('select the type of requests (<code>GET</code> and/or <code>POST</code>) to monitor.', 'ninjafirewall') . '</span></li>
-		<li>' . __('Password-protect the login page:', 'ninjafirewall') . '<span class="description"> ' . __('enter the suitable threshold that will trigger the protection.', 'ninjafirewall') . '</span></li>
-		<li>' . __('HTTP authentication:', 'ninjafirewall') . '<span class="description"> ' . __('enter the user name and password that you want to use to bypass the protection during an attack.', 'ninjafirewall') . '</span></li>
-		<li>' . __('Message:', 'ninjafirewall') . '<span class="description"> ' . __('enter the message to display during the authentication process.', 'ninjafirewall') . '</span></li>
-		</ul>
-
-		<strong>' . __('Always ON :', 'ninjafirewall') . '</strong>
+		<strong>' . __('Always ON:', 'ninjafirewall') . '</strong>
 		<br />'.
-		__('NinjaFirewall will always enforce HTTP authentication implementation and you will be prompted to enter your chosen username/password each time you will access the login page.', 'ninjafirewall') . '
+		__('NinjaFirewall will always enforce the HTTP authentication or captcha implementation each time you access the login page.', 'ninjafirewall') . '
 		<br />
-		<ul>
-		<li>' . __('HTTP authentication:', 'ninjafirewall') . '<span class="description"> ' . __('enter the user name and password that you want to use to access the login page.', 'ninjafirewall') . '</span></li>
-		<li>' . __('Message:', 'ninjafirewall') . '<span class="description"> ' . __('enter the message to display during the authentication process.', 'ninjafirewall') . '</span></li>
-		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('When <b>Always ON</b> is enabled, brute-force attacks will not be written to the firewall log.', 'ninjafirewall') . '</span></p>
-		</ul>
+		<br />
+		<strong>' . __('Type of protection:', 'ninjafirewall') . '</strong>
+		<p>' . __('<b>Password:</b> It password-protects the login page. NinjaFirewall uses its own very fast authentication scheme and it is compatible with any HTTP server (Apache, Nginx, Lighttpd etc).', 'ninjafirewall') . '</p>
+		<p>' . __('<b>Captcha:</b> It will display a 5-character captcha code.', 'ninjafirewall') . '</p>
+		<p><b>' . __('Bot protection:', 'ninjafirewall') . '</b>
+		<br />' . __('NinjaFirewall will attempt to block bots and scripts immediatly, i.e., even before they start a brute-force attack.', 'ninjafirewall') . '</p>
 
 		<br />&nbsp;
 		</div>'

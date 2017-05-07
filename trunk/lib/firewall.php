@@ -2,7 +2,7 @@
 // +---------------------------------------------------------------------+
 // | NinjaFirewall (WP Edition)                                          |
 // |                                                                     |
-// | (c) NinTechNet - http://nintechnet.com/                             |
+// | (c) NinTechNet - https://nintechnet.com/                            |
 // +---------------------------------------------------------------------+
 // | This program is free software: you can redistribute it and/or       |
 // | modify it under the terms of the GNU General Public License as      |
@@ -21,7 +21,7 @@ if (defined('NFW_STATUS')) { return; }
 $nfw_['fw_starttime'] = microtime(true);
 
 // Optional NinjaFirewall configuration file
-// ( see http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ) :
+// ( see https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ) :
 if ( @file_exists($nfw_['file'] = dirname($_SERVER['DOCUMENT_ROOT']) .'/.htninja') ||
 	@file_exists($nfw_['file'] = $_SERVER['DOCUMENT_ROOT'] .'/.htninja') ) {
 	$nfw_['res'] = @include($nfw_['file']);
@@ -33,6 +33,9 @@ if ( @file_exists($nfw_['file'] = dirname($_SERVER['DOCUMENT_ROOT']) .'/.htninja
 	if ( $nfw_['res'] == 'BLOCK' ) {
 		header('HTTP/1.1 403 Forbidden');
 		header('Status: 403 Forbidden');
+		header('Pragma: no-cache');
+		header('Cache-Control: no-cache, no-store, must-revalidate');
+		header('Expires: 0');
 		die('403 Forbidden');
 	}
 }
@@ -40,7 +43,7 @@ if ( @file_exists($nfw_['file'] = dirname($_SERVER['DOCUMENT_ROOT']) .'/.htninja
 $nfw_['wp_content'] = dirname(dirname(dirname( __DIR__ )));
 // Check if we have a user-defined log directory
 // (see "Path to NinjaFirewall's log and cache directory"
-// at http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ) :
+// at https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ) :
 if ( defined('NFW_LOG_DIR') ) {
 	$nfw_['log_dir'] = NFW_LOG_DIR . '/nfwlog';
 } else {
@@ -530,9 +533,13 @@ function nfw_check_upload() {
 				nfw_block();
 			}
 
+
 			if (! empty($nfw_['nfw_options']['sanitise_fn']) ) {
 				$tmp = '';
-				$f_uploaded[$key]['name'] = preg_replace('/[^\w\.\-]/i', 'X', $f_uploaded[$key]['name'], -1, $count);
+				if ( empty( $nfw_['nfw_options']['substitute'] ) ) {
+					$nfw_['nfw_options']['substitute'] = 'X';
+				}
+				$f_uploaded[$key]['name'] = preg_replace('/[^\w\.\-]/i', $nfw_['nfw_options']['substitute'], $f_uploaded[$key]['name'], -1, $count);
 				if ($count) {
 					$tmp = ' (sanitising '. $count . ' char. from filename)';
 				}
@@ -1201,6 +1208,21 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 
 	if (! defined('NFW_REMOTE_ADDR') ) { define('NFW_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']); }
 
+	// Which encoding to use?
+	if ( defined('NFW_LOG_ENCODING') ) {
+		if ( NFW_LOG_ENCODING == 'b64' ) {
+			$encoding = '[b64:' . base64_encode( $res ) . ']';
+		} elseif ( NFW_LOG_ENCODING == 'none' ) {
+			$encoding = '[' . $res . ']';
+		} else {
+			$unp = unpack('H*', $res);
+			$encoding = '[hex:' . array_shift( $unp )  . ']';
+		}
+	} else {
+		$unp = unpack('H*', $res);
+		$encoding = '[hex:' . array_shift( $unp )  . ']';
+	}
+
 	@file_put_contents( $log_file,
 		$tmp . '[' . time() . '] ' . '[' . round( microtime(true) - $nfw_['fw_starttime'], 5) . '] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $nfw_['num_incident'] . '] ' .
@@ -1208,7 +1230,7 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
       '[' . $loglevel . '] ' . '[' . NFW_REMOTE_ADDR . '] ' .
       '[' . $http_ret_code . '] ' . '[' . $_SERVER['REQUEST_METHOD'] . '] ' .
       '[' . $_SERVER['SCRIPT_NAME'] . '] ' . '[' . $loginfo . '] ' .
-      '[hex:' . array_shift( unpack('H*', $res) ) . ']' . "\n", FILE_APPEND | LOCK_EX );
+      $encoding . "\n", FILE_APPEND | LOCK_EX );
 }
 
 // =====================================================================
@@ -1242,32 +1264,58 @@ function nfw_bfd($where) {
 	} else {
 		$b64 = 1;
 	}
+	// NinjaFirewall < 3.5:
+	if (! isset( $bf_allow_bot ) ) {
+		$bf_allow_bot = 0;
+	}
+	if (! isset( $bf_type ) ) {
+		$bf_type = 0;
+	}
+
+	if ( $where == 1 && $bf_allow_bot == 0 ) {
+		if ( empty( $_SERVER['HTTP_ACCEPT'] ) || empty( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) || empty( $_SERVER['HTTP_USER_AGENT'] ) || stripos( $_SERVER['HTTP_USER_AGENT'], 'Mozilla' ) === FALSE ) {
+			header('HTTP/1.0 400 Bad Request');
+			header('Pragma: no-cache');
+			header('Cache-Control: no-cache, no-store, must-revalidate');
+			header('Expires: 0');
+			echo '400 Bad Request';
+			exit;
+		}
+	}
 
 	if ( $bf_enable == 2 ) {
-		nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
+		nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
 		return;
 	}
 
+
 	if ( file_exists($bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand) ) {
+
 		$mtime = filemtime( $bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
 		if ( ($now - $mtime) < $bf_bantime * 60 ) {
-			nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
+
+			nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
 			return;
 		} else {
+
 			@unlink($bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand);
 		}
 	}
+
 
 	if ( strpos($bf_request, $_SERVER['REQUEST_METHOD']) === false ) {
 		return;
 	}
 
+
 	if ( file_exists($bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand ) ) {
 		$tmp_log = file( $bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 		if ( count( $tmp_log) >= $bf_attempt ) {
 			if ( ($tmp_log[count($tmp_log) - 1] - $tmp_log[count($tmp_log) - $bf_attempt]) <= $bf_maxtime ) {
+
 				$bfdh = fopen( $bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand, 'w');
 				fclose( $bfdh );
+
 				unlink( $bf_conf_dir . '/bf_' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
 				$nfw_['nfw_options']['ret_code'] = '401';
 				if ($where == 1) {
@@ -1284,7 +1332,7 @@ function nfw_bfd($where) {
 							' on '. $_SERVER['SERVER_NAME'] .' ('. $where .'). Blocking access for ' . $bf_bantime . 'mn.');
 					@closelog();
 				}
-				nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64);
+				nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
 				return;
 
 			}
@@ -1300,30 +1348,103 @@ function nfw_bfd($where) {
 }
 // =====================================================================
 
-function nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64) {
+function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text ) {
 
 	if ( defined('NFW_STATUS') ) { return; }
 
 	nfw_check_session();
+
 	if ( isset($_SESSION['nfw_bfd']) && $_SESSION['nfw_bfd'] == $bf_rand ) {
 		return;
 	}
 
-	if (! empty($_REQUEST['u']) && ! empty($_REQUEST['p']) ) {
-		if ( $_REQUEST['u'] === $auth_name && sha1($_REQUEST['p']) === $auth_pass ) {
-			$_SESSION['nfw_bfd'] = $bf_rand;
+	if ( $bf_type == 0 ) {
+		// Password protection:
+		if (! empty($_REQUEST['u']) && ! empty($_REQUEST['p']) ) {
+			if ( $_REQUEST['u'] === $auth_name && sha1($_REQUEST['p']) === $auth_pass ) {
+				$_SESSION['nfw_bfd'] = $bf_rand;
+				return;
+			}
+		}
+	} else {
+		// Make sure the GD extension is loaded:
+		if ( function_exists( 'gd_info' ) ) {
+			// Captcha protection:
+			if (! empty( $_REQUEST['c'] ) && isset( $_SESSION['nfw_bfd_c'] ) ) {
+				if ( $_SESSION['nfw_bfd_c'] == strtolower( $_REQUEST['c'] ) ) {
+					$_SESSION['nfw_bfd'] = $bf_rand;
+					unset( $_SESSION['nfw_bfd_c'] );
+					return;
+				}
+			}
+		} else {
+			// Return in no GD extension:
 			return;
 		}
 	}
+
 	session_destroy();
 
 	if ( $b64 ) { $auth_msgtxt = base64_decode( $auth_msgtxt ); }
 
 	header('HTTP/1.0 401 Unauthorized');
-	header('Content-Type: text/html; charset=utf-8');
 	header('X-Frame-Options: SAMEORIGIN');
-	echo '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msgtxt . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	header('Pragma: no-cache');
+	header('Cache-Control: no-cache, no-store, must-revalidate');
+	header('Expires: 0');
+	if ( $bf_type == 0 ) {
+		$message = '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msgtxt . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	} else {
+		$message = '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><form method="post"><p><label>'. base64_decode( $captcha_text ) .'</label></p><br><p>' . nfw_get_captcha() . '</p><p><input class="input" type="text" name="c" autofocus></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form><br><label>Brute-force protection by NinjaFirewall.</label></center></div></body></html>';
+	}
+	if ( $bf_allow_bot == 0 ) {
+		ini_set('zlib.output_compression','Off');
+		header('Content-Encoding: gzip');
+		echo gzencode( $message, 1 );
+	} else {
+		header('Content-Type: text/html; charset=utf-8');
+		echo $message;
+	}
+
 	exit;
+}
+
+// =====================================================================
+function nfw_get_captcha() {
+
+	session_start();
+
+	$characters  = 'AaBbCcDdEeFfGgHhiIJjKkLMmNnPpRrSsTtUuVvWwXxYyZz123456789';
+	$captcha = '';
+	while( strlen( $captcha ) < 5 ) {
+		$captcha .= substr( $characters, mt_rand() % strlen( $characters ), 1 );
+	}
+
+	// Background image with dimensions
+	$image = imagecreate( 200, 60 );
+	// Background color:
+	imagecolorallocate( $image, 255, 255, 255 );
+	// Text color:
+	$text_color = imagecolorallocate( $image, 77, 77, 77 );
+	// Font:
+	global $nfw_;
+	if ( file_exists( "{$nfw_['log_dir']}/font.ttf" ) ) {
+		imagettftext( $image, 35, 0, 15, 45, $text_color, "{$nfw_['log_dir']}/font.ttf", $captcha );
+	} else {
+		imagettftext( $image, 35, 0, 15, 45, $text_color, __DIR__ . '/share/font.ttf', $captcha );
+	}
+
+	ob_start();
+	imagepng( $image );
+	$img_content = ob_get_contents();
+	ob_end_clean();
+	imagedestroy( $image );
+
+	$res = '<img src="data:image/png;base64,'. base64_encode( $img_content ) .'" />';
+
+	$_SESSION['nfw_bfd_c'] = strtolower( $captcha );
+
+	return $res;
 }
 
 // =====================================================================

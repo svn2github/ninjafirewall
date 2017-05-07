@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.7
-Stable tag: 3.4.3
+Stable tag: 3.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,7 +23,7 @@ NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to 
 
 = Powerful filtering engine =
 
-NinjaFirewall includes the most powerful filtering engine available in a WordPress plugin. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
+NinjaFirewall includes the most powerful filtering engine available in a WordPress plugin. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](https://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
 
 = Features =
 
@@ -57,7 +57,7 @@ NinjaFirewall includes the most powerful filtering engine available in a WordPre
 
 By processing incoming HTTP requests before your blog and any of its plugins, NinjaFirewall is the only plugin for WordPress able to protect it against very large brute-force attacks, including distributed attacks coming from several thousands of different IPs.
 
-See our benchmarks and stress-tests: [Brute-force attack detection plugins comparison](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/ "")
+See our benchmarks and stress-tests: [Brute-force attack detection plugins comparison](https://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison-2015/ "")
 
 The protection applies to the `wp-login.php` script but can be extended to the `xmlrpc.php` one. The incident can also be written to the server `AUTH` log, which can be useful to the system administrator for monitoring purposes or banning IPs at the server level (e.g., Fail2ban).
 
@@ -87,7 +87,7 @@ Monitored events:
 
 = Anti-Malware Scanner =
 
-It allows you to scan your website for malware. The scanning engine is compatible with the popular [Linux Malware Detect LMD](https://www.rfxn.com/projects/linux-malware-detect/ "") (whose anti-malware signatures are included with this release) and with some [ClamAV](https://www.clamav.net/ "") signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that:  [Adding your own signatures to NinjaFirewall Anti-Malware](http://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/ "")
+It allows you to scan your website for malware. The scanning engine is compatible with the popular [Linux Malware Detect LMD](https://www.rfxn.com/projects/linux-malware-detect/ "") (whose anti-malware signatures are included with this release) and with some [ClamAV](https://www.clamav.net/ "") signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that:  [Adding your own signatures to NinjaFirewall Anti-Malware](https://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/ "")
 
 = Stay protected against the latest WordPress security vulnerabilities =
 
@@ -107,7 +107,7 @@ NinjaFirewall is multi-site compatible. It will protect all sites from your netw
 
 = Possibility to prepend your own PHP code to the firewall =
 
-You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulate HTTP requests, variables etc.
+You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulate HTTP requests, variables etc.
 
 = Low Footprint Firewall =
 
@@ -131,7 +131,7 @@ If you need help, click on the *Help* menu tab located in the upper right corner
 
 = Need more security ? =
 
-Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+")
+Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+")
 
 * Unix shared memory use for inter-process communication and blazing fast performances.
 * IP-based Access Control.
@@ -146,13 +146,13 @@ Check out our new supercharged edition: [NinjaFirewall WP+](http://nintechnet.co
 * Better File uploads management.
 * Better logs management.
 
-[Learn more](http://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ Edition unique features. [Compare](http://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ Editions.
+[Learn more](https://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ Edition unique features. [Compare](https://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ Editions.
 
 
 = Requirements =
 
 * WordPress 3.3+
-* PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](http://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
+* PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
 * MySQLi extension
 * Apache / Nginx / LiteSpeed
 * Unix-like OS (Linux, BSD) only. NinjaFirewall is **NOT** compatible with Microsoft Windows.
@@ -172,7 +172,7 @@ And this is how all WordPress plugins work :
 Unlike other security plugins, it will protect all PHP scripts, including those that aren't part of the WordPress package.
 
 = How powerful is NinjaFirewall? =
-NinjaFirewall includes a very powerful filtering engine which can detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall 3.0 filtering engine](http://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
+NinjaFirewall includes a very powerful filtering engine which can detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall 3.0 filtering engine](https://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
 
 = Do I need root privileges to install NinjaFirewall ? =
 
@@ -193,11 +193,11 @@ NinjaFirewall will look for the wp-config.php script in the current folder or, i
 
 = Will NinjaFirewall detect the correct IP of my visitors if I am behind a CDN service like Cloudflare ? =
 
-You can use an optional configuration file to tell NinjaFirewall which IP to use. Please [follow these steps](http://nintechnet.com/ninjafirewall/wp-edition/help/?htninja "").
+You can use an optional configuration file to tell NinjaFirewall which IP to use. Please [follow these steps](https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja "").
 
 = Will it slow down my site ? =
 
-Your visitors will not notice any difference with or without NinjaFirewall. From WordPress administration console, you can click "NinjaFirewall > Status" menu to see the benchmarks and statistics (the fastest, slowest and average time per request). NinjaFirewall is very fast, optimised, compact, requires very low system resources and [outperforms all other security plugins](http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ "").
+Your visitors will not notice any difference with or without NinjaFirewall. From WordPress administration console, you can click "NinjaFirewall > Status" menu to see the benchmarks and statistics (the fastest, slowest and average time per request). NinjaFirewall is very fast, optimised, compact, requires very low system resources and [outperforms all other security plugins](https://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ "").
 By blocking dangerous requests and bots before WordPress is loaded, it will save bandwidth and reduce server load.
 
 = Is there any Microsoft Windows version ? =
@@ -232,165 +232,15 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.4.3 =
+= v3.5 =
 
+* The login page can also be protected with a captcha instead of the username/password combination (see "Login Protection > Type of protection").
+* A new option was added to attempt to block bots before they start a brute-force attack (see "Login Protection > Enable bot protection").
+* The substitution character used to sanitise filenames can be changed (see "Firewall Policies > Uploads > Sanitise filenames > Substitution character").
+* The "X-Content-Type-Options" firewall policy will be disabled by default when installing NinjaFirewall.
+* Fixed a bug where NinjaFirewall was not reporting the correct timezone.
+* The firewall log encoding can be disabled or changed (hexadecimal, base64 or none). See http://nin.link/log_encoding/
 * Updated Anti-Malware signatures.
-* The "Block PHP built-in wrappers" firewall policy has been extended to "expect://", "file://" and "zip://" streams. Previously, it covered only "php://", "phar://" and "data://" streams.
-* All "textarea" HTML elements will attempt to turn browsers spell checking off to prevent annoying highlighting.
-* When importing the configuration, if the Anti-Malware scan directory does not exist it will be set to the WordPress ABSPATH.
-* When NinjaFirewall's settings are restricted using the "NFW_ALLOWED_ADMIN" constant, it will no longer be visible to other admins in the "Plugins" page.
-* The "Block ASCII character 0x00" and "Block ASCII control characters" policies will no longer apply to COOKIE to prevent false positives.
-* The "Login Protection" HTTP authentication message can now be up to 1024 characters and can include HTML tags. Previously, it accepted 150 ASCII characters only.
-* When turning the "Login Protection" off, the current configuration will be kept instead of being deleted.
-* Two new constants are introduced in this version in order to debug PHP session issues (e.g., whitelisted users blocked by the firewall): "NFW_SESSION_DEBUG_USER" and "NFW_SESSION_DEBUG_CAPS". See our blog about how to use them ( http://nin.link/dbgs/ ).
-* Added two new comparison operators to the firewall fitering engine.
-* Several small fixes and adjustments.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ Edition] Added "PATCH" method to the "NinjaFirewall > Access Control > HTTP Methods" section.
-
-= 3.4.2 =
-
-* Updated "Anti-Malware" signatures.
-* [WP+ Edition] Improved PHP scripts detection to cover more extensions and to prevent, in some rare cases, uploaded images to be wrongly detected as PHP scripts.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ Edition] The Access Control rate limiting feature will always return a "429 Too Many Requests" HTTP status code.
-* Tweaked list of suspicious bots to prevent potential false-positives.
-* Added missing multisite detection notice when running the installer in "WordPress WAF" mode.
 * Small fixes and minor adjustments.
-
-= 3.4.1 =
-
-* Fixed a bug introduced yesterday in v3.4, where some JetPack users could get a "Sorry, you are not allowed to access this page" error message.
-
-= 3.4 =
-
-* NinjaFirewall can now be installed in two different modes: either "Full WAF" mode (via the PHP `auto_prepend_file` directive, as usual) or "WordPress WAF" mode (via the `wp-config.php` script). See our blog for more info: http://nin.link/wafmode/
-* Added two options regarding the new WP REST API: to block any access to the API (see "Firewall Policies > WordPress REST API") or only username enumeration (see "Firewall Policies > Protect against username enumeration").
-* Added an option to block serialized PHP objects found inside a `GET` or `POST` request, cookies, user agent and referrer variables. (see the "Firewall Policies > PHP" section).
-* Added an option to send a notification to the administrator when NinjaFirewall detects and blocks a privilege escalation attempt (see the "Event Notifications > Administrator account" section).
-* The "File Guard" files/folders exclusion list can contain now up to 255 characters (vs 155 previously).
-* Updated "Anti-Malware" signatures.
-* Several small fixes and adjustments.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-
-= 3.3.3 =
-
-* Improved the filtering engine cache for better reliability and speed.
-* Added an option to block Pingbacks without having to disable the whole XML-RPC API (see "Firewall Policies > WordPress XML-RPC API > Block Pingbacks").
-* Fixed a "nfwhook_load_textdomain invalid function name" PHP error (WP Edition only).
-* Fixed "Cache-Control" header in the firewall blocked message.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Improved verbose logging in case of error during the "Anti-Malware" scan.
-
-= 3.3.2 =
-
-* Added "max_execution_time" directive to "File Check" to prevent time-out.
-* Updated Anti-Malware signatures.
-* The security rules updates option will be enabled by default with new installations of NinjaFirewall.
-* If the administrator is whitelisted by the brute-force protection, a notice will be displayed on the WordPress login page.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ Edition] The "Block scripts, ELF and system files upload" will also block Microsoft executable files (MZ header).
-* Minor fixes and adjustments.
-
-= 3.3.1 =
-
-* [WP+ Edition] Added a new feature: "Centralized Logging". It allows you to remotely access the firewall log of all your NinjaFirewall protected websites from one single installation, without having to log in to individual servers to analyse your log data (see our blog for more info about that: http://nin.link/centlog/ ).
-* Added a new "Content-Security-Policy" option that can be set up separately for the frontend and backend of the site (see "Firewall Policies > HTTP response headers > Content-Security-Policy").
-* On French language installations running WordPress 4.6 or above, NinjaFirewall will force WordPress to use the fr_FR translation file that is fully translated and included with this release, instead of the partially translated one from wordpress.org.
-* [WP+ Edition] Added "PUT" and "DELETE" methods to the "NinjaFirewall > Access Control > HTTP Methods" section.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* [WP+ Edition] Fixed a bug in the firewall log: blocked threats were not hex-decoded before exporting the log.
-* [WP+ Edition] Fixed a bug in the shared memory feature where, in some cases, deactivating NinjaFirewall from the "Plugins" page would not disable the firewall because the shared memory segment used to store its rules was not deleted upon exit.
-* The "SERVER_NAME" environment variable will be always appended to each firewall log line (it was previously available only on multisite installations).
-* The "X-Content-Type-Options" header will be enabled by default with new installations of NinjaFirewall.
-* Updated Anti-Malware signatures.
-* Minor fixes and adjustments.
-
-= 3.2.6 =
-
-* Fixed a bug introduced in v3.2.5 where the firewall could block some third-party plugins to update WordPress options.
-
-= 3.2.5 =
-
-* Updated Anti-Malware signatures.
-* [WP+ Edition] Fixed a bug where notifications sent or displayed by NinjaFirewall were showing the load balancer IP when an alternate address was defined in the "Access Control > Source IP" section.
-* Blocked threats written to the firewall log will be hexencoded, to lower false positives from antivirus scanners.
-* The "Anti-Malware" operations and errors will be written to the `/wp-content/nfwlog/cache/malscan.log` log.
-* Improved privilege escalation protection.
-* Minor fixes and adjustments.
-
-= 3.2.4 =
-
-* Added a warning about the XMLRPC `system.multicall` option if the Jetpack plugin is installed.
-* Fixed a double-slash bug in filenames in the Anti-Malware results.
-* Updated Anti-Malware signatures.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Minor fixes and adjustments.
-
-= 3.2.3 =
-
-* Fixed a bug that could prevent the Anti-Malware scanner to run if the ALTERNATE_WP_CRON method was enabled.
-* In a multisite environment, notifications will always be sent to the SuperAdmin by default, instead of the administrator of the site where originated the alert.
-* Fixed an issue where NinjaFirewall could wrongly flag a POST request as a BASE64 encoded injection attempt.
-* Updated Linux Malware Detect signatures.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-
-= 3.2.2 =
-
-* Fixed a bug in subdomain-based multisites: the Super Admin was not whitelisted when accessing a sub-site and could not upload files.
-* Added the last scan date to the Anti-Malware page.
-* Fixed a typo in the Anti-Malware JavaScript code.
-* Added a warning to the Anti-Malware page if the scanning process seems to have unexpectedly terminated or was killed because it reached the PHP max_execution_time value allowed by your host.
-* Renamed the signatures file from .php to .txt to prevent it from being wrongly flagged by some antivirus.
-* Minor fixes and adjustments.
-
-= 3.2.1 =
-
-* [v3.2.1] Fixed a small bug introduced in v3.2 (see below) in the "Anti-Malware" page: the animated GIF didn't load because it was blocked by the .htaccess mod_rewrite rules. This issue affected Apache users only. Sorry for the inconvenience.
-* [v3.2] Added a new feature: "Anti-Malware". It allows you to scan your website for malware. The scanning engine is compatible with the popular Linux Malware Detect LMD (whose anti-malware signatures are included with this release) and with some ClamAV signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that: http://nin.link/maldet/
-* [v3.2] Fixed a JavaScript warning in the "File Check" page.
-* [v3.2] Minor fixes and adjustments.
-
-= 3.1.3 =
-
-* Fixed a bug in the "Daily Report": on the first day of each month, the report was empty because of the monthly log rotation.
-* Fixed a bug in the "Plugins" page where NinjaFirewall "Settings" link was not accessible in a multisite environment.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* It is possible to import the configuration from the WP Edition to the WP+ Edition.
-* Minor fixes and adjustments.
-* NinjaFirewall's icon displayed in the admin dashboard menu was converted to grayscale.
-
-= 3.1.2 =
-
-* It is possible to exclude multiple files/folders in the "File Guard" options page (multiple values must be comma-separated).
-* The "Firewall Policies" sanitise options (GET, COOKIE etc) will replace all less-than and greater-than signs with their corresponding HTML entities.
-* The "X-XSS-Protection" and "HttpOnly flag" options from the "Firewall Policies" page will be enabled by default with new installations of NinjaFirewall.
-* [WP+ Edition] Added an option to select the number of log lines to display (see "Firewall Log > Log Options").
-* Minor fixes and adjustments.
-
-= 3.1 =
-
-* Added a new option to whitelist all logged in users in addition to the Administrator. This can be set up from the new "Firewall Policies > Users Whitelist" option. Note that this feature was added to the free WP Edition only, as the premium WP+ Edition can whitelist users depending on their Role, IP etc.
-* [WP+ Edition] Geolocation access control can apply to the whole site or to some specific URLs only (e.g., /wp-login.php, /xmlrpc.php etc). See the "Access Control > Geolocation Access Control > Geolocation should apply to the whole site or specific URLs" option.
-* [WP+ Edition] Added an option to the "Firewall Log" page to export the log as a TSV (tab-separated values) text file.
-* [WP+ Edition] The "Delete" button from the "Firewall Log" page was moved above the textarea, beside the "Export" new button, and can be used to delete the currently viewed log.
-* Minor fixes.
-* We launched NinjaFirewall Referral Program. If you are interested in joining the program, please follow this link: http://nin.link/referral/
-* Updated security rules.
-
-= 3.0.1 =
-
-* Fixed a PHP notice in the "Firewall Policies" page.
-* NinjaFirewall will always search for the `wp-config.php` script in the current folder or, if it cannot find it, in the parent folder (there is no need to use the `.htninja` configuration script for that purpose).
-* The "Protect against username enumeration > Through the author archives" policy will be disabled by default when installing NinjaFirewall.
-* The "WordPress XML-RPC API > Block only system.multicall method" policy will be enabled by default when installing NinjaFirewall.
-
-= 3.0 =
-
-* This is a major update: NinjaFirewall has a brand new, powerful and awesome filtering engine. Please see our blog for a complete description: http://nin.link/sensei/
-* Added many new security rules.
-* Fixed a bug where NinjaFirewall was unable to retrieve the DB password from the wp-config.php file if it contained a double-quote character.
-* The Firewall Policies "Force SSL for admin", "Disable the plugin and theme editor" and "Disable plugin and theme update/installation" options will be disabled if their respective constants have been defined elsewhere (e.g., in wp-config.php).
-* Minor fixes.
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 

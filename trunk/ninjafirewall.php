@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.4.3
+Version: 3.5
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.4.3' );
+define( 'NFW_ENGINE_VERSION', '3.5' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -262,7 +262,6 @@ function nfw_upgrade() {
 			wp_nonce_ays('filecheck_save');
 		}
 		$stat = stat($download_file);
-		nfw_get_blogtimezone();
 		$data = '== NinjaFirewall File Check (diff)'. "\n";
 		$data.= '== ' . site_url() . "\n";
 		$data.= '== ' . date_i18n('M d, Y @ H:i:s O', $stat['ctime']) . "\n\n";
@@ -298,7 +297,6 @@ function nfw_upgrade() {
 		}
 		if (file_exists(NFW_LOG_DIR . '/nfwlog/cache/nfilecheck_snapshot.php') ) {
 			$stat = stat(NFW_LOG_DIR . '/nfwlog/cache/nfilecheck_snapshot.php');
-			nfw_get_blogtimezone();
 			$data = '== NinjaFirewall File Check (snapshot)'. "\n";
 			$data.= '== ' . site_url() . "\n";
 			$data.= '== ' . date_i18n('M d, Y @ H:i:s O', $stat['ctime']) . "\n\n";
@@ -430,7 +428,7 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				$nfw_options['response_headers'] = '01010000';
+				$nfw_options['response_headers'] = '00010000';
 			}
 		}
 		// v1.3.3 update -------------------------------------------------
@@ -549,7 +547,6 @@ function nfw_upgrade() {
 			} else {
 				$recipient = $nfw_options['alert_email'];
 			}
-			nfw_get_blogtimezone();
 
 			$subject = '[NinjaFirewall] ' . __('ERROR: Failed to update rules', 'ninjafirewall');
 			if ( is_multisite() ) {
@@ -693,8 +690,6 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 	} else {
 		$recipient = $nfw_options['alert_email'];
 	}
-
-	nfw_get_blogtimezone();
 
 	$subject = '[NinjaFirewall] ' . __('Alert: WordPress console login', 'ninjafirewall');
 	if ( is_multisite() ) {
@@ -1282,10 +1277,12 @@ function restore() {
 function chksubmenu() {
 	if (document.fwrules.elements[\'nfw_options[uploads]\'].value > 0) {
       document.fwrules.san.disabled = false;
-      document.getElementById("santxt").style.color = "#000000";
+      document.fwrules.subs.disabled = false;
+      document.getElementById("sanitize-fn").style.color = "#444";
    } else {
       document.fwrules.san.disabled = true;
-      document.getElementById("santxt").style.color = "#bbbbbb";
+      document.fwrules.subs.disabled = true;
+      document.getElementById("sanitize-fn").style.color = "#bbbbbb";
    }
 }
 function csp_onoff(what, csp) {
@@ -1310,7 +1307,7 @@ echo '
 }
 function sanitise_fn(cbox) {
 	if(cbox.checked) {
-		if (confirm("' . __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the [X] character. Go ahead?', 'ninjafirewall') . '")){
+		if (confirm("' . __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the substitution character. Continue?', 'ninjafirewall') . '")){
 			return true;
 		}
 		return false;
@@ -1374,6 +1371,12 @@ function sanitise_fn(cbox) {
 	} else {
 		$uploads = 1;
 	}
+	if ( empty( $nfw_options['substitute'] ) || strlen( $nfw_options['substitute'] ) > 1 ) {
+		$substitute = 'X';
+	} else {
+		$substitute = htmlspecialchars( $nfw_options['substitute'] );
+	}
+
 	?>
 	<br />
 	<br />
@@ -1386,7 +1389,10 @@ function sanitise_fn(cbox) {
 				<select name="nfw_options[uploads]" onchange="chksubmenu();">
 					<option value="1"<?php selected( $uploads, 1 ) ?>><?php _e('Allow uploads', 'ninjafirewall') ?></option>
 					<option value="0"<?php selected( $uploads, 0 ) ?>><?php _e('Disallow uploads (default)', 'ninjafirewall') ?></option>
-				</select>&nbsp;&nbsp;&nbsp;&nbsp;<label id="santxt"<?php if (! $uploads) { echo ' style="color:#bbbbbb;"'; }?>><input type="checkbox" onclick='return sanitise_fn(this);' name="nfw_options[sanitise_fn]"<?php checked( $sanitise_fn, 1 ); disabled( $uploads, 0 ) ?> id="san">&nbsp;<?php _e('Sanitise filenames', 'ninjafirewall') ?></label>
+				</select>
+				<p id="sanitize-fn"<?php if (! $uploads) { echo ' style="color:#bbbbbb;"'; }?>>
+					<label><input type="checkbox" onclick='return sanitise_fn(this);' name="nfw_options[sanitise_fn]"<?php checked( $sanitise_fn, 1 ); disabled( $uploads, 0 ) ?> id="san">&nbsp;<?php _e('Sanitise filenames', 'ninjafirewall') ?> (<?php _e('substitution character:', 'ninjafirewall') ?></label> <input id="subs" maxlength="1" size="1" value="<?php echo $substitute ?>" name="nfw_options[substitute]" type="text" <?php disabled( $uploads, 0 ) ?>/> )
+ 				</p>
 			</td>
 		</tr>
 	</table>
@@ -1677,10 +1683,10 @@ function sanitise_fn(cbox) {
 			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes . $default; ?></label>
+				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes; ?></label>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[x_content_type_options]" value="0"<?php checked( $nfw_options['response_headers'][1], 0 ); disabled($err, 1); ?>><?php echo $no; ?></label><?php echo $err_msg ?>
+				<label><input type="radio" name="nfw_options[x_content_type_options]" value="0"<?php checked( $nfw_options['response_headers'][1], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<tr>
@@ -2314,6 +2320,13 @@ function nf_sub_policies_save() {
 		$nfw_options['sanitise_fn'] = 0;
 	}
 
+	if ( empty( $_POST['nfw_options']['substitute'] ) || strlen( $_POST['nfw_options']['substitute'] ) > 1 ) {
+		$nfw_options['substitute'] = 'X';
+	} else {
+		$nfw_options['substitute'] = $_POST['nfw_options']['substitute'];
+	}
+
+
 	if ( empty( $_POST['nfw_options']['get_scan']) ) {
 		$nfw_options['get_scan'] = 0;
 	} else {
@@ -2656,13 +2669,14 @@ function nf_sub_policies_default() {
 	$nfw_options['scan_protocol']		= 3;
 	$nfw_options['uploads']				= 0;
 	$nfw_options['sanitise_fn']		= 0;
+	$nfw_options['substitute'] 		= 'X';
 	$nfw_options['get_scan']			= 1;
 	$nfw_options['get_sanitise']		= 0;
 	$nfw_options['post_scan']			= 1;
 	$nfw_options['post_sanitise']		= 0;
 	$nfw_options['request_sanitise'] = 0;
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '01010000';
+		$nfw_options['response_headers'] = '00010000';
 		$nfw_options['csp_backend_data'] = nf_sub_policies_csp();
 		$nfw_options['csp_frontend_data'] = '';
 	}
@@ -2730,7 +2744,7 @@ function nf_sub_fileguard() {
 
 	?>
 	<script>
-	function toogle_table(off) {
+	function toggle_table(off) {
 		if ( off == 1 ) {
 			jQuery("#fg_table").slideDown();
 		} else if ( off == 2 ) {
@@ -2809,10 +2823,10 @@ function nf_sub_fileguard() {
 			<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 				<th scope="row"><?php _e('Enable File Guard', 'ninjafirewall') ?></th>
 				<td align="left">
-				<label><input type="radio" id="fgenable" name="nfw_options[fg_enable]" value="1"<?php checked($nfw_options['fg_enable'], 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes (recommended)', 'ninjafirewall') ?></label>
+				<label><input type="radio" id="fgenable" name="nfw_options[fg_enable]" value="1"<?php checked($nfw_options['fg_enable'], 1) ?> onclick="toggle_table(1);">&nbsp;<?php _e('Yes (recommended)', 'ninjafirewall') ?></label>
 				</td>
 				<td align="left">
-				<label><input type="radio" name="nfw_options[fg_enable]" value="0"<?php checked($nfw_options['fg_enable'], 0) ?> onclick="toogle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
+				<label><input type="radio" name="nfw_options[fg_enable]" value="0"<?php checked($nfw_options['fg_enable'], 0) ?> onclick="toggle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 				</td>
 			</tr>
 		</table>
@@ -3103,6 +3117,16 @@ function nf_sub_loginprot() {
 		if ( strlen( $auth_msgtxt ) > 1024 ) {
 			$auth_msgtxt = mb_substr( $auth_msgtxt, 0, 1024, 'utf-8' );
 		}
+
+		if ( empty( $captcha_text ) ) {
+			$captcha_text = __( 'Type the characters you see in the picture below:', 'ninjafirewall' );
+		} else {
+			$captcha_text = html_entity_decode( base64_decode( $captcha_text ) );
+			if ( strlen( $captcha_text ) > 255 ) {
+				$captcha_text = mb_substr( $captcha_text, 0, 255, 'utf-8' );
+			}
+		}
+
 		if (empty($bf_xmlrpc) ) {
 			$bf_xmlrpc = 0;
 		} else {
@@ -3113,8 +3137,22 @@ function nf_sub_loginprot() {
 		} else {
 			$bf_authlog = 1;
 		}
+		if ( empty( $bf_type ) ) {
+			// Password
+			$bf_type = 0;
+		} else {
+			// Captcha
+			$bf_type = 1;
+		}
+		if ( empty( $bf_allow_bot ) ) {
+			$bf_allow_bot = 0;
+		} else {
+			$bf_allow_bot = 1;
+		}
 
 	} else {
+
+		$bf_type = 0;
 		$bf_enable   = 0;
 		$get_post = 'POST';
 		$bf_request = 'POST';
@@ -3125,7 +3163,10 @@ function nf_sub_loginprot() {
 		$auth_msgtxt = __('Access restricted', 'ninjafirewall');
 		$bf_xmlrpc = 0;
 		$bf_authlog = 0;
+		$bf_allow_bot = 0;
+		$captcha_text = __( 'Type the characters you see in the picture below:', 'ninjafirewall' );
 	}
+
 	?>
 	<script type="text/javascript">
 	function is_number(id) {
@@ -3158,29 +3199,67 @@ function nf_sub_loginprot() {
 	function realm_valid() {
 		var e = document.getElementById("realm").value;
 		if ( e.length >= 1024 ) {
-			alert('<?php _e('Please enter max 1024 character only.', 'ninjafirewall') ?>');
+			alert('<?php
+			// translators: quotes (') must be escaped
+			_e('Please enter max 1024 character only.', 'ninjafirewall') ?>');
 			return false;
 		}
 	}
-	function toogle_table(off) {
-		if ( off == 1 ) {
-			jQuery("#bf_table").slideDown();
-			jQuery("#bf_table1").slideDown();
-			jQuery("#bf_table2").slideDown();
-			jQuery("#bf_table3").slideDown();
-		} else if ( off == 2 ) {
+
+	var bf_type = <?php echo $bf_type ?>;
+	var bf_enable = <?php echo $bf_enable ?>;
+	function toggle_submenu( enable ) {
+		if ( enable == 0 ) {
+			// Disable protection
+			bf_enable = 0;
+			jQuery("#submenu_table").slideUp();
 			jQuery("#bf_table").slideUp();
-			jQuery("#bf_table3").slideUp();
-			jQuery("#bf_table1").slideDown();
-			jQuery("#bf_table2").slideDown();
+			jQuery("#bf_table_extra").slideUp();
+			jQuery("#bf_table_password").slideUp();
+			jQuery("#bf_table_captcha").slideUp();
 		} else {
-			jQuery("#bf_table").slideUp();
-			jQuery("#bf_table1").slideUp();
-			jQuery("#bf_table2").slideUp();
-			jQuery("#bf_table3").slideUp();
+			bf_enable = enable;
+			jQuery("#submenu_table").slideDown();
+			// Display the right table (captcha or password protection)
+			toggle_table( enable, bf_type );
+			jQuery("#bf_table_extra").slideDown();
 		}
-		return;
 	}
+	function toggle_table( enable, type ) {
+		if ( type == 1 ) {
+			// Captcha
+			bf_type = 1;
+			if ( enable == 1 ) {
+				// Yes, if under attack
+				jQuery("#bf_table").slideDown();
+			} else {
+				// Always ON
+				jQuery("#bf_table").slideUp();
+			}
+			jQuery("#bf_table_password").slideUp();
+			jQuery("#bf_table_captcha").slideDown();
+		} else { // type == 2
+			//  Password
+			bf_type = 0;
+			if ( enable == 1 ) {
+				// Yes, if under attack
+				jQuery("#bf_table").slideDown();
+			} else {
+				// Always ON
+				jQuery("#bf_table").slideUp();
+			}
+			jQuery("#bf_table_password").slideDown();
+			jQuery("#bf_table_captcha").slideUp();
+		}
+	}
+	function xmlrpc_warn( what ) {
+		if ( bf_enable == 2 && what.checked == true ) {
+			alert("<?php
+			// translators: double-quotes (") must be escaped
+			_e("Note: Access to the XML-RPC API will be completely disabled when the brute-force attack protection is set to 'Always ON'.", 'ninjafirewall') ?>");
+		}
+	}
+
 	function getpost(request){
 		if ( request == 'GETPOST' ) {
 			request = 'GET/POST';
@@ -3189,6 +3268,65 @@ function nf_sub_loginprot() {
 	}
 	</script>
 <br />
+
+	<?php
+	// Protection is disabled:
+	if ( empty( $bf_enable ) ) {
+		$show_submenu_table = 0;
+		$show_bf_table = 0;
+		$show_bf_table_password = 0;
+		$show_bf_table_extra = 0;
+		$show_bf_table_captcha = 0;
+
+	// Protection set to "Yes, if under attack":
+	} elseif ( $bf_enable == 1 ) {
+		$show_submenu_table = 1;
+		$show_bf_table = 1;
+		$show_bf_table_extra = 1;
+		// Password?
+		if ( empty( $bf_type ) ) {
+			$show_bf_table_password = 1;
+			$show_bf_table_captcha = 0;
+		// Captcha?
+		} else {
+			$show_bf_table_password = 0;
+			$show_bf_table_captcha = 1;
+		}
+
+	// Protection set to "Always ON" (2):
+	} else {
+		$show_submenu_table = 1;
+		$show_bf_table = 0;
+		$show_bf_table_extra = 1;
+				// Password?
+		if ( empty( $bf_type ) ) {
+			$show_bf_table_password = 1;
+			$show_bf_table_captcha = 0;
+		// Captcha?
+		} else {
+			$show_bf_table_password = 0;
+			$show_bf_table_captcha = 1;
+
+		}
+	}
+
+	// Make sure we can display the captcha with the GD extension:
+	if ( function_exists( 'gd_info' ) ) {
+		$missing_gd = '';
+		$gd_disabled = '';
+	} else {
+		$missing_gd = '<p><span class="description">' .
+			__( 'GD Support is not available on your server.', 'ninjafirewall' ) . '</span></p>';
+		$gd_disabled = ' disabled="disabled"';
+	}
+
+	if ( $gd_disabled && $bf_type == 1 ) {
+		echo '<div class="error notice is-dismissible"><p>' .
+			__('Error: GD Support is not available on your server, the captcha protection will not work!', 'ninjafirewall') .'</p></div>';
+	}
+
+	?>
+
 <form method="post" name="bp_form">
 	<?php wp_nonce_field('bfd_save', 'nfwnonce', 0); ?>
 	<table class="form-table">
@@ -3196,19 +3334,37 @@ function nf_sub_loginprot() {
 			<th scope="row"><?php _e('Enable brute force attack protection', 'ninjafirewall') ?></th>
 			<td>&nbsp;</td>
 			<td align="left">
-			<label><input type="radio" name="nfw_options[bf_enable]" value="1"<?php checked($bf_enable, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes, if under attack', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="nfw_options[bf_enable]" value="1"<?php checked($bf_enable, 1) ?> onclick="toggle_submenu(1);">&nbsp;<?php _e('Yes, if under attack', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-			<label><input type="radio" name="nfw_options[bf_enable]" value="2"<?php checked($bf_enable, 2) ?> onclick="toogle_table(2);">&nbsp;<?php _e('Always ON', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="nfw_options[bf_enable]" value="2"<?php checked($bf_enable, 2) ?> onclick="toggle_submenu(2);">&nbsp;<?php _e('Always ON', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left">
-			<label><input type="radio" name="nfw_options[bf_enable]" value="0"<?php checked($bf_enable, 0) ?> onclick="toogle_table(0);">&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+			<label><input type="radio" name="nfw_options[bf_enable]" value="0"<?php checked($bf_enable, 0) ?> onclick="toggle_submenu(0);">&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
+
 	</table>
 	<br />
 
-	<div id="bf_table"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
+	<div id="submenu_table"<?php echo $show_submenu_table == 1 ? '' : ' style="display:none"' ?>>
+		<table class="form-table">
+
+			<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
+				<th scope="row"><?php _e('Type of protection', 'ninjafirewall') ?></th>
+				<td>&nbsp;</td>
+				<td align="left" style="vertical-align:top">
+				<label><input type="radio" name="nfw_options[bf_type]" value="0"<?php checked($bf_type, 0) ?> onclick="toggle_table(bf_enable, 0);">&nbsp;<?php _e('Password', 'ninjafirewall') ?></label>
+				</td>
+				<td align="left" style="vertical-align:top">
+				<label><input type="radio" name="nfw_options[bf_type]" value="1"<?php checked($bf_type, 1) ?> onclick="toggle_table(bf_enable, 1);"<?php echo $gd_disabled ?> />&nbsp;<?php _e('Captcha', 'ninjafirewall') ?></label><?php echo $missing_gd ?>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+	<div id="bf_table"<?php echo $show_bf_table == 1 ? '' : ' style="display:none"' ?>>
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Protect the login page against', 'ninjafirewall') ?></th>
@@ -3219,7 +3375,7 @@ function nf_sub_loginprot() {
 				</td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><?php _e('Password-protect it', 'ninjafirewall') ?></th>
+				<th scope="row"><?php _e('Enable protection', 'ninjafirewall') ?></th>
 				<td align="left">
 				<?php
 					printf( __('For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds.', 'ninjafirewall'),
@@ -3233,17 +3389,6 @@ function nf_sub_loginprot() {
 		</table>
 	</div>
 
-	<div id="bf_table1"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
-		<table class="form-table">
-			<tr>
-				<th scope="row">&nbsp;</th>
-				<td align="left">
-				<label><input type="checkbox" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bf_xmlrpc, 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label>
-				</td>
-			</tr>
-		</table>
-	</div>
-
 	<?php
 	if ( empty($auth_pass) ) {
 		$placeholder = '';
@@ -3251,12 +3396,12 @@ function nf_sub_loginprot() {
 		$placeholder = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
 	}
 	?>
-	<div id="bf_table2"<?php echo $bf_enable ? '' : ' style="display:none"' ?>>
+	<div id="bf_table_password"<?php echo $show_bf_table_password ? '' : ' style="display:none"' ?>>
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php _e('HTTP authentication', 'ninjafirewall') ?></th>
 				<td align="left">
-					<?php _e('User:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" type="text" autocomplete="off" value="<?php echo $auth_name ?>" size="12" name="nfw_options[auth_name]" onkeyup="auth_user_valid();" />&nbsp;&nbsp;&nbsp;&nbsp;<?php _e('Password:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" placeholder="<?php echo $placeholder ?>" type="password" autocomplete="off" value="" size="12" name="nfw_options[auth_pass]" />
+					<?php _e('User:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" type="text" autocomplete="off" value="<?php echo htmlspecialchars( $auth_name ) ?>" size="12" name="nfw_options[auth_name]" onkeyup="auth_user_valid();" />&nbsp;&nbsp;&nbsp;&nbsp;<?php _e('Password:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" placeholder="<?php echo $placeholder ?>" type="password" autocomplete="off" value="" size="12" name="nfw_options[auth_pass]" />
 					<br /><span class="description">&nbsp;<?php _e('User and Password must be from 6 to 32 characters.', 'ninjafirewall') ?></span>
 					<br /><br /><?php _e('Message (max. 1024 characters, HTML tags allowed)', 'ninjafirewall') ?>:<br />
 					<textarea id="realm" name="nfw_options[auth_msgtxt]" class="small-text code" cols="60" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="realm_valid();"><?php echo htmlspecialchars( $auth_msgtxt ) ?></textarea>
@@ -3264,10 +3409,41 @@ function nf_sub_loginprot() {
 			</tr>
 		</table>
 	</div>
-	<div id="bf_table3"<?php echo $bf_enable == 1 ? '' : ' style="display:none"' ?>>
+
+
+	<div id="bf_table_captcha"<?php echo $show_bf_table_captcha ? '' : ' style="display:none"' ?>>
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><?php _e('AUTH log', 'ninjafirewall') ?></th>
+				<th scope="row"><?php _e('Message', 'ninjafirewall') ?></th>
+				<td align="left">
+					<input maxlength="255" class="large-text" type="text" autocomplete="off" value="<?php echo htmlspecialchars( $captcha_text ) ?>" name="nfw_options[captcha_text]" />
+					<p><span class="description"><?php _e('This message will be displayed above the captcha. Max. 255 characters.', 'ninjafirewall') ?></span></p>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+	<div id="bf_table_extra"<?php echo $show_bf_table_extra ? '' : ' style="display:none"' ?>>
+		<br />
+		<h3><?php _e('Various options', 'ninjafirewall') ?></h3>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><?php _e('XML-RPC API', 'ninjafirewall') ?></th>
+				<td align="left">
+				<label><input type="checkbox" onClick="xmlrpc_warn(this);" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bf_xmlrpc, 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label>
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row"><?php _e('Bot protection', 'ninjafirewall') ?></th>
+				<td align="left">
+				<label><input type="checkbox" name="nfw_options[bf_allow_bot]" value="1"<?php checked($bf_allow_bot, 0) ?>>&nbsp;<?php _e('Enable bot protection (applies to <code>wp-login.php</code> only.)', 'ninjafirewall') ?></label>
+				</td>
+			</tr>
+
+			<tr valign="top">
+				<th scope="row"><?php _e('Authentication log', 'ninjafirewall') ?></th>
 				<td align="left">
 					<?php
 					if (! function_exists('syslog') || ! function_exists('openlog') ) {
@@ -3284,8 +3460,10 @@ function nf_sub_loginprot() {
 					<span class="description"><?php echo $bf_msg ?></span>
 				</td>
 			</tr>
+
 		</table>
 	</div>
+
 	<br />
 	<br />
 	<input id="save_login" class="button-primary" type="submit" name="Save" value="<?php _e('Save Login Protection', 'ninjafirewall') ?>" />
@@ -3317,19 +3495,16 @@ function nf_sub_loginprot_save() {
 		require( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' );
 	}
 
-
-	$path = NFW_LOG_DIR . '/nfwlog/cache/';
-	$glob = glob($path . "bf_*");
-	if ( is_array($glob)) {
-		foreach($glob as $file) {
-			unlink($file);
-		}
-	}
-
 	if ( preg_match( '/^[012]$/', $_POST['nfw_options']['bf_enable'] ) ) {
 		$bf_enable = $_POST['nfw_options']['bf_enable'];
 	} else {
 		$bf_enable = 1;
+	}
+
+	if ( preg_match( '/^[01]$/', $_POST['nfw_options']['bf_type'] ) ) {
+		$bf_type = $_POST['nfw_options']['bf_type'];
+	} else {
+		$bf_type = 0;
 	}
 
 	if ( @preg_match('/^(GET|POST|GETPOST)$/', $_POST['nfw_options']['bf_request'] ) ) {
@@ -3366,18 +3541,24 @@ function nf_sub_loginprot_save() {
 		$bf_authlog = 1;
 	}
 
-	if ( empty($_POST['nfw_options']['auth_name']) ) {
+	if ( empty($_POST['nfw_options']['bf_allow_bot']) ) {
+		$bf_allow_bot = 1;
+	} else {
+		$bf_allow_bot = 0;
+	}
+
+	if ( empty($_POST['nfw_options']['auth_name']) && ! empty( $bf_enable ) && empty( $bf_type ) ) {
 		return( __('Error: please enter a user name for HTTP authentication.', 'ninjafirewall') );
-	} elseif (! preg_match('`^[-/\\_.a-zA-Z0-9]{6,32}$`', $_POST['nfw_options']['auth_name']) ) {
+	} elseif (! preg_match('`^[-/\\_.a-zA-Z0-9]{6,32}$`', $_POST['nfw_options']['auth_name']) && ! empty( $bf_enable ) && empty( $bf_type ) ) {
 		return( __('Error: HTTP authentication user name is not valid.', 'ninjafirewall') );
 	}
 	$auth_name = $_POST['nfw_options']['auth_name'];
 
-	if ( empty($_POST['nfw_options']['auth_pass']) ) {
+	if ( empty($_POST['nfw_options']['auth_pass']) && ! empty( $bf_enable ) && empty( $bf_type ) ) {
 		if ( empty($auth_name) || empty($auth_pass) ) {
 			return( __('Error: please enter a user name and password for HTTP authentication.', 'ninjafirewall') );
 		}
-	} elseif ( (strlen($_POST['nfw_options']['auth_pass']) < 6 ) || (strlen($_POST['nfw_options']['auth_pass']) > 32 ) ) {
+	} elseif ( (strlen($_POST['nfw_options']['auth_pass']) < 6 || strlen($_POST['nfw_options']['auth_pass']) > 32 ) && ! empty( $bf_enable ) && empty( $bf_type ) ) {
 		return( __('Error: password must be from 6 to 32 characters.', 'ninjafirewall') );
 	} else {
 		$auth_pass = sha1( stripslashes( $_POST['nfw_options']['auth_pass'] ) );
@@ -3393,14 +3574,19 @@ function nf_sub_loginprot_save() {
 		$auth_msgtxt = base64_encode( $auth_msgtxt );
 	}
 
+	if ( empty( $_POST['nfw_options']['captcha_text'] ) ) {
+		$captcha_text =  base64_encode( __('Type the characters you see in the picture below:', 'ninjafirewall') );
+	} else {
+		$captcha_text = stripslashes( $_POST['nfw_options']['captcha_text'] );
+		if ( strlen( $captcha_text ) > 255 ) {
+			$captcha_text = mb_substr( $captcha_text, 0, 255, 'utf-8' );
+		}
+		$captcha_text = base64_encode( htmlentities( $captcha_text ) );
+	}
+
 	$bf_rand = mt_rand(100000, 999999);
 
-	$data = '<?php $bf_enable=' . $bf_enable . ';$bf_request=\'' . $bf_request .
-		'\';$bf_bantime=' . $bf_bantime . ';' . '$bf_attempt=' . $bf_attempt .
-		';$bf_maxtime=' . $bf_maxtime . ';$bf_xmlrpc=' . $bf_xmlrpc. ';' .
-		'$auth_name=\'' . $auth_name . '\';$auth_pass=\'' . $auth_pass . '\';' .
-		'$auth_msgtxt=\'' . $auth_msgtxt . '\';$bf_rand=\'' . $bf_rand . '\';' .
-		'$bf_authlog=' . $bf_authlog . '; ?>';
+	$data = "<?php \$bf_enable={$bf_enable};\$bf_type={$bf_type};\$bf_request='{$bf_request}';\$bf_bantime={$bf_bantime};\$bf_attempt={$bf_attempt};\$bf_maxtime={$bf_maxtime};\$bf_xmlrpc={$bf_xmlrpc};\$bf_allow_bot={$bf_allow_bot};\$auth_name='{$auth_name}';\$auth_pass='{$auth_pass}';\$auth_msgtxt='{$auth_msgtxt}';\$bf_rand='{$bf_rand}';\$bf_authlog={$bf_authlog};\$captcha_text='{$captcha_text}'; ?>";
 
 	$fh = fopen( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php', 'w' );
 	if (! $fh) {
@@ -3411,6 +3597,16 @@ function nf_sub_loginprot_save() {
 	fclose( $fh );
 
 	$_SESSION['nfw_bfd'] = $bf_rand;
+
+
+	$path = NFW_LOG_DIR . '/nfwlog/cache/';
+	$glob = glob( $path . "bf_*" );
+	if ( is_array( $glob ) ) {
+		foreach( $glob as $file ) {
+			if ( preg_match( '`/bf_conf.php`', $file ) ) { continue; }
+			unlink( $file );
+		}
+	}
 
 }
 
@@ -3474,6 +3670,21 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
 		$tmp = '';
 	}
 
+	// Which encoding to use?
+	if ( defined('NFW_LOG_ENCODING') ) {
+		if ( NFW_LOG_ENCODING == 'b64' ) {
+			$encoding = '[b64:' . base64_encode( $res ) . ']';
+		} elseif ( NFW_LOG_ENCODING == 'none' ) {
+			$encoding = '[' . $res . ']';
+		} else {
+			$unp = unpack('H*', $res);
+			$encoding = '[hex:' . array_shift( $unp )  . ']';
+		}
+	} else {
+		$unp = unpack('H*', $res);
+		$encoding = '[hex:' . array_shift( $unp )  . ']';
+	}
+
 	@file_put_contents( $log_file,
       $tmp . '[' . time() . '] ' . '[0] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $num_incident . '] ' .
@@ -3481,7 +3692,7 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
       '[' . $loglevel . '] ' . '[' . $REMOTE_ADDR . '] ' .
       '[' . $http_ret_code . '] ' . '[' . $REQUEST_METHOD . '] ' .
       '[' . $SCRIPT_NAME . '] ' . '[' . $loginfo . '] ' .
-      '[hex:' . array_shift( unpack('H*', $res) ) . ']' . "\n", FILE_APPEND | LOCK_EX);
+      $encoding . "\n", FILE_APPEND | LOCK_EX);
 }
 
 /* ------------------------------------------------------------------ */
@@ -3734,8 +3945,6 @@ function nfw_check_emailalert() {
 				'0' => 'WordPress', '1' => __('upgraded', 'ninjafirewall'),	'label' => __('Version', 'ninjafirewall')
 			)
 		);
-
-		nfw_get_blogtimezone();
 
 		if ( substr_count($a_3, ',') ) {
 			$alert_array[$a_1][0] .= 's';

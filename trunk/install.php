@@ -551,7 +551,7 @@ function nfw_default_conf() {
 	// 1. header_register_callback(): requires PHP >=5.4
 	// 2. headers_list() and header_remove(): some hosts may disable them.
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '01010000';
+		$nfw_options['response_headers'] = '00010000';
 	}
 
 	define('NFUPDATESDO', 2);

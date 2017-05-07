@@ -21,17 +21,28 @@ if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
 // If your server can't remotely connect to a SSL port, add this
 // to your wp-config.php script: define('NFW_DONT_USE_SSL', 1);
-if (defined('NFW_DONT_USE_SSL')) {
+if ( defined( 'NFW_DONT_USE_SSL' ) ) {
 	$proto = "http";
 } else {
 	$proto = "https";
 }
 $update_log = NFW_LOG_DIR . '/nfwlog/updates.php';
-$update_url = array(
-	$proto . '://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
-	'version3.txt',
-	'rules3.txt'
-);
+if ( defined( 'NFUPDATESDO' ) && NFUPDATESDO == 2 ) {
+	// Installation:
+	$update_url = array(
+		$proto . '://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
+		'version3.txt',
+		'rules3.txt'
+	);
+} else {
+	// Scheduled updates:
+	$caching_id = sha1( home_url() );
+	$update_url = array(
+		$proto . '://updates.nintechnet.com/index.php',
+		"?version=3&cid={$caching_id}&edn=wp",
+		"?rules=3&cid={$caching_id}&edn=wp"
+	);
+}
 
 // Scheduled updates or NinjaFirewall installation:
 if (defined('NFUPDATESDO') ) {
@@ -377,7 +388,9 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 		array(
 			'timeout' => 20,
 			'httpversion' => '1.1' ,
-			'user-agent' => 'WordPress/' . $wp_version,
+			'user-agent' => 'Mozilla/5.0 (compatible; NinjaFirewall/'.
+									NFW_ENGINE_VERSION .'; WordPress/'. $wp_version . ')',
+			'sslverify' => true
 		)
 	);
 	if (! is_wp_error($res) ) {
@@ -424,7 +437,7 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 	} else {
 		nf_sub_updates_log(
 			$update_log,
-			__('Error: Unable to connect to WordPress server', 'ninjafirewall') . htmlspecialchars(" ({$res->get_error_message()})")
+			__('Error: Unable to connect to the remote server', 'ninjafirewall') . htmlspecialchars(" ({$res->get_error_message()})")
 		);
 	}
 	return 0;
@@ -440,7 +453,9 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 		array(
 			'timeout' => 20,
 			'httpversion' => '1.1' ,
-			'user-agent' => 'WordPress/' . $wp_version,
+			'user-agent' => 'Mozilla/5.0 (compatible; NinjaFirewall/'.
+									NFW_ENGINE_VERSION .'; WordPress/'. $wp_version . ')',
+			'sslverify' => true
 		)
 	);
 	if (! is_wp_error($res) ) {
@@ -472,7 +487,7 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 	} else {
 		nf_sub_updates_log(
 			$update_log,
-			__('Error: Unable to connect to WordPress server', 'ninjafirewall') . htmlspecialchars(" ({$res->get_error_message()})")
+			__('Error: Unable to connect to the remote server', 'ninjafirewall') . htmlspecialchars(" ({$res->get_error_message()})")
 		);
 	}
 	return 0;
@@ -481,8 +496,6 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 /* ------------------------------------------------------------------ */
 
 function nf_sub_updates_log($update_log, $msg) {
-
-	nfw_get_blogtimezone();
 
 	// If the log is bigger than 50Kb (+/- one month old), we flush it :
 	if ( file_exists($update_log) ) {
@@ -506,8 +519,6 @@ function nf_sub_updates_notification($new_rules_version) {
 	} else {
 		$recipient = $nfw_options['alert_email'];
 	}
-
-	nfw_get_blogtimezone();
 
 	$subject = __('[NinjaFirewall] Security rules update', 'ninjafirewall');
 	$msg = __('NinjaFirewall security rules have been updated:', 'ninjafirewall') . "\n\n";
