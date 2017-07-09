@@ -520,7 +520,7 @@ function nfw_default_conf() {
 		// v1.1.2 :
 		'no_xmlrpc'			=> 0,
 		// v1.7 :
-		'no_xmlrpc_multi'	=> 1,
+		'no_xmlrpc_multi'	=> 0,
 		// v3.3.2
 		'no_xmlrpc_pingback'=> 0,
 
@@ -578,6 +578,9 @@ function nfw_default_conf() {
 	nfw_update_option( 'nfw_options', $nfw_options);
 	nfw_update_option( 'nfw_rules', $nfw_rules);
 
+	if ( wp_next_scheduled( 'nfwgccron' ) ) {
+		wp_clear_scheduled_hook( 'nfwgccron' );
+	}
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');
 	}
@@ -590,6 +593,7 @@ function nfw_default_conf() {
 	nfw_get_blogtimezone();
 	wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 	wp_schedule_event( time() + 3600, 'hourly', 'nfsecupdates');
+	wp_schedule_event( time() + 1800, 'hourly', 'nfwgccron' );
 
 	$_SESSION['default_conf'] = 1;
 }

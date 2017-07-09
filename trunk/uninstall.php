@@ -121,6 +121,9 @@ function nfw_uninstall() {
 	if ( wp_next_scheduled('nfdailyreport') ) {
 		wp_clear_scheduled_hook('nfdailyreport');
 	}
+	if ( wp_next_scheduled( 'nfwgccron' ) ) {
+		wp_clear_scheduled_hook( 'nfwgccron' );
+	}
 
 	// Delete DB rows :
 	delete_option('nfw_options');

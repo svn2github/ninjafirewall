@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.5
+Version: 3.5.1
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.5' );
+define( 'NFW_ENGINE_VERSION', '3.5.1' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -106,6 +106,8 @@ require( plugin_dir_path(__FILE__) . 'lib/nfw_misc.php' );
 if (! defined( 'NFW_REMOTE_ADDR') ) {
 	nfw_select_ip();
 }
+
+add_action( 'nfwgccron', 'nfw_garbage_collector' );
 
 /* ------------------------------------------------------------------ */
 
@@ -462,7 +464,7 @@ function nfw_upgrade() {
 				nfw_get_blogtimezone();
 				wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 			}
-			$nfw_options['no_xmlrpc_multi'] = 1;
+			$nfw_options['no_xmlrpc_multi'] = 0;
 		}
 		// v3.1.2 update (file guard) ----------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '3.1.2', '<' ) ) {
@@ -495,6 +497,14 @@ function nfw_upgrade() {
 		// v3.4 update ---------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '3.4', '<' ) ) {
 			$nfw_options['a_53'] = 1;
+		}
+		// v3.5.1 update -------------------------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.5.1', '<' ) ) {
+			// Create garbage collector's cron job:
+			if ( wp_next_scheduled( 'nfwgccron' ) ) {
+				wp_clear_scheduled_hook( 'nfwgccron' );
+			}
+			wp_schedule_event( time() + 60, 'hourly', 'nfwgccron' );
 		}
 		// -------------------------------------------------------------
 
@@ -603,6 +613,9 @@ function nfw_upgrade() {
 		nfw_check_emailalert();
 	}
 
+	// Run the garbage collector if needed:
+	nfw_garbage_collector();
+
 	if (! empty( $nfw_options['wl_admin']) ) {
 		$_SESSION['nfw_goodguy'] = true;
 		if (! empty( $nfw_options['bf_enable'] ) && ! empty( $nfw_options['bf_rand'] ) ) {
@@ -645,8 +658,6 @@ function nfw_login_hook( $user_login, $user ) {
 		}
 	}
 
-	nfw_housework();
-
 	if (! empty( $nfw_options['wl_admin']) ) {
 		if ( ( $nfw_options['wl_admin'] == 1 && $admin_flag == 2 ) || ( $nfw_options['wl_admin'] == 2 ) ) {
 			$_SESSION['nfw_goodguy'] = $nfw_options['wl_admin'];
@@ -660,25 +671,7 @@ function nfw_login_hook( $user_login, $user ) {
 }
 
 add_action( 'wp_login', 'nfw_login_hook', 10, 2 );
-/* ------------------------------------------------------------------ */
 
-function nfw_housework() {
-
-	$nfw_options = nfw_get_option( 'nfw_options' );
-
-	if (! empty( $nfw_options['fg_enable']) ) {
-		$path = NFW_LOG_DIR . '/nfwlog/cache/';
-		$glob = glob($path . "fg_*.php");
-		if ( is_array($glob)) {
-			foreach($glob as $file) {
-				$stat = stat( $file );
-				if ( time() - $nfw_options['fg_mtime'] * 3660 > $stat['ctime'] ) {
-					unlink($file);
-				}
-			}
-		}
-	}
-}
 /* ------------------------------------------------------------------ */
 
 function nfw_send_loginemail( $user_login, $whoami ) {
@@ -773,10 +766,10 @@ function ninjafirewall_admin_menu() {
 	}
 
 	$message = '<br /><br /><br /><br /><center>' .
-				sprintf( __('Sorry %s, your request cannot be proceeded.', 'ninjafirewall'), '<b>%%REM_ADDRESS%%</b>') .
-				'<br />' . __('For security reason, it was blocked and logged.', 'ninjafirewall') .
+				sprintf( __('Sorry %s, your request cannot be processed.', 'ninjafirewall'), '<b>%%REM_ADDRESS%%</b>') .
+				'<br />' . __('For security reasons, it was blocked and logged.', 'ninjafirewall') .
 				'<br /><br />%%NINJA_LOGO%%<br /><br />' .
-				__('If you think that was a mistake, please contact the<br />webmaster and enclose the following incident ID:', 'ninjafirewall') .
+				__('If you believe this was an error please contact the<br />webmaster and enclose the following incident ID:', 'ninjafirewall') .
 				'<br /><br />[ <b>#%%NUM_INCIDENT%%</b> ]</center>';
 
 	define( 'NFW_DEFAULT_MSG', $message );
@@ -858,7 +851,7 @@ function ninjafirewall_admin_menu() {
 		'nfsubupdates', 'nf_sub_updates' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubupdates' );
 
-	$menu_hook = add_submenu_page( 'NinjaFirewall', 'NinjaFirewall: WP+ Edition', 'WP+ Edition', 'manage_options',
+	$menu_hook = add_submenu_page( 'NinjaFirewall', 'NinjaFirewall: WP+ Edition', '<b style="color:#fcdc25">WP+ Edition</b>', 'manage_options',
 		'nfsubwplus', 'nf_sub_wplus' );
 
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: About', 'ninjafirewall'), __('About...', 'ninjafirewall'), 'manage_options',
@@ -1034,11 +1027,23 @@ function nf_menu_main() {
 			<td><?php echo NFW_ENGINE_VERSION . ' ~ ' . __('Security rules:', 'ninjafirewall' ) . ' ' . preg_replace('/(\d{4})(\d\d)(\d\d)/', '$1-$2-$3', $nfw_options['rules_version']) ?></td>
 		</tr>
 	<?php
+
+	// If security rules updates are disabled, warn the user:
+	if ( empty( $nfw_options['enable_updates'] ) ) {
+		?>
+		<tr>
+			<th scope="row"><?php _e('Updates', 'ninjafirewall') ?></th>
+			<td width="20" align="left"><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16"></td>
+			<td><a href="?page=nfsubupdates"><?php _e( 'Security rules updates are disabled.', 'ninjafirewall' ) ?></a> <?php _e( 'If you want your blog to be protected against the latest threats, enable automatic security rules updates.', 'ninjafirewall' ) ?></td>
+		</tr>
+		<?php
+	}
+
 	if ( empty($_SESSION['nfw_goodguy']) ) {
 		?>
 		<tr>
 			<th scope="row"><?php _e('Admin user', 'ninjafirewall') ?></th>
-			<td width="20" align="left"><img src="<?php echo plugins_url( '/images/icon_warn_16.png', __FILE__ )?>" border="0" height="16" width="16"></td>
+			<td width="20" align="left"><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" border="0" height="16" width="16"></td>
 			<td><?php printf( __('You are not whitelisted. Ensure that the "Do not block WordPress administrator" option is enabled in the <a href="%s">Firewall Policies</a> menu, otherwise you will likely get blocked by the firewall while working from your administration dashboard.', 'ninjafirewall'), '?page=nfsubpolicies') ?></td>
 		</tr>
 	<?php
@@ -1175,55 +1180,13 @@ function nf_menu_main() {
 	$doc_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 	if ( @file_exists( $file = dirname( $doc_root ) . '/.htninja') ||
 		@file_exists( $file = $doc_root . '/.htninja') ) {
-		echo '<tr><th scope="row">' . __('Optional configuration file', 'ninjafirewall') . '</th>';
-		if ( is_writable( $file ) ) {
-			echo '<td width="20" align="left"><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16"></td>
-			<td>' . sprintf( __('%s is writable. Consider changing its permissions to read-only.', 'ninjafirewall'), '<code>' .  htmlentities($file) . '</code>') . '</td>';
-		} else {
-			echo '<td width="20">&nbsp;</td>
-				<td><code>' .  htmlentities($file) . '</code></td>';
-		}
-		echo '</tr>';
+		echo '<tr><th scope="row">' . __('Optional configuration file', 'ninjafirewall') . '</th>
+		<td width="20">&nbsp;</td>
+		<td><code>' .  htmlentities($file) . '</code></td>
+		</tr>';
 	}
 
 	echo '</table>';
-
-	$ro_msg = '<h3>' . __('System Files', 'ninjafirewall') . '</h3>
-	<table class="form-table">';
-	$ro = 0;
-	if ( ( file_exists( ABSPATH . '.htaccess' ) ) && (! is_writable( ABSPATH . '.htaccess' ) ) ) {
-		$ro_msg .= '<tr>
-		<th scope="row">.htaccess</th>
-		<td width="20" align="left"><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16"></td>
-		<td>' . sprintf(__('%s is read-only.', 'ninjafirewall'), '<code>' . htmlentities(ABSPATH) . '.htaccess</code> ') . '</td>
-		</tr>';
-		$ro++;
-	}
-	$phpini = '';
-	if ( file_exists( ABSPATH . 'php.ini' ) ) {
-		$phpini = ABSPATH . 'php.ini';
-	} elseif ( file_exists( ABSPATH . 'php5.ini' ) ) {
-		$phpini = ABSPATH . 'php5.ini';
-	} elseif ( file_exists( ABSPATH . '.user.ini' ) ) {
-		$phpini = ABSPATH . '.user.ini';
-	}
-	if ( $phpini ) {
-		if (! is_writable( $phpini ) ) {
-			$ro_msg .= '<tr>
-			<th scope="row">PHP INI</th>
-			<td width="20" align="left"><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16"></td>
-			<td>' . sprintf(__('%s is read-only.', 'ninjafirewall'), '<code>' . htmlentities($phpini) . '</code> ') . '</td>
-			</tr>';
-			$ro++;
-		}
-	}
-	if ( $ro++ ) {
-		echo $ro_msg . '<tr>
-			<th scope="row">&nbsp;</th>
-			<td width="20">&nbsp;</td>
-			<td><span class="description">&nbsp;' . sprintf( __('Warning: you have some read-only system files; please <a href="%s">read this</a> if you want to uninstall NinjaFirewall.', 'ninjafirewall'), 'https://nintechnet.com/ninjafirewall/wp-edition/help/?uninstall') . '</span></td>
-			</tr></table>';
-	}
 	?>
 </div>
 
@@ -1268,7 +1231,7 @@ function nf_sub_policies() {
 	echo '
 <script>
 function restore() {
-   if (confirm("' . __('All fields will be restored to their default values. Go ahead?', 'ninjafirewall') . '")){
+   if (confirm("' . esc_js( __('All fields will be restored to their default values. Go ahead?', 'ninjafirewall') ) . '")){
       return true;
    }else{
 		return false;
@@ -1298,7 +1261,7 @@ function ssl_warn() {';
 		echo 'return true;';
 	} else {
 		echo '
-		if (confirm("' . __('WARNING: ensure that you can access your admin console over HTTPS before enabling this option, otherwise you will lock yourself out of your site. Go ahead?', 'ninjafirewall') . '")){
+		if (confirm("' . esc_js( __('WARNING: ensure that you can access your admin console over HTTPS before enabling this option, otherwise you will lock yourself out of your site. Go ahead?', 'ninjafirewall') ) . '")){
 			return true;
 		}
 		return false;';
@@ -1307,7 +1270,7 @@ echo '
 }
 function sanitise_fn(cbox) {
 	if(cbox.checked) {
-		if (confirm("' . __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the substitution character. Continue?', 'ninjafirewall') . '")){
+		if (confirm("' . esc_js( __('Any character that is not a letter [a-zA-Z], a digit [0-9], a dot [.], a hyphen [-] or an underscore [_] will be removed from the filename and replaced with the substitution character. Continue?', 'ninjafirewall') ) . '")){
 			return true;
 		}
 		return false;
@@ -2187,7 +2150,7 @@ function sanitise_fn(cbox) {
 		}
 		?>
 		<tr>
-			<th scope="row"><?php _e('WordPress REST API', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('WordPress REST API', 'ninjafirewall') ?>*</th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[no_restapi]" value="1"<?php checked( $no_restapi, 1 );disabled( $restapi_error, 1) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
@@ -2196,16 +2159,18 @@ function sanitise_fn(cbox) {
 		</tr>
 
 		<tr>
-			<th scope="row"><?php _e('WordPress XML-RPC API', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('WordPress XML-RPC API', 'ninjafirewall') ?>*</th>
 			<td width="20">&nbsp;</td>
 			<td align="left">
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
-				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block <code>system.multicall</code> method (default)', 'ninjafirewall') ?></label></p>
+				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block <code>system.multicall</code> method', 'ninjafirewall') ?></label></p>
 				<?php echo $is_JetPack; ?>
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_pingback]" value="1"<?php checked( $no_xmlrpc_pingback, 1 ) ?>>&nbsp;<?php _e('Block Pingbacks', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 	</table>
+
+	<span class="description">*<?php _e('Disabling access to the REST or XML-RPC API may break some functionality on your blog, its themes or plugins.', 'ninjafirewall') ?></span>
 
 	<table class="form-table">
 		<tr valign="top">
@@ -2701,7 +2666,7 @@ function nf_sub_policies_default() {
 	$nfw_options['enum_restapi']		= 0;
 	$nfw_options['no_restapi']			= 0;
 	$nfw_options['no_xmlrpc']			= 0;
-	$nfw_options['no_xmlrpc_multi']	= 1;
+	$nfw_options['no_xmlrpc_multi']	= 0;
 	$nfw_options['no_xmlrpc_pingback']= 0;
 	$nfw_options['no_post_themes']	= 0;
 	$nfw_options['force_ssl'] 			= 0;
@@ -2756,19 +2721,13 @@ function nf_sub_fileguard() {
 		var e = document.getElementById(id);
 		if (! e.value ) { return }
 		if (! /^[1-9][0-9]?$/.test(e.value) ) {
-			alert("<?php
-			// translators: quotes (') must be escaped
-			_e('Please enter a number from 1 to 99.', 'ninjafirewall')
-			?>");
+			alert("<?php echo esc_js( __('Please enter a number from 1 to 99.', 'ninjafirewall') ) ?>");
 			e.value = e.value.substring(0, e.value.length-1);
 		}
 	}
 	function check_fields() {
 		if (! document.nfwfilefuard.elements["nfw_options[fg_mtime]"]){
-			alert("<?php
-			// translators: quotes (') must be escaped
-			_e('Please enter a number from 1 to 99.', 'ninjafirewall')
-			?>");
+			alert("<?php echo esc_js( __('Please enter a number from 1 to 99.', 'ninjafirewall') ) ?>");
 			return false;
 		}
 		return true;
@@ -2781,9 +2740,7 @@ function nf_sub_fileguard() {
 	<?php
 	if ( defined('NFW_WPWAF') ) {
 		?>
-		<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:orange;">
-			<p><?php printf( __('You are running NinjaFirewall in <i>WordPress WAF</i> mode. The %s feature will be limited to a few WordPress files only (e.g., index.php, wp-login.php, xmlrpc.php, admin-ajax.php, wp-load.php etc). If you want it to apply to any PHP script, you will need to run NinjaFirewall in %s mode.', 'ninjafirewall'), 'File Guard', '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') ?></p>
-		</div>
+		<div class="notice-warning notice is-dismissible"><p><?php printf( __('You are running NinjaFirewall in <i>WordPress WAF</i> mode. The %s feature will be limited to a few WordPress files only (e.g., index.php, wp-login.php, xmlrpc.php, admin-ajax.php, wp-load.php etc). If you want it to apply to any PHP script, you will need to run NinjaFirewall in %s mode.', 'ninjafirewall'), 'File Guard', '<a href="https://blog.nintechnet.com/full_waf-vs-wordpress_waf/">Full WAF</a>') ?></p></div>
 		<?php
 	}
 
@@ -3173,25 +3130,19 @@ function nf_sub_loginprot() {
 		var e = document.getElementById(id);
 		if (! e.value ) { return }
 		if (! /^[1-9][0-9]?$/.test(e.value) ) {
-			alert("<?php
-			// translators: quotes (') must be escaped
-			_e('Please enter a number from 1 to 99 in \'Password-protect\' field.', 'ninjafirewall') ?>");
+			alert("<?php echo esc_js( __('Please enter a number from 1 to 99 in \'Password-protect\' field.', 'ninjafirewall') ) ?>");
 			e.value = e.value.substring(0, e.value.length-1);
 		}
 	}
 	function auth_user_valid() {
 		var e = document.bp_form.elements['nfw_options[auth_name]'];
 		if ( e.value.match(/[^-\/\\_.a-zA-Z0-9]/) ) {
-			alert('<?php
-			// translators: quotes (') must be escaped
-			_e('Invalid character.', 'ninjafirewall') ?>');
+			alert('<?php echo esc_js( __('Invalid character.', 'ninjafirewall') ) ?>');
 			e.value = e.value.replace(/[^-\/\\_.a-zA-Z0-9]/g,'');
 			return false;
 		}
 		if (e.value == 'admin') {
-			alert('<?php
-			// translators: quotes (') must be escaped
-			_e('"admin" is not acceptable, please choose another user name.', 'ninjafirewall') ?>');
+			alert('<?php echo esc_js( __('"admin" is not acceptable, please choose another user name.', 'ninjafirewall') ) ?>');
 			e.value = '';
 			return false;
 		}
@@ -3199,9 +3150,7 @@ function nf_sub_loginprot() {
 	function realm_valid() {
 		var e = document.getElementById("realm").value;
 		if ( e.length >= 1024 ) {
-			alert('<?php
-			// translators: quotes (') must be escaped
-			_e('Please enter max 1024 character only.', 'ninjafirewall') ?>');
+			alert('<?php echo esc_js( __('Please enter max 1024 character only.', 'ninjafirewall') ) ?>');
 			return false;
 		}
 	}
@@ -3254,9 +3203,7 @@ function nf_sub_loginprot() {
 	}
 	function xmlrpc_warn( what ) {
 		if ( bf_enable == 2 && what.checked == true ) {
-			alert("<?php
-			// translators: double-quotes (") must be escaped
-			_e("Note: Access to the XML-RPC API will be completely disabled when the brute-force attack protection is set to 'Always ON'.", 'ninjafirewall') ?>");
+			alert("<?php echo esc_js( __("Note: Access to the XML-RPC API will be completely disabled when the brute-force attack protection is set to 'Always ON'.", 'ninjafirewall') ) ?>");
 		}
 	}
 
@@ -3745,6 +3692,12 @@ function nf_sub_edit() {
 	}
 
 	$disabled_rules = $enabled_rules = array();
+
+	if ( empty( $nfw_rules ) ) {
+		echo '<div class="error notice is-dismissible"><p>' . __('Error: no rules found.', 'ninjafirewall') .'</p></div></div>';
+		return;
+	}
+
 	foreach ( $nfw_rules as $rule_key => $rule_value ) {
 		if ( $rule_key == 999 ) { continue; }
 		if (! empty( $nfw_rules[$rule_key]['ena'] ) ) {
@@ -3754,12 +3707,14 @@ function nf_sub_edit() {
 		}
 	}
 
+	$nonce = wp_nonce_field('editor_save', 'nfwnonce', 0, 0);
+
 	echo '<br /><h3>' . __('NinjaFirewall built-in security rules', 'ninjafirewall') .'</h3>
 	<table class="form-table">
 		<tr>
 			<th scope="row">' . __('Select the rule you want to disable or enable', 'ninjafirewall') .'</th>
 			<td align="left">
-			<form method="post">'. wp_nonce_field('editor_save', 'nfwnonce', 0) . '
+			<form method="post">'. $nonce . '
 			<select name="sel_e_r" style="font-family:Consolas,Monaco,monospace;">
 				<option value="0">' . __('Total rules enabled', 'ninjafirewall') .' : ' . count( $enabled_rules ) . '</option>';
 	sort( $enabled_rules );
@@ -3795,7 +3750,7 @@ function nf_sub_edit() {
 	echo '</select>&nbsp;&nbsp;<input class="button-secondary" type="submit" name="disable" value="' . __('Disable it', 'ninjafirewall') .'"' . disabled( $count, 0) .'>
 		</form>
 		<br />
-		<form method="post">'. wp_nonce_field('editor_save', 'nfwnonce', 0) . '
+		<form method="post">'. $nonce . '
 		<select name="sel_d_r" style="font-family:Consolas,Monaco,monospace;">
 		<option value="0">' . __('Total rules disabled', 'ninjafirewall') .' : ' . count( $disabled_rules ) . '</option>';
 	sort( $disabled_rules );

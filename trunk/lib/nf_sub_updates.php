@@ -27,6 +27,22 @@ if ( defined( 'NFW_DONT_USE_SSL' ) ) {
 	$proto = "https";
 }
 $update_log = NFW_LOG_DIR . '/nfwlog/updates.php';
+
+// Check which rules should be returned:
+if ( defined('NFW_WPWAF') ) {
+	$rules_type = 0;
+} else {
+	$rules_type = 1;
+}
+
+$nfw_options = nfw_get_option('nfw_options');
+
+if ( empty( $nfw_options['sched_updates'] ) || empty( $nfw_options['enable_updates'] ) ) {
+	$sched_updates = 0;
+} else {
+	$sched_updates = (int) $nfw_options['sched_updates'];
+}
+
 if ( defined( 'NFUPDATESDO' ) && NFUPDATESDO == 2 ) {
 	// Installation:
 	$update_url = array(
@@ -39,8 +55,8 @@ if ( defined( 'NFUPDATESDO' ) && NFUPDATESDO == 2 ) {
 	$caching_id = sha1( home_url() );
 	$update_url = array(
 		$proto . '://updates.nintechnet.com/index.php',
-		"?version=3&cid={$caching_id}&edn=wp",
-		"?rules=3&cid={$caching_id}&edn=wp"
+		"?version=3&cid={$caching_id}&edn=wp&rt={$rules_type}&su={$sched_updates}",
+		"?rules=3&cid={$caching_id}&edn=wp&rt={$rules_type}&su={$sched_updates}"
 	);
 }
 
@@ -88,9 +104,9 @@ if (! empty($_POST['nfw_act']) ) {
 		}
 		echo '<div class="updated notice is-dismissible"><p>' . __('Your changes have been saved.', 'ninjafirewall') . '</p></div>';
 	}
+	// Reload options:
+	$nfw_options = nfw_get_option('nfw_options');
 }
-
-$nfw_options = nfw_get_option('nfw_options');
 
 if ( empty($nfw_options['enable_updates']) ) {
 	$enable_updates = 0;

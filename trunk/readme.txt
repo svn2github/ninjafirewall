@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.8
-Stable tag: 3.5
+Stable tag: 3.5.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -17,7 +17,7 @@ NinjaFirewall (WP Edition) is a true Web Application Firewall. Although it can b
 
 It allows any blog administrator to benefit from very advanced and powerful security features that usually aren't available at the WordPress level, but only in security applications such as the Apache [ModSecurity](http://www.modsecurity.org/ "") module or the PHP [Suhosin](http://suhosin.org/ "") extension.
 
-> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to enable all its features) or HHVM 3.4+, MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
+> NinjaFirewall requires at least PHP 5.3 (5.4 or higher recommended to use all its features) or HHVM 3.4+, MySQLi extension and is only compatible with Unix-like OS (Linux, BSD). It is **not compatible with Microsoft Windows**.
 
 NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to a PHP script before it reaches WordPress or any of its plugins. All scripts located inside the blog installation directories and sub-directories will be protected, including those that aren't part of the WordPress package. Even encoded PHP scripts, hackers shell scripts and backdoors will be filtered by NinjaFirewall.
 
@@ -232,15 +232,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.5 =
+= v3.5.1 =
 
-* The login page can also be protected with a captcha instead of the username/password combination (see "Login Protection > Type of protection").
-* A new option was added to attempt to block bots before they start a brute-force attack (see "Login Protection > Enable bot protection").
-* The substitution character used to sanitise filenames can be changed (see "Firewall Policies > Uploads > Sanitise filenames > Substitution character").
-* The "X-Content-Type-Options" firewall policy will be disabled by default when installing NinjaFirewall.
-* Fixed a bug where NinjaFirewall was not reporting the correct timezone.
-* The firewall log encoding can be disabled or changed (hexadecimal, base64 or none). See http://nin.link/log_encoding/
-* Updated Anti-Malware signatures.
+* Added a new "garbage collector" to better clean up NinjaFirewall's cache folder and temporary files.
+* All translatable strings used for JavaScript are now automatically escaped via the `esc_js()` function. Translators can use single or double quotes ('") inside their text without breaking the JS code.
+* The "WordPress XML-RPC API > Block system.multicall method" policy will be disabled by default when installing NinjaFirewall.
+* The login page "Bot protection" option will write blocked requests to the firewall log.
+* If security rules updates are disabled, a warning will be displayed in the "Overview" page.
+* Fixed HTML bug in the "Rules Editor" page.
+* [WP+ Edition] Fixed a small issue with the shared memory option: sometimes, NinjaFirewall was recreating the shared memory segment for no apparent reason.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Small fixes and minor adjustments.
-
+* Minor fixes (typos etc) and adjustments.

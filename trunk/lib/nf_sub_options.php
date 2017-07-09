@@ -34,18 +34,18 @@ function preview_msg() {
 	var t3 = t2.replace(\'%%NINJA_LOGO%%\',\'<img src="' . plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png" width="75" height="75" title="NinjaFirewall">\');
 	var ns;
 	if ( t3.match(/<style/i) ) {
-		ns = "'. __('CSS style sheets', 'ninjafirewall') .'";
+		ns = "'. esc_js( __('CSS style sheets', 'ninjafirewall') ) .'";
 	}
 	if ( t3.match(/<script/i) ) {
-		ns = "'. __('Javascript code', 'ninjafirewall') .'";
+		ns = "'. esc_js( __('Javascript code', 'ninjafirewall') ) .'";
 	}
 	if ( ns ) {
-		alert("'. sprintf( __('Your message seems to contain %s. For security reason, it cannot be previewed from the admin dashboard.', 'ninjafirewall'), '"+ ns +"'). '");
+		alert("'. sprintf( esc_js( __('Your message seems to contain %s. For security reasons, it cannot be previewed from the admin dashboard.', 'ninjafirewall') ), '"+ ns +"'). '");
 		return false;
 	}
 	document.getElementById(\'out_msg\').innerHTML = t3;
 	jQuery("#td_msg").slideDown();
-	document.getElementById(\'btn_msg\').value = \'' . __('Refresh preview', 'ninjafirewall') . '\';
+	document.getElementById(\'btn_msg\').value = \'' . esc_js( __('Refresh preview', 'ninjafirewall') ) . '\';
 }
 function default_msg() {
 	document.option_form.elements[\'nfw_options[blocked_msg]\'].value = "' . preg_replace( '/[\r\n]/', '\n', NFW_DEFAULT_MSG) .'";
@@ -297,6 +297,11 @@ function nf_sub_options_save() {
 	// Save them :
 	nfw_update_option( 'nfw_options', $nfw_options);
 
+	// Make sure the garbage collector cron job is scheduled:
+	if (! wp_next_scheduled( 'nfwgccron' ) ) {
+		wp_schedule_event( time() + 60, 'hourly', 'nfwgccron' );
+	}
+
 }
 /* ------------------------------------------------------------------ */
 
@@ -379,6 +384,13 @@ function nf_sub_options_import() {
 		nfw_get_blogtimezone();
 		wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 	}
+
+	// Re-enable the garbage collector, if needed:
+	if ( wp_next_scheduled('nfwgccron') ) {
+		// Clear old one:
+		wp_clear_scheduled_hook('nfwgccron');
+	}
+	wp_schedule_event( time() + 60, 'hourly', 'nfwgccron' );
 
 	// Check compatibility before importing HSTS headers configration
 	// or unset the option :

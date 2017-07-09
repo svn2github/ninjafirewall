@@ -1274,11 +1274,13 @@ function nfw_bfd($where) {
 
 	if ( $where == 1 && $bf_allow_bot == 0 ) {
 		if ( empty( $_SERVER['HTTP_ACCEPT'] ) || empty( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) || empty( $_SERVER['HTTP_USER_AGENT'] ) || stripos( $_SERVER['HTTP_USER_AGENT'], 'Mozilla' ) === FALSE ) {
-			header('HTTP/1.0 400 Bad Request');
+			header('HTTP/1.0 404 Not Found');
 			header('Pragma: no-cache');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Expires: 0');
-			echo '400 Bad Request';
+			$nfw_['nfw_options']['ret_code'] = '404';
+			nfw_log('Blocked access to the login page', 'bot detection is enabled', 1, 0);
+			echo '404 Not Found';
 			exit;
 		}
 	}

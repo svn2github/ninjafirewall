@@ -286,7 +286,7 @@ if (file_exists($nfmon_diff) ) {
 	}
 	<?php } ?>
 	function delit() {
-		if (confirm("<?php _e('Delete the current snapshot ?', 'ninjafirewall') ?>") ) {
+		if (confirm("<?php echo esc_js( __('Delete the current snapshot?', 'ninjafirewall') ) ?>") ) {
 			return true;
 		}
 		return false;

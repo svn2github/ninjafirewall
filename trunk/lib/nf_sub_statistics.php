@@ -83,7 +83,7 @@ $total = $critical + $high + $medium;
 if ($total == 1) {$fast = $slow;}
 
 if (! $total ) {
-	echo '<div class="error notice is-dismissible"><p>' . __('You do not have any stats for the current month yet.', 'ninjafirewall') . '</p></div>';
+	echo '<div class="notice-info notice is-dismissible"><p>' . __('You do not have any stats for the current month yet.', 'ninjafirewall') . '</p></div>';
 	$fast = 0;
 } else {
 	$coef = 100 / $total;

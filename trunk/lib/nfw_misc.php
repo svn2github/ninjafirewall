@@ -21,6 +21,61 @@ if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
 /* ------------------------------------------------------------------ */
 
+function nfw_garbage_collector() {
+
+	// Clean/delete cache folder & temp files:
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+	$path = NFW_LOG_DIR . '/nfwlog/cache/';
+	$now = time();
+
+	// Don't do anything if the cache folder
+	// was cleaned up less than 5 minutes ago:
+	$gc = $path . 'garbage_collector.php';
+	if ( file_exists( $gc ) ) {
+		$nfw_mtime = filemtime( $gc ) ;
+		if ( $now - $nfw_mtime < 300 ) {
+			return;
+		}
+		unlink( $gc );
+	}
+	touch( $gc );
+
+	// File Guard temp files:
+	$glob = glob( $path . "fg_*.php" );
+	if ( is_array( $glob ) ) {
+		foreach( $glob as $file ) {
+			$nfw_ctime = filectime( $file );
+			// Delete it, if it is too old :
+			if ( $now - $nfw_options['fg_mtime'] * 3660 > $nfw_ctime ) {
+				unlink( $file );
+			}
+		}
+	}
+
+	// Live Log:
+	$nfw_livelogrun = $path . 'livelogrun.php';
+	if ( file_exists( $nfw_livelogrun ) ) {
+		$nfw_mtime = filemtime( $nfw_livelogrun );
+		// If the file was not accessed for more than 100s, we assume
+		// the admin has stopped using live log from WordPress
+		// dashboard (refresh rate is max 45 seconds):
+		if ( $now - $nfw_mtime > 100 ) {
+			unlink( $nfw_livelogrun );
+		}
+	}
+	// If the log was not modified for the past 10mn, we delete it as well:
+	$nfw_livelog = $path . 'livelog.php';
+	if ( file_exists( $nfw_livelog ) ) {
+		$nfw_mtime = filemtime( $nfw_livelog ) ;
+		if ( $now - $nfw_mtime > 600 ) {
+			unlink( $nfw_livelog );
+		}
+	}
+}
+
+/* ------------------------------------------------------------------ */
+
 function nfw_select_ip() {
 	// Ensure we have a proper and single IP (a user may use the .htninja file
 	// to redirect HTTP_X_FORWARDED_FOR, which may contain more than one IP,
@@ -38,6 +93,7 @@ function nfw_select_ip() {
 		define('NFW_REMOTE_ADDR', htmlspecialchars($_SERVER['REMOTE_ADDR']) );
 	}
 }
+
 /* ------------------------------------------------------------------ */
 
 function nfw_admin_notice(){

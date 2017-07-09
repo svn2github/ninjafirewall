@@ -75,7 +75,7 @@ function fw_livelog_record() {
 	$nfw_['mtime'] = filemtime($nfw_['log_dir'] .'/cache/livelogrun.php');
 
 	// If the file was not accessed for more than 100s, we assume
-	// the admin has stopped watching the live log from WordPress
+	// the admin has stopped using live log from WordPress
 	// dashboard (max refresh rate is 45s) :
 	if ( $nfw_['fw_starttime'] - $nfw_['mtime'] > 100 ) {
 		unlink($nfw_['log_dir'] .'/cache/livelogrun.php');

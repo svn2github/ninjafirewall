@@ -86,7 +86,7 @@ if ( ! empty( $ok_msg ) ) {
 	echo '<div class="updated notice is-dismissible"><p>' . $ok_msg . '.</p></div>';
 }
 if ( isset( $data['lines'] ) && $data['lines'] > $max_lines ) {
-	echo '<div class="error notice is-dismissible"><p>' . __('Note', 'ninjafirewall') . ': ' . sprintf( __('your log has %s lines. I will display the last %s lines only.', 'ninjafirewall'), $data['lines'], $max_lines ) . '</p></div>';
+	echo '<div class="notice-info notice is-dismissible"><p>' . __('Note', 'ninjafirewall') . ': ' . sprintf( __('your log has %s lines. I will display the last %s lines only.', 'ninjafirewall'), $data['lines'], $max_lines ) . '</p></div>';
 }
 
 
@@ -194,9 +194,7 @@ function check_key() {
 	var pubkey = document.frmlog2.elements["nfw_options[clogs_pubkey]"];
 	if (! pubkey.value.match( /^[a-f0-9]{40}:(?:[a-f0-9:.]{3,39}|\*)$/) ) {
 		pubkey.focus();
-		alert("'.
-		// translators: quotes (') must be escaped
-		__('Your public key is not valid.', 'ninjafirewall') . '");
+		alert("'. esc_js( __('Your public key is not valid.', 'ninjafirewall') ) . '");
 		return false;
 	}
 }

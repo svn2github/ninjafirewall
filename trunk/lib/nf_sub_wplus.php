@@ -130,7 +130,7 @@ nf_not_allowed( 'block', __LINE__ );
 		</tr>
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<td style="text-align:center">
-				<h2><b><a href="https://nintechnet.com/ninjafirewall/wp-edition/"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> Edition unique features.', 'ninjafirewall') ?></b></h2>
+				<h2><b><a href="https://nintechnet.com/"><?php _e('Learn more</a> about the <font color="#21759B">WP+</font> Edition unique features.', 'ninjafirewall') ?></b></h2>
 				<h2><b><a href="https://nintechnet.com/ninjafirewall/wp-edition/?comparison"><?php _e('Compare</a> the WP and <font color="#21759B">WP+</font> Editions.', 'ninjafirewall') ?></b></h2>
 			</td>
 		</tr>

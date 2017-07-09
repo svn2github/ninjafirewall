@@ -116,9 +116,7 @@ function nfw_presave( $err = '' ) {
 			}
 		}
 		if (! ischecked && document.presave_form.http_server.value != 1 && document.presave_form.http_server.value != 7) {
-			alert('<?php
-			// translators: quotes (') must be escaped
-			_e('Please select the PHP initialization file supported by your server.', 'ninjafirewall') ?>');
+			alert('<?php echo esc_js( __('Please select the PHP initialization file supported by your server.', 'ninjafirewall') ) ?>');
 			return false;
 		}
 		return true;

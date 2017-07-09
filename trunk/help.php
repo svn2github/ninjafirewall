@@ -386,7 +386,7 @@ function help_nfsublogin() {
 		<p>' . __('<b>Password:</b> It password-protects the login page. NinjaFirewall uses its own very fast authentication scheme and it is compatible with any HTTP server (Apache, Nginx, Lighttpd etc).', 'ninjafirewall') . '</p>
 		<p>' . __('<b>Captcha:</b> It will display a 5-character captcha code.', 'ninjafirewall') . '</p>
 		<p><b>' . __('Bot protection:', 'ninjafirewall') . '</b>
-		<br />' . __('NinjaFirewall will attempt to block bots and scripts immediatly, i.e., even before they start a brute-force attack.', 'ninjafirewall') . '</p>
+		<br />' . __('NinjaFirewall will attempt to block bots and scripts immediately, i.e., even before they start a brute-force attack.', 'ninjafirewall') . '</p>
 
 		<br />&nbsp;
 		</div>'
