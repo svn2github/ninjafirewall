@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Stable (latest release)\n"
-"POT-Creation-Date: 2017-07-08 17:25+0700\n"
-"PO-Revision-Date: 2017-07-08 17:25+0700\n"
+"POT-Creation-Date: 2017-08-05 01:00+0700\n"
+"PO-Revision-Date: 2017-08-05 01:00+0700\n"
 "Last-Translator: NinTechNet <contact@nintechnet.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -848,8 +848,8 @@ msgid ""
 "only if your site gets sufficient traffic."
 msgstr ""
 
-#: help.php:325 lib/nf_sub_malwarescan.php:29 lib/nf_sub_malwarescan.php:62
-#: lib/nf_sub_malwarescan.php:126 ninjafirewall.php:822
+#: help.php:325 lib/nf_sub_malwarescan.php:29 lib/nf_sub_malwarescan.php:70
+#: lib/nf_sub_malwarescan.php:130 ninjafirewall.php:822
 msgid "Anti-Malware"
 msgstr ""
 
@@ -897,7 +897,7 @@ msgstr ""
 msgid "<a href=\"%s\">See our blog for more info about this</a>."
 msgstr ""
 
-#: help.php:337 lib/nf_sub_filecheck.php:493 lib/nf_sub_malwarescan.php:251
+#: help.php:337 lib/nf_sub_filecheck.php:493 lib/nf_sub_malwarescan.php:250
 msgid "Options"
 msgstr ""
 
@@ -2089,7 +2089,7 @@ msgid ""
 msgstr ""
 
 #: lib/nf_sub_event.php:54 lib/nf_sub_filecheck.php:113
-#: lib/nf_sub_livelog.php:219 lib/nf_sub_malwarescan.php:83
+#: lib/nf_sub_livelog.php:219 lib/nf_sub_malwarescan.php:91
 #: lib/nf_sub_options.php:69 lib/nf_sub_updates.php:105 ninjafirewall.php:1291
 #: ninjafirewall.php:2758 ninjafirewall.php:2886 ninjafirewall.php:3032
 msgid "Your changes have been saved."
@@ -2283,7 +2283,7 @@ msgstr ""
 msgid "Blocked brute-force attacks:"
 msgstr ""
 
-#: lib/nf_sub_event.php:446 lib/nfw_misc.php:444
+#: lib/nf_sub_event.php:446 lib/nfw_misc.php:452
 msgid ""
 "This notification can be turned off from NinjaFirewall \"Event Notifications"
 "\" page."
@@ -2337,7 +2337,7 @@ msgid ""
 "separated"
 msgstr ""
 
-#: lib/nf_sub_filecheck.php:163 lib/nf_sub_malwarescan.php:307
+#: lib/nf_sub_filecheck.php:163 lib/nf_sub_malwarescan.php:306
 msgid "Do not follow symbolic links (default)"
 msgstr ""
 
@@ -2432,7 +2432,7 @@ msgid "New files:"
 msgstr ""
 
 #: lib/nf_sub_filecheck.php:377 lib/nf_sub_filecheck.php:430
-#: lib/nf_sub_malwarescan.php:317
+#: lib/nf_sub_malwarescan.php:316
 msgid "Size"
 msgstr ""
 
@@ -2607,8 +2607,8 @@ msgstr ""
 
 #: lib/nf_sub_filecheck.php:834 lib/nf_sub_filecheck.php:836
 #: lib/nf_sub_filecheck.php:852 lib/nf_sub_filecheck.php:854
-#: lib/nf_sub_updates.php:542 lib/nf_sub_updates.php:544 lib/nfw_misc.php:297
-#: lib/nfw_misc.php:299 lib/nfw_misc.php:435 lib/nfw_misc.php:437
+#: lib/nf_sub_updates.php:542 lib/nf_sub_updates.php:544 lib/nfw_misc.php:305
+#: lib/nfw_misc.php:307 lib/nfw_misc.php:443 lib/nfw_misc.php:445
 msgid "Blog:"
 msgstr ""
 
@@ -2636,7 +2636,7 @@ msgid ""
 "feature."
 msgstr ""
 
-#: lib/nf_sub_livelog.php:34 lib/nf_sub_malwarescan.php:63
+#: lib/nf_sub_livelog.php:34 lib/nf_sub_malwarescan.php:71
 #, php-format
 msgid ""
 "Error: You must be whitelisted in order to use that feature: click on the <a "
@@ -2783,8 +2783,8 @@ msgstr ""
 msgid "Your public key has been saved"
 msgstr ""
 
-#: lib/nf_sub_log.php:82 lib/nf_sub_malwarescan.php:772
-#: lib/nf_sub_malwarescan.php:876
+#: lib/nf_sub_log.php:82 lib/nf_sub_malwarescan.php:852
+#: lib/nf_sub_malwarescan.php:956
 msgid "Error"
 msgstr ""
 
@@ -2844,217 +2844,214 @@ msgstr ""
 msgid "Unable to open the log for read operation."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:103 lib/nf_sub_malwarescan.php:744
+#: lib/nf_sub_malwarescan.php:107 lib/nf_sub_malwarescan.php:824
 msgid "You must select at least one signatures file."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:135
-msgid ""
-"Error: NinjaFirewall's built-in signatures cannot be found. You do not "
-"appear to have any user-defined signatures either. The scanning process "
-"cannot be started."
-msgstr ""
-
-#: lib/nf_sub_malwarescan.php:140
+#: lib/nf_sub_malwarescan.php:139
 msgid "Scan System For Malware"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:141
+#: lib/nf_sub_malwarescan.php:140
 msgid "Cancel Scan"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:149 lib/nf_sub_malwarescan.php:980
+#: lib/nf_sub_malwarescan.php:148 lib/nf_sub_malwarescan.php:1060
 msgid "Show previous scan results"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:160
+#: lib/nf_sub_malwarescan.php:159
 msgid "Last scan:"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:168
+#: lib/nf_sub_malwarescan.php:167
 msgid "Click to select the signatures to (un)load."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:168
+#: lib/nf_sub_malwarescan.php:167
 msgid "Signatures"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:186
+#: lib/nf_sub_malwarescan.php:185
 msgid "Load/Unload signatures"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:195
+#: lib/nf_sub_malwarescan.php:194
 #, php-format
 msgid ""
 "See <a href=\"%s\">our blog article</a> if you want to add your own "
 "signatures."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:209
+#: lib/nf_sub_malwarescan.php:208
 msgid "Previous scan results"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:235
+#: lib/nf_sub_malwarescan.php:234
 msgid "Status"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:238
+#: lib/nf_sub_malwarescan.php:237
 msgid "Loading signatures:"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:239
+#: lib/nf_sub_malwarescan.php:238
 msgid "files"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:242
+#: lib/nf_sub_malwarescan.php:241
 msgid "Malware hits:"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:301
+#: lib/nf_sub_malwarescan.php:300
 msgid "Scan all files in that directory"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:302
+#: lib/nf_sub_malwarescan.php:301
 #, php-format
 msgid "Default: %s"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:306
+#: lib/nf_sub_malwarescan.php:305
 msgid "Symlinks"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:311
+#: lib/nf_sub_malwarescan.php:310
 msgid "Timestamp"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:312
+#: lib/nf_sub_malwarescan.php:311
 #, php-format
 msgid "Scan files created/modified in the last %s days"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:313
+#: lib/nf_sub_malwarescan.php:312
 msgid "Set this option to 0 to disable it (default: 7 days)."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:318
+#: lib/nf_sub_malwarescan.php:317
 #, php-format
 msgid "Scan files smaller than %s KB"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:319
+#: lib/nf_sub_malwarescan.php:318
 msgid "Set this option to 0 to disable it (default: 2048 KB)."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:323
+#: lib/nf_sub_malwarescan.php:322
 msgid "Ignore file extensions"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:326
+#: lib/nf_sub_malwarescan.php:325
 msgid "Case insensitive, one extension per line."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:330
+#: lib/nf_sub_malwarescan.php:329
 msgid "Ignore files/folders"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:333
+#: lib/nf_sub_malwarescan.php:332
 msgid "Case sensitive string/substring, one per line."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:338
+#: lib/nf_sub_malwarescan.php:337
 msgid "Save Options"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:421 lib/nf_sub_malwarescan.php:956
+#: lib/nf_sub_malwarescan.php:422 lib/nf_sub_malwarescan.php:1036
 msgid "Today"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:423
+#: lib/nf_sub_malwarescan.php:424
 #, php-format
 msgid "%s day ago"
 msgid_plural "%s days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/nf_sub_malwarescan.php:754
+#: lib/nf_sub_malwarescan.php:834
 msgid "Scanning"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:767
+#: lib/nf_sub_malwarescan.php:847
 msgid "Security nonces do not match. Reload this page and try again."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:769
+#: lib/nf_sub_malwarescan.php:849
 msgid "An error occurred:"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:786
+#: lib/nf_sub_malwarescan.php:866
 msgid "The scanning process was cancelled."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:814
-msgid "Error: no signatures found"
+#: lib/nf_sub_malwarescan.php:894
+msgid ""
+"Error: no signatures found. Please check the \"/wp-content/nfwlog/malscan.log"
+"\" log."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:820
+#: lib/nf_sub_malwarescan.php:900
 #, php-format
 msgid ""
 "(some errors were detected in your signatures. See the %s file for more "
 "info)."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:823
+#: lib/nf_sub_malwarescan.php:903
 msgid "signatures found"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:832 lib/nf_sub_malwarescan.php:848
-msgid "Error: unable to load signatures"
+#: lib/nf_sub_malwarescan.php:912 lib/nf_sub_malwarescan.php:928
+msgid ""
+"Error: unable to load signatures. Please check the \"/wp-content/nfwlog/"
+"malscan.log\" log."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:866 lib/nf_sub_malwarescan.php:959
+#: lib/nf_sub_malwarescan.php:946 lib/nf_sub_malwarescan.php:1039
 msgid ""
 "An unknown error occurred. Please check the \"/wp-content/nfwlog/malscan.log"
 "\" log."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:892
+#: lib/nf_sub_malwarescan.php:972
 msgid ""
 "Warning: it seems that the scanning process has unexpectedly terminated."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:894
+#: lib/nf_sub_malwarescan.php:974
 msgid ""
 "Your server may have killed it because it reached the PHP max_execution_time "
 "value allowed by your host."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:896
+#: lib/nf_sub_malwarescan.php:976
 msgid ""
 "Consider excluding file extensions, folders, or changing the \"Timestamp\" "
 "option to narrow the scanning process."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:898
+#: lib/nf_sub_malwarescan.php:978
 msgid ""
 "If you see this message again in 10 seconds, please click on the \"Cancel "
 "Scan\" button."
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:914
+#: lib/nf_sub_malwarescan.php:994
 msgid "Scan completed:"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:916
+#: lib/nf_sub_malwarescan.php:996
 #, php-format
 msgid "Processing time: %s second(s)"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:951
+#: lib/nf_sub_malwarescan.php:1031
 #, php-format
 msgid "Max allocated memory: %sMB"
 msgstr ""
 
-#: lib/nf_sub_malwarescan.php:983
+#: lib/nf_sub_malwarescan.php:1063
 msgid "Hide previous scan results"
 msgstr ""
 
@@ -3650,89 +3647,89 @@ msgstr ""
 msgid "View firewall log"
 msgstr ""
 
-#: lib/nfw_misc.php:118 lib/nfw_misc.php:122
+#: lib/nfw_misc.php:126 lib/nfw_misc.php:130
 msgid "NinjaFirewall error"
 msgstr ""
 
-#: lib/nfw_misc.php:119
+#: lib/nfw_misc.php:127
 #, php-format
 msgid ""
 "%s directory cannot be created. Please review your installation and ensure "
 "that %s is writable."
 msgstr ""
 
-#: lib/nfw_misc.php:123
+#: lib/nfw_misc.php:131
 #, php-format
 msgid ""
 "%s directory is read-only. Please review your installation and ensure that "
 "%s is writable."
 msgstr ""
 
-#: lib/nfw_misc.php:142 ninjafirewall.php:965
+#: lib/nfw_misc.php:150 ninjafirewall.php:965
 msgid "unknown error"
 msgstr ""
 
-#: lib/nfw_misc.php:144
+#: lib/nfw_misc.php:152
 msgid "NinjaFirewall fatal error:"
 msgstr ""
 
-#: lib/nfw_misc.php:145
+#: lib/nfw_misc.php:153
 msgid "Review your installation, your site is not protected."
 msgstr ""
 
-#: lib/nfw_misc.php:192 lib/nfw_misc.php:214
+#: lib/nfw_misc.php:200 lib/nfw_misc.php:222
 msgid "Forbidden access"
 msgstr ""
 
-#: lib/nfw_misc.php:233
+#: lib/nfw_misc.php:241
 #, php-format
 msgid ""
 "<strong>ERROR</strong>: Invalid username or password.<br /><a href=\"%s"
 "\">Lost your password</a>?"
 msgstr ""
 
-#: lib/nfw_misc.php:294
+#: lib/nfw_misc.php:302
 msgid "[NinjaFirewall] Alert: Database changes detected"
 msgstr ""
 
-#: lib/nfw_misc.php:295
+#: lib/nfw_misc.php:303
 msgid ""
 "NinjaFirewall has detected that one or more administrator accounts were "
 "modified in the database:"
 msgstr ""
 
-#: lib/nfw_misc.php:301 lib/nfw_misc.php:440
+#: lib/nfw_misc.php:309 lib/nfw_misc.php:448
 msgid "User IP:"
 msgstr ""
 
-#: lib/nfw_misc.php:302 lib/nfw_misc.php:443
+#: lib/nfw_misc.php:310 lib/nfw_misc.php:451
 msgid "Date:"
 msgstr ""
 
-#: lib/nfw_misc.php:303
+#: lib/nfw_misc.php:311
 #, php-format
 msgid "Total administrators : %s"
 msgstr ""
 
-#: lib/nfw_misc.php:312
+#: lib/nfw_misc.php:320
 msgid ""
 "If you cannot see any modifications in the above fields, it is likely that "
 "the administrator password was changed."
 msgstr ""
 
-#: lib/nfw_misc.php:409
+#: lib/nfw_misc.php:417
 msgid "Blocked privilege escalation attempt"
 msgstr ""
 
-#: lib/nfw_misc.php:433
+#: lib/nfw_misc.php:441
 msgid "NinjaFirewall has blocked an attempt to gain administrative privileges:"
 msgstr ""
 
-#: lib/nfw_misc.php:439
+#: lib/nfw_misc.php:447
 msgid "Username:"
 msgstr ""
 
-#: lib/nfw_misc.php:459
+#: lib/nfw_misc.php:467
 msgid ""
 "NinjaFirewall brute-force protection is enabled and you are temporarily "
 "whitelisted."

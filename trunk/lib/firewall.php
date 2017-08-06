@@ -1280,8 +1280,8 @@ function nfw_bfd($where) {
 			header('Expires: 0');
 			$nfw_['nfw_options']['ret_code'] = '404';
 			nfw_log('Blocked access to the login page', 'bot detection is enabled', 1, 0);
-			echo '404 Not Found';
-			exit;
+			@session_destroy();
+			exit('404 Not Found');
 		}
 	}
 

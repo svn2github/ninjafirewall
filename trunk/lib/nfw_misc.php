@@ -29,6 +29,12 @@ function nfw_garbage_collector() {
 	$path = NFW_LOG_DIR . '/nfwlog/cache/';
 	$now = time();
 
+	// Make sure the cache folder exists, i.e, we have been
+	// through the whole installation process:
+	if (! is_dir( $path ) ) {
+		return;
+	}
+
 	// Don't do anything if the cache folder
 	// was cleaned up less than 5 minutes ago:
 	$gc = $path . 'garbage_collector.php';
@@ -50,6 +56,14 @@ function nfw_garbage_collector() {
 			if ( $now - $nfw_options['fg_mtime'] * 3660 > $nfw_ctime ) {
 				unlink( $file );
 			}
+		}
+	}
+
+	// Anti-Malware signatures: delete them if older than 1 hour:
+	$nfw_malsigs = NFW_LOG_DIR . '/nfwlog/cache/malscan.txt';
+	if ( file_exists( $nfw_malsigs ) ) {
+		if ( time() - filemtime( $nfw_malsigs ) > 3600 ) {
+			unlink( $nfw_malsigs );
 		}
 	}
 

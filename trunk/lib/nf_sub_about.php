@@ -98,11 +98,11 @@ function nfw_eg() {
 	echo '
 		<br />
 		<br />
-		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Spread the word!', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Referral Program', 'ninjafirewall') . '" onclick="show_table(14);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">
+		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word!', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Referral Program', 'ninjafirewall') . '" onclick="show_table(14);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">
 		<br />
 		<br />
 
-		<div id="11" style="display:none;">
+		<div id="11">
 			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="500">
 				<tr style="text-align:center;">
 					<td><a href="http://www.facebook.com/sharer.php?u=https://nintechnet.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>

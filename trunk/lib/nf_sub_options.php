@@ -315,11 +315,17 @@ function nf_sub_options_import() {
 		return sprintf($err_msg, 1);
 	}
 	@list ($options, $rules, $bf) = @explode("\n:-:\n", $data . "\n:-:\n");
+
+
+	if ( preg_match( '/^\xef\xbb\xbf/', $options ) ) {
+		$options = preg_replace( '/^\xef\xbb\xbf/', '', $options );
+	}
+
 	if (! $options || ! $rules) {
 		return sprintf($err_msg, 2);
 	}
-	$nfw_options = unserialize($options);
-	$nfw_rules = unserialize($rules);
+	$nfw_options = @unserialize($options);
+	$nfw_rules = @unserialize($rules);
 	if (! empty($bf) ) {
 		$bf_conf = unserialize($bf);
 	}

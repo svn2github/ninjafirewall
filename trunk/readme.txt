@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.8
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -232,14 +232,13 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.5.1 =
+= v3.5.2 =
 
-* Added a new "garbage collector" to better clean up NinjaFirewall's cache folder and temporary files.
-* All translatable strings used for JavaScript are now automatically escaped via the `esc_js()` function. Translators can use single or double quotes ('") inside their text without breaking the JS code.
-* The "WordPress XML-RPC API > Block system.multicall method" policy will be disabled by default when installing NinjaFirewall.
-* The login page "Bot protection" option will write blocked requests to the firewall log.
-* If security rules updates are disabled, a warning will be displayed in the "Overview" page.
-* Fixed HTML bug in the "Rules Editor" page.
-* [WP+ Edition] Fixed a small issue with the shared memory option: sometimes, NinjaFirewall was recreating the shared memory segment for no apparent reason.
+* The "Anti-Malware" signatures file will be downloaded from the WordPress repo each time a scan will start (rather than being included in the NinjaFirewall installation package), to avoid some hosts to flag it as virus and delete it.
+* When importing its configuration from a file, NinjaFirewall will detect and remove any potential Unicode BOM.
+* When creating the snapshot, "File Check" will remove any whitespace character preceding or following the excluded folders name.
+* Added a missing call to `session_destroy()` when the firewall's bot protection closed the connection.
+* [WP+ Edition] Improved uploaded script detection to prevent false positives.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Minor fixes (typos etc) and adjustments.
+* Minor fixes.
+

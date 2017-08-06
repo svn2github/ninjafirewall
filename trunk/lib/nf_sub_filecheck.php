@@ -150,7 +150,9 @@ if (! file_exists($nfmon_snapshot) ) {
 				} else {
 					echo htmlspecialchars(ABSPATH);
 				}
-				?>" required /></td>
+				?>" required />
+				<span class="description"><?php printf( __('Default: %s', 'ninjafirewall'), htmlentities( rtrim( ABSPATH, '/\\ ' ) ) ) ?></span>
+				</td>
 			</tr>
 
 			<tr>
@@ -553,6 +555,7 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 		return __('Enter the full path to the directory to be scanned.', 'ninjafirewall');
 	}
 	if ( strlen($_POST['snapdir']) > 1 ) {
+		$_POST['snapdir'] = trim($_POST['snapdir'], ' ');
 		$_POST['snapdir'] = rtrim($_POST['snapdir'], '/');
 	}
 	if (! file_exists($_POST['snapdir']) ) {
@@ -568,9 +571,10 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 	}
 
 	$snapexclude = '';
-	if (! empty($_POST['snapexclude']) ) {
-		$_POST['snapexclude'] = trim($_POST['snapexclude']);
-		$tmp = preg_quote($_POST['snapexclude'], '/');
+	if (! empty( $_POST['snapexclude'] ) ) {
+		$_POST['snapexclude'] = trim( $_POST['snapexclude'] );
+		$_POST['snapexclude'] = preg_replace( '/\s*,\s*/', ',', $_POST['snapexclude'] );
+		$tmp = preg_quote( $_POST['snapexclude'], '/' );
 		$snapexclude = str_replace(',', '|', $tmp);
 	}
 
