@@ -4,6 +4,7 @@ Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, ba
 Requires at least: 3.3.0
 Tested up to: 4.8
 Stable tag: 3.5.2
+Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
