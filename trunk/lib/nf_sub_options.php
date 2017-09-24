@@ -3,9 +3,7 @@
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
- +---------------------------------------------------------------------+
- | REVISION: 2016-01-28 22:21:46                                       |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -481,7 +479,7 @@ function nf_sub_options_alert( $what ) {
 		__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
 		__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
 		$url .
-		'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+		'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 		__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $message );
 }

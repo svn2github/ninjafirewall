@@ -1,9 +1,9 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force,  denial, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.8
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -34,7 +34,7 @@ NinjaFirewall includes the most powerful filtering engine available in a WordPre
 * Detects and blocks obfuscated code and evasion techniques used to bypass Web Application Firewalls.
 * Protects against remote file inclusion, local file inclusion, cross-site scripting, code execution, SQL injections, brute-force scanners, shell scripts, backdoors etc.
 * Scans and sanitises GET/POST requests, HTTP/HTTPS traffic, cookies, server variables (`HTTP_USER_AGENT`, `HTTP_REFERER`, `PHP_SELF`, `PATH_TRANSLATED`, `PATH_INFO`) and raw POST data.
-* Sanitises variables names and values.
+* Sanitises variables name and value.
 * Privilege escalation protection.
 * Anti-Malware Scanner.
 * Advanced filtering options to block ASCII control characters, NULL bytes and PHP built-in wrappers.
@@ -233,13 +233,11 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.5.2 =
+= v3.5.3 =
 
-* The "Anti-Malware" signatures file will be downloaded from the WordPress repo each time a scan will start (rather than being included in the NinjaFirewall installation package), to avoid some hosts to flag it as virus and delete it.
-* When importing its configuration from a file, NinjaFirewall will detect and remove any potential Unicode BOM.
-* When creating the snapshot, "File Check" will remove any whitespace character preceding or following the excluded folders name.
-* Added a missing call to `session_destroy()` when the firewall's bot protection closed the connection.
-* [WP+ Edition] Improved uploaded script detection to prevent false positives.
+* Multidimensional arrays in the $_FILES superglobal are now fully supported.
+* It is possible to select which superglobal the "Block serialized PHP objects" policy can apply to (see "Firewall Policies > PHP > Block serialized PHP objects in the following global variables"). By default, all but "COOKIE" will be enabled.
+* The "Sanitise filenames" policy will not allow the use of the slash character "/" as a substitution character because it is the directory separator in Unix-like systems.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes.
 

@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.5.2
+Version: 3.5.3
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.5.2' );
+define( 'NFW_ENGINE_VERSION', '3.5.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -571,7 +571,7 @@ function nfw_upgrade() {
 							"\n\n".
 							__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 							$url .
-						'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+						'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 					__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 			wp_mail( $recipient, $subject, $message );
 		}
@@ -698,7 +698,7 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 				__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
 				__('-Date :', 'ninjafirewall') .' '. ucfirst(date_i18n('F j, Y @ H:i:s')) . ' (UTC '. date('O') . ")\n" .
 				$url .
-				'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+				'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 				__('Support forum', 'ninjafirewall') . ': http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $message );
 
@@ -1296,6 +1296,7 @@ function sanitise_fn(cbox) {
 			echo '<div class="error notice is-dismissible"><p>' . __('No action taken.', 'ninjafirewall') . '</p></div>';
 		}
 		$nfw_options = nfw_get_option( 'nfw_options' );
+		$nfw_rules = nfw_get_option( 'nfw_rules' );
 	}
 
 	echo '<form method="post" name="fwrules">';
@@ -1334,7 +1335,7 @@ function sanitise_fn(cbox) {
 	} else {
 		$uploads = 1;
 	}
-	if ( empty( $nfw_options['substitute'] ) || strlen( $nfw_options['substitute'] ) > 1 ) {
+	if ( empty( $nfw_options['substitute'] ) || strlen( $nfw_options['substitute'] ) > 1 || $nfw_options['substitute'] == '/' ) {
 		$substitute = 'X';
 	} else {
 		$substitute = htmlspecialchars( $nfw_options['substitute'] );
@@ -1776,30 +1777,30 @@ function sanitise_fn(cbox) {
 		<tr>
 			<th scope="row"><?php _e('Block localhost IP in <code>GET/POST</code> request', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td align="left" width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[no_localhost_ip]" value="1"<?php checked( $no_localhost_ip, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td align="left" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[no_localhost_ip]" value="0"<?php checked( $no_localhost_ip, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Block HTTP requests with an IP in the <code>HTTP_HOST</code> header', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td align="left" width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_host_ip]" value="1"<?php checked( $no_host_ip, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td align="left" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_host_ip]" value="0"<?php checked( $no_host_ip, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Scan traffic coming from localhost and private IP address spaces', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td align="left" width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[allow_local_ip]" value="0"<?php checked( $allow_local_ip, 0 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 				</td>
-			<td align="left">
+			<td align="left" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[allow_local_ip]" value="1"<?php checked( $allow_local_ip, 1 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1812,11 +1813,6 @@ function sanitise_fn(cbox) {
 		$php_wrappers = 0;
 	} else {
 		$php_wrappers = 1;
-	}
-	if ( empty( $nfw_rules[NFW_OBJECTS]['ena']) ) {
-		$php_objects = 0;
-	} else {
-		$php_objects = 1;
 	}
 	if ( empty( $nfw_options['php_errors']) ) {
 		$php_errors = 0;
@@ -1842,23 +1838,59 @@ function sanitise_fn(cbox) {
 	<h3>PHP</h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php _e('Block PHP built-in wrappers', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('Block PHP built-in wrappers in <code>GET</code>, <code>POST</code>, <code>HTTP_USER_AGENT</code>, <code>HTTP_REFERER</code> and cookies', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td align="left" width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[php_wrappers]" value="1"<?php checked( $php_wrappers, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td align="left" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[php_wrappers]" value="0"<?php checked( $php_wrappers, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
+
+		<?php
+		if (! empty( $nfw_rules[NFW_OBJECTS]['ena'] ) ) {
+			if ( strpos( $nfw_rules[NFW_OBJECTS]['cha'][1]['whe'], 'GET' )  !== FALSE) {
+				$NFW_OBJECTS_GET = ' checked="checked"';
+			} else {
+				$NFW_OBJECTS_GET = '';
+			}
+			if ( strpos( $nfw_rules[NFW_OBJECTS]['cha'][1]['whe'], 'POST' )  !== FALSE) {
+				$NFW_OBJECTS_POST = ' checked="checked"';
+			} else {
+				$NFW_OBJECTS_POST = '';
+			}
+			if ( strpos( $nfw_rules[NFW_OBJECTS]['cha'][1]['whe'], 'COOKIE' )  !== FALSE) {
+				$NFW_OBJECTS_COOKIE = ' checked="checked"';
+			} else {
+				$NFW_OBJECTS_COOKIE = '';
+			}
+			if ( strpos( $nfw_rules[NFW_OBJECTS]['cha'][1]['whe'], 'HTTP_USER_AGENT' )  !== FALSE) {
+				$NFW_OBJECTS_HTTP_USER_AGENT = ' checked="checked"';
+			} else {
+				$NFW_OBJECTS_HTTP_USER_AGENT = '';
+			}
+			if ( strpos( $nfw_rules[NFW_OBJECTS]['cha'][1]['whe'], 'HTTP_REFERER' )  !== FALSE) {
+				$NFW_OBJECTS_HTTP_REFERER = ' checked="checked"';
+			} else {
+				$NFW_OBJECTS_HTTP_REFERER = '';
+			}
+		} else {
+			$NFW_OBJECTS_GET = ''; $NFW_OBJECTS_POST = ''; $NFW_OBJECTS_COOKIE = '';
+			$NFW_OBJECTS_HTTP_USER_AGENT = ''; $NFW_OBJECTS_HTTP_REFERER = '';
+		}
+		?>
 		<tr>
-			<th scope="row"><?php _e('Block serialized PHP objects', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('Block serialized PHP objects in the following global variables', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
-				<label><input type="radio" name="nfw_rules[php_objects]" value="1"<?php checked( $php_objects, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
+			<td align="left" width="120" style="vertical-align:top">
+				<p><label><input type="checkbox" name="nfw_rules[php_objects_get]" value="1"<?php echo $NFW_OBJECTS_GET ?>><code>GET</code><?php echo $default ?></label><p>
+				<p><label><input type="checkbox" name="nfw_rules[php_objects_post]" value="1"<?php echo $NFW_OBJECTS_POST ?>><code>POST</code><?php echo $default ?></label><p>
+				<p><label><input type="checkbox" name="nfw_rules[php_objects_cookie]" value="1"<?php echo $NFW_OBJECTS_COOKIE ?>><code>COOKIE</code></label><p>
 			</td>
-			<td align="left">
-				<label><input type="radio" name="nfw_rules[php_objects]" value="0"<?php checked( $php_objects, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
+			<td align="left" style="vertical-align:top">
+				<p><label><input type="checkbox" name="nfw_rules[php_objects_http_user_agent]" value="1"<?php echo $NFW_OBJECTS_HTTP_USER_AGENT ?>><code>HTTP_USER_AGENT</code><?php echo $default ?></label><p>
+				<p><label><input type="checkbox" name="nfw_rules[php_objects_http_referer]" value="1"<?php echo $NFW_OBJECTS_HTTP_REFERER ?>><code>HTTP_REFERER</code><?php echo $default ?></label><p>
 			</td>
 		</tr>
 		<tr>
@@ -2284,8 +2316,9 @@ function nf_sub_policies_save() {
 	} else {
 		$nfw_options['sanitise_fn'] = 0;
 	}
-
-	if ( empty( $_POST['nfw_options']['substitute'] ) || strlen( $_POST['nfw_options']['substitute'] ) > 1 ) {
+	// Substitution character:
+	// Don't allow the '/' character:
+	if ( empty( $_POST['nfw_options']['substitute'] ) || strlen( $_POST['nfw_options']['substitute'] ) > 1 || $_POST['nfw_options']['substitute'] == '/' ) {
 		$nfw_options['substitute'] = 'X';
 	} else {
 		$nfw_options['substitute'] = $_POST['nfw_options']['substitute'];
@@ -2597,19 +2630,38 @@ function nf_sub_policies_save() {
 		$nfw_rules[NFW_WRAPPERS]['ena'] = 1;
 	}
 
-	if ( empty( $_POST['nfw_rules']['php_objects']) ) {
-		// Default: no
-		$nfw_rules[NFW_OBJECTS]['ena'] = 0;
-	} else {
-		$nfw_rules[NFW_OBJECTS]['ena'] = 1;
+
+	$nfw_objects = '';
+	if (! empty( $_POST['nfw_rules']['php_objects_get'] ) ) {
+		$nfw_objects .= "GET|";
 	}
+	if (! empty( $_POST['nfw_rules']['php_objects_post'] ) ) {
+		$nfw_objects .= "POST|";
+	}
+	if (! empty( $_POST['nfw_rules']['php_objects_cookie'] ) ) {
+		$nfw_objects .= "COOKIE|";
+	}
+	if (! empty( $_POST['nfw_rules']['php_objects_http_user_agent'] ) ) {
+		$nfw_objects .= "SERVER:HTTP_USER_AGENT|";
+	}
+	if (! empty( $_POST['nfw_rules']['php_objects_http_referer'] ) ) {
+		$nfw_objects .= "SERVER:HTTP_REFERER|";
+	}
+	if (! empty( $nfw_objects ) ) {
+		$nfw_objects = rtrim( $nfw_objects, '|' );
+		$nfw_rules[NFW_OBJECTS]['ena'] = 1;
+	} else {
+		// Disable rule:
+		$nfw_rules[NFW_OBJECTS]['ena'] = 0;
+	}
+	$nfw_rules[NFW_OBJECTS]['cha'][1]['whe'] = $nfw_objects;
+
 
 	if ( empty( $_POST['nfw_rules']['no_localhost_ip']) ) {
 		$nfw_rules[NFW_LOOPBACK]['ena'] = 0;
 	} else {
 		$nfw_rules[NFW_LOOPBACK]['ena'] = 1;
 	}
-
 
 	nfw_update_option( 'nfw_options', $nfw_options );
 	nfw_update_option( 'nfw_rules', $nfw_rules );
@@ -2679,7 +2731,9 @@ function nf_sub_policies_default() {
 	$nfw_rules[NFW_SCAN_BOTS]['ena']	= 1;
 	$nfw_rules[NFW_LOOPBACK]['ena']	= 1;
 	$nfw_rules[NFW_WRAPPERS]['ena']	= 1;
-	$nfw_rules[NFW_OBJECTS]['ena']	= 0;
+
+	$nfw_rules[NFW_OBJECTS]['ena'] = 1;
+	$nfw_rules[NFW_OBJECTS]['cha'][1]['whe'] = 'GET|POST|SERVER:HTTP_USER_AGENT|SERVER:HTTP_REFERER';
 
 	if ( strlen( $_SERVER['DOCUMENT_ROOT'] ) > 5 ) {
 		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', $_SERVER['DOCUMENT_ROOT'] );
@@ -2796,7 +2850,7 @@ function nf_sub_fileguard() {
 					<th scope="row"><?php _e('Real-time detection', 'ninjafirewall') ?></th>
 					<td align="left">
 					<?php
-						printf( __('Monitor file activity and send an alert when someone is accessing a PHP script that was modified or created less than %s hour(s) ago.', 'ninjafirewall'), '<input maxlength="2" size="2" value="'. $nfw_options['fg_mtime'] .'" name="nfw_options[fg_mtime]" id="mtime" onkeyup="is_number(\'mtime\')" type="text" />');
+						printf( __('Monitor file activity and send an alert when someone is accessing a PHP script that was modified or created less than %s hour(s) ago.', 'ninjafirewall'), '<input maxlength="2" size="2" value="'. $nfw_options['fg_mtime'] .'" name="nfw_options[fg_mtime]" id="mtime" onkeyup="is_number(\'mtime\')" class="small-text" type="number" />');
 					?>
 					</td>
 				</tr>
@@ -3326,9 +3380,9 @@ function nf_sub_loginprot() {
 				<td align="left">
 				<?php
 					printf( __('For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds.', 'ninjafirewall'),
-						'<input maxlength="2" size="2" value="'. $bf_bantime .'" name="nfw_options[bf_bantime]" id="ban1" onkeyup="is_number(\'ban1\')" type="text" />',
-						'<input maxlength="2" size="2" value="'. $bf_attempt .'" name="nfw_options[bf_attempt]" id="ban2" onkeyup="is_number(\'ban2\')" type="text" />', '<code id="get_post">'. $get_post .'</code>',
-						'<input maxlength="2" size="2" value="'. $bf_maxtime .'" name="nfw_options[bf_maxtime]" id="ban3" onkeyup="is_number(\'ban3\')" type="text" />'
+						'<input maxlength="2" size="2" value="'. $bf_bantime .'" name="nfw_options[bf_bantime]" id="ban1" onkeyup="is_number(\'ban1\')" class="small-text" type="number" />',
+						'<input maxlength="2" size="2" value="'. $bf_attempt .'" name="nfw_options[bf_attempt]" id="ban2" onkeyup="is_number(\'ban2\')" class="small-text" type="number" />', '<code id="get_post">'. $get_post .'</code>',
+						'<input maxlength="2" size="2" value="'. $bf_maxtime .'" name="nfw_options[bf_maxtime]" id="ban3" onkeyup="is_number(\'ban3\')" class="small-text" type="number" />'
 					);
 				?>
 				</td>
@@ -3918,7 +3972,7 @@ function nfw_check_emailalert() {
 			__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
 			__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
 			$url .
-			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 
@@ -3958,6 +4012,8 @@ function nf_not_allowed($block, $line = 0) {
 	} else {
 		if ( current_user_can('manage_options') &&
 		     current_user_can('unfiltered_html') ) {
+			// Check if that admin is allowed to use NinjaFirewall
+			// (see NFW_ALLOWED_ADMIN at http://nin.link/nfwaa ):
 			if ( defined('NFW_ALLOWED_ADMIN') ) {
 				$current_user = wp_get_current_user();
 				$admins = explode(',', NFW_ALLOWED_ADMIN);

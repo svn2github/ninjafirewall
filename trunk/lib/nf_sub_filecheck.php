@@ -3,7 +3,7 @@
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -841,7 +841,7 @@ function nf_scan_email($nfmon_diff, $log_dir) {
 		}
 		$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) )."\n\n";
 		$msg .= __('See attached file for details.', 'ninjafirewall') . "\n\n" .
-			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 
 		wp_mail( $recipient, $subject, $msg, '', $log_dir . 'nf_filecheck.txt' );
@@ -858,7 +858,7 @@ function nf_scan_email($nfmon_diff, $log_dir) {
 			$msg .=__('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 		}
 		$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) ) . "\n\n" .
-			'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $msg );
 	}

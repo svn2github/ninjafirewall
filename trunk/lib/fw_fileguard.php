@@ -57,7 +57,7 @@ function fw_fileguard() {
 						'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n" .
 						'REQUEST_URI    : ' . $_SERVER['REQUEST_URI'] . "\n" .
 						'Last changed on: ' . date('F j, Y @ H:i:s', $nfw_['nfw_options']['fg_stat']['ctime'] ) . ' (UTC '. date('O') . ")\n\n" .
-						'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+						'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 					mail( $nfw_['nfw_options']['alert_email'], $nfw_['nfw_options']['m_subject'], $nfw_['nfw_options']['m_msg'], $nfw_['nfw_options']['m_headers']);
 					// Remember it so that we don't spam the admin each time the script is requested :

@@ -3,7 +3,7 @@
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -327,7 +327,7 @@ function welcome_email() {
 			$message.= __('-The WordPress support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall ' . "\n";
 			$message.= __('-Updates info are available via Twitter:', 'ninjafirewall') .' https://twitter.com/nintechnet ' . "\n\n";
 
-			$message.= 'NinjaFirewall (WP Edition) - http://ninjafirewall.com/ ' . "\n\n";
+			$message.= 'NinjaFirewall (WP Edition) - https://nintechnet.com/ ' . "\n\n";
 
 			if (! DONOTEMAIL ) {
 				wp_mail( $recipient, $subject, $message );
@@ -572,8 +572,11 @@ function nfw_default_conf() {
 	} elseif ( strlen( getenv( 'DOCUMENT_ROOT' ) ) > 5 ) {
 		$nfw_rules[NFW_DOC_ROOT]['cha'][1]['wha'] = str_replace( '/', '/[./]*', getenv( 'DOCUMENT_ROOT' ) );
 	} else {
-		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
+		$nfw_rules[NFW_DOC_ROOT]['ena'] = 0;
 	}
+
+	// Enable PHP object injection rules (since v3.5.3):
+	$nfw_rules[NFW_OBJECTS]['ena'] = 1;
 
 	nfw_update_option( 'nfw_options', $nfw_options);
 	nfw_update_option( 'nfw_rules', $nfw_rules);

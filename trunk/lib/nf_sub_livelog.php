@@ -3,9 +3,7 @@
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
- +---------------------------------------------------------------------+
- | REVISION: 2016-05-12 18:46:51                                       |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |

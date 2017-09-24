@@ -356,7 +356,7 @@ if ( strpos($_SERVER['SCRIPT_NAME'], '/xmlrpc.php' ) !== FALSE ) {
 	}
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		if (! isset( $HTTP_RAW_POST_DATA ) ) {
-			$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+			@$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 		}
 
 		if (! empty($nfw_['nfw_options']['no_xmlrpc_multi']) ) {
@@ -501,6 +501,7 @@ function nfw_check_upload() {
 
 	global $nfw_;
 
+	$f_uploaded = array();
 	$f_uploaded = nfw_fetch_uploads();
 	$tmp = '';
 	if ( empty($nfw_['nfw_options']['uploads']) ) {
@@ -535,22 +536,18 @@ function nfw_check_upload() {
 
 
 			if (! empty($nfw_['nfw_options']['sanitise_fn']) ) {
-				$tmp = '';
 				if ( empty( $nfw_['nfw_options']['substitute'] ) ) {
 					$nfw_['nfw_options']['substitute'] = 'X';
 				}
+				$tmp = '';
+				$f_uploaded_name = $f_uploaded[$key]['name'];
 				$f_uploaded[$key]['name'] = preg_replace('/[^\w\.\-]/i', $nfw_['nfw_options']['substitute'], $f_uploaded[$key]['name'], -1, $count);
+
 				if ($count) {
 					$tmp = ' (sanitising '. $count . ' char. from filename)';
+					$_FILES = nfw_sanitize_filename( $_FILES, $f_uploaded_name, $f_uploaded[$key]['name'] );
 				}
-				if ( $tmp ) {
-					list ($kn, $is_arr, $kv) = explode('::', $f_uploaded[$key]['where']);
-					if ( $is_arr ) {
-						$_FILES[$kn]['name'][$kv] = $f_uploaded[$key]['name'];
-					} else {
-						$_FILES[$kn]['name'] = $f_uploaded[$key]['name'];
-					}
-				}
+
 			}
 			nfw_log('File upload detected, no action taken' . $tmp , $f_uploaded[$key]['name'] . ' (' . number_format($f_uploaded[$key]['size']) . ' bytes)', 5, 0);
 		}
@@ -561,28 +558,57 @@ function nfw_check_upload() {
 
 function nfw_fetch_uploads() {
 
-	$f_uploaded = array();
-	$count = 0;
-	foreach ($_FILES as $nm => $file) {
-		if ( is_array($file['name']) ) {
-			foreach($file['name'] as $key => $value) {
-				$f_uploaded[$count]['name'] = $file['name'][$key];
-				$f_uploaded[$count]['type'] = $file['type'][$key];
-				$f_uploaded[$count]['size'] = $file['size'][$key];
-				$f_uploaded[$count]['tmp_name'] = $file['tmp_name'][$key];
-				$f_uploaded[$count]['where'] = $nm . '::1::' . $key;
-				$count++;
+	global $file_buffer, $upload_array, $prop_key;
+	$upload_array = array();
+
+	foreach( $_FILES as $f_key => $f_value ) {
+
+		foreach( $f_value as $prop_key => $prop_value ) {
+
+			// Fetch all but 'error':
+			if (! in_array( $prop_key, array( 'name', 'type', 'tmp_name', 'size' ) ) ) { continue; }
+
+			$file_buffer = $f_key;
+
+			if ( is_array( $_FILES[$f_key][$prop_key] ) ) {
+				nfw_recursive_upload( $_FILES[$f_key][$prop_key] );
+			} else {
+				if (! empty( $_FILES[$f_key][$prop_key] ) ) {
+					$upload_array[$f_key][$prop_key] = $_FILES[$f_key][$prop_key];
+				}
 			}
-		} else {
-			$f_uploaded[$count]['name'] = $file['name'];
-			$f_uploaded[$count]['type'] = $file['type'];
-			$f_uploaded[$count]['size'] = $file['size'];
-			$f_uploaded[$count]['tmp_name'] = $file['tmp_name'];
-			$f_uploaded[$count]['where'] = $nm . '::0::0' ;
-			$count++;
 		}
 	}
-	return $f_uploaded;
+	return $upload_array;
+}
+
+// =====================================================================
+
+function nfw_recursive_upload( $data ) {
+
+	global $file_buffer, $upload_array, $prop_key;
+
+	foreach( $data as $data_key => $data_value ) {
+		if ( is_array( $data_value ) ) {
+			$file_buffer .= "_{$data_key}";
+			nfw_recursive_upload( $data_value );
+		} else {
+			if ( empty( $data_value ) ) { continue; }
+			$upload_array["{$file_buffer}_{$data_key}"][$prop_key] = $data_value;
+		}
+	}
+}
+
+// =====================================================================
+
+function nfw_sanitize_filename( $array, $key, $value ) {
+
+	array_walk_recursive(
+		$array, function( &$v, $k ) use ( $key, $value ) {
+			if (! empty( $v ) && $v == $key ) { $v = $value; }
+		}
+	);
+	return $array;
 }
 
 // =====================================================================
@@ -606,7 +632,7 @@ function nfw_check_request( $nfw_rules, $nfw_options ) {
 			// =================================================================
 			if ( $where == 'RAW' ) {
 				if (! isset( $HTTP_RAW_POST_DATA ) ) {
-					$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+					@$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 				}
 
 				if ( nfw_matching( 'RAW', $_SERVER['REQUEST_METHOD'], $nfw_rules, $rules, 1, $id, $HTTP_RAW_POST_DATA, $nfw_options ) ) {
@@ -681,7 +707,7 @@ function nfw_check_subrule( $w0, $w1, $nfw_rules, $nfw_options, $rules, $id ) {
 				}
 				global $HTTP_RAW_POST_DATA;
 				if (! isset( $HTTP_RAW_POST_DATA ) ) {
-					$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
+					@$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 				}
 				nfw_matching( $_SERVER['REQUEST_METHOD'], 'RAW', $nfw_rules, $rules, 2, $id, $HTTP_RAW_POST_DATA, $nfw_options );
 				return;
@@ -969,7 +995,7 @@ function nfw_transform_string( $string, $where ) {
 		$norm = preg_replace( array('/[\n\r\t\f\v]/', '`/\*\s*\*/`', '/[\'"`]\x20*[+.]?\x20*[\'"`]/'),
 				array('', ' ', ''), $norm);
 	} elseif ( $where == 3 ) {
-		$norm = preg_replace( array('`/(\./)+`','`/{2,}`', '`/(.+?)/\.\./\1\b`'), array('/', '/', '/\1'), $string);
+		$norm = preg_replace( array('`/(\./)+`','`/{2,}`', '`/(.+?)/\.\./\1\b`', '`\n`', '`\\\`'), array('/', '/', '/\1', '', ''), $string );
 	}
 
 	return $norm;

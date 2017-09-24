@@ -3,7 +3,7 @@
  +---------------------------------------------------------------------+
  | NinjaFirewall (WP Edition)                                          |
  |                                                                     |
- | (c) NinTechNet - http://nintechnet.com/                             |
+ | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
  | modify it under the terms of the GNU General Public License as      |
@@ -324,7 +324,7 @@ function nf_check_dbdata() {
 			$message.= '-display_name : ' . $adm->display_name . "\n\n";
 		}
 		$message.= "\n" . __('If you cannot see any modifications in the above fields, it is likely that the administrator password was changed.', 'ninjafirewall'). "\n\n";
-		$message.= 	'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+		$message.= 	'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 
@@ -456,7 +456,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 			$message.= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . "\n";
 			$message.= __('Date:', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n\n";
 			$message.= __('This notification can be turned off from NinjaFirewall "Event Notifications" page.', 'ninjafirewall') . "\n\n";
-			$message.= 	'NinjaFirewall (WP Edition) - http://ninjafirewall.com/' . "\n" .
+			$message.= 	'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 			wp_mail( $recipient, $subject, $message );
 
