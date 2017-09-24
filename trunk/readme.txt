@@ -1,6 +1,6 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: firewall, security, WAF, antivirus, protection, malware, admin, attack, backdoor, botnet, brute force, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
+Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.8
 Stable tag: 3.5.3
@@ -46,7 +46,7 @@ NinjaFirewall includes the most powerful filtering engine available in a WordPre
 * Blocks suspicious bots and scanners.
 * Hides PHP error and notice messages.
 * Blocks direct access to PHP scripts located inside specific directories (e.g., `/wp-content/uploads/`).
-* Protects WordPress XML-RPC API.
+* Protects WordPress XML-RPC and REST API.
 * Whitelist option for WordPress administrator(s), localhost and private IP address spaces.
 * Configurable HTTP return code and message.
 * Rules editor to enable/disable built-in security rules.
@@ -124,12 +124,6 @@ NinjaFirewall looks and feels like a built-in WordPress feature. It does not con
 Each NinjaFirewall menu page has a contextual help screen with useful information about how to use and configure it.
 If you need help, click on the *Help* menu tab located in the upper right corner of each page in your admin panel.
 
-
-= Supported Languages =
-
-* English
-* French
-
 = Need more security ? =
 
 Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+")
@@ -154,9 +148,9 @@ Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.c
 
 * WordPress 3.3+
 * PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
-* MySQLi extension
-* Apache / Nginx / LiteSpeed
-* Unix-like OS (Linux, BSD) only. NinjaFirewall is **NOT** compatible with Microsoft Windows.
+* MySQL or MariaDB with MySQLi extension
+* Apache / Nginx / LiteSpeed compatible
+* Unix-like operatin systems only (Linux, BSD etc). NinjaFirewall is **NOT** compatible with Microsoft Windows.
 
 == Frequently Asked Questions ==
 
@@ -240,4 +234,3 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * The "Sanitise filenames" policy will not allow the use of the slash character "/" as a substitution character because it is the directory separator in Unix-like systems.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes.
-
