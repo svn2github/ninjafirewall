@@ -50,13 +50,13 @@ if ($fh = @fopen($fw_log, 'r') ) {
 		$line = fgets( $fh);
 		if (preg_match( '/^\[.+?\]\s+\[(.+?)\]\s+(?:\[.+?\]\s+){3}\[(1|2|3|4|5|6)\]/', $line, $match) ) {
 			if ( $match[2] == 1) {
-				$medium++;
+				++$medium;
 			} elseif ( $match[2] == 2) {
-				$high++;
+				++$high;
 			} elseif ( $match[2] == 3) {
-				$critical++;
+				++$critical;
 			} elseif ( $match[2] == 5) {
-				$upload++;
+				++$upload;
 			}
 			if ($match[1]) {
 				if ( $match[1] > $slow) {
@@ -66,7 +66,7 @@ if ($fh = @fopen($fw_log, 'r') ) {
 					$fast = $match[1];
 				}
 				$speed += $match[1];
-				$tot_bench++;
+				++$tot_bench;
 			}
 		}
 	}

@@ -409,9 +409,9 @@ function nf_daily_report_log() {
 				if ( preg_match( '/^\[(\d{10})\]\s+\[.+?\]\s+\[.+?\]\s+\[#\d{7}\]\s+\[\d+\]\s+\[([1235])\]\s+\[/', $line, $match) ) {
 					// Fetch last 24 hours only :
 					if ( $match[1] > $previous_day && $match[1] < $previous_day + 86400 ) {
-						$logstats[$match[2]]++;
+						++$logstats[$match[2]];
 						if ( strpos($line, 'Brute-force attack detected') !== FALSE ) {
-							$logstats[0]++;
+							++$logstats[0];
 						}
 					}
 				}

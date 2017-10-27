@@ -17,7 +17,12 @@
  +---------------------------------------------------------------------+ i18n+ / sa
 */
 
-if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
+if (! defined( 'NFW_ENGINE_VERSION' ) ) {
+	header('HTTP/1.1 404 Not Found');
+	header('Status: 404 Not Found');
+	exit;
+}
+
 
 // Return immediately if user is not allowed :
 if (nf_not_allowed( 0, __LINE__ ) ) { return; }

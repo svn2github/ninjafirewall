@@ -109,7 +109,7 @@ function nfw_presave( $err = '' ) {
 	function popup(url,width,height,scroll_bar) {height=height+20;width=width+20;var str = "height=" + height + ",innerHeight=" + height;str += ",width=" + width + ",innerWidth=" + width;if (window.screen){var ah = screen.availHeight - 30;var aw = screen.availWidth -10;var xc = (aw - width) / 2;var yc = (ah - height) / 2;str += ",left=" + xc + ",screenX=" + xc;str += ",top=" + yc + ",screenY=" + yc;if (scroll_bar) {str += ",scrollbars=no";}else {str += ",scrollbars=yes";}str += ",status=no,location=no,resizable=yes";}win = open(url, "nfpop", str);setTimeout("win.window.focus()",1300);}
 	function check_fields() {
 		var ischecked = 0;
-		for (var i = 0; i < document.presave_form.php_ini_type.length; i++) {
+		for (var i = 0; i < document.presave_form.php_ini_type.length; ++i) {
 			if(document.presave_form.php_ini_type[i].checked) {
 				ischecked = 1;
 				break;

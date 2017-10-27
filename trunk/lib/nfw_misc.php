@@ -408,6 +408,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 	if (! defined('NF_DISABLED') ) {
 		is_nfw_enabled();
 	}
+	// Note: "NFW_DISABLE_PRVESC2" is the only way to disable this feature.
 	if ( NF_DISABLED || defined('NFW_DISABLE_PRVESC2') ) { return; }
 
 	global $wpdb;

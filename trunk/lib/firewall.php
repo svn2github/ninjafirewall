@@ -24,7 +24,7 @@ $nfw_['fw_starttime'] = microtime(true);
 // ( see https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja ) :
 if ( @file_exists($nfw_['file'] = dirname($_SERVER['DOCUMENT_ROOT']) .'/.htninja') ||
 	@file_exists($nfw_['file'] = $_SERVER['DOCUMENT_ROOT'] .'/.htninja') ) {
-	$nfw_['res'] = @include($nfw_['file']);
+	$nfw_['res'] = @include $nfw_['file'];
 	if ( $nfw_['res'] == 'ALLOW' ) {
 		define( 'NFW_STATUS', 20 );
 		unset($nfw_);
@@ -133,7 +133,7 @@ if (! $nfw_['nfw_options'] = @unserialize($nfw_['options']->option_value) ) {
 }
 
 if (! empty($nfw_['nfw_options']['clogs_pubkey']) && isset($_POST['clogs_req']) ) {
-	include('fw_centlog.php');
+	include 'fw_centlog.php';
 	fw_centlog();
 	exit;
 }
@@ -259,12 +259,12 @@ nfw_check_session();
 if (! empty($_SESSION['nfw_goodguy']) ) {
 
 	if (! empty($_SESSION['nfw_malscan'] ) && isset( $_POST['malscan'] ) ) {
-		include('fw_malwarescan.php');
+		include 'fw_malwarescan.php';
 		fw_malwarescan();
 	}
 
 	if (! empty($_SESSION['nfw_livelog']) &&  isset($_POST['livecls']) && isset($_POST['lines'])) {
-		include('fw_livelog.php');
+		include 'fw_livelog.php';
 		fw_livelog_show();
 	}
 
@@ -305,7 +305,7 @@ if (! empty($_SESSION['nfw_goodguy']) ) {
 define('NFW_SWL', 1);
 
 if ( file_exists($nfw_['log_dir'] .'/cache/livelogrun.php')) {
-	include('fw_livelog.php');
+	include 'fw_livelog.php';
 	fw_livelog_record();
 }
 
@@ -335,7 +335,7 @@ if ( (@$nfw_['nfw_options']['scan_protocol'] == 2) && ($_SERVER['SERVER_PORT'] !
 }
 
 if (! empty($nfw_['nfw_options']['fg_enable']) && ! defined('NFW_WPWAF') ) {
-	include('fw_fileguard.php');
+	include 'fw_fileguard.php';
 	fw_fileguard();
 }
 
@@ -1179,16 +1179,15 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 
 	global $nfw_;
 
+	$nfw_['num_incident'] = mt_rand(1000000, 9000000);
+
 	if ( $loglevel == 6) {
-		$nfw_['num_incident'] = '0000000';
 		$http_ret_code = '200';
 	} else {
 		if (! empty($nfw_['nfw_options']['debug']) ) {
-			$nfw_['num_incident'] = '0000000';
 			$loglevel = 7;
 			$http_ret_code = '200';
 		} else {
-			$nfw_['num_incident'] = mt_rand(1000000, 9000000);
 			$http_ret_code = $nfw_['nfw_options']['ret_code'];
 		}
 	}
@@ -1219,7 +1218,7 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 		$nfw_stat = '0:0:0:0:0:0:0:0:0:0';
 	}
 	$nfw_stat_arr = explode(':', $nfw_stat . ':');
-	$nfw_stat_arr[$loglevel]++;
+	++$nfw_stat_arr[$loglevel];
 
 	@file_put_contents( $stat_file, $nfw_stat_arr[0] . ':' . $nfw_stat_arr[1] . ':' .
 		$nfw_stat_arr[2] . ':' . $nfw_stat_arr[3] . ':' . $nfw_stat_arr[4] . ':' .
@@ -1312,7 +1311,7 @@ function nfw_bfd($where) {
 	}
 
 	if ( $bf_enable == 2 ) {
-		nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
+		nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text, $bf_nosig);
 		return;
 	}
 
@@ -1322,7 +1321,7 @@ function nfw_bfd($where) {
 		$mtime = filemtime( $bf_conf_dir . '/bf_blocked' . $where . $_SERVER['SERVER_NAME'] . $bf_rand );
 		if ( ($now - $mtime) < $bf_bantime * 60 ) {
 
-			nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
+			nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text, $bf_nosig);
 			return;
 		} else {
 
@@ -1360,7 +1359,7 @@ function nfw_bfd($where) {
 							' on '. $_SERVER['SERVER_NAME'] .' ('. $where .'). Blocking access for ' . $bf_bantime . 'mn.');
 					@closelog();
 				}
-				nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text);
+				nfw_check_auth($auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text, $bf_nosig);
 				return;
 
 			}
@@ -1376,7 +1375,7 @@ function nfw_bfd($where) {
 }
 // =====================================================================
 
-function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text ) {
+function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $bf_allow_bot, $bf_type, $captcha_text, $bf_nosig ) {
 
 	if ( defined('NFW_STATUS') ) { return; }
 
@@ -1420,10 +1419,15 @@ function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $
 	header('Pragma: no-cache');
 	header('Cache-Control: no-cache, no-store, must-revalidate');
 	header('Expires: 0');
-	if ( $bf_type == 0 ) {
-		$message = '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msgtxt . '</h2><form method="post"><label>Brute-force protection by NinjaFirewall</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	if ( empty( $bf_nosig ) ) {
+		$bf_nosig = 'Brute-force protection by NinjaFirewall';
 	} else {
-		$message = '<html><head><title>Brute-force protection by NinjaFirewall</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><form method="post"><p><label>'. base64_decode( $captcha_text ) .'</label></p><br><p>' . nfw_get_captcha() . '</p><p><input class="input" type="text" name="c" autofocus></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form><br><label>Brute-force protection by NinjaFirewall.</label></center></div></body></html>';
+		$bf_nosig = '';
+	}
+	if ( $bf_type == 0 ) {
+		$message = '<html><head><title>'. $bf_nosig  .'</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><h2>' . $auth_msgtxt . '</h2><form method="post"><label>'. $bf_nosig  .'</label><br><br><p><input class="input" type="text" name="u" placeholder="Username"></p><p><input class="input" type="password" name="p" placeholder="Password"></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form></center></div></body></html>';
+	} else {
+		$message = '<html><head><title>'. $bf_nosig  .'</title><link rel="stylesheet" href="./wp-includes/css/buttons.min.css" type="text/css"><link rel="stylesheet" href="./wp-admin/css/login.min.css" type="text/css"></head><body class="login wp-core-ui" style="color:#444"><div id="login"><center><form method="post"><p><label>'. base64_decode( $captcha_text ) .'</label></p><br><p>' . nfw_get_captcha() . '</p><p><input class="input" type="text" name="c" autofocus></p><p align="right"><input type="submit" value="Login Page&nbsp;&#187;" class="button-secondary"></p></form><br><label>'. $bf_nosig  .'</label></center></div></body></html>';
 	}
 	if ( $bf_allow_bot == 0 ) {
 		ini_set('zlib.output_compression','Off');

@@ -101,7 +101,7 @@ foreach ($available_logs as $log_name => $tmp) {
 }
 echo '</select></center>';
 
-$levels = array( '', 'medium', 'high', 'critical', 'error', 'upload', 'info', 'DEBUG_ON' );
+$levels = array( '', 'MEDIUM', 'HIGH', 'CRITICAL', 'ERROR', 'UPLOAD', 'INFO', 'DEBUG_ON' );
 
 nfw_get_blogtimezone();
 
@@ -272,7 +272,7 @@ function nf_sub_log_read_local( $log, $log_dir, $max_lines ) {
 	}
 	$data['lines'] = count( $data['log'] );
 	if ( $max_lines < $data['lines'] ) {
-		for ($i = 0; $i < ( $data['lines'] - $max_lines); $i++ ) {
+		for ($i = 0; $i < ( $data['lines'] - $max_lines); ++$i ) {
 			unset( $data['log'][$i] ) ;
 		}
 	}

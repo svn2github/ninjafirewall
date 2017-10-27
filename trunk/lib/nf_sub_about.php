@@ -36,7 +36,7 @@ if ( $data = @file_get_contents( dirname( plugin_dir_path(__FILE__) ) . '/readme
 echo '<script>
 function show_table(table_id) {
 	var av_table = [11, 12, 13, 14];
-	for (var i = 0; i < av_table.length; i++) {
+	for (var i = 0; i < av_table.length; ++i) {
 		if ( table_id == av_table[i] ) {
 			jQuery("#" + table_id).slideDown();
 		} else {
@@ -46,7 +46,7 @@ function show_table(table_id) {
 }
 var dgs=0;
 function nfw_eg() {
-	setTimeout("nfw_eg()",5);if(dgs<180){dgs++;document.body.style.webkitTransform = "rotate("+dgs+"deg)";document.body.style.msTransform = "rotate("+dgs+"deg)";document.body.style.transform = "rotate("+dgs+"deg)";}document.body.style.overflow="hidden";
+	setTimeout("nfw_eg()",5);if(dgs<180){++dgs;document.body.style.webkitTransform = "rotate("+dgs+"deg)";document.body.style.msTransform = "rotate("+dgs+"deg)";document.body.style.transform = "rotate("+dgs+"deg)";}document.body.style.overflow="hidden";
 }
 </script>
 <div class="wrap">

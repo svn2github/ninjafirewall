@@ -109,7 +109,8 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<p><strong><?php _e('Firewall Log:', 'ninjafirewall') ?></strong>
 				<br />
-				<?php _e('The log menu has been revamped too. You can disable the firewall log, delete the current one, enable its rotation based on the size of the file and, if any, view each rotated log separately. Quick filtering options are easily accessible from checkboxes. The log can also be exported as a TSV (tab-separated values) text file.', 'ninjafirewall') ?></p>
+				<?php _e('The log menu has been revamped too. You can disable the firewall log, delete the current one, enable its rotation based on the size of the file and, if any, view each rotated log separately. Quick filtering options are easily accessible from checkboxes and the log can be exported as a TSV (tab-separated values) text file.', 'ninjafirewall') ?><br />
+				<?php _e('It is also possible to redirect all incidents and events to the Syslog server:', 'ninjafirewall') ?> <a href="https://blog.nintechnet.com/syslog-logging-with-ninjafirewall/">Syslog logging with NinjaFirewall</a>.</p>
 				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/10_log.png" width="490" height="519" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />

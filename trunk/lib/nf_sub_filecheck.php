@@ -180,7 +180,7 @@ $count = -2;
 $fh = fopen($nfmon_snapshot, 'r');
 while (! feof($fh) ) {
 	fgets($fh);
-	$count++;
+	++$count;
 }
 fclose($fh);
 nfw_get_blogtimezone();
@@ -592,11 +592,6 @@ function nf_sub_monitoring_create($nfmon_snapshot) {
 				unlink($nfmon_snapshot);
 			}
 			return $res;
-		}
-		$stat = stat($nfmon_snapshot);
-		if ($stat['size'] < 30 ) {
-			unlink($nfmon_snapshot);
-			return sprintf( __('Unable to create %s.', 'ninjafirewall'), '<code>'. $nfmon_snapshot .'</code>');
 		}
 
 		// Save scan dir :

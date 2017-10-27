@@ -17,13 +17,14 @@
  +---------------------------------------------------------------------+ i18n+ / sa
 */
 
+if (! defined( 'NFW_ENGINE_VERSION' ) ) {
+	header('HTTP/1.1 404 Not Found');
+	header('Status: 404 Not Found');
+	exit;
+}
 
-if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
-
-
-// contextual help - choose Help on the top right
+// Contextual help - choose Help on the top right
 // of the admin panel to preview this.
-
 
 /* ------------------------------------------------------------------ */ // i18n+
 
@@ -40,7 +41,7 @@ function help_nfsubmain() {
 		'<p><strong>' . __( 'For more information:', 'ninjafirewall') . '</strong></p>' .
 		'<p><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
 		'<p><a href="http://wordpress.org/support/plugin/ninjafirewall/">' . __( 'Support Forum', 'ninjafirewall') . '</a></p>' .
-		'<p>'. __('Updates via Twitter', 'ninjafirewall') . '<br /><a href="https://twitter.com/nintechnet"><img border="0" src="' . plugins_url( '/images/twitter_ntn.png', __FILE__ ) . '" width="116" height="28"></a></p>'
+		'<p>'. __('Updates via Twitter', 'ninjafirewall') . '<br /><a href="https://twitter.com/nintechnet"><img border="0" src="' . plugins_url( '/images/twitter_ntn.png', __DIR__ ) . '" width="116" height="28"></a></p>'
 	);
 
 }
@@ -102,7 +103,7 @@ function help_nfsubopt() {
 		'title'     =>  __('Export/import configuration', 'ninjafirewall'),
 		'content'   => '<br />' .
 			__('This options lets you export you current configuration or import it from another NinjaFirewall (WP Edition) installation. The imported file must match your current version otherwise it will be rejected. Note that importing will override all firewall rules and options.', 'ninjafirewall') .
-			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' .
+			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' .
 			__('"File Check" configuration will not be exported/imported.', 'ninjafirewall') . '</span></p>'
 	) );
 }
@@ -112,6 +113,13 @@ function help_nfsubpolicies() {
 
 	// Firewall policies menu help :
 
+	// Show this text only if we are running in "Full WAF" mode:
+	if ( defined('NFW_WPWAF') ) {
+		$res= '';
+	} else {
+		$res = sprintf( __('Keep in mind, however, that the Firewall Policies apply to any PHP scripts located inside the %s directory and its sub-directories, and not only to your WordPress index page.', 'ninjafirewall'), '<code>' . ABSPATH . '</code>');
+	}
+
 	get_current_screen()->add_help_tab( array(
 		'id'        => 'policies01',
 		'title'     => __('Policies overview', 'ninjafirewall'),
@@ -120,7 +128,7 @@ function help_nfsubpolicies() {
 			'<br />' .
 			__('Use the options below to enable, disable or to tweak these rules according to your needs.', 'ninjafirewall') .
 			'<br />' .
-			sprintf( __('Keep in mind, however, that the Firewall Policies apply to any PHP scripts located inside the %s directory and its sub-directories, and not only to your WordPress index page.', 'ninjafirewall'), '<code>' . ABSPATH . '</code>') .
+			$res .
 			'<br />'
 	) );
 	get_current_screen()->add_help_tab( array(
@@ -134,57 +142,69 @@ function help_nfsubpolicies() {
 		__('This action will be performed when the filtering process is over, right before NinjaFirewall forwards the request to your PHP script.', 'ninjafirewall') . '
 		<br />
 		<br />
-		<img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" border="0" height="16" width="16">&nbsp;<span class="description">'. __('If you enabled <code>POST</code> requests sanitising, articles and messages posted by your visitors could be corrupted with excessive backslashes or substitution characters.', 'ninjafirewall'). '</span></li>'
+		<img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" border="0" height="16" width="16">&nbsp;<span class="description">'. __('If you enabled <code>POST</code> requests sanitising, articles and messages posted by your visitors could be corrupted with excessive backslashes or substitution characters.', 'ninjafirewall'). '</span></li>'
 	) );
 	get_current_screen()->add_help_tab( array(
 		'id'			=> 'policies04',
 		'title'		=> __('Firewall Policies', 'ninjafirewall'),
-		'content'	=> '<br />
+		'content'	=> '
 		<div style="height:400px;">
+
+		<!-- Basic Policies  -->
+		<h3>' . __('Basic Policies', 'ninjafirewall'). '</h3>
 
 		<strong>HTTP / HTTPS</strong>
 		<li>' . __('Whether to filter HTTP and/or HTTPS traffic', 'ninjafirewall'). '</li>
-
 		<br />
-
 		<strong>' . __('Uploads', 'ninjafirewall'). '</strong>
 		<li>' . __('File Uploads:', 'ninjafirewall'). '<span class="description"> ' . __('whether to allow/disallow file uploads.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Sanitise filenames:', 'ninjafirewall'). '<span class="description"> ' . __('any character that is not a letter <code>a-zA-Z</code>, a digit <code>0-9</code>, a dot <code>.</code>, a hyphen <code>-</code> or an underscore <code>_</code> will be removed from the filename and replaced with the substitution character.', 'ninjafirewall'). '</span></li>
+		<br />
+		<strong>WordPress</strong>
+		<li>' . __('Whether to block direct access to PHP files located in specific WordPress directories.', 'ninjafirewall'). '</li>
+		<li>' . __('Protect against username enumeration:', 'ninjafirewall'). '<span class="description"> ' . __('it is possible to enumerate usernames either through the WordPress author archives, the REST API or the login page. Although this is not a vulnerability but a WordPress feature, some hackers use it to retrieve usernames in order to launch more accurate brute-force attacks. If it is a failed login attempt, NinjaFirewall will sanitise the error message returned by WordPress. If it is an author archives scan, it will invalidate it and redirect the user to the blog index page. Regarding the WP REST API, it will block the request immediately.', 'ninjafirewall'). '</span></li>
+		<li>' . __('WordPress REST API:', 'ninjafirewall'). '<span class="description"> ' . __('it allows you to access your WordPress site\'s data through an easy-to-use HTTP REST API. Since WordPress 4.7, it is enabled by default. NinjaFirewall allows you to block any access to that API if you do not intend to use it.', 'ninjafirewall'). '</span></li>
+		<li>' . __('WordPress XML-RPC API:', 'ninjafirewall'). '<span class="description"> ' . __('XML-RPC is a remote procedure call (RPC) protocol which uses XML to encode its calls and HTTP as a transport mechanism. WordPress has an XMLRPC API that can be accessed through the <code>xmlrpc.php</code> file. Since WordPress version 3.5, it is always activated and cannot be turned off. NinjaFirewall allows you to immediately block any access to that file, or only to block an access using the <code>system.multicall</code> method often used in brute-force amplification attacks or to block Pingbacks.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Block <code>POST</code> requests in the themes folder <code>/wp-content/themes</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this option can be useful to block hackers from installing backdoor in the PHP theme files. However, because some custom themes may include an HTML form (contact, search form etc), this option is not enabled by default.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Force SSL for admin and logins <code>FORCE_SSL_ADMIN</code>:', 'ninjafirewall'). '<span class="description"> ' . __('enable this option when you want to secure logins and the admin area so that both passwords and cookies are never sent in the clear. Ensure that you can access your admin console from HTTPS before enabling this option, otherwise you will lock yourself out of your site!', 'ninjafirewall'). '</span></li>
+		<li>' . __('Disable the plugin and theme editor <code>DISALLOW_FILE_EDIT</code>:', 'ninjafirewall'). '<span class="description"> ' . __('disabling the plugin and theme editor provides an additional layer of security if a hacker gains access to a well-privileged user account.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Disable plugin and theme update/installation <code>DISALLOW_FILE_MODS</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this option will block users being able to use the plugin and theme installation/update functionality from the WordPress admin area. Setting this constant also disables the Plugin and Theme editor.', 'ninjafirewall'). '</span></li>
 
 		<br />
+
+		<!-- Intermediate Policies  -->
+		<h3>' . __('Intermediate Policies', 'ninjafirewall'). '</h3>
 
 		<strong>' . __('HTTP GET variable', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to scan and/or sanitise the <code>GET</code> variable.', 'ninjafirewall'). '</li>
-
 		<br />
-
 		<strong>' . __('HTTP POST variable', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to scan and/or sanitise the <code>POST</code> variable.', 'ninjafirewall'). '</li>
 		<li>' . __('Decode Base64-encoded <code>POST</code> variable:', 'ninjafirewall'). '<span class="description"> ' . __('NinjaFirewall will decode and scan base64 encoded values in order to detect obfuscated malicious code. This option is only available for the <code>POST</code> variable.', 'ninjafirewall'). '</span></li>
-
 		<br />
-
 		<strong>' . __('HTTP REQUEST variable', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to sanitise the <code>REQUEST</code> variable.', 'ninjafirewall'). '</li>
-
-
 		<br />
 		<strong>' . __('Cookies', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to scan and/or sanitise cookies.', 'ninjafirewall'). '</li>
-
 		<br />
-
 		<strong>' . __('HTTP_USER_AGENT server variable', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to scan and/or sanitise <code>HTTP_USER_AGENT</code> requests.', 'ninjafirewall'). '</li>
 		<li>' . __('Block suspicious bots/scanners:', 'ninjafirewall'). '<span class="description"> ' . __('rejects some known bots, scanners and various malicious scripts attempting to access your blog.', 'ninjafirewall'). '</span></li>
-
 		<br />
-
 		<strong>' . __('HTTP_REFERER server variable', 'ninjafirewall'). '</strong>
 		<li>' . __('Whether to scan and/or sanitise <code>HTTP_REFERER</code> requests.', 'ninjafirewall'). '</li>
 		<li>' . __('Block POST requests that do not have an <code>HTTP_REFERER</code> header:', 'ninjafirewall'). '<span class="description"> ' . __('this option will block any <code>POST</code> request that does not have a Referrer header (<code>HTTP_REFERER</code> variable). If you need external applications to post to your scripts (e.g. Paypal IPN, WordPress WP-Cron...), you are advised to keep this option disabled otherwise they will likely be blocked. Note that <code>POST</code> requests are not required to have a Referrer header and, for that reason, this option is disabled by default.', 'ninjafirewall'). '</span></li>
+		<br />
+		<strong>IP</strong>
+		<li>' . __('Block localhost IP in <code>GET/POST</code> requests:', 'ninjafirewall'). '<span class="description"> ' . __('this option will block any <code>GET</code> or <code>POST</code> request containing the localhost IP (127.0.0.1). It can be useful to block SQL dumpers and various hacker\'s shell scripts.', 'ninjafirewall'). '</span></li>
+		<li>' . __('Block HTTP requests with an IP in the <code>HTTP_HOST</code> header:', 'ninjafirewall'). '<span class="description"> ' . sprintf( __('this option will reject any request using an IP instead of a domain name in the <code>Host</code> header of the HTTP request. Unless you need to connect to your site using its IP address, (e.g. %s), enabling this option will block a lot of hackers scanners because such applications scan IPs rather than domain names.', 'ninjafirewall'), 'http://' . htmlspecialchars($_SERVER['SERVER_ADDR']) . '/index.php'). '</span></li>
+		<li>' . __('Scan traffic coming from localhost and private IP address spaces:', 'ninjafirewall'). '<span class="description"> ' . __('this option will allow the firewall to scan traffic from all non-routable private IPs (IPv4 and IPv6) as well as the localhost IP. We recommend to keep it enabled if you have a private network (2 or more servers interconnected).', 'ninjafirewall'). '</span></li>
 
 		<br />
+
+		<!-- Advanced Policies  -->
+		<h3>' . __('Advanced Policies', 'ninjafirewall'). '</h3>
 
 		<strong>' . __('HTTP response headers', 'ninjafirewall'). '</strong>
 		<br />
@@ -202,45 +222,22 @@ function help_nfsubpolicies() {
 			__('Since v3.1.3, WordPress sets this value to <code>SAMEORIGIN</code> for the administrator and the login page only.', 'ninjafirewall'). '</li>
 		<li>' . __('Enforce <code>X-XSS-Protection</code> (IE, Chrome and Safari browsers):', 'ninjafirewall'). '<span class="description"> ' . __('this header allows compatible browsers to identify and block XSS attack by preventing the malicious script from executing. NinjaFirewall will set its value to <code>1; mode=block</code>.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Force <code>HttpOnly</code> flag on all cookies to mitigate XSS attacks:', 'ninjafirewall'). '<span class="description"> ' . __('adding this flag to cookies helps to mitigate the risk of cross-site scripting by preventing them from being accessed through client-side script. NinjaFirewall can hook all cookies sent by your blog, its plugins or any other PHP script, add the <code>HttpOnly</code> flag if it is missing, and re-inject those cookies back into your server HTTP response headers right before they are sent to your visitors. Note that WordPress sets that flag on the logged in user cookies only.', 'ninjafirewall'). '</span></li>
-		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep that option disabled.', 'ninjafirewall'). '</span></p>
+		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('If your PHP scripts send cookies that need to be accessed from JavaScript, you should keep that option disabled.', 'ninjafirewall'). '</span></p>
 		<li>' . __('Set <code>Strict-Transport-Security</code> (HSTS) to enforce secure connections to the server:', 'ninjafirewall'). '<span class="description"> ' . __('this policy enforces secure HTTPS connections to the server. Web browsers will not allow the user to access the web application over insecure HTTP protocol. It helps to defend against cookie hijacking and Man-in-the-middle attacks. Most recent browsers support HSTS headers.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Set <code>Content-Security-Policy</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this policy helps to mitigate threats such as XSS, phishing and clickjacking attacks. It covers JavaScript, CSS, HTML frames, web workers, fonts, images, objects (Java, ActiveX, audio and video files), and other HTML5 features.', 'ninjafirewall'). ' ' . __('NinjaFirewall lets you configure the CSP policy separately for the frontend (blog, website) and the backend (WordPress admin dashboard).', 'ninjafirewall') . '</span></li>
-
 		<br />
-
-		<strong>IP</strong>
-		<li>' . __('Block localhost IP in <code>GET/POST</code> requests:', 'ninjafirewall'). '<span class="description"> ' . __('this option will block any <code>GET</code> or <code>POST</code> request containing the localhost IP (127.0.0.1). It can be useful to block SQL dumpers and various hacker\'s shell scripts.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Block HTTP requests with an IP in the <code>HTTP_HOST</code> header:', 'ninjafirewall'). '<span class="description"> ' . sprintf( __('this option will reject any request using an IP instead of a domain name in the <code>Host</code> header of the HTTP request. Unless you need to connect to your site using its IP address, (e.g. %s), enabling this option will block a lot of hackers scanners because such applications scan IPs rather than domain names.', 'ninjafirewall'), 'http://' . htmlspecialchars($_SERVER['SERVER_ADDR']) . '/index.php'). '</span></li>
-		<li>' . __('Scan traffic coming from localhost and private IP address spaces:', 'ninjafirewall'). '<span class="description"> ' . __('this option will allow the firewall to scan traffic from all non-routable private IPs (IPv4 and IPv6) as well as the localhost IP. We recommend to keep it enabled if you have a private network (2 or more servers interconnected).', 'ninjafirewall'). '</span></li>
-
-		<br />
-
 		<strong>PHP</strong>
 		<li>' . __('Block PHP built-in wrappers:', 'ninjafirewall'). '<span class="description"> ' . __('PHP has several wrappers for use with the filesystem functions. It is possible for an attacker to use them to bypass firewalls and various IDS to exploit remote and local file inclusions. This option lets you block any script attempting to pass a <code>expect://</code>, <code>file://</code>, <code>phar://</code>, <code>php://</code>, <code>zip://</code> or <code>data://</code> stream inside a <code>GET</code> or <code>POST</code> request, cookies, user agent and referrer variables.', 'ninjafirewall'). '</span></li>
-		<li>' . sprintf( __('Block serialized PHP objects:', 'ninjafirewall'). '<span class="description"> ' . __('Object Serialization is a PHP feature used by many applications to generate a storable representation of a value. However, some insecure PHP applications and plugins can turn that feature into a critical vulnerability called <a href="%s">PHP Object Injection</a>. When this option is enabled, NinjaFirewall will block serialized PHP objects found inside a <code>GET</code> or <code>POST</code> request, cookies, user agent and referrer variables. By default, it is disabled.', 'ninjafirewall'), 'https://www.owasp.org/index.php/PHP_Object_Injection'). '</span></li>
+		<li>' . sprintf( __('Block serialized PHP objects:', 'ninjafirewall'). '<span class="description"> ' . __('Object Serialization is a PHP feature used by many applications to generate a storable representation of a value. However, some insecure PHP applications and plugins can turn that feature into a critical vulnerability called <a href="%s">PHP Object Injection</a>. This option can block serialized PHP objects found inside a a <code>GET</code> or <code>POST</code> request, cookies, user agent and referrer variables.', 'ninjafirewall'), 'https://www.owasp.org/index.php/PHP_Object_Injection'). '</span></li>
 		<li>' . __('Hide PHP notice and error messages:', 'ninjafirewall'). '<span class="description"> ' . __('this option lets you hide errors returned by your scripts. Such errors can leak sensitive informations which can be exploited by hackers.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Sanitise <code>PHP_SELF</code>, <code>PATH_TRANSLATED</code>, <code>PATH_INFO</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this option can sanitise any dangerous characters found in those 3 server variables to prevent various XSS and database injection attempts.', 'ninjafirewall'). '</span></li>
-
 		<br />
-
 		<strong>' . __('Various', 'ninjafirewall'). '</strong>
 		<li>' . sprintf( __('Block the <code>DOCUMENT_ROOT</code> server variable (%s) in HTTP requests:', 'ninjafirewall'), '<code>' . $_SERVER['DOCUMENT_ROOT'] . '</code>'). '<span class="description"> ' . __('this option will block scripts attempting to pass the <code>DOCUMENT_ROOT</code> server variable in a <code>GET</code> or <code>POST</code> request. Hackers use shell scripts that often need to pass this value, but most legitimate programs do not.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Block ASCII character 0x00 (NULL byte):', 'ninjafirewall'). '<span class="description"> ' . __('this option will reject any <code>GET</code> or <code>POST</code> request, <code>HTTP_USER_AGENT</code>, <code>REQUEST_URI</code>, <code>PHP_SELF</code>, <code>PATH_INFO</code>, <code>HTTP_REFERER</code> variables containing the ASCII character 0x00 (NULL byte). Such a character is dangerous and should always be rejected.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Block ASCII control characters 1 to 8 and 14 to 31:', 'ninjafirewall'). '<span class="description"> ' . __('this option will reject any <code>GET</code> or <code>POST</code> request, <code>HTTP_USER_AGENT</code>, <code>HTTP_REFERER</code> variables containing ASCII characters from 1 to 8 and 14 to 31.', 'ninjafirewall'). '</span></li>
 
-		<br />
-
-		<strong>WordPress</strong>
-		<li>' . __('Whether to block direct access to PHP files located in specific WordPress directories.', 'ninjafirewall'). '</li>
-		<li>' . __('Protect against username enumeration:', 'ninjafirewall'). '<span class="description"> ' . __('it is possible to enumerate usernames either through the WordPress author archives, the REST API or the login page. Although this is not a vulnerability but a WordPress feature, some hackers use it to retrieve usernames in order to launch more accurate brute-force attacks. If it is a failed login attempt, NinjaFirewall will sanitise the error message returned by WordPress. If it is an author archives scan, it will invalidate it and redirect the user to the blog index page. Regarding the WP REST API, it will block the request immediately.', 'ninjafirewall'). '</span></li>
-		<li>' . __('WordPress REST API:', 'ninjafirewall'). '<span class="description"> ' . __('it allows you to access your WordPress site\'s data through an easy-to-use HTTP REST API. Since WordPress 4.7, it is enabled by default. NinjaFirewall allows you to block any access to that API if you do not intend to use it.', 'ninjafirewall'). '</span></li>
-		<li>' . __('WordPress XML-RPC API:', 'ninjafirewall'). '<span class="description"> ' . __('XML-RPC is a remote procedure call (RPC) protocol which uses XML to encode its calls and HTTP as a transport mechanism. WordPress has an XMLRPC API that can be accessed through the <code>xmlrpc.php</code> file. Since WordPress version 3.5, it is always activated and cannot be turned off. NinjaFirewall allows you to immediately block any access to that file, or only to block an access using the <code>system.multicall</code> method often used in brute-force amplification attacks or to block Pingbacks.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Block <code>POST</code> requests in the themes folder <code>/wp-content/themes</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this option can be useful to block hackers from installing backdoor in the PHP theme files. However, because some custom themes may include an HTML form (contact, search form etc), this option is not enabled by default.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Force SSL for admin and logins <code>FORCE_SSL_ADMIN</code>:', 'ninjafirewall'). '<span class="description"> ' . __('enable this option when you want to secure logins and the admin area so that both passwords and cookies are never sent in the clear. Ensure that you can access your admin console from HTTPS before enabling this option, otherwise you will lock yourself out of your site!', 'ninjafirewall'). '</span></li>
-		<li>' . __('Disable the plugin and theme editor <code>DISALLOW_FILE_EDIT</code>:', 'ninjafirewall'). '<span class="description"> ' . __('disabling the plugin and theme editor provides an additional layer of security if a hacker gains access to a well-privileged user account.', 'ninjafirewall'). '</span></li>
-		<li>' . __('Disable plugin and theme update/installation <code>DISALLOW_FILE_MODS</code>:', 'ninjafirewall'). '<span class="description"> ' . __('this option will block users being able to use the plugin and theme installation/update functionality from the WordPress admin area. Setting this constant also disables the Plugin and Theme editor.', 'ninjafirewall'). '</span></li>
-
-		</div><br />'
+		</div>'
 	) );
 	get_current_screen()->add_help_tab( array(
 		'id'        => 'policies03',
@@ -265,7 +262,7 @@ function help_nfsubfileguard() {
 			__('If a hacker uploaded a shell script to your site (or injected a backdoor into an already existing file) and tried to directly access that file using his browser or a script, NinjaFirewall would hook the HTTP request and immediately detect that the file was recently modified/created. It would send you a detailed alert (script name, IP, request, date and time). Alerts will be sent to the contact email address defined in the "Event Notifications" menu.', 'ninjafirewall') .
 			'<p>' . __('If you do not want to monitor a folder, you can exclude its full path or a part of it (e.g., <code>/var/www/public_html/cache/</code> or <code>/cache/</code> etc). NinjaFirewall will compare this value to the <code>$_SERVER["SCRIPT_FILENAME"]</code> server variable and, if it matches, will ignore it.', 'ninjafirewall') . '</p>' .
 			__('Multiple values must be comma-separated (e.g., <code>/foo/bar/,/cache/</code>).', 'ninjafirewall') .'</li>' .
-			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('File Guard real-time detection is a totally unique feature, because NinjaFirewall is the only plugin for WordPress that can hook HTTP requests sent to any PHP script, even if that script is not part of the WordPress package (third-party software, shell script, backdoor etc).', 'ninjafirewall') . '</span></p>'
+			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('File Guard real-time detection is a totally unique feature, because NinjaFirewall is the only plugin for WordPress that can hook HTTP requests sent to any PHP script, even if that script is not part of the WordPress package (third-party software, shell script, backdoor etc).', 'ninjafirewall') . '</span></p>'
 	) );
 }
 /* ------------------------------------------------------------------ */ // i18n+
@@ -310,7 +307,7 @@ function help_nfsubfilecheck() {
 			'<br />'.
 			__('Reports will be sent to the contact email address defined in the "Event Notifications" menu.', 'ninjafirewall'). '</p>'.
 
-			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'. sprintf( __('Scheduled scans rely on <a href="%s">WordPress pseudo cron</a> which works only if your site gets sufficient traffic.', 'ninjafirewall'), 'http://codex.wordpress.org/Category:WP-Cron_Functions') . '</span></p>'
+			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'. sprintf( __('Scheduled scans rely on <a href="%s">WordPress pseudo cron</a> which works only if your site gets sufficient traffic.', 'ninjafirewall'), 'http://codex.wordpress.org/Category:WP-Cron_Functions') . '</span></p>'
 	) );
 
 }
@@ -397,15 +394,15 @@ function help_nfsublogin() {
 		'title'     => __('AUTH log', 'ninjafirewall'),
 		'content'   => '
 		<div style="height:250px;">
-		<p>' . __('NinjaFirewall can write to the server <code>AUTH</code> log when the brute-force protection is triggered. This can be useful to the system administrator for monitoring purposes or banning IPs at the server level.', 'ninjafirewall') . '
+		<p>' . __('NinjaFirewall can write to the server Authentication log when the brute-force protection is triggered. This can be useful to the system administrator for monitoring purposes or banning IPs at the server level.', 'ninjafirewall') . '
 		<br />' .
-		__('If you have a shared hosting account, <strong>keep this option disabled</strong> as you do not have any access to the server\'s logs.', 'ninjafirewall') .
+		__('If you have a shared hosting account, keep this option disabled as you do not have any access to the server\'s logs.', 'ninjafirewall') .
 		'<br />' .
 		__('On Debian-based systems, the log is located in <code>/var/log/auth.log</code>, and on Red Hat-based systems in <code>/var/log/secure</code>. The logline uses the following format:', 'ninjafirewall') .
 		'<p><code>ninjafirewall[<font color="red">AA</font>]: Possible brute-force attack from <font color="red">BB</font> on <font color="red">CC</font> (<font color="red">DD</font>). Blocking access for <font color="red">EE</font>mn.</code><p>
 		<ul>
 			<li>' . __('AA: the process ID (PID).', 'ninjafirewall') . '</li>
-			<li>' . __('BB: the offending IPv4 or IPv6 address.', 'ninjafirewall') . '</li>
+			<li>' . __('BB: the user IPv4 or IPv6 address.', 'ninjafirewall') . '</li>
 			<li>' . __('CC: the blog (sub-)domain name.', 'ninjafirewall') . '</li>
 			<li>' . __('DD: the target: it can be either <code>wp-login.php</code> or <code>XML-RPC API</code>.', 'ninjafirewall') . '</li>
 			<li>' . __('EE: the time, in minutes, the protection will remain active.', 'ninjafirewall') . '</li>
@@ -413,7 +410,7 @@ function help_nfsublogin() {
 		__('Sample loglines:', 'ninjafirewall') .
 		'<br />
 		<textarea class="small-text code" style="width:100%;height:80px;" wrap="off">Aug 31 01:40:35 www ninjafirewall[6191]: Possible brute-force attack from 172.16.0.1 on mysite.com (wp-login.php). Blocking access for 5mn.'. "\n" . 'Aug 31 01:45:28 www ninjafirewall[6192]: Possible brute-force attack from fe80::6e88:14ff:fe3e:86f0 on blog.domain.com (XML-RPC API). Blocking access for 25mn.</textarea>
-		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja') . '</span></p>
+		<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . sprintf( __('Be careful if you are behind a load balancer, reverse-proxy or CDN because the Login Protection feature will always record the <code>REMOTE_ADDR</code> IP. If you have an application parsing the AUTH log in order to ban IPs (e.g. Fail2ban), you <strong>must</strong> setup your HTTP server to forward the correct IP (or use the <code><a href="%s">.htninja</a></code> file), otherwise you will likely block legitimate users.', 'ninjafirewall'), 'https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja') . '</span></p>
 		</div>'
 	) );
 
@@ -432,9 +429,9 @@ function help_nfsublog() {
 			__('The firewall log displays blocked and sanitised requests as well as some useful information. It has 6  columns:', 'ninjafirewall') . '
 			<li>' . __('DATE : date and time of the incident.', 'ninjafirewall') . '</li>
 			<li>' . __('INCIDENT : unique incident number/ID as it was displayed to the blocked user.', 'ninjafirewall') . '</li>
-			<li>' . __('LEVEL : level of severity (<code>critical</code>, <code>high</code> or <code>medium</code>), information (<code>info</code>, <code>upload</code>) and debugging mode (<code>DEBUG_ON</code>).', 'ninjafirewall') . '</li>
+			<li>' . __('LEVEL : level of severity (<code>CRITICAL</code>, <code>HIGH</code> or <code>MEDIUM</code>), information (<code>INFO</code>, <code>UPLOAD</code>) and debugging mode (<code>DEBUG_ON</code>).', 'ninjafirewall') . '</li>
 			<li>' . __('RULE : reference of the NinjaFirewall built-in security rule that triggered the action. A hyphen (<code>-</code>) instead of a number means it was a rule from the "Firewall Policies" page.', 'ninjafirewall') . '</li>
-			<li>' . __('IP : the blocked user remote address.', 'ninjafirewall') . '</li>
+			<li>' . __('IP : the user IPv4 or IPv6 address.', 'ninjafirewall') . '</li>
 			<li>' . __('REQUEST : the HTTP request including offending variables and values as well as the reason the action was logged.', 'ninjafirewall') . '</li>'
 	) );
 
@@ -446,7 +443,7 @@ function help_nfsublog() {
 			'<p>'. __('Centralized Logging lets you remotely access the firewall log of all your NinjaFirewall protected websites from one single installation. You do not need any longer to log in to individual servers to analyse your log data.', 'ninjafirewall') .	' ' . sprintf( __('<a href="%s">Consult our blog</a> for more info about it.', 'ninjafirewall'), 'https://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) . '</p>' .
 			'<li>' .	 __('Enter your public key (optional): This is the public key that was created from your main server.', 'ninjafirewall') . '</li>' .
 
-			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'.
+			'<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">'.
 			__('Centralized Logging will keep working even if NinjaFirewall is disabled. Delete your public key below if you want to disable it.', 'ninjafirewall') .
 			'</span></p>'
 	) );
@@ -469,7 +466,7 @@ function help_nfsublivelog() {
 
 			<p>' . __('Live Log does not make use of any WordPress core file (e.g., <code>admin-ajax.php</code>). It communicates directly with the firewall without loading WordPress bootstrap. Consequently, it is fast, light and it should not affect your server load, even if you set its refresh rate to the lowest value.', 'ninjafirewall') .	'</p>
 
-			<p><img src="' . plugins_url( '/images/icon_warn_16.png', __FILE__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('If you are using the optional <code>.htninja</code> configuration file to whitelist your IP, the Live Log feature will not work.', 'ninjafirewall') . '
+			<p><img src="' . plugins_url( '/images/icon_warn_16.png', __DIR__ ) . '" height="16" border="0" width="16">&nbsp;<span class="description">' . __('If you are using the optional <code>.htninja</code> configuration file to whitelist your IP, the Live Log feature will not work.', 'ninjafirewall') . '
 		</span></p>'
 	) );
 	get_current_screen()->add_help_tab( array(
@@ -496,7 +493,7 @@ function help_nfsubedit() {
 	// Firewall Rules Editor menu help :
 
 	get_current_screen()->add_help_tab( array(
-		'id'        => 'log01',
+		'id'        => 'editor01',
 		'title'     => __('Rules Editor', 'ninjafirewall'),
 		'content'   => '<br />' .
 			__('Besides the "Firewall Policies", NinjaFirewall includes also a large set of built-in rules used to protect your blog against the most common vulnerabilities and hacking attempts. They are always enabled and you cannot edit them, but if you notice that your visitors are wrongly blocked by some of those rules, you can use the Rules Editor below to disable them individually:', 'ninjafirewall') . '
@@ -506,6 +503,56 @@ function help_nfsubedit() {
 			<br />
 			<span class="description">'. __('Note: if the <code>RULE</code> column from your log shows a hyphen <code>-</code> instead of a number, that means that the rule can be changed in the "Firewall Policies" page.', 'ninjafirewall') . '</span>'
 	) );
+
+	get_current_screen()->add_help_tab( array(
+		'id'        => 'editor02',
+		'title'     => __('Credits', 'ninjafirewall'),
+		'content'   =>
+			'<p>' . __('NinjaFirewall security rules protect against many vulnerabilities. Some of them were reported by the following companies, individuals or mailing lists:', 'ninjafirewall') . '<p>
+			<table cellpadding="2" cellspacing="3">
+				<tr>
+					<th scope="row" style="text-align:left">g0blin Research</th><td>https://g0blin.co.uk/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">HomeLab IT</th><td>https://homelab.it/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Klikki Oy</th><td>https://klikki.fi/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Netsparker</th><td>https://netsparker.com/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Packet Storm</th><td>https://packetstormsecurity.com/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Plugin Vulnerabilities</th><td>https://pluginvulnerabilities.com/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Pritect Network</th><td>http://pritect.net/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">SecLists.Org</th><td>http://seclists.org/ (fulldisclosure &amp; oss-sec)</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">SecurityFocus</th><td>http://securityfocus.com/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Sucuri</th><td>https://sucuri.net/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Summer Of Pwnage</th><td>https://sumofpwn.nl/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">Wordfence</th><td>https://wordfence.com/</td>
+				</tr>
+				<tr>
+					<th scope="row" style="text-align:left">WordPress Hütte</th><td>http://wphutte.com/</td>
+				</tr>
+			</table>
+			</span>'
+	) );
+
 }
 
 /* ------------------------------------------------------------------ */ // i18n+

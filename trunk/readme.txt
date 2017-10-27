@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.8
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -25,34 +25,6 @@ NinjaFirewall can hook, scan, sanitise or reject any HTTP/HTTPS request sent to 
 = Powerful filtering engine =
 
 NinjaFirewall includes the most powerful filtering engine available in a WordPress plugin. Its most important feature is its ability to normalize and transform data from incoming HTTP requests which allows it to detect Web Application Firewall evasion techniques and obfuscation tactics used by hackers, as well as to support and decode a large set of encodings. See our blog for a full description: [An introduction to NinjaFirewall filtering engine](https://blog.nintechnet.com/introduction-to-ninjafirewall-filtering-engine/ "").
-
-= Features =
-
-* Full standalone web application firewall. Works before WordPress is loaded.
-* Powerful filtering engine.
-* Supports a large set of encodings.
-* Detects and blocks obfuscated code and evasion techniques used to bypass Web Application Firewalls.
-* Protects against remote file inclusion, local file inclusion, cross-site scripting, code execution, SQL injections, brute-force scanners, shell scripts, backdoors etc.
-* Scans and sanitises GET/POST requests, HTTP/HTTPS traffic, cookies, server variables (`HTTP_USER_AGENT`, `HTTP_REFERER`, `PHP_SELF`, `PATH_TRANSLATED`, `PATH_INFO`) and raw POST data.
-* Sanitises variables name and value.
-* Privilege escalation protection.
-* Anti-Malware Scanner.
-* Advanced filtering options to block ASCII control characters, NULL bytes and PHP built-in wrappers.
-* Decodes and scans Base64-encoded POST requests to detect backdoors and code injection attempts.
-* Hooks and secures HTTP reponse headers to prevent XSS, phishing and clickjacking attempts (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Strict-Transport-Security`, `Content-Security-Policy`).
-* Hooks and modifies cookies to set the `HttpOnly` flag.
-* Blocks username enumeration scanning attempts through the author archives and the login page.
-* Blocks/allows uploads, sanitises uploaded file names.
-* Blocks suspicious bots and scanners.
-* Hides PHP error and notice messages.
-* Blocks direct access to PHP scripts located inside specific directories (e.g., `/wp-content/uploads/`).
-* Protects WordPress XML-RPC and REST API.
-* Whitelist option for WordPress administrator(s), localhost and private IP address spaces.
-* Configurable HTTP return code and message.
-* Rules editor to enable/disable built-in security rules.
-* Activity log and statistics.
-* Debugging mode.
-* And many more...
 
 = Fastest and most efficient brute-force attack protection for WordPress =
 
@@ -108,7 +80,7 @@ NinjaFirewall is multi-site compatible. It will protect all sites from your netw
 
 = Possibility to prepend your own PHP code to the firewall =
 
-You can prepend your own PHP code to the firewall with the help of an [optional user configuration file](https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulate HTTP requests, variables etc.
+You can prepend your own PHP code to the firewall with the help of an [optional distributed configuration file](https://nintechnet.com/ninjafirewall/wp-edition/help/?htninja). It will be processed before WordPress and all its plugins are loaded. This is a very powerful feature, and there is almost no limit to what you can do: add your own security rules, manipulate HTTP requests, variables etc.
 
 = Low Footprint Firewall =
 
@@ -126,7 +98,7 @@ If you need help, click on the *Help* menu tab located in the upper right corner
 
 = Need more security ? =
 
-Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+")
+Check out our new supercharged edition: [NinjaFirewall WP+ Edition](https://nintechnet.com/ninjafirewall/wp-edition/ "NinjaFirewall WP+ Edition")
 
 * Unix shared memory use for inter-process communication and blazing fast performances.
 * IP-based Access Control.
@@ -134,12 +106,13 @@ Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.c
 * Country-based Access Control via geolocation.
 * URL-based Access Control.
 * Bot-based Access Control.
-* Centralized Logging.
+* [Centralized Logging](https://blog.nintechnet.com/centralized-logging-with-ninjafirewall/ "Centralized Logging").
 * Antispam for comment and user regisration forms.
 * Rate limiting option to block aggressive bots, crawlers, web scrapers and HTTP attacks.
 * Response body filter to scan the output of the HTML page right before it is sent to your visitors browser.
 * Better File uploads management.
 * Better logs management.
+* [Syslog logging](https://blog.nintechnet.com/syslog-logging-with-ninjafirewall/ "Syslog logging").
 
 [Learn more](https://nintechnet.com/ninjafirewall/wp-edition/ "") about the WP+ Edition unique features. [Compare](https://nintechnet.com/ninjafirewall/wp-edition/?comparison "") the WP and WP+ Editions.
 
@@ -150,7 +123,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+](https://nintechnet.c
 * PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
 * MySQL or MariaDB with MySQLi extension
 * Apache / Nginx / LiteSpeed compatible
-* Unix-like operatin systems only (Linux, BSD etc). NinjaFirewall is **NOT** compatible with Microsoft Windows.
+* Unix-like operating systems only (Linux, BSD etc). NinjaFirewall is **NOT** compatible with Microsoft Windows.
 
 == Frequently Asked Questions ==
 
@@ -227,10 +200,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.5.3 =
+= v3.5.4 =
 
-* Multidimensional arrays in the $_FILES superglobal are now fully supported.
-* It is possible to select which superglobal the "Block serialized PHP objects" policy can apply to (see "Firewall Policies > PHP > Block serialized PHP objects in the following global variables"). By default, all but "COOKIE" will be enabled.
-* The "Sanitise filenames" policy will not allow the use of the slash character "/" as a substitution character because it is the directory separator in Unix-like systems.
+* [WP+ Edition] In addition to the firewall log, all events can also be redirected to the server Syslog. See our blog for more info: http://nin.link/syslog/
+* For a better readability, the "Firewall Policies" page has been split into three parts: Basic, Intermediate and Advanced  Policies.
+* The "Brute-force protection by NinjaFirewall" signature can be disabled in the "Login Protection" page.
+* Fixed a caching issue with the "Login Protection" page where changes were not immediately visible after the form submission if a PHP opcode cache was installed.
+* Fixed an issue where the French translation included in the package was not always loaded.
+* [WP+ Edition] Fixed a "Cannot use object of type WP_Error" PHP error in the Antispam.
+* [WP+ Edition] By default, the "Maximum allowed file size" policy will use the same value as the PHP `upload_max_filesize` directive or, if not available, it will be set to 10 megabytes.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes.

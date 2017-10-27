@@ -274,7 +274,8 @@ function welcome_email() {
 			$message.= __('-"Cannot connect to WordPress database" error message?', 'ninjafirewall') . "\n";
 			$message.= __('-How to disable NinjaFirewall?', 'ninjafirewall') . "\n";
 			$message.= __('-Lost password (brute-force protection)?', 'ninjafirewall') . "\n";
-			$message.= __('-Blocked visitors (see below)?', 'ninjafirewall') . "\n\n";
+			$message.= __('-Blocked visitors (see below)?', 'ninjafirewall') . "\n";
+			$message.= __('-Exporting NinjaFirewall\'s configuration', 'ninjafirewall') . "\n\n";
 
 			$message.= '2) ' . __('-NinjaFirewall (WP Edition) troubleshooter script', 'ninjafirewall') . "\n";
 			$message.= 'https://nintechnet.com/share/wp-check.txt ' . "\n\n";
