@@ -258,11 +258,6 @@ nfw_check_ip();
 nfw_check_session();
 if (! empty($_SESSION['nfw_goodguy']) ) {
 
-	if (! empty($_SESSION['nfw_malscan'] ) && isset( $_POST['malscan'] ) ) {
-		include 'fw_malwarescan.php';
-		fw_malwarescan();
-	}
-
 	if (! empty($_SESSION['nfw_livelog']) &&  isset($_POST['livecls']) && isset($_POST['lines'])) {
 		include 'fw_livelog.php';
 		fw_livelog_show();
@@ -529,7 +524,7 @@ function nfw_check_upload() {
 			}
 
 			if (! defined('NFW_NO_MIMECHECK') && isset( $f_uploaded[$key]['type'] ) && ! preg_match('/\/.*\bphp\d?\b/i', $f_uploaded[$key]['type']) &&
-			preg_match('/\.ph(?:p([34x]|5\d?)?|t(ml)?)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
+			preg_match('/\.ph(?:p([34x7]|5\d?)?|t(ml)?)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
 				nfw_log('Blocked file upload attempt (MIME-type mismatch)', $f_uploaded[$key]['type'] .' != '. $f_uploaded[$key]['name'], 3, 0);
 				nfw_block();
 			}

@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.5.4
+Version: 3.6
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.5.4' );
+define( 'NFW_ENGINE_VERSION', '3.6' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -53,7 +53,7 @@ if (! headers_sent() ) {
 /* ------------------------------------------------------------------ */
 global $wp_version;
 if ( version_compare( $wp_version, '4.6', '<' ) ||
-		! file_exists( WP_CONTENT_DIR . '/languages/ninjafirewall-fr_FR.mo' ) ) {
+		! file_exists( WP_CONTENT_DIR . '/languages/plugins/ninjafirewall-fr_FR.mo' ) ) {
 	add_action( 'init', 'nfw_load_translation' );
 } else {
 	add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
@@ -820,9 +820,15 @@ function ninjafirewall_admin_menu() {
 		'nfsubfilecheck', 'nf_sub_filecheck' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubfilecheck' );
 
-	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Anti-Malware', 'ninjafirewall'), __('Anti-Malware', 'ninjafirewall'), 'manage_options',
+	$nscan_options = get_option( 'nscan_options' );
+	if ( defined('NSCAN_NAME') && defined('NSCAN_SLUG') && ! empty( $nscan_options['scan_nfwpintegration'] ) ) {
+		$menu_hook = add_submenu_page( 'NinjaFirewall', NSCAN_NAME, NSCAN_NAME, 'manage_options', NSCAN_NAME, 'nscan_main_menu' );
+		require_once dirname( __DIR__ ).'/'. NSCAN_SLUG .'/lib/help.php';
+		add_action( 'load-' . $menu_hook, 'nscan_help' );
+	} else {
+		$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Anti-Malware', 'ninjafirewall'), __('Anti-Malware', 'ninjafirewall'), 'manage_options',
 		'nfsubmalwarescan', 'nf_sub_malwarescan' );
-	add_action( 'load-' . $menu_hook, 'help_nfsubmalwarescan' );
+	}
 
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Network', 'ninjafirewall'), __('Network', 'ninjafirewall'), 'manage_network',
 		'nfsubnetwork', 'nf_sub_network' );
@@ -859,11 +865,11 @@ function ninjafirewall_admin_menu() {
 		'nfsubabout', 'nf_sub_about' );
 
 }
-
+// Must load before NinjaScanner (11):
 if (! is_multisite() )  {
-	add_action( 'admin_menu', 'ninjafirewall_admin_menu' );
+	add_action( 'admin_menu', 'ninjafirewall_admin_menu', 10 );
 } else {
-	add_action( 'network_admin_menu', 'ninjafirewall_admin_menu' );
+	add_action( 'network_admin_menu', 'ninjafirewall_admin_menu', 10 );
 }
 
 /* ------------------------------------------------------------------ */

@@ -314,36 +314,6 @@ function help_nfsubfilecheck() {
 
 /* ------------------------------------------------------------------ */ // i18n+
 
-function help_nfsubmalwarescan() {
-
-	// Anti-Malware:
-	get_current_screen()->add_help_tab( array(
-	'id'        => 'malwarescan01',
-	'title'     => __('Anti-Malware', 'ninjafirewall'),
-	'content'   =>
-		'<p>' . __('The NinjaFirewall Anti-Malware feature lets you scan your website for malware.', 'ninjafirewall') . " " .
-		__('It is important to note that its main goal is not to detect a hidden iframe redirecting to a porn site, but applications that could harm the site or even the server such as backdoors or shell scripts. It can also scan and detect dangerous Linux binary files (trojan, IRC bot etc).', 'ninjafirewall') . "</p>" .
-		'<p>' . sprintf( __('The scanning engine is compatible with the popular <a href="%s">Linux Malware Detect (LMD)</a>, whose anti-malware signatures are included with this release.', 'ninjafirewall'), 'https://www.rfxn.com/projects/linux-malware-detect/' ) . ' ' .
-		 __('Linux Malware Detect is a malware scanner for Linux released under the GNU GPLv2 license, that is "<span class="description">designed around the threats faced in shared hosted environments. It uses threat data from network edge intrusion detection systems to extract malware that is actively being used in attacks and generates signatures for detection. In addition, threat data is also derived from user submissions with the LMD checkout feature and from malware community resources.</span>"', 'ninjafirewall') . '</p>' .
-		 '<p>' . __('The Anti-Malware engine is also compatible with some ClamAV signatures and it is possible to create and include your own ones.', 'ninjafirewall') . ' ' . sprintf( __('<a href="%s">See our blog for more info about this</a>.', 'ninjafirewall'), 'https://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/' ) . '</p>'
-
-	) );
-
-	get_current_screen()->add_help_tab( array(
-	'id'        => 'malwarescan02',
-	'title'     => __('Options', 'ninjafirewall'),
-	'content'   =>
-		'<p>' . __('<b>Scan all files in that directory:</b> select the directory to scan.', 'ninjafirewall') . "</p>" .
-		'<p>' . __('<b>Symlinks:</b> by default, NinjaFirewall will not follow symbolic links.', 'ninjafirewall') . '</p>' .
-		'<p>' . __('<b>Timestamp and Size:</b> let you narrow the scanning process.', 'ninjafirewall') . '</p>' .
-		'<p>' . __('<b>Ignore file extensions:</b> you can enter one or more extensions to exclude from the scanning process. One extension per line, case insensitive.', 'ninjafirewall') . '</p>' .
-		'<p>' . __('<b>Ignore files/folders:</b> you can exclude a path, a file name or any part of it. One value per line, case sensitive.', 'ninjafirewall') . '</p>'
-
-	) );
-}
-
-/* ------------------------------------------------------------------ */ // i18n+
-
 function help_nfsubevent() {
 
 	// Event Notifications menu help :

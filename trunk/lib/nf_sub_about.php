@@ -71,10 +71,10 @@ function nfw_eg() {
 				<table width="100%" border="0">
 					<tr>
 						<td style="width:33.3333%">
-							<font style="font-size: 1.5em; font-weight: bold;">NinjaFirewall</font>
-							<p><?php _e('Web Application Firewall<br />for PHP and WordPress.', 'ninjafirewall') ?></p>
-							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_pro_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
-							<p><a href="https://nintechnet.com/ninjafirewall/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;text-shadow:none"><?php _e('Free Download', 'ninjafirewall') ?></a></p>
+							<font style="font-size: 1.5em; font-weight: bold;">NinjaScanner</font>
+							<p><?php _e('A powerful antivirus<br />scanner for WordPress.', 'ninjafirewall') ?></p>
+							<i style="border-radius:20%;display:inline-block;height:150px;vertical-align:middle;width:150px;border:5px solid #FFF;box-shadow: -2px 3px 3px #999 inset;background:transparent url('<?php echo plugins_url() ?>/ninjafirewall/images/logo_ns_80.png') no-repeat scroll center center;background-color:#F8F8F8;"></i>
+							<p><a href="https://nintechnet.com/ninjascanner/" class="button-primary" style="color:#FFF;background-color:#449D44;border-color:#398439;text-shadow:none"><?php _e('Free Download', 'ninjafirewall') ?></a></p>
 						</td>
 						<td style="width:33.3333%">
 							<font style="font-size: 1.5em; font-weight: bold;">NinjaMonitoring</font>

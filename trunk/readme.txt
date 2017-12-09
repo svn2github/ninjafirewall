@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.5.4
+Stable tag: 3.6
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -57,10 +57,6 @@ Monitored events:
 * Plugins upload, installation, (de)activation, update, deletion.
 * Themes upload, installation, activation, deletion.
 * WordPress update.
-
-= Anti-Malware Scanner =
-
-It allows you to scan your website for malware. The scanning engine is compatible with the popular [Linux Malware Detect LMD](https://www.rfxn.com/projects/linux-malware-detect/ "") (whose anti-malware signatures are included with this release) and with some [ClamAV](https://www.clamav.net/ "") signatures as well. You can even write your own anti-malware signatures. See our blog for more details about that:  [Adding your own signatures to NinjaFirewall Anti-Malware](https://blog.nintechnet.com/adding-your-own-signatures-to-ninjafirewall-anti-malware/ "")
 
 = Stay protected against the latest WordPress security vulnerabilities =
 
@@ -196,18 +192,12 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 13. Rules Editor.
 14. File Check: lets you perform file integrity monitoring upon request or on a specific interval (hourly, twicedaily, daily).
 15. Security rules updates.
-16. Anti-Malware.
 
 == Changelog ==
 
-= v3.5.4 =
+= v3.6 =
 
-* [WP+ Edition] In addition to the firewall log, all events can also be redirected to the server Syslog. See our blog for more info: http://nin.link/syslog/
-* For a better readability, the "Firewall Policies" page has been split into three parts: Basic, Intermediate and Advanced  Policies.
-* The "Brute-force protection by NinjaFirewall" signature can be disabled in the "Login Protection" page.
-* Fixed a caching issue with the "Login Protection" page where changes were not immediately visible after the form submission if a PHP opcode cache was installed.
-* Fixed an issue where the French translation included in the package was not always loaded.
-* [WP+ Edition] Fixed a "Cannot use object of type WP_Error" PHP error in the Antispam.
-* [WP+ Edition] By default, the "Maximum allowed file size" policy will use the same value as the PHP `upload_max_filesize` directive or, if not available, it will be set to 10 megabytes.
+* Important: We have removed the "Anti-Malware" option from NinjaFirewall. Instead, we have now a brand new and much better antivirus plugin: NinjaScanner. You can download it from wordpress.org: https://wordpress.org/plugins/ninjascanner/
+* [WP+ Edition] Fixed a bug where IPs that were whitelisted in the "Access Control" page could not connect to the REST API if its access was disabled in the "Firewall Policies".
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes.
