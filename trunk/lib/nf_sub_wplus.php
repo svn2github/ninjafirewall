@@ -102,7 +102,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 				<h3><?php _e('Improved features', 'ninjafirewall') ?></h3>
 				<strong><?php _e('File uploads:', 'ninjafirewall') ?></strong>
-				<p><?php _e('NinjaFirewall (<font color="#21759B">WP+</font> Edition) makes it possible to allow uploads while rejecting potentially dangerous files: system files (.htaccess, .htpasswd. PHP INI), scripts (bash/shell, PHP, Ruby, Perl/CGI, Python), C/C++ source code and Unix/Linux binary files (ELF). You can easily limit the size of each uploaded file too, without having to modify your PHP configuration:', 'ninjafirewall') ?></p>
+				<p><?php _e('NinjaFirewall (<font color="#21759B">WP+</font> Edition) makes it possible to allow uploads while rejecting potentially dangerous files: scripts (PHP, CGI, Ruby, Python, bash/shell), C/C++ source code, binaries (MZ/PE/NE and ELF formats), system files (.htaccess, .htpasswd and PHP INI) and SVG files containing Javascript/XML events. You can easily limit the size of each uploaded file too, without having to modify your PHP configuration:', 'ninjafirewall') ?></p>
 				<center><img src="<?php echo plugins_url() ?>/ninjafirewall/images/screenshots/09_uploads.png" width="410" height="363" style="border: 1px solid #999;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;"></center>
 
 				<br />

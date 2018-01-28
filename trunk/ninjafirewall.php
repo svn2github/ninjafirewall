@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6
+Version: 3.6.1
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6' );
+define( 'NFW_ENGINE_VERSION', '3.6.1' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -51,22 +51,15 @@ if (! headers_sent() ) {
 }
 
 /* ------------------------------------------------------------------ */
-global $wp_version;
-if ( version_compare( $wp_version, '4.6', '<' ) ||
-		! file_exists( WP_CONTENT_DIR . '/languages/plugins/ninjafirewall-fr_FR.mo' ) ) {
-	add_action( 'init', 'nfw_load_translation' );
-} else {
-	add_filter('override_load_textdomain', 'nfwhook_load_textdomain', 10, 3);
-}
-function nfw_load_translation() {
-	load_plugin_textdomain('ninjafirewall', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
-}
-function nfwhook_load_textdomain( $retval, $domain, $mofile ) {
-	if ( $domain == 'ninjafirewall' && strpos( $mofile, '/plugins/ninjafirewall-fr_FR.mo') !== false ) {
-		load_textdomain('ninjafirewall', __DIR__ . '/languages/ninjafirewall-fr_FR.mo');
-		return true;
+
+// Load (force) our translation files.
+$nf_locale = array( 'fr_FR' );
+$this_locale = get_locale();
+if ( in_array( $this_locale, $nf_locale ) ) {
+	if ( file_exists( __DIR__ . "/languages/ninjafirewall-{$this_locale}.mo" ) ) {
+		unload_textdomain( 'ninjafirewall' );
+		load_textdomain( 'ninjafirewall', __DIR__ . "/languages/ninjafirewall-{$this_locale}.mo" );
 	}
-	return false;
 }
 /* ------------------------------------------------------------------ */
 
@@ -113,6 +106,11 @@ add_action( 'nfwgccron', 'nfw_garbage_collector' );
 /* ------------------------------------------------------------------ */
 
 function nfw_activate() {
+
+	// Warn if the user does not have the 'unfiltered_html' capability:
+	if (! current_user_can( 'unfiltered_html' ) ) {
+		exit( __('You do not have "unfiltered_html" capability. Please enable it in order to run NinjaFirewall (or make sure you do not have "DISALLOW_UNFILTERED_HTML" in your wp-config.php script).', 'ninjafirewall'));
+	}
 
 	nf_not_allowed( 'block', __LINE__ );
 
@@ -178,6 +176,9 @@ function nfw_activate() {
 			nfw_get_blogtimezone();
 			wp_schedule_event( strtotime( date('Y-m-d 00:00:05', strtotime("+1 day")) ), 'daily', 'nfdailyreport');
 		}
+		// Re-enable the garbage collector:
+		wp_schedule_event( time() + 1800, 'hourly', 'nfwgccron' );
+
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php' ) ) {
 			rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php');
 		}
@@ -199,6 +200,9 @@ function nfw_deactivate() {
 	$nfw_options = nfw_get_option( 'nfw_options' );
 	$nfw_options['enabled'] = 0;
 
+	if ( wp_next_scheduled('nfwgccron') ) {
+		wp_clear_scheduled_hook('nfwgccron');
+	}
 	if ( wp_next_scheduled('nfscanevent') ) {
 		wp_clear_scheduled_hook('nfscanevent');
 	}
@@ -472,13 +476,6 @@ function nfw_upgrade() {
 			if (! empty( $nfw_options['fg_exclude'] ) ) {
 				$nfw_options['fg_exclude'] = preg_quote( $nfw_options['fg_exclude'], '`');
 			}
-		}
-		// v3.2 update (anti-malware) ----------------------------------
-		if ( version_compare( $nfw_options['engine_version'], '3.2', '<' ) ) {
-			$nfw_options['malware_dir'] = ABSPATH;
-			$nfw_options['malware_symlink'] = 1;
-			$nfw_options['malware_timestamp'] = 7;
-			$nfw_options['malware_size'] = 2048;
 		}
 		// v3.2.2 update -----------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '3.2.2', '<' ) ) {
@@ -3174,10 +3171,23 @@ function nfw_log2($loginfo, $logdata, $loglevel, $ruleid) { // i18n
       $tmp . '[' . time() . '] ' . '[0] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $num_incident . '] ' .
       '[' . $ruleid . '] ' .
-      '[' . $loglevel . '] ' . '[' . $REMOTE_ADDR . '] ' .
+      '[' . $loglevel . '] ' . '[' . nfw_anonymize_ip2( $REMOTE_ADDR ) . '] ' .
       '[' . $http_ret_code . '] ' . '[' . $REQUEST_METHOD . '] ' .
       '[' . $SCRIPT_NAME . '] ' . '[' . $loginfo . '] ' .
       $encoding . "\n", FILE_APPEND | LOCK_EX);
+}
+
+/* ------------------------------------------------------------------ */
+
+function nfw_anonymize_ip2( $ip ) {
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+
+	if (! empty( $nfw_options['anon_ip'] ) && filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+		return substr( $ip, 0, -3 ) .'xxx';
+	}
+
+	return $ip;
 }
 
 /* ------------------------------------------------------------------ */

@@ -459,6 +459,7 @@ function nfw_default_conf() {
 		'logo'				=> plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png',
 		'enabled'			=> 1,
 		'ret_code'			=> 403,
+		'anon_ip'			=> 0,
 		'blocked_msg'		=> base64_encode(NFW_DEFAULT_MSG),
 		'debug'				=> 0,
 		'scan_protocol'	=> 3,
@@ -534,11 +535,6 @@ function nfw_default_conf() {
 		'fg_enable'			=>	0,
 		'fg_mtime'			=>	10,
 		'fg_exclude'		=>	'',
-		// v3.2 :
-		'malware_dir'		=> htmlspecialchars( rtrim( ABSPATH, '/\\ ' ) ),
-		'malware_symlink'	=> 1,
-		'malware_timestamp'	=> 7,
-		'malware_size'		=> 2048,
 		// Updates :
 		'enable_updates'	=>	1,
 		'sched_updates'	=>	1,

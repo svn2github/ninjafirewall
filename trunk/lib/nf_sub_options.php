@@ -141,6 +141,23 @@ if (! @preg_match( '/^(?:40[0346]|50[03])$/', $nfw_options['ret_code']) ) {
 			</select>
 			</td>
 		</tr>
+
+<?php
+	if ( empty( $nfw_options['anon_ip'] ) ) {
+		$nfw_options['anon_ip'] = 0;
+	} else {
+		$nfw_options['anon_ip'] = 1;
+	}
+?>
+		<tr>
+			<th scope="row"><?php _e('IP anonymization', 'ninjafirewall') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left">
+			<p><label><input type="checkbox"<?php checked($nfw_options['anon_ip'], 1) ?> name="nfw_options[anon_ip]" /> <?php _e('Anonymize IP addresses by removing the last 3 characters.', 'ninjafirewall') ?></label></p>
+			<p><span class="description"><?php printf( __('Does not apply to private IP addresses and the <a href="%s">Login Protection</a>.', 'ninjafirewall'), '?page=nfsubloginprot' ) ?></span></p>
+			</td>
+		</tr>
+
 <?php
 echo '
 		<tr>
@@ -211,6 +228,9 @@ function nf_sub_options_save() {
 		$nfw_options['enabled'] = 0;
 
 		// Disable cron jobs:
+		if ( wp_next_scheduled('nfwgccron') ) {
+			wp_clear_scheduled_hook('nfwgccron');
+		}
 		if ( wp_next_scheduled('nfscanevent') ) {
 			wp_clear_scheduled_hook('nfscanevent');
 		}
@@ -242,6 +262,11 @@ function nf_sub_options_save() {
 			}
 			wp_schedule_event( time() + 3600, $schedtype, 'nfscanevent');
 		}
+		// Re-enable the garbage collector:
+		if ( wp_next_scheduled('nfwgccron') ) {
+			wp_clear_scheduled_hook('nfwgccron');
+		}
+		wp_schedule_event( time() + 1800, 'hourly', 'nfwgccron' );
 		if (! empty($nfw_options['enable_updates']) ) {
 			if ($nfw_options['sched_updates'] == 1) {
 				$schedtype = 'hourly';
@@ -276,6 +301,12 @@ function nf_sub_options_save() {
 		$nfw_options['ret_code'] = '403';
 	}
 
+	if ( isset( $_POST['nfw_options']['anon_ip'] ) ) {
+		$nfw_options['anon_ip'] = 1;
+	} else {
+		$nfw_options['anon_ip'] = 0;
+	}
+
 	if ( empty( $_POST['nfw_options']['blocked_msg']) ) {
 		$nfw_options['blocked_msg'] = base64_encode(NFW_DEFAULT_MSG);
 	} else {
@@ -294,11 +325,6 @@ function nf_sub_options_save() {
 
 	// Save them :
 	nfw_update_option( 'nfw_options', $nfw_options);
-
-	// Make sure the garbage collector cron job is scheduled:
-	if (! wp_next_scheduled( 'nfwgccron' ) ) {
-		wp_schedule_event( time() + 60, 'hourly', 'nfwgccron' );
-	}
 
 }
 /* ------------------------------------------------------------------ */
@@ -350,12 +376,6 @@ function nf_sub_options_import() {
 									 '/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
 									 '/'. basename(WP_CONTENT_DIR) .'/uploads/|/cache/';
 	// $nfw_options['alert_email'] = get_option('admin_email');
-
-	// Anti-Malware: if the path doest not exist on this server,
-	// set it to ABSPATH:
-	if (! is_dir( $nfw_options['malware_dir'] ) ) {
-		$nfw_options['malware_dir'] = rtrim( ABSPATH, '/\\ ' );
-	}
 
 	// We don't import the File Check 'snapshot directory' path:
 	$nfw_options['snapdir'] = '';

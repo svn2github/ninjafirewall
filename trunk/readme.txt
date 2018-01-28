@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6
+Stable tag: 3.6.1
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -195,9 +195,13 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= v3.6 =
+= 3.6.1 =
 
-* Important: We have removed the "Anti-Malware" option from NinjaFirewall. Instead, we have now a brand new and much better antivirus plugin: NinjaScanner. You can download it from wordpress.org: https://wordpress.org/plugins/ninjascanner/
-* [WP+ Edition] Fixed a bug where IPs that were whitelisted in the "Access Control" page could not connect to the REST API if its access was disabled in the "Firewall Policies".
+* Added "IP Anonymization" option. It will anonymize IP addresses in the firewall log by removing their last 3 characters. See "NinjaFirewall > Firewall Options > IP Anonymization".
+* Fixed a bug where the "Login Protection" wrongly applied to password protected pages.
+* Fixed a bug where the garbage collector cron job was not deleted when NinjaFirewall was disabled.
+* Added a warning that NinjaFirewall requires `unfiltered_html` capability when attempting to activate it.
+* [WP+ Edition] The "Uploads > Allow, but block scripts, ELF and system files" firewall policy was renamed to "Allow, but block dangerous files" and will also block dangerous SVG files. Therefore, the complete list of blocked files is now: scripts (PHP, CGI, Ruby, Python, bash/shell), C/C++ source code, binaries (MZ/PE/NE and ELF formats), system files (.htaccess, .htpasswd and PHP INI) and SVG files containing Javascript/XML events.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes.
+

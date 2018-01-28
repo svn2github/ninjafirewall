@@ -1247,10 +1247,24 @@ function nfw_log($loginfo, $logdata, $loglevel, $ruleid) {
 		$tmp . '[' . time() . '] ' . '[' . round( microtime(true) - $nfw_['fw_starttime'], 5) . '] ' .
       '[' . $_SERVER['SERVER_NAME'] . '] ' . '[#' . $nfw_['num_incident'] . '] ' .
       '[' . $ruleid . '] ' .
-      '[' . $loglevel . '] ' . '[' . NFW_REMOTE_ADDR . '] ' .
+      '[' . $loglevel . '] ' . '[' . nfw_anonymize_ip( NFW_REMOTE_ADDR ) . '] ' .
       '[' . $http_ret_code . '] ' . '[' . $_SERVER['REQUEST_METHOD'] . '] ' .
       '[' . $_SERVER['SCRIPT_NAME'] . '] ' . '[' . $loginfo . '] ' .
       $encoding . "\n", FILE_APPEND | LOCK_EX );
+}
+
+// =====================================================================
+
+function nfw_anonymize_ip( $ip ) {
+
+	global $nfw_;
+
+	if (! empty( $nfw_['nfw_options']['anon_ip'] ) &&
+	filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+		return substr( $ip, 0, -3 ) .'xxx';
+	}
+
+	return $ip;
 }
 
 // =====================================================================
@@ -1303,6 +1317,10 @@ function nfw_bfd($where) {
 			@session_destroy();
 			exit('404 Not Found');
 		}
+	}
+
+	if ( $where == 1 && ! empty( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register' ) ) ) {
+		return;
 	}
 
 	if ( $bf_enable == 2 ) {

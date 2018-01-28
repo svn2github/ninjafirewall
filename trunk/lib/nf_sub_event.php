@@ -345,7 +345,7 @@ function nf_sub_event_save() {
 
 	if (! empty( $_POST['nfw_options']['alert_email']) ) {
 		$nfw_options['alert_email'] = '';
-		$tmp_email = explode(',', preg_replace('/\s/', '', $_POST['nfw_options']['alert_email']) );
+		$tmp_email = explode(',', $_POST['nfw_options']['alert_email'] );
 		foreach ($tmp_email as $notif_email) {
 			$nfw_options['alert_email'] .= sanitize_email($notif_email) . ', ';
 		}

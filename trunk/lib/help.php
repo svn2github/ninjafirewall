@@ -88,6 +88,12 @@ function help_nfsubopt() {
 			sprintf( __('In Debugging mode, NinjaFirewall will not block or sanitise suspicious requests but will only log them. The <a href="%s">Firewall Log</a> will display <code>DEBUG_ON</code> in the LEVEL column.', 'ninjafirewall'), '?page=nfsublog') .
 			'<p>' . __('We recommend to run it in Debugging Mode for at least 24 hours after installing it on a new site and then to keep an eye on the firewall log during that time. If you notice a false positive in the log, you can simply use NinjaFirewall\'s Rules Editor to disable the security rule that was wrongly triggered.', 'ninjafirewall') . '</p>'
 	) );
+get_current_screen()->add_help_tab( array(
+		'id'        => 'optipanon',
+		'title'     => __('IP anonymization', 'ninjafirewall'),
+		'content'   => '<p>'. __('This option will anonymize IP addresses in the firewall log by removing their last 3 characters.', 'ninjafirewall') .' '. __('It does not apply to private IP addresses and the Login Protection feature.', 'ninjafirewall') .'</p>'.
+		'<p>'. __('Note that it will affect only IP addresses written to the firewall log after enabling this option.', 'ninjafirewall') .' '.	__('Also, if you are redirecting events to the syslog server (NinjaFirewall <font color="#21759B">WP+</font> Edition), IP addresses will be anonymized too.', 'ninjafirewall') .'</p>'
+	) );
 	get_current_screen()->add_help_tab( array(
 		'id'        => 'opt03',
 		'title'     =>  __('Error code and message to return', 'ninjafirewall'),
