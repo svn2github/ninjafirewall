@@ -44,7 +44,7 @@ The protection applies to the `wp-login.php` script but can be extended to the `
 
 = Watch your website traffic in real time =
 
-**Live Log** lets you watch your website traffic in real time. It displays connections in a format similar to the one used by most HTTP server logs. Because it communicates directly with the firewall, i.e., without loading WordPress, **Live Log** is fast, light and it will not affect your server load, even if you set its refresh rate to the lowest value.
+**Live Log** lets you watch your website traffic in real time. It displays connections in a format similar to the one used by the `tail -f` Unix command. Because it communicates directly with the firewall, i.e., without loading WordPress, **Live Log** is fast, lightweight and it will not affect your server load, even if you set its refresh rate to the lowest value.
 
 = Events Notification =
 
@@ -65,6 +65,8 @@ To get the most efficient protection, NinjaFirewall can automatically update its
 = Strong Privacy =
 
 Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and filters the traffic on your own server and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remains on your server and is not routed through a third-party company's servers, which could pose unnecessary risks (e.g., employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
+
+NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). [See our blog for more details](https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/ "GDPR Compliance").
 
 = IPv6 compatibility =
 
@@ -116,6 +118,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+ Edition](https://nint
 = Requirements =
 
 * WordPress 3.3+
+* Admin/Superadmin with `manage_options` + `unfiltered_html capabilities`.
 * PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
 * MySQL or MariaDB with MySQLi extension
 * Apache / Nginx / LiteSpeed compatible
@@ -127,11 +130,12 @@ Check out our new supercharged edition: [NinjaFirewall WP+ Edition](https://nint
 
 NinjaFirewall sits between the attacker and WordPress. It can filter requests before they reach your blog and any of its plugins. This is how it works :
 
-`Attacker > HTTP server > PHP > NinjaFirewall > WordPress`
+`Visitor -> HTTP server -> PHP -> NinjaFirewall #1 -> WordPress -> NinjaFirewall #2 -> Plugins & Themes -> WordPress exit -> NinjaFirewall #3`
 
 And this is how all WordPress plugins work :
 
-`Attacker > HTTP server > PHP > WordPress > Plugins`
+`Visitor > HTTP server > PHP > WordPress > Plugins -> WordPress exit`
+
 
 Unlike other security plugins, it will protect all PHP scripts, including those that aren't part of the WordPress package.
 
@@ -195,13 +199,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.6.1 =
+= 3.6.2 =
 
-* Added "IP Anonymization" option. It will anonymize IP addresses in the firewall log by removing their last 3 characters. See "NinjaFirewall > Firewall Options > IP Anonymization".
-* Fixed a bug where the "Login Protection" wrongly applied to password protected pages.
-* Fixed a bug where the garbage collector cron job was not deleted when NinjaFirewall was disabled.
-* Added a warning that NinjaFirewall requires `unfiltered_html` capability when attempting to activate it.
-* [WP+ Edition] The "Uploads > Allow, but block scripts, ELF and system files" firewall policy was renamed to "Allow, but block dangerous files" and will also block dangerous SVG files. Therefore, the complete list of blocked files is now: scripts (PHP, CGI, Ruby, Python, bash/shell), C/C++ source code, binaries (MZ/PE/NE and ELF formats), system files (.htaccess, .htpasswd and PHP INI) and SVG files containing Javascript/XML events.
+* Added an option to automatically delete the firewall log(s) after a period of time (see "NinjaFirewall > Firewall Log > Auto-delete log").
+* Added an option to enter the admin email address during the installation process.
+* [WP+ Edition] The "Access Control" page was split into 5 tabs: "General", "Geolocation", "IP Access Control", "URL Access Control" and "Bot Access Control".
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Minor fixes.
-
+* Many small fixes throughout the code: bugs, typos, contextual help corrections, various adjustments etc.

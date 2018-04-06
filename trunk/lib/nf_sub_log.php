@@ -39,18 +39,25 @@ if (! is_writable( $log_dir . $monthly_log ) ) {
 global $available_logs;
 $available_logs = nf_sub_log_find_local( $log_dir );
 
-if (! empty( $_POST['nfw_act']) && $_POST['nfw_act'] == 'pubkey' ) {
-	if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'clogs_pubkey') ) {
-		wp_nonce_ays('clogs_pubkey');
+if (! empty( $_POST['nfw_act'] ) ) {
+	// Save public key:
+	if ( $_POST['nfw_act'] == 'pubkey' ) {
+		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'clogs_pubkey') ) {
+			wp_nonce_ays('clogs_pubkey');
+		}
+		if (isset( $_POST['delete_pubkey'] ) ) {
+			$_POST['nfw_options']['clogs_pubkey'] = '';
+			$ok_msg = __('Your public key has been deleted', 'ninjafirewall');
+		} else {
+			$ok_msg = __('Your public key has been saved', 'ninjafirewall');
+		}
+		nf_sub_log_save_pubkey( $nfw_options );
+	// Save log options:
+	} elseif ( $_POST['nfw_act'] == 'save_options' ) {
+		nf_sub_log_save_options( $nfw_options );
+		$ok_msg = __('Your changes have been saved.', 'ninjafirewall');
 	}
-	if (isset( $_POST['delete_pubkey'] ) ) {
-		$_POST['nfw_options']['clogs_pubkey'] = '';
-		$ok_msg = __('Your public key has been deleted', 'ninjafirewall');
-	} else {
-		$ok_msg = __('Your public key has been saved', 'ninjafirewall');
-	}
-	nf_sub_log_save_pubkey( $nfw_options );
-
+	// Update options:
 	$nfw_options = nfw_get_option( 'nfw_options' );
 }
 
@@ -77,13 +84,15 @@ nf_sub_log_js_header();
 	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url(); ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
 	<h1><?php _e('Firewall Log', 'ninjafirewall') ?></h1>
 <?php
+// Display a one-time notice after two weeks of use:
+nfw_rate_notice( $nfw_options );
 
 if ( ! empty( $write_err ) ) {
 	echo '<div class="error notice is-dismissible"><p>' . __('Error', 'ninjafirewall') . ': ' . $write_err . '</p></div>';
 }
 
 if ( ! empty( $ok_msg ) ) {
-	echo '<div class="updated notice is-dismissible"><p>' . $ok_msg . '.</p></div>';
+	echo '<div class="updated notice is-dismissible"><p>' . $ok_msg . '</p></div>';
 }
 if ( isset( $data['lines'] ) && $data['lines'] > $max_lines ) {
 	echo '<div class="notice-info notice is-dismissible"><p>' . __('Note', 'ninjafirewall') . ': ' . sprintf( __('your log has %s lines. I will display the last %s lines only.', 'ninjafirewall'), $data['lines'], $max_lines ) . '</p></div>';
@@ -146,6 +155,32 @@ if ( isset( $data['log'] ) && is_array( $data['log'] ) ) {
 		</tr>
 	</table>
 </form>
+<?php
+
+if ( empty( $nfw_options['auto_del_log'] ) ) {
+	$nfw_options['auto_del_log'] = 0;
+}
+
+?>
+<h3><?php _e('Log Options', 'ninjafirewall') ?></h3>
+<form method="post" action="?page=nfsublog"><?php wp_nonce_field('log_save', 'nfwnonce', 0); ?>
+	<table class="form-table">
+		<tr>
+			<th scope="row"><?php _e('Auto-delete log', 'ninjafirewall') ?></th>
+			<td align="left">
+			<?php
+				$input = '<input type="number" name="nfw_options[auto_del_log]" min="0" value="'. (int) $nfw_options['auto_del_log'] .'" class="small-text" />';
+				printf( __('Automatically delete logs older than %s days', 'ninjafirewall' ), $input );
+			?>
+			<br />
+			<p><span class="description"><?php _e('Set this option to 0 to disable it.', 'ninjafirewall' ) ?></span></p>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<input type="hidden" name="nfw_act" value="save_options" />
+	<input type="submit" class="button-primary" value="<?php _e('Save Log Options', 'ninjafirewall') ?>" name="savelog" />
+</form>
 
 <a name="clogs"></a>
 <form name="frmlog2" method="post" action="?page=nfsublog" onsubmit="return check_key();">
@@ -199,6 +234,20 @@ function check_key() {
 	}
 }
 </script>';
+
+}
+
+/* ------------------------------------------------------------------ */
+
+function nf_sub_log_save_options( $nfw_options ) {
+
+	if ( empty( $_POST['nfw_options']['auto_del_log'] ) || ! ctype_digit( $_POST['nfw_options']['auto_del_log'] ) ) {
+		$nfw_options['auto_del_log'] = 0;
+	} else {
+		$nfw_options['auto_del_log'] = (int) $_POST['nfw_options']['auto_del_log'];
+	}
+
+	nfw_update_option( 'nfw_options', $nfw_options );
 
 }
 

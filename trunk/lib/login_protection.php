@@ -570,6 +570,10 @@ function nf_sub_loginprot_save() {
 	}
 	fwrite( $fh, $data );
 	fclose( $fh );
+	// Refresh the opcode cache so that the firewall will load the new content:
+	if ( function_exists( 'opcache_invalidate' ) ) {
+		opcache_invalidate( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php', true );
+	}
 
 	// Whitelist the admin:
 	$_SESSION['nfw_bfd'] = $bf_rand;

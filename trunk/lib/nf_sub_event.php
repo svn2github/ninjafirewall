@@ -436,7 +436,7 @@ function nf_daily_report_email($recipient, $logstats) {
 	$message = "\n". sprintf( __('Daily activity report for: %s', 'ninjafirewall'), $url) . "\n";
 	$message .= __('Date Range Processed: Yesterday', 'ninjafirewall') .", ". ucfirst( date_i18n('F j, Y',strtotime("-1 days")) ) ."\n\n";
 
-	$message.= __('Blocked hacking attempts:', 'ninjafirewall') .' '.
+	$message.= __('Blocked threats:', 'ninjafirewall') .' '.
 		($logstats[1] + $logstats[2] + $logstats[3]) .
 		' ('. __('critical:', 'ninjafirewall') .' '. $logstats[3] .', '.
 		__('high:', 'ninjafirewall') .' '. $logstats[2] .', '.

@@ -87,7 +87,7 @@ if (! empty( $nfw_options['enabled']) ) {
 // Disabled :
 } else {
 	echo '
-			<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/icon_error_16.png" border="0" height="16" width="16"></td>
+			<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-error.png"></td>
 			<td align="left">
 				<select name="nfw_options[enabled]" style="width:200px">
 					<option value="1">' . __('Enabled', 'ninjafirewall') . '</option>
@@ -102,7 +102,7 @@ echo '
 
 // Debugging enabled ?
 if (! empty( $nfw_options['debug']) ) {
-echo '<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/icon_error_16.png" border="0" height="16" width="16"></td>
+echo '<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-error.png"></td>
 			<td align="left">
 				<select name="nfw_options[debug]" style="width:200px">
 				<option value="1" selected>' . __('Enabled', 'ninjafirewall') . '</option>

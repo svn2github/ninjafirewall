@@ -35,7 +35,7 @@ if ( $data = @file_get_contents( dirname( plugin_dir_path(__FILE__) ) . '/readme
 // (e.g., changelog, privacy policy etc) :
 echo '<script>
 function show_table(table_id) {
-	var av_table = [11, 12, 13, 14];
+	var av_table = [11, 12, 13, 14, 15];
 	for (var i = 0; i < av_table.length; ++i) {
 		if ( table_id == av_table[i] ) {
 			jQuery("#" + table_id).slideDown();
@@ -60,7 +60,7 @@ function nfw_eg() {
 			<td style="text-align:center">
 				<font style="font-size: 2em; font-weight: bold;">NinjaFirewall (WP Edition) v<?php echo NFW_ENGINE_VERSION ?></font>
 				<br />
-				<font onContextMenu="nfw_eg();return false;">&copy;</font> <?php echo date( 'Y' ) ?> <a href="https://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
+				<font onContextMenu="nfw_eg();return false;">&copy;</font> 2012-<?php echo date( 'Y' ) ?> <a href="https://nintechnet.com/" target="_blank" title="The Ninja Technologies Network" style="color:#fcdc25"><strong>NinTechNet</strong></a>
 				<br />
 				The Ninja Technologies Network
 				<p><a href="https://twitter.com/nintechnet"><img border="1" src="<?php echo plugins_url() ?>/ninjafirewall/images/twitter_ntn.png" width="116" height="28" target="_blank"></a></p>
@@ -98,7 +98,7 @@ function nfw_eg() {
 	echo '
 		<br />
 		<br />
-		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word!', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Referral Program', 'ninjafirewall') . '" onclick="show_table(14);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">
+		<input class="button-secondary" type="button" value="' . __('Changelog', 'ninjafirewall') . '" onclick="show_table(12);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-primary" type="button" value="' . __('Spread the word!', 'ninjafirewall') . '" onclick="show_table(11);" active>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('Referral Program', 'ninjafirewall') . '" onclick="show_table(14);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('System Info', 'ninjafirewall') . '" onclick="show_table(13);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="button-secondary" type="button" value="' . __('GDPR Compliance', 'ninjafirewall') . '" onclick="show_table(15);">
 		<br />
 		<br />
 
@@ -192,6 +192,15 @@ echo '
 				</tr>
 			</table>
 		</div>
+
+		<div id="15" style="display:none;">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+				<tr>
+					<td>'. __('NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') .'<br /><a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a></td>
+				</tr>
+			</table>
+		</div>
+
 	</center>
 </div>';
 

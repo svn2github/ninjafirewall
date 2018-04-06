@@ -49,11 +49,11 @@ function nfw_stats_widget(){
 	echo '
 	<table border="0" width="100%">
 		<tr>
-			<th width="50%" align="left">' . __('Blocked hacking attempts', 'ninjafirewall') .'</th>
+			<th width="50%" align="left">' . __('Blocked threats', 'ninjafirewall') .'</th>
 			<td width="50%" align="left">' . $total . '</td>
 		</tr>
 		<tr>
-			<th width="50%" align="left">' . __('Hacking attempts severity', 'ninjafirewall') .'</th>
+			<th width="50%" align="left">' . __('Threats level', 'ninjafirewall') .'</th>
 			<td width="50%" align="left">
 				<i>' . __('Critical:', 'ninjafirewall') . ' ' . $critical . '%</i>
 				<br />

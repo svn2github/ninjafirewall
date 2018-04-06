@@ -59,6 +59,15 @@ if (! is_dir($nfw_['log_dir']) ) {
 if ( strpos($_SERVER['SCRIPT_NAME'], 'wp-login.php' ) !== FALSE ) {
 	nfw_bfd(1);
 } elseif ( strpos($_SERVER['SCRIPT_NAME'], 'xmlrpc.php' ) !== FALSE ) {
+	// Only POST requests are allowed:
+	if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+		// ret_code, ret_message etc aren't defined because
+		// we didn't load the firewall configuration yet:
+		$nfw_['nfw_options']['ret_code'] = '401';
+		nfw_log('Unauthorized REQUEST_METHOD to the XMLRPC API', "REQUEST_METHOD: {$_SERVER['REQUEST_METHOD']}", 2, 0);
+		header('HTTP/1.0 401 Unauthorized');
+		exit('401 Unauthorized');
+	}
 	nfw_bfd(2);
 }
 
@@ -460,7 +469,10 @@ function nfw_check_session() {
 	if ($_SERVER['SERVER_PORT'] == 443) {
 		@ini_set('session.cookie_secure', 1);
 	}
-	session_start();
+
+	if (! headers_sent() ) {
+		session_start();
+	}
 }
 
 // =====================================================================
@@ -525,7 +537,7 @@ function nfw_check_upload() {
 
 			if (! defined('NFW_NO_MIMECHECK') && isset( $f_uploaded[$key]['type'] ) && ! preg_match('/\/.*\bphp\d?\b/i', $f_uploaded[$key]['type']) &&
 			preg_match('/\.ph(?:p([34x7]|5\d?)?|t(ml)?)(?:\.|$)/', $f_uploaded[$key]['name']) ) {
-				nfw_log('Blocked file upload attempt (MIME-type mismatch)', $f_uploaded[$key]['type'] .' != '. $f_uploaded[$key]['name'], 3, 0);
+				nfw_log('Blocked file upload attempt (MIME-type mismatch)', $f_uploaded[$key]['name'] .' != '. $f_uploaded[$key]['type'], 3, 0);
 				nfw_block();
 			}
 
@@ -987,10 +999,19 @@ function nfw_transform_string( $string, $where ) {
 		$norm = trim( preg_replace_callback('((^|([\'"])(?:\\\\.|[^\n\2\\\\])*?\2|(?:[0-9a-z_$]+)|.)'.
 			'(?://[^\n]*+\n|/\*(?:[^*]|\*(?!/))*+\*/)*)si',
 			'nfw_delcomments2',  $string . "\n") );
-		$norm = preg_replace( array('/[\n\r\t\f\v]/', '`/\*\s*\*/`', '/[\'"`]\x20*[+.]?\x20*[\'"`]/'),
-				array('', ' ', ''), $norm);
+		$norm = preg_replace(
+			array('/[\n\r\t\f\v]/', '`/\*\s*\*/`', '/[\'"`]\x20*[+.]?\x20*[\'"`]/'),
+			array('', ' ', ''),
+		$norm);
 	} elseif ( $where == 3 ) {
-		$norm = preg_replace( array('`/(\./)+`','`/{2,}`', '`/(.+?)/\.\./\1\b`', '`\n`', '`\\\`'), array('/', '/', '/\1', '', ''), $string );
+		$norm = preg_replace(
+			array('`/(\./)+`','`/{2,}`', '`/(.+?)/\.\./\1\b`', '`\n`', '`\\\`'),
+			array('/', '/', '/\1', '', ''),
+		$string );
+		$norm = preg_replace(
+			array('`([\\\"\'^])`','`\s([\/(])`', '`([,;]|\s+)`'),
+			array('', '\1', ' '),
+		$norm );
 	}
 
 	return $norm;
@@ -1084,6 +1105,9 @@ function nfw_sanitise( $str, $how, $msg ) {
 		if ($how == 1) {
 			$str2 = $nfw_['mysqli']->real_escape_string($str);
 			$str2 = str_replace(	array(  '`', '<', '>'), array( '\\`', '&lt;', '&gt;'),	$str2);
+			if ( $msg == 'GET' && strpos( $str2, '/') !== false ) {
+				$str2 = str_replace( array( '*', '?' ), array( '\*', '\?' ), $str2 );
+			}
 		} elseif ($how == 2) {
 			$str2 = str_replace(	array('\\', "'", '"', "\x0d", "\x0a", "\x00", "\x1a", '`', '<', '>'),
 				array('\\\\', "\\'", '\\"', '-', '-', '-', '-', '\\`', '&lt;', '&gt;'),	$str);
@@ -1457,7 +1481,9 @@ function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $
 // =====================================================================
 function nfw_get_captcha() {
 
-	session_start();
+	if (! headers_sent() ) {
+		session_start();
+	}
 
 	$characters  = 'AaBbCcDdEeFfGgHhiIJjKkLMmNnPpRrSsTtUuVvWwXxYyZz123456789';
 	$captcha = '';
@@ -1556,6 +1582,8 @@ function nfw_response_headers() {
 
 	if (! empty( $NFW_RESHEADERS[3] ) ) {
 		header('X-XSS-Protection: 1; mode=block');
+	} else {
+		header('X-XSS-Protection: 0');
 	}
 
 	if (! empty( $NFW_RESHEADERS[6] ) && strpos($_SERVER['SCRIPT_NAME'], '/wp-admin/') === FALSE ) {

@@ -21,15 +21,17 @@ if (! defined('WP_UNINSTALL_PLUGIN') ) {
 	exit;
 }
 
-if (version_compare(PHP_VERSION, '5.4', '<') ) {
-	if (! session_id() ) {
-		session_start();
-		$_SESSION['nfw_st'] = 1;
-	}
-} else {
-	if (session_status() !== PHP_SESSION_ACTIVE) {
-		session_start();
-		$_SESSION['nfw_st'] = 2;
+if (! headers_sent() ) {
+	if (version_compare(PHP_VERSION, '5.4', '<') ) {
+		if (! session_id() ) {
+			session_start();
+			$_SESSION['nfw_st'] = 1;
+		}
+	} else {
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+			$_SESSION['nfw_st'] = 2;
+		}
 	}
 }
 

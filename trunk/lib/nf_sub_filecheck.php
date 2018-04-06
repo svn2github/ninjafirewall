@@ -499,7 +499,7 @@ if (file_exists($nfmon_diff) ) {
 		// If WP cron is disabled, we simply warn the user :
 		if ( defined('DISABLE_WP_CRON') ) {
 		?>
-			<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" height="16" border="0" width="16">&nbsp;<span class="description"><?php printf( __('It seems that %s is enabled. Ensure you have another way to run WP-Cron, otherwise NinjaFirewall scheduled scans will not work.', 'ninjafirewall'), '<code>DISABLE_WP_CRON</code>' ) ?></span></p>
+			<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description"><?php printf( __('It seems that %s is enabled. Ensure you have another way to run WP-Cron, otherwise NinjaFirewall scheduled scans will not work.', 'ninjafirewall'), '<code>DISABLE_WP_CRON</code>' ) ?></span></p>
 		<?php
 		}
 		?>
@@ -524,7 +524,7 @@ if (file_exists($nfmon_diff) ) {
 						// is obviously not working as expected :
 						if ( $nextscan < time() ) {
 						?>
-							<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/icon_warn_16.png" height="16" border="0" width="16">&nbsp;<span class="description"><?php _e('The next scheduled scan date is in the past! WordPress wp-cron may not be working or may have been disabled.', 'ninjafirewall'); ?></span>
+							<p><img src="<?php echo plugins_url() ?>/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description"><?php _e('The next scheduled scan date is in the past! WordPress wp-cron may not be working or may have been disabled.', 'ninjafirewall'); ?></span>
 						<?php
 						}
 					}

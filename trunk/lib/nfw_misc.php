@@ -35,6 +35,22 @@ function nfw_garbage_collector() {
 		return;
 	}
 
+	// Check if we must delete old firewall logs:
+	if (! empty( $nfw_options['auto_del_log'] ) ) {
+		$auto_del_log = (int) $nfw_options['auto_del_log'] * 86400;
+		// Retrieve the list of all logs:
+		$glob = glob( NFW_LOG_DIR . '/nfwlog/firewall_*.php' );
+		if ( is_array( $glob ) ) {
+			foreach( $glob as $file ) {
+				$nfw_mtime = filemtime( $file );
+				// Delete it, if it is too old:
+				if ( $now - $auto_del_log > $nfw_mtime ) {
+					unlink( $file );
+				}
+			}
+		}
+	}
+
 	// Don't do anything if the cache folder
 	// was cleaned up less than 5 minutes ago:
 	$gc = $path . 'garbage_collector.php';
@@ -475,6 +491,27 @@ function nfw_login_form_hook() {
 	}
 }
 add_filter( 'login_message', 'nfw_login_form_hook');
+
+/* ------------------------------------------------------------------ */
+
+function nfw_rate_notice( $nfw_options ) {
+
+	// Display a one-time notice after two weeks of use:
+	$now = time();
+	if (! empty( $nfw_options['rate_notice'] ) && $nfw_options['rate_notice'] < $now ) {
+
+		echo '<div class="notice-info notice is-dismissible"><p>'.	sprintf(
+			__('Hey, it seems that you\'ve been using NinjaFirewall for some time. If you like it, please take <a href="%s">the time to rate it</a>. It took thousand of hours to develop it, but it takes only a couple of minutes to rate it. Thank you!', 'ninjafirewall'),
+			'https://wordpress.org/support/view/plugin-reviews/ninjafirewall?rate=5#postform'
+			) .'</p></div>';
+
+		// Clear the reminder flag:
+		unset( $nfw_options['rate_notice'] );
+		// Update options:
+		nfw_update_option( 'nfw_options', $nfw_options );
+	}
+
+}
 
 /* ------------------------------------------------------------------ */
 
