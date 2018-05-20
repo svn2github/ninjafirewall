@@ -235,6 +235,13 @@ if (file_exists($nfmon_diff) ) {
 	<?php if ($mod) { ?>
 	function file_info(what, where) {
 		if ( what == '' ) { return false; }
+
+		// Because we use a "multiple" select for aesthetic purposes
+		// but don't want the user to select multiple files, we focus
+		// only on the currently selected one:
+		var current_item = jQuery('#select-'+ where ).prop('selectedIndex');
+		jQuery('#select-'+ where ).prop('selectedIndex',current_item);
+
 		// New file :
 		if (where == 1) {
 			<?php if ($new_file) { ?>
@@ -368,7 +375,7 @@ if (file_exists($nfmon_diff) ) {
 				if ($new_file) {
 					echo '<tr><td>';
 					echo __('New files:', 'ninjafirewall') . ' ' . count($new_file). '<br />';
-					echo '<select name="sometext" multiple="multiple" style="width:100%;height:150px" onClick="file_info(this.value, 1);">';
+					echo '<select id="select-1" name="sometext" multiple="multiple" style="width:100%;height:150px" onchange="file_info(this.value, 1);">';
 					foreach($new_file as $k => $v) {
 						echo '<option value="' . htmlspecialchars($v) . '" title="' . htmlspecialchars($k) . '">' . htmlspecialchars($k) . '</option>';
 					}
@@ -416,7 +423,7 @@ if (file_exists($nfmon_diff) ) {
 					echo '
 			<tr>
 				<td>' . __('Modified files:', 'ninjafirewall') .' '. count($mod_file). '<br />' .
-					'<select name="sometext" multiple="multiple" style="width:100%;height:150px" onClick="file_info(this.value, 2);">';
+					'<select id="select-2" name="sometext" multiple="multiple" style="width:100%;height:150px" onchange="file_info(this.value, 2);">';
 					foreach($mod_file as $k => $v) {
 						echo '<option value="' . htmlspecialchars($v) . '" title="' . htmlspecialchars($k) . '">' . htmlspecialchars($k) . '</option>';
 					}

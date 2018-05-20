@@ -64,7 +64,7 @@ if ( strpos($_SERVER['SCRIPT_NAME'], 'wp-login.php' ) !== FALSE ) {
 		// ret_code, ret_message etc aren't defined because
 		// we didn't load the firewall configuration yet:
 		$nfw_['nfw_options']['ret_code'] = '401';
-		nfw_log('Unauthorized REQUEST_METHOD to the XMLRPC API', "REQUEST_METHOD: {$_SERVER['REQUEST_METHOD']}", 2, 0);
+		nfw_log('XMLRPC API: unauthorized REQUEST_METHOD', "REQUEST_METHOD: {$_SERVER['REQUEST_METHOD']}", 2, 0);
 		header('HTTP/1.0 401 Unauthorized');
 		exit('401 Unauthorized');
 	}
@@ -273,21 +273,15 @@ if (! empty($_SESSION['nfw_goodguy']) ) {
 	}
 
 	if (! $nfw_['result'] = @$nfw_['mysqli']->query('SELECT * FROM `' . $nfw_['mysqli']->real_escape_string($nfw_['table_prefix']) . "options` WHERE `option_name` = 'nfw_rules'")) {
-		define( 'NFW_STATUS', 7 );
-		$nfw_['mysqli']->close();
-		unset($nfw_);
+		nfw_quit(7);
 		return;
 	}
 	if (! $nfw_['rules'] = @$nfw_['result']->fetch_object() ) {
-		define( 'NFW_STATUS', 8 );
-		$nfw_['mysqli']->close();
-		unset($nfw_);
+		nfw_quit(8);
 		return;
 	}
 	if (! $nfw_['nfw_rules'] = @unserialize($nfw_['rules']->option_value) ) {
-		$nfw_['mysqli']->close();
-		define( 'NFW_STATUS', 12 );
-		unset($nfw_);
+		nfw_quit(12);
 		return;
 	}
 
@@ -301,9 +295,7 @@ if (! empty($_SESSION['nfw_goodguy']) ) {
 			nfw_check_request( $nfw_['adm_rules'], $nfw_['nfw_options'] );
 		}
 	}
-	$nfw_['mysqli']->close();
-	define( 'NFW_STATUS', 20 );
-	unset($nfw_);
+	nfw_quit(20);
 	return;
 }
 define('NFW_SWL', 1);
@@ -319,22 +311,16 @@ if (! empty($nfw_['nfw_options']['php_errors']) ) {
 }
 
 if (! empty($nfw_['nfw_options']['allow_local_ip']) && ! filter_var(NFW_REMOTE_ADDR, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ) {
-	$nfw_['mysqli']->close();
-	unset($nfw_);
-	define( 'NFW_STATUS', 20 );
+	nfw_quit(20);
 	return;
 }
 
 if ( (@$nfw_['nfw_options']['scan_protocol'] == 1) && ($_SERVER['SERVER_PORT'] == 443) ) {
-	$nfw_['mysqli']->close();
-	unset($nfw_);
-	define( 'NFW_STATUS', 20 );
+	nfw_quit(20);
 	return;
 }
 if ( (@$nfw_['nfw_options']['scan_protocol'] == 2) && ($_SERVER['SERVER_PORT'] != 443) ) {
-	$nfw_['mysqli']->close();
-	define( 'NFW_STATUS', 20 );
-	unset($nfw_);
+	nfw_quit(20);
 	return;
 }
 
@@ -398,24 +384,18 @@ if (! empty($nfw_['nfw_options']['wp_dir']) && preg_match( '`' . $nfw_['nfw_opti
 nfw_check_upload();
 
 if (! $nfw_['result'] = @$nfw_['mysqli']->query('SELECT * FROM `' . $nfw_['mysqli']->real_escape_string($nfw_['table_prefix']) . "options` WHERE `option_name` = 'nfw_rules'")) {
-	define( 'NFW_STATUS', 7 );
-	$nfw_['mysqli']->close();
-	unset($nfw_);
+	nfw_quit(7);
 	return;
 }
 
 if (! $nfw_['rules'] = @$nfw_['result']->fetch_object() ) {
-	define( 'NFW_STATUS', 8 );
-	$nfw_['mysqli']->close();
-	unset($nfw_);
+	nfw_quit(8);
 	return;
 }
 $nfw_['result']->close();
 
 if (! $nfw_['nfw_rules'] = @unserialize($nfw_['rules']->option_value) ) {
-	$nfw_['mysqli']->close();
-	define( 'NFW_STATUS', 12 );
-	unset($nfw_);
+	nfw_quit(12);
 	return;
 }
 
@@ -449,10 +429,23 @@ if (! empty($nfw_['nfw_options']['php_self']) && ! empty($_SERVER['PHP_SELF']) )
 	$_SERVER['PHP_SELF'] = nfw_sanitise( $_SERVER['PHP_SELF'], 2, 'PHP_SELF');
 }
 
-@$nfw_['mysqli']->close();
-define( 'NFW_STATUS', 20 );
-unset($nfw_);
+nfw_quit(20);
 return;
+
+// =====================================================================
+// Close the SQL link, set the firewall status, clear the $nfw_ array
+// and close the session before leaving.
+
+function nfw_quit( $status ) {
+
+	global $nfw_;
+
+	@$nfw_['mysqli']->close();
+	define( 'NFW_STATUS', $status );
+	$nfw_= '';
+	session_write_close();
+
+}
 
 // =====================================================================
 
@@ -1163,7 +1156,8 @@ function nfw_block() {
 	$http_codes = array(
       400 => '400 Bad Request', 403 => '403 Forbidden',
       404 => '404 Not Found', 406 => '406 Not Acceptable',
-      500 => '500 Internal Server Error', 503 => '503 Service Unavailable',
+      418 => "418 I'm a teapot",  500 => '500 Internal Server Error',
+      503 => '503 Service Unavailable'
    );
    if (! isset($http_codes[$nfw_['nfw_options']['ret_code']]) ) {
 		$nfw_['nfw_options']['ret_code'] = 403;
@@ -1580,10 +1574,12 @@ function nfw_response_headers() {
 		}
 	}
 
-	if (! empty( $NFW_RESHEADERS[3] ) ) {
-		header('X-XSS-Protection: 1; mode=block');
-	} else {
+	if ( empty( $NFW_RESHEADERS[3] ) ) {
 		header('X-XSS-Protection: 0');
+	} elseif ( $NFW_RESHEADERS[3] == 1 ) {
+		header('X-XSS-Protection: 1; mode=block');
+	} elseif ( $NFW_RESHEADERS[3] == 2 ) {
+		header('X-XSS-Protection: 1');
 	}
 
 	if (! empty( $NFW_RESHEADERS[6] ) && strpos($_SERVER['SCRIPT_NAME'], '/wp-admin/') === FALSE ) {
@@ -1593,6 +1589,28 @@ function nfw_response_headers() {
 		header('Content-Security-Policy: ' . CSP_BACKEND_DATA);
 	}
 
+	if (! empty( $NFW_RESHEADERS[8] ) ) {
+		if ( $NFW_RESHEADERS[8] == 1 ) {
+			$rf = 'no-referrer';
+		} elseif ( $NFW_RESHEADERS[8] == 2 ) {
+			$rf = 'no-referrer-when-downgrade';
+		} elseif ( $NFW_RESHEADERS[8] == 3 ) {
+			$rf = 'origin';
+		} elseif ( $NFW_RESHEADERS[8] == 4 ) {
+			$rf = 'origin-when-cross-origin';
+		} elseif ( $NFW_RESHEADERS[8] == 5 ) {
+			$rf = 'strict-origin';
+		} elseif ( $NFW_RESHEADERS[8] == 6 ) {
+			$rf = 'strict-origin-when-cross-origin';
+		} elseif ( $NFW_RESHEADERS[8] == 7 ) {
+			$rf = 'same-origin';
+		} else {
+			$rf = 'unsafe-url';
+		}
+		header('Referrer-Policy: '. $rf );
+	}
+
+	// Stop here is no more headers:
 	if ( empty($NFW_RESHEADERS[4] ) ) { return; }
 
 	if ( $_SERVER['SERVER_PORT'] != 443 &&

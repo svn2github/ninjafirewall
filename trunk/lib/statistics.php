@@ -31,8 +31,8 @@ echo '
 $nfw_options = nfw_get_option( 'nfw_options' );
 nfw_rate_notice( $nfw_options );
 
-$critical = $high = $medium = $slow = $benchmark =
-$tot_bench = $speed = $upload = $banned_ip = $xtr = 0;
+$critical = 0; $high = 0; $medium = 0; $slow = 0; $benchmark = 0;
+$tot_bench = 0; $speed = 0; $upload = 0; $banned_ip = 0; $xtr = 0;
 $fast = 1000;
 
 // Which monthly log should we read ?

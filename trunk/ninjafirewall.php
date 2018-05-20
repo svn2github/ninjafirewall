@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6.2
+Version: 3.6.3
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6.2' );
+define( 'NFW_ENGINE_VERSION', '3.6.3' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -37,16 +37,9 @@ define( 'NFW_ENGINE_VERSION', '3.6.2' );
 if (! defined( 'ABSPATH' ) ) { die( 'Forbidden' ); }
 
 if (! headers_sent() ) {
-	if (version_compare(PHP_VERSION, '5.4', '<') ) {
-		if (! session_id() ) {
-			session_start();
-			$_SESSION['nfw_st'] = 1;
-		}
-	} else {
-		if (session_status() !== PHP_SESSION_ACTIVE) {
-			session_start();
-			$_SESSION['nfw_st'] = 2;
-		}
+	if ( ( version_compare( PHP_VERSION, '5.4', '<' ) && ! session_id() ) ||
+	session_status() !== PHP_SESSION_ACTIVE ) {
+		session_start();
 	}
 }
 
@@ -435,7 +428,7 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				$nfw_options['response_headers'] = '00010000';
+				$nfw_options['response_headers'] = '000100000';
 			}
 		}
 		// v1.3.3 update -------------------------------------------------
@@ -1054,7 +1047,7 @@ function nf_menu_main() {
 		<tr>
 			<th scope="row"><?php _e('Admin user', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url() ?>/ninjafirewall/images/glyphicons-warning.png"></td>
-			<td><?php printf( __('You are not whitelisted. Ensure that the "Do not block WordPress administrator" option is enabled in the <a href="%s">Firewall Policies</a> menu, otherwise you will likely get blocked by the firewall while working from your administration dashboard.', 'ninjafirewall'), '?page=nfsubpolicies') ?></td>
+			<td><?php printf( __('You are not whitelisted. Ensure that the "Do not block WordPress administrator" option is enabled in the <a href="%s">Firewall Policies</a> menu, otherwise you could get blocked by the firewall while working from your administration dashboard.', 'ninjafirewall'), '?page=nfsubpolicies') ?></td>
 		</tr>
 	<?php
 	} else {
@@ -1077,22 +1070,15 @@ function nf_menu_main() {
 	<?php
 	}
 
-	if (! empty($_SESSION['nfw_st']) && ! NF_DISABLED && empty($_REQUEST['nfw_firstrun']) ) {
+	// Try to find out if there is any "lost" session between the firewall
+	// and the plugin part of NinjaFirewall (could be a buggy plugin killing
+	// the session etc), unless we just installed it:
+	if ( defined( 'NFW_SWL' ) && ! empty( $_SESSION['nfw_goodguy'] ) && empty( $_REQUEST['nfw_firstrun'] ) ) {
 		?>
 		<tr>
 			<th scope="row"><?php _e('User session', 'ninjafirewall') ?></th>
 			<td width="20" align="left"><img src="<?php echo plugins_url() . '/ninjafirewall/images/glyphicons-warning.png' ?>"></td>
-			<td><?php _e('It seems the user session was not set by the firewall script or may have been destroyed by another plugin. You may get blocked by the firewall while working from the WordPress administration dashboard.', 'ninjafirewall') ?></td>
-		</tr>
-		<?php
-		unset($_SESSION['nfw_st']);
-	}
-	if ( defined('NFW_SWL') && ! empty($_SESSION['nfw_goodguy']) && empty($_REQUEST['nfw_firstrun']) ) {
-		?>
-		<tr>
-			<th scope="row"><?php _e('User session', 'ninjafirewall') ?></th>
-			<td width="20" align="left"><img src="<?php echo plugins_url() . '/ninjafirewall/images/glyphicons-warning.png' ?>"></td>
-			<td><?php _e('It seems that the user session set by NinjaFirewall was not found by the firewall script. You may get blocked by the firewall while working from the WordPress administration dashboard.', 'ninjafirewall') ?></td>
+			<td><?php _e('It seems that the user session set by NinjaFirewall was not found by the firewall script.', 'ninjafirewall') ?></td>
 		</tr>
 		<?php
 	}
@@ -2017,14 +2003,14 @@ function nfw_switch_tabs(tab) {
 		$err_msg = $err_img . sprintf($msg, '<code>header_remove()</code>') . '</span></p>';
 		$err = 1;
 	}
-	if ( empty($nfw_options['response_headers']) || strlen($nfw_options['response_headers']) != 8 || $err_msg ) {
-		$nfw_options['response_headers'] = '00000000';
+	if ( empty($nfw_options['response_headers']) || ! preg_match( '/^\d+$/', $nfw_options['response_headers'] ) || $err_msg ) {
+		$nfw_options['response_headers'] = '000000000';
 	}
 	?>
 	<h3><?php _e('HTTP response headers', 'ninjafirewall')  ?></h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120">
 				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes; ?></label>
@@ -2034,7 +2020,7 @@ function nfw_switch_tabs(tab) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[x_frame_options]" value="1"<?php checked( $nfw_options['response_headers'][2], 1 ); disabled($err, 1); ?>><code>SAMEORIGIN</code></label></p>
@@ -2043,17 +2029,20 @@ function nfw_switch_tabs(tab) {
 			<td align="left" style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[x_frame_options]" value="0"<?php checked( $nfw_options['response_headers'][2], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __("Disable %s (IE/Edge, Chrome, Opera and Safari browsers)", 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a></code>') ?></th>
+			<th scope="row"><?php printf( __("Set %s (IE/Edge, Chrome, Opera and Safari browsers)", 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a>') ?></th>
 			<td width="20"></td>
+
 			<td align="left" width="120">
-				<label><input type="radio" name="nfw_options[x_xss_protection]" value="0"<?php checked( $nfw_options['response_headers'][3], 0 ); disabled($err, 1); ?>><?php echo $yes ?></label>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="0"<?php checked( $nfw_options['response_headers'][3], 0 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>0</code>' ) ?></label></p>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="2"<?php checked( $nfw_options['response_headers'][3], 2 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>1</code>' ) ?></label></p>
 			</td>
 			<td align="left">
-				<label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>1; mode=block</code>' ); echo $default; ?></label></p>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="3"<?php checked( $nfw_options['response_headers'][3], 3 ); disabled($err, 1); ?> /><?php _e('No', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes ?></label>
@@ -2072,7 +2061,7 @@ function nfw_switch_tabs(tab) {
 		}
 		?>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($hsts_err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
@@ -2103,7 +2092,7 @@ function nfw_switch_tabs(tab) {
 			}
 		?>
 		<tr>
-			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_frontend')" name="nfw_options[csp_frontend]" value="1"<?php checked( $nfw_options['response_headers'][6], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
@@ -2117,7 +2106,7 @@ function nfw_switch_tabs(tab) {
 		</tr>
 
 		<tr>
-			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<code><a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a></code>') ?></th>
+			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a>') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left" width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_backend')" name="nfw_options[csp_backend]" value="1"<?php checked( $nfw_options['response_headers'][7], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
@@ -2130,7 +2119,37 @@ function nfw_switch_tabs(tab) {
 			</td>
 		</tr>
 
+		<?php
+		if (! isset( $nfw_options['response_headers'][8] ) ) {
+			$nfw_options['response_headers'][8] = 0;
+		}
+		if ( empty( $nfw_options['referrer_policy_enabled'] ) ) {
+			$nfw_options['referrer_policy_enabled'] = 0;
+		} else {
+			$nfw_options['referrer_policy_enabled'] = 1;
+		}
+		?>
+		<tr>
+			<th scope="row"><?php printf( __("Set %s (Chrome, Opera and Firefox browsers)", 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Referrer-Policy</a>') ?></th>
+			<td width="20"></td>
+			<td align="left" width="120" style="vertical-align:top;">
 
+				<p><label><input onclick="document.getElementById('rp_select').disabled=false" type="radio" name="nfw_options[referrer_policy_enabled]" value="1"<?php checked($nfw_options['referrer_policy_enabled'], 1) ?> /><?php _e('Yes', 'ninjafirewall') ?></label></p>
+				<p><label><input onclick="document.getElementById('rp_select').disabled=true" type="radio" name="nfw_options[referrer_policy_enabled]" value="0"<?php checked($nfw_options['referrer_policy_enabled'], 0) ?> /><?php _e('No (default)', 'ninjafirewall') ?></label></p>
+			</td>
+			<td align="left" style="vertical-align:top;">
+				<select id="rp_select" name="nfw_options[referrer_policy]"<?php disabled($nfw_options['referrer_policy_enabled'], 0) ?>>
+					<option value="1"<?php selected($nfw_options['response_headers'][8], 1) ?>>no-referrer</option>
+					<option value="2"<?php selected($nfw_options['response_headers'][8], 2) ?>>no-referrer-when-downgrade</option>
+					<option value="3"<?php selected($nfw_options['response_headers'][8], 3) ?>>origin</option>
+					<option value="4"<?php selected($nfw_options['response_headers'][8], 4) ?>>origin-when-cross-origin</option>
+					<option value="5"<?php selected($nfw_options['response_headers'][8], 5) ?>>strict-origin</option>
+					<option value="6"<?php selected($nfw_options['response_headers'][8], 6) ?>>strict-origin-when-cross-origin</option>
+					<option value="7"<?php selected($nfw_options['response_headers'][8], 7) ?>>same-origin</option>
+					<option value="8"<?php selected($nfw_options['response_headers'][8], 8) ?>>unsafe-url</option>
+				</select>
+			</td>
+		</tr>
 	</table>
 
 	<br /><br />
@@ -2416,7 +2435,7 @@ function nf_sub_policies_save() {
 
 
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '00000000';
+		$nfw_options['response_headers'] = '000000000';
 		$nfw_options['csp_frontend_data'] = '';
 		$nfw_options['csp_backend_data'] = '';
 		if ( empty( $_POST['nfw_options']['x_content_type_options']) ) {
@@ -2431,11 +2450,21 @@ function nf_sub_policies_save() {
 		} else {
 			$nfw_options['response_headers'][2] = 2;
 		}
-		if ( empty( $_POST['nfw_options']['x_xss_protection']) ) {
+		// XSS filter:
+		// 	0 = 0
+		// 	1 = 1; mode=block
+		// 	2 = 1
+		// 	3 = unset
+		if ( empty( $_POST['nfw_options']['x_xss_protection'] ) ) {
 			$nfw_options['response_headers'][3] = 0;
-		} else {
+		} elseif ( $_POST['nfw_options']['x_xss_protection'] == 1 ) {
 			$nfw_options['response_headers'][3] = 1;
+		} elseif ( $_POST['nfw_options']['x_xss_protection'] == 2 ) {
+			$nfw_options['response_headers'][3] = 2;
+		} else {
+			$nfw_options['response_headers'][3] = 3;
 		}
+
 		if ( empty( $_POST['nfw_options']['cookies_httponly']) ) {
 			$nfw_options['response_headers'][0] = 0;
 		} else {
@@ -2469,6 +2498,19 @@ function nf_sub_policies_save() {
 			$nfw_options['response_headers'][7] = 0;
 		} else {
 			$nfw_options['response_headers'][7] = 1;
+		}
+		if ( empty( $_POST['nfw_options']['referrer_policy_enabled'] ) ) {
+			$nfw_options['referrer_policy_enabled'] = 0;
+			$_POST['nfw_options']['referrer_policy'] = 0;
+		} else {
+			$nfw_options['referrer_policy_enabled'] = 1;
+		}
+
+		if ( empty( $_POST['nfw_options']['referrer_policy'] ) || ! preg_match('/^[1-8]$/', $_POST['nfw_options']['referrer_policy'] ) ) {
+			$nfw_options['response_headers'][8] = 0;
+			$nfw_options['referrer_policy_enabled'] = 0;
+		} else {
+			$nfw_options['response_headers'][8] = (int)$_POST['nfw_options']['referrer_policy'];
 		}
 	}
 
@@ -2747,7 +2789,8 @@ function nf_sub_policies_default() {
 	$nfw_options['post_sanitise']		= 0;
 	$nfw_options['request_sanitise'] = 0;
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '00010000';
+		$nfw_options['response_headers'] = '000100000';
+		$nfw_options['referrer_policy_enabled'] = 0;
 		$nfw_options['csp_backend_data'] = nf_sub_policies_csp();
 		$nfw_options['csp_frontend_data'] = '';
 	}
@@ -3046,7 +3089,7 @@ function nf_sub_malwarescan() {
 
 function nf_sub_event() {
 
-	require plugin_dir_path(__FILE__) . 'lib/nf_sub_event.php';
+	require plugin_dir_path(__FILE__) . 'lib/event_notifications.php';
 
 }
 

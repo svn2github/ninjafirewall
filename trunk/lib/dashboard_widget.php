@@ -31,7 +31,6 @@ wp_add_dashboard_widget( 'nfw_dashboard_welcome', __('NinjaFirewall Statistics',
 
 function nfw_stats_widget(){
 
-	$critical = $high = $medium = $upload = $total = 0;
 	$stat_file = NFW_LOG_DIR . '/nfwlog/stats_' . date( 'Y-m' ) . '.php';
 	if ( file_exists( $stat_file ) ) {
 		$nfw_stat = file_get_contents( $stat_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
@@ -39,6 +38,10 @@ function nfw_stats_widget(){
 		$nfw_stat = '0:0:0:0:0:0:0:0:0:0';
 	}
 	list($tmp, $medium, $high, $critical, $tmp, $upload, $tmp, $tmp, $tmp, $tmp) = explode(':', $nfw_stat . ':');
+	$medium = (int) $medium;
+	$high = (int) $high;
+	$critical = (int) $critical;
+	$upload = (int) $upload;
 	$total = $critical + $high + $medium;
 	if ( $total ) {
 		$coef = 100 / $total;
@@ -50,7 +53,7 @@ function nfw_stats_widget(){
 	<table border="0" width="100%">
 		<tr>
 			<th width="50%" align="left">' . __('Blocked threats', 'ninjafirewall') .'</th>
-			<td width="50%" align="left">' . $total . '</td>
+			<td width="50%" align="left">' . number_format( $total ) . '</td>
 		</tr>
 		<tr>
 			<th width="50%" align="left">' . __('Threats level', 'ninjafirewall') .'</th>

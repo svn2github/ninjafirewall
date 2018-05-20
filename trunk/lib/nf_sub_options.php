@@ -121,8 +121,8 @@ echo '<td width="20">&nbsp;</td>
 			</td>';
 }
 
-// Get (if any) the HTTP error code to return :
-if (! @preg_match( '/^(?:40[0346]|50[03])$/', $nfw_options['ret_code']) ) {
+// Get the HTTP error code to return :
+if (! @preg_match( '/^(?:4(?:0[0346]|18)|50[03])$/', $nfw_options['ret_code']) ) {
 	$nfw_options['ret_code'] = '403';
 }
 ?>
@@ -136,6 +136,7 @@ if (! @preg_match( '/^(?:40[0346]|50[03])$/', $nfw_options['ret_code']) ) {
 			<option value="403"<?php selected($nfw_options['ret_code'], 403) ?>><?php _e('403 Forbidden (default)', 'ninjafirewall') ?></option>
 			<option value="404"<?php selected($nfw_options['ret_code'], 404) ?>><?php _e('404 Not Found', 'ninjafirewall') ?></option>
 			<option value="406"<?php selected($nfw_options['ret_code'], 406) ?>><?php _e('406 Not Acceptable', 'ninjafirewall') ?></option>
+			<option value="418"<?php selected($nfw_options['ret_code'], 418) ?>><?php _e("418 I'm a teapot", 'ninjafirewall') ?></option>
 			<option value="500"<?php selected($nfw_options['ret_code'], 500) ?>><?php _e('500 Internal Server Error', 'ninjafirewall') ?></option>
 			<option value="503"<?php selected($nfw_options['ret_code'], 503) ?>><?php _e('503 Service Unavailable', 'ninjafirewall') ?></option>
 			</select>
@@ -295,8 +296,8 @@ function nf_sub_options_save() {
 	}
 
 	if ( (isset( $_POST['nfw_options']['ret_code'])) &&
-		(preg_match( '/^(?:40[0346]|50[03])$/', $_POST['nfw_options']['ret_code'])) ) {
-		$nfw_options['ret_code'] = $_POST['nfw_options']['ret_code'];
+		(preg_match( '/^(?:4(?:0[0346]|18)|50[03])$/', $_POST['nfw_options']['ret_code'])) ) {
+		$nfw_options['ret_code'] = (int)$_POST['nfw_options']['ret_code'];
 	} else {
 		$nfw_options['ret_code'] = '403';
 	}

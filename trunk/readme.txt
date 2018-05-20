@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6.2
+Stable tag: 3.6.3
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -119,7 +119,7 @@ Check out our new supercharged edition: [NinjaFirewall WP+ Edition](https://nint
 
 * WordPress 3.3+
 * Admin/Superadmin with `manage_options` + `unfiltered_html capabilities`.
-* PHP 5.3+ (5.4 or higher recommended) or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
+* PHP 5.3+ (5.4 or higher recommended), PHP 7.x or [HHVM 3.4+](https://blog.nintechnet.com/installing-ninjafirewall-with-hhvm-hiphop-virtual-machine/ "")
 * MySQL or MariaDB with MySQLi extension
 * Apache / Nginx / LiteSpeed compatible
 * Unix-like operating systems only (Linux, BSD etc). NinjaFirewall is **NOT** compatible with Microsoft Windows.
@@ -199,10 +199,11 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.6.2 =
+= 3.6.3 =
 
-* Added an option to automatically delete the firewall log(s) after a period of time (see "NinjaFirewall > Firewall Log > Auto-delete log").
-* Added an option to enter the admin email address during the installation process.
-* [WP+ Edition] The "Access Control" page was split into 5 tabs: "General", "Geolocation", "IP Access Control", "URL Access Control" and "Bot Access Control".
+* Added the "Referrer-Policy" header (see "Firewall Policies > Advanced Policies > HTTP response headers").
+* Added the "418 I'm a teapot" HTTP error code (see "Firewall Options > HTTP error code to return").
+* Modified how PHP sessions were handled in order to prevent conflicts with third-party applications that may attempt to start a session without checking if one was already started (e.g., Piwik/Zend Framework, phpMyadmin).
+* Added more options to the X-XSS-Protection header; it can be set to "0", "1", "1; mode=block" or disabled (see "Firewall Policies > Advanced Policies > HTTP response headers").
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Many small fixes throughout the code: bugs, typos, contextual help corrections, various adjustments etc.
+* Minor fixes.

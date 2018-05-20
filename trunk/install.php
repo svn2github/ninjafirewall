@@ -585,8 +585,9 @@ function nfw_default_conf() {
 	// 2. headers_list() and header_remove(): some hosts may disable them.
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
 		// X-XSS-Protection:
-		$nfw_options['response_headers'] = '00010000';
+		$nfw_options['response_headers'] = '000100000';
 	}
+	$nfw_options['referrer_policy_enabled'] = 0;
 
 	define('NFUPDATESDO', 2);
 	@nf_sub_updates();
