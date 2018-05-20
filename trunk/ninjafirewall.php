@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6.3
+Version: 3.6.4
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6.3' );
+define( 'NFW_ENGINE_VERSION', '3.6.4' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -37,9 +37,14 @@ define( 'NFW_ENGINE_VERSION', '3.6.3' );
 if (! defined( 'ABSPATH' ) ) { die( 'Forbidden' ); }
 
 if (! headers_sent() ) {
-	if ( ( version_compare( PHP_VERSION, '5.4', '<' ) && ! session_id() ) ||
-	session_status() !== PHP_SESSION_ACTIVE ) {
-		session_start();
+	if (version_compare(PHP_VERSION, '5.4', '<') ) {
+		if (! session_id() ) {
+			session_start();
+		}
+	} else {
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
 	}
 }
 
