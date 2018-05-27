@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6.4
+Stable tag: 3.6.5
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -199,15 +199,7 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.6.4 =
+= 3.6.5 =
 
-* Fixed potential "session_status()" error with old PHP installations.
-
-= 3.6.3 =
-
-* Added the "Referrer-Policy" header (see "Firewall Policies > Advanced Policies > HTTP response headers").
-* Added the "418 I'm a teapot" HTTP error code (see "Firewall Options > HTTP error code to return").
-* Modified how PHP sessions were handled in order to prevent conflicts with third-party applications that may attempt to start a session without checking if one was already started (e.g., Piwik/Zend Framework, phpMyadmin).
-* Added more options to the X-XSS-Protection header; it can be set to "0", "1", "1; mode=block" or disabled (see "Firewall Policies > Advanced Policies > HTTP response headers").
-* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
-* Minor fixes.
+* The brute-force protection will not be triggered when users click on the email confirmation link, which points to the wp-login.php script, sent by the new WordPress "Export Personal Data" feature.
+* The firewall will automatically detect if the blog runs on an old multisite installation where the main site options table is named "wp_1_options" instead of "wp_options".

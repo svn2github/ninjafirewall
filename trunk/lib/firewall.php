@@ -121,11 +121,18 @@ if ($nfw_['mysqli']->connect_error) {
 }
 
 if (! $nfw_['result'] = @$nfw_['mysqli']->query('SELECT * FROM `' . $nfw_['mysqli']->real_escape_string($nfw_['table_prefix']) . "options` WHERE `option_name` = 'nfw_options'")) {
-	define( 'NFW_STATUS', 5 );
-	$nfw_['mysqli']->close();
-	unset($nfw_);
-	return;
+	// Maybe this is an old multisite install where the main site
+	// options table is named 'wp_1_options' instead of 'wp_options'?
+	if (! $nfw_['result'] = @$nfw_['mysqli']->query('SELECT * FROM `' . $nfw_['mysqli']->real_escape_string($nfw_['table_prefix']) . "1_options` WHERE `option_name` = 'nfw_options'")) {
+		define( 'NFW_STATUS', 5 );
+		$nfw_['mysqli']->close();
+		unset($nfw_);
+		return;
+	}
+	// Change the table prefix to match 'wp_1_options':
+	$nfw_['table_prefix'] = 'wp_1_';
 }
+
 if (! $nfw_['options'] = @$nfw_['result']->fetch_object() ) {
 	define( 'NFW_STATUS', 6 );
 	$nfw_['mysqli']->close();
@@ -1337,7 +1344,7 @@ function nfw_bfd($where) {
 		}
 	}
 
-	if ( $where == 1 && ! empty( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register' ) ) ) {
+	if ( $where == 1 && isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], array( 'postpass', 'logout', 'lostpassword', 'retrievepassword', 'resetpass', 'rp', 'register', 'confirmaction' ) ) ) {
 		return;
 	}
 
