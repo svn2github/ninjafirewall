@@ -35,22 +35,6 @@ function nfw_garbage_collector() {
 		return;
 	}
 
-	// Check if we must delete old firewall logs:
-	if (! empty( $nfw_options['auto_del_log'] ) ) {
-		$auto_del_log = (int) $nfw_options['auto_del_log'] * 86400;
-		// Retrieve the list of all logs:
-		$glob = glob( NFW_LOG_DIR . '/nfwlog/firewall_*.php' );
-		if ( is_array( $glob ) ) {
-			foreach( $glob as $file ) {
-				$nfw_mtime = filemtime( $file );
-				// Delete it, if it is too old:
-				if ( $now - $auto_del_log > $nfw_mtime ) {
-					unlink( $file );
-				}
-			}
-		}
-	}
-
 	// Don't do anything if the cache folder
 	// was cleaned up less than 5 minutes ago:
 	$gc = $path . 'garbage_collector.php';
@@ -62,6 +46,42 @@ function nfw_garbage_collector() {
 		unlink( $gc );
 	}
 	touch( $gc );
+
+	// Check if we must delete old firewall logs:
+	if (! empty( $nfw_options['auto_del_log'] ) ) {
+		$auto_del_log = (int) $nfw_options['auto_del_log'] * 86400;
+		// Retrieve the list of all logs:
+		$glob = glob( NFW_LOG_DIR . '/nfwlog/firewall_*.php' );
+		if ( is_array( $glob ) ) {
+			foreach( $glob as $file ) {
+				$lines = array();
+				$lines = file( $file, FILE_SKIP_EMPTY_LINES );
+				foreach( $lines as $k => $line ) {
+					if ( preg_match( '/^\[(\d{10})\]/', $line, $match ) ) {
+						if ( $now - $auto_del_log > $match[1] ) {
+							// This line is too old, remove it:
+							unset( $lines[$k] );
+						}
+					} else {
+						// Not a proper firewall log line:
+						unset( $lines[$k] );
+					}
+				}
+				if ( empty( $lines ) ) {
+					// No lines left, delete the file:
+					unlink( $file );
+				} else {
+					// Save the last preserved lines to the log:
+					$fh = fopen( $file,'w' );
+					fwrite( $fh, "<?php exit; ?>\n" );
+					foreach( $lines as $line ) {
+						fwrite( $fh, $line );
+					}
+					fclose( $fh );
+				}
+			}
+		}
+	}
 
 	// File Guard temp files:
 	$glob = glob( $path . "fg_*.php" );

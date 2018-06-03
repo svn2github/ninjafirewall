@@ -37,11 +37,10 @@ function nfw_stats_widget(){
 	} else {
 		$nfw_stat = '0:0:0:0:0:0:0:0:0:0';
 	}
-	list($tmp, $medium, $high, $critical, $tmp, $upload, $tmp, $tmp, $tmp, $tmp) = explode(':', $nfw_stat . ':');
+	list($tmp, $medium, $high, $critical) = explode(':', $nfw_stat . ':');
 	$medium = (int) $medium;
 	$high = (int) $high;
 	$critical = (int) $critical;
-	$upload = (int) $upload;
 	$total = $critical + $high + $medium;
 	if ( $total ) {
 		$coef = 100 / $total;
@@ -83,14 +82,8 @@ function nfw_stats_widget(){
 				</table>
 			</td>
 		</tr>
-		<tr>
-			<th width="50%" align="left">' . __('Uploaded files', 'ninjafirewall') .'</th>
-			<td width="50%" align="left">' . round($upload) . '</td>
-		</tr>
-	</table>';
-	// Display the link to the log page only if the log is not empty :
-	if ( $total || $upload ) {
-		echo '<div align="right"><small><a href="admin.php?page=nfsublog">' . __('View firewall log', 'ninjafirewall') .'</a></small></div>';
-	}
+	</table>
+	<div align="right"><small><a href="admin.php?page=nfsublog">' . __('View firewall log', 'ninjafirewall') .'</a></small></div>';
 }
+/* ================================================================== */
 // EOF

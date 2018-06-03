@@ -31,90 +31,80 @@ echo '
 $nfw_options = nfw_get_option( 'nfw_options' );
 nfw_rate_notice( $nfw_options );
 
-$critical = 0; $high = 0; $medium = 0; $slow = 0; $benchmark = 0;
-$tot_bench = 0; $speed = 0; $upload = 0; $banned_ip = 0; $xtr = 0;
-$fast = 1000;
+$slow = 0; $tot_bench = 0; $speed = 0; $fast = 1000;
 
 // Which monthly log should we read ?
-if (! empty($_GET['xtr']) ) {
-	$xtr = $_GET['xtr'];
+if ( empty( $_GET['statx'] ) || ! preg_match('/^\d{4}-\d{2}$/D', $_GET['statx'] ) ) {
+	$statx = date('Y-m');
+} else {
+	$statx = $_GET['statx'];
 }
-if ( empty($xtr) || ! preg_match('/^firewall_\d{4}-\d{2}\.php$/D', $xtr) ) {
-	$xtr = 'firewall_' . date('Y-m') . '.php';
+// Make sure the stat file exists:
+$stat_file = NFW_LOG_DIR . "/nfwlog/stats_{$statx}.php";
+// Parse it:
+if ( file_exists( $stat_file ) ) {
+	$nfw_stat = file_get_contents( $stat_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+} else {
+	$nfw_stat = '0:0:0:0:0:0:0:0:0:0';
+	goto NO_STATS;
 }
-$fw_log = NFW_LOG_DIR . '/nfwlog/' . $xtr;
-
-if (! file_exists($fw_log) ) {
-	goto NO_STATS_FILE;
-}
-
-if ($fh = @fopen($fw_log, 'r') ) {
-	// Retrieve all lines :
-	while (! feof( $fh) ) {
-		$line = fgets( $fh);
-		if (preg_match( '/^\[.+?\]\s+\[(.+?)\]\s+(?:\[.+?\]\s+){3}\[(1|2|3|4|5|6)\]/', $line, $match) ) {
-			if ( $match[2] == 1) {
-				++$medium;
-			} elseif ( $match[2] == 2) {
-				++$high;
-			} elseif ( $match[2] == 3) {
-				++$critical;
-			} elseif ( $match[2] == 5) {
-				++$upload;
+// Look for the corresponding firewall log:
+$log_file = NFW_LOG_DIR . "/nfwlog/firewall_{$statx}.php";
+if ( file_exists( $log_file ) ) {
+	$fh = @fopen( $log_file, 'r', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+	// Fetch processing times to output benchmarks:
+	while (! feof( $fh ) ) {
+		$line = fgets( $fh );
+		if ( preg_match( '/^\[.+?\]\s+\[(.+?)\]/', $line, $match ) ) {
+			if ( $match[1] == 0 ) { continue; }
+			if ( $match[1] > $slow ) {
+				$slow = $match[1];
 			}
-			if ($match[1]) {
-				if ( $match[1] > $slow) {
-					$slow = $match[1];
-				}
-				if ( $match[1] < $fast) {
-					$fast = $match[1];
-				}
-				$speed += $match[1];
-				++$tot_bench;
+			if ( $match[1] < $fast ) {
+				$fast = $match[1];
 			}
+			$speed += $match[1];
+			++$tot_bench;
 		}
 	}
-	fclose( $fh);
-} else {
-	echo '<div class="error notice is-dismissible"><p>' . __('Cannot open logfile', 'ninjafirewall') . ' : <code>' . $fw_log . '</code></p></div></div>';
-	summary_stats_combo($xtr);
-	return;
+	fclose( $fh );
 }
 
-NO_STATS_FILE:
-
+NO_STATS:
+list( $tmp, $medium, $high, $critical ) = explode( ':', $nfw_stat );
+$medium = (int) $medium;
+$high = (int) $high;
+$critical = (int) $critical;
 $total = $critical + $high + $medium;
-if ($total == 1) {$fast = $slow;}
+if ( $total == 1 ) { $fast = $slow; }
 
 if (! $total ) {
-	echo '<div class="notice-info notice is-dismissible"><p>' . __('You do not have any stats for the current month yet.', 'ninjafirewall') . '</p></div>';
+	echo '<div class="notice-warning notice is-dismissible"><p>' . __('You do not have any stats for the selected month yet.', 'ninjafirewall') . '</p></div>';
 	$fast = 0;
 } else {
 	$coef = 100 / $total;
-	$critical = round($critical * $coef, 2);
-	$high = round($high * $coef, 2);
-	$medium = round($medium * $coef, 2);
+	$critical = round( $critical * $coef, 2 );
+	$high = round( $high * $coef, 2 );
+	$medium = round( $medium * $coef, 2 );
 	// Avoid divide error :
 	if ($tot_bench) {
-		$speed = round($speed / $tot_bench, 4);
+		$speed = round( $speed / $tot_bench, 4 );
 	} else {
 		$fast = 0;
 	}
 }
-// Prepare select box :
-$ret = summary_stats_combo($xtr);
 
 echo '
 <script>
 	function stat_redir(where) {
 		if (where == "") { return false;}
-		document.location.href="?page=nfsubstat&xtr=" + where;
+		document.location.href="?page=nfsubstat&statx=" + where;
 	}
 </script>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><h3>' . __('Monthly stats', 'ninjafirewall') . '</h3></th>
-			<td align="left">' . $ret . '</td>
+			<td align="left">' . summary_stats_combo( $statx ) . '</td>
 		</tr>
 		<tr>
 			<th scope="row">' . __('Blocked threats', 'ninjafirewall') . '</th>
@@ -143,10 +133,6 @@ echo '
 				</table>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row">' . __('Uploaded files', 'ninjafirewall') . '</th>
-			<td align="left">' . $upload . '</td>
-		</tr>
 		<tr><th scope="row"><h3>' . __('Benchmarks', 'ninjafirewall') . '</h3></th><td>&nbsp;</td><td>&nbsp;</td></tr>
 		<tr>
 			<th scope="row">' . __('Average time per request', 'ninjafirewall') . '</th>
@@ -164,34 +150,32 @@ echo '
 </div>';
 
 /* ------------------------------------------------------------------ */
-function summary_stats_combo( $xtr ) {
+function summary_stats_combo( $statx ) {
 
-	// Find all available logs :
+	// Find all stat files:
 	$avail_logs = array();
 	if ( is_dir( NFW_LOG_DIR . '/nfwlog/' ) ) {
 		if ( $dh = opendir( NFW_LOG_DIR . '/nfwlog/' ) ) {
-			while ( ($file = readdir($dh) ) !== false ) {
-				if (preg_match( '/^(firewall_(\d{4})-(\d\d)\.php)$/', $file, $match ) ) {
-					$log_stat = stat( NFW_LOG_DIR . '/nfwlog/' . $file );
-					if ( $log_stat['size'] < 10 ) { continue; }
-					$month = ucfirst( date_i18n('F', mktime(0, 0, 0, $match[3], 1, 2000) ) );
-					$avail_logs[$match[1] ] = $month . ' ' . $match[2];
+			while ( ( $file = readdir( $dh ) ) !== false ) {
+				if (preg_match( '/^stats_(\d{4})-(\d\d)\.php$/', $file, $match ) ) {
+					$month = ucfirst( date_i18n('F', mktime(0, 0, 0, $match[2], 1, 2000) ) );
+					$avail_logs["{$match[1]}-{$match[2]}" ] = "{$month} {$match[1]}";
 				}
 			}
-			closedir($dh);
+			closedir( $dh );
 		}
 	}
-	krsort($avail_logs);
+	krsort( $avail_logs );
 
 	$ret = '<form>
-			<select class="input" name="xtr" onChange="return stat_redir(this.value);">
+			<select class="input" name="statx" onChange="return stat_redir(this.value);">
 				<option value="">' . __('Select monthly stats to view...', 'ninjafirewall') . '</option>';
-   foreach ($avail_logs as $file => $text) {
-      $ret .= '<option value="' . $file . '"';
-      if ($file === $xtr ) {
+   foreach ( $avail_logs as $file => $text ) {
+      $ret .= '<option value="'. $file .'"';
+      if ($file === $statx ) {
          $ret .= ' selected';
       }
-      $ret .= '>' . $text . '</option>';
+      $ret .= ">{$text}</option>";
    }
    $ret .= '</select>
 		</form>';

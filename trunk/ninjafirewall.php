@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6.5
+Version: 3.6.6
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6.5' );
+define( 'NFW_ENGINE_VERSION', '3.6.6' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -613,7 +613,9 @@ function nfw_upgrade() {
 		nfw_check_emailalert();
 	}
 
-	// Run the garbage collector if needed:
+	// Run the garbage collector if needed (note that there's already
+	// a hourly cron job for that purpose, but this call is only used
+	// in the event where the admin disabled WP-Cron):
 	nfw_garbage_collector();
 
 	if (! empty( $nfw_options['wl_admin']) ) {
@@ -3269,12 +3271,20 @@ function nf_sub_about() {
 
 function ninjafirewall_settings_link( $links ) {
 
+	// Check if access is restricted to one or more specific admins
+	// See: https://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/
+	if ( nf_not_allowed( 0, __LINE__ ) ) {
+		unset( $links );
+		$links[] = __('Access Restricted', 'ninjafirewall');
+		return $links;
+	}
+
 	if ( is_multisite() ) {	$net = 'network/'; } else { $net = '';	}
 
 	$links[] = '<a href="'. get_admin_url(null, $net .'admin.php?page=NinjaFirewall') .'">'. __('Settings', 'ninjafirewall') .'</a>';
 	$links[] = '<a href="https://nintechnet.com/ninjafirewall/wp-edition/?pricing" target="_blank">'. __('Upgrade to Premium', 'ninjafirewall'). '</a>';
 	$links[] = '<a href="https://wordpress.org/support/view/plugin-reviews/ninjafirewall?rate=5#postform" target="_blank">'. __('Rate it!', 'ninjafirewall'). '</a>';
-	unset($links['edit']);
+	unset( $links['edit'] );
    return $links;
 
 }
@@ -3284,22 +3294,6 @@ if ( is_multisite() ) {
 } else {
 	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'ninjafirewall_settings_link' );
 }
-
-/* ------------------------------------------------------------------ */
-
-function ninjafirewall_all_plugins( $plugins ) {
-
-	// Cf https://blog.nintechnet.com/restricting-access-to-ninjafirewall-wp-edition-settings/
-	if ( nf_not_allowed( 0, __LINE__ ) ) {
-
-		if ( isset( $plugins['ninjafirewall/ninjafirewall.php'] ) ) {
-			unset( $plugins['ninjafirewall/ninjafirewall.php'] );
-		}
-	}
-	return $plugins;
-}
-
-add_filter( 'all_plugins', 'ninjafirewall_all_plugins' );
 
 /* ------------------------------------------------------------------ */
 
@@ -3419,10 +3413,17 @@ function nf_not_allowed($block, $line = 0) {
 		}
 	}
 
-	if ($block) {
-		die( '<br /><br /><br /><div class="error notice is-dismissible"><p>' .
-			sprintf( __('You are not allowed to perform this task (%s).', 'ninjafirewall'), $line) .
-			'</p></div>' );
+	if ( $block ) {
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			// Format text for WP-CLI:
+			WP_CLI::error(
+				sprintf( __('You are not allowed to perform this task (%s).', 'ninjafirewall'), $line)
+			);
+		} else {
+			die( '<br /><br /><br /><div class="error notice is-dismissible"><p>' .
+				sprintf( __('You are not allowed to perform this task (%s).', 'ninjafirewall'), $line) .
+				'</p></div>' );
+		}
 	}
 	return true;
 }
