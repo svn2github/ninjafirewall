@@ -62,6 +62,12 @@ function fw_fileguard() {
 					// Remember it so that we don't spam the admin each time the script is requested :
 					touch($nfw_['log_dir'] . '/cache/fg_' . $nfw_['nfw_options']['fg_stat']['ino'] . '.php');
 				}
+				// Undocumented: if 'NFW_FG_BLOCK' is defined
+				// in the .htninja, we block the request:
+				if ( defined('NFW_FG_BLOCK') ) {
+					nfw_log('File Guard: blocked request', $_SERVER['SCRIPT_FILENAME'], 6, 0);
+					nfw_block();
+				}
 			}
 		}
 	}

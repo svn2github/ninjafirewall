@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6.6
+Version: 3.6.7
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6.6' );
+define( 'NFW_ENGINE_VERSION', '3.6.7' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -35,18 +35,6 @@ define( 'NFW_ENGINE_VERSION', '3.6.6' );
 */
 
 if (! defined( 'ABSPATH' ) ) { die( 'Forbidden' ); }
-
-if (! headers_sent() ) {
-	if (version_compare(PHP_VERSION, '5.4', '<') ) {
-		if (! session_id() ) {
-			session_start();
-		}
-	} else {
-		if (session_status() !== PHP_SESSION_ACTIVE) {
-			session_start();
-		}
-	}
-}
 
 /* ------------------------------------------------------------------ */
 
@@ -101,7 +89,7 @@ if (! defined( 'NFW_REMOTE_ADDR') ) {
 
 add_action( 'nfwgccron', 'nfw_garbage_collector' );
 
-/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */			//s1:h0
 
 function nfw_activate() {
 
@@ -180,10 +168,6 @@ function nfw_activate() {
 		if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php' ) ) {
 			rename(NFW_LOG_DIR . '/nfwlog/cache/bf_conf_off.php', NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php');
 		}
-
-		if (! empty( $nfw_options['wl_admin']) ) {
-			$_SESSION['nfw_goodguy'] = true;
-		}
 	}
 }
 
@@ -223,6 +207,10 @@ register_deactivation_hook( __FILE__, 'nfw_deactivate' );
 /* ------------------------------------------------------------------ */
 
 function nfw_upgrade() {
+
+	// We must make sure the current PHP session is updated
+	// even if for whitelisted non-admin users:
+	nfw_session_start();
 
 	if ( nf_not_allowed(0, __LINE__) ) { return; }
 
@@ -636,6 +624,10 @@ add_action('admin_init', 'nfw_upgrade' );
 
 function nfw_login_hook( $user_login, $user ) {
 
+	// Check if the user is an admin and if we must whitelist them:
+
+	nfw_session_start();
+
 	$nfw_options = nfw_get_option( 'nfw_options' );
 
 	if ( empty( $nfw_options['enabled'] ) ) { return; }
@@ -709,11 +701,13 @@ function nfw_send_loginemail( $user_login, $whoami ) {
 
 function nfw_logout_hook() {
 
+	nfw_session_start();
+
 	if ( isset( $_SESSION['nfw_goodguy'] ) ) {
 		unset( $_SESSION['nfw_goodguy'] );
 	}
-	if (isset($_SESSION['nfw_livelog']) ) {
-		unset($_SESSION['nfw_livelog']);
+	if (isset( $_SESSION['nfw_livelog'] ) ) {
+		unset( $_SESSION['nfw_livelog'] );
 	}
 
 }
@@ -793,7 +787,7 @@ function ninjafirewall_admin_menu() {
 
 	global $menu_hook;
 
-	require_once plugin_dir_path(__FILE__) . 'lib/contextual_help.php';
+	require_once plugin_dir_path(__FILE__) . 'lib/help.php';
 
 	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Overview', 'ninjafirewall'), __('Overview', 'ninjafirewall'), 'manage_options',
 		'NinjaFirewall', 'nf_menu_main' );
@@ -853,7 +847,7 @@ function ninjafirewall_admin_menu() {
 		'nfsubedit', 'nf_sub_editor' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubedit' );
 
-	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Updates', 'ninjafirewall'), __('Updates', 'ninjafirewall'), 'manage_options',
+	$menu_hook = add_submenu_page( 'NinjaFirewall', __('NinjaFirewall: Rules Update', 'ninjafirewall'), __('Rules Update', 'ninjafirewall'), 'manage_options',
 		'nfsubupdates', 'nf_sub_updates' );
 	add_action( 'load-' . $menu_hook, 'help_nfsubupdates' );
 
@@ -1417,6 +1411,11 @@ function nfw_switch_tabs(tab) {
 	} else {
 		$wp_cache = 0;
 	}
+	if ( empty( $nfw_options['disallow_creation']) ) {
+		$disallow_creation = 0;
+	} else {
+		$disallow_creation = 1;
+	}
 	if ( empty( $nfw_options['enum_archives']) ) {
 		$enum_archives = 0;
 	} else {
@@ -1474,7 +1473,8 @@ function nfw_switch_tabs(tab) {
 		$disallow_mods = 1;
 	}
 
-	$force_ssl_already_enabled = $disallow_edit_already_enabled = $disallow_mods_already_enabled = 0;
+	$force_ssl_already_enabled = 0; $disallow_edit_already_enabled = 0;
+	$disallow_mods_already_enabled = 0;
 	if ( defined('DISALLOW_FILE_EDIT') && ! $disallow_edit ) {
 		$disallow_edit_already_enabled = 1;
 	}
@@ -1552,6 +1552,15 @@ function nfw_switch_tabs(tab) {
 	?>
 
 	<table class="form-table">
+		<tr>
+			<th scope="row"><?php _e('User accounts', 'ninjafirewall') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left">
+				<p><label><input type="checkbox" name="nfw_options[disallow_creation]" value="1"<?php checked( $disallow_creation, 1 ) ?>>&nbsp;<?php _e('Block user accounts creation', 'ninjafirewall') ?></label></p>
+				<span class="description"><?php _e('Do not enable this policy if you allow user registration.', 'ninjafirewall') ?></span>
+			</td>
+		</tr>
+
 		<tr>
 			<th scope="row"><?php _e('Protect against username enumeration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
@@ -1930,7 +1939,7 @@ function nfw_switch_tabs(tab) {
 				<label><input type="radio" name="nfw_options[referer_post]" value="1"<?php checked( $referer_post, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
 			<td align="left" style="vertical-align:top;">
-				<label><input type="radio" name="nfw_options[referer_post]" value="0"<?php checked( $referer_post, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Keep this option disabled if you are using scripts like Paypal IPN, WordPress WP-Cron etc', 'ninjafirewall') ?></span>
+				<label><input type="radio" name="nfw_options[referer_post]" value="0"<?php checked( $referer_post, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Keep this option disabled if you are using scripts like Paypal IPN, WordPress WP-Cron etc', 'ninjafirewall') ?>.</span>
 			</td>
 		</tr>
 	</table>
@@ -2369,7 +2378,7 @@ function nfw_switch_tabs(tab) {
 <?php
 }
 
-/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */			// s2:h1
 
 function nf_sub_policies_save() {
 
@@ -2614,6 +2623,11 @@ function nf_sub_policies_save() {
 		$nfw_options['wp_dir'] = rtrim( $tmp, '|' );
 	}
 
+	if (! isset( $_POST['nfw_options']['disallow_creation']) ) {
+		$nfw_options['disallow_creation'] = 0;
+	} else {
+		$nfw_options['disallow_creation'] = 1;
+	}
 	if (! isset( $_POST['nfw_options']['enum_archives']) ) {
 		$nfw_options['enum_archives'] = 0;
 	} else {
@@ -2817,6 +2831,7 @@ function nf_sub_policies_default() {
 	$nfw_options['wp_dir'] 				= '/wp-admin/(?:css|images|includes|js)/|' .
 		'/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
 		'/'. basename(WP_CONTENT_DIR) .'/(?:uploads|blogs\.dir)/';
+	$nfw_options['disallow_creation']= 0;
 	$nfw_options['enum_archives']		= 0;
 	$nfw_options['enum_login']			= 0;
 	$nfw_options['enum_restapi']		= 0;

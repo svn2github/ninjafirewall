@@ -71,7 +71,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 echo '<div class="wrap">
 	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Updates', 'ninjafirewall') . '</h1>';
+	<h1>' . __('Rules Update', 'ninjafirewall') . '</h1>';
 
 // We stop and warn the user if the firewall is disabled:
 if (! defined('NF_DISABLED') ) {
@@ -92,7 +92,7 @@ if (! empty($_POST['nfw_act']) ) {
 		if ( $res = nf_sub_do_updates($update_url, $update_log, 0) ) {
 			echo '<div class="updated notice is-dismissible"><p>' . __('Security rules have been updated.', 'ninjafirewall') . '</p></div>';
 		} else {
-			echo '<div class="updated notice is-dismissible"><p>' . __('No update available.', 'ninjafirewall') . '</p></div>';
+			echo '<div class="updated notice is-dismissible"><p>' . __('No security rules update available.', 'ninjafirewall') . '</p></div>';
 		}
 		// Enable flag to display log :
 		$tmp_showlog = 1;
@@ -439,7 +439,7 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 			} else {
 				nf_sub_updates_log(
 				$update_log,
-				__('No update available.', 'ninjafirewall')
+				__('No security rules update available.', 'ninjafirewall')
 				);
 			}
 		// Not a 200 OK ret code :

@@ -39,7 +39,11 @@ function help_nfsubmain() {
 	) );
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:', 'ninjafirewall') . '</strong></p>' .
+
+		'<p><a href="https://blog.nintechnet.com/securing-wordpress-with-a-web-application-firewall-ninjafirewall/">'. __('Securing WordPress with NinjaFirewall.', 'ninjafirewall') . '</a></p>' .
+
 		'<p><a href="https://nintechnet.com/ninjafirewall/wp-edition/help/">'. __('Installation, help and troubleshooting', 'ninjafirewall') . '</a></p>' .
+
 		'<p><a href="http://wordpress.org/support/plugin/ninjafirewall/">' . __( 'Support Forum', 'ninjafirewall') . '</a></p>' .
 		'<p>'. __('Updates via Twitter', 'ninjafirewall') . '<br /><a href="https://twitter.com/nintechnet"><img border="0" src="' . plugins_url( '/images/twitter_ntn.png', __DIR__ ) . '" width="116" height="28"></a></p>'
 	);
@@ -168,6 +172,7 @@ function help_nfsubpolicies() {
 		<br />
 		<strong>WordPress</strong>
 		<li>' . __('Whether to block direct access to PHP files located in specific WordPress directories.', 'ninjafirewall'). '</li>
+		<li>' . __('Block user accounts creation', 'ninjafirewall'). ':<span class="description"> ' . __('enabling this policy will block any attempt (e.g., exploiting a vulnerability, using a backdoor etc) to create a user account. If you allow user registration, you should not enable it.', 'ninjafirewall'). '</span></li>
 		<li>' . __('Protect against username enumeration:', 'ninjafirewall'). '<span class="description"> ' . __('it is possible to enumerate usernames either through the WordPress author archives, the REST API or the login page. Although this is not a vulnerability but a WordPress feature, some hackers use it to retrieve usernames in order to launch more accurate brute-force attacks. If it is a failed login attempt, NinjaFirewall will sanitise the error message returned by WordPress. If it is an author archives scan, it will invalidate it and redirect the user to the blog index page. Regarding the WP REST API, it will block the request immediately.', 'ninjafirewall'). '</span></li>
 		<li>' . __('WordPress REST API:', 'ninjafirewall'). '<span class="description"> ' . __('it allows you to access your WordPress site\'s data through an easy-to-use HTTP REST API. Since WordPress 4.7, it is enabled by default. NinjaFirewall allows you to block any access to that API if you do not intend to use it.', 'ninjafirewall'). '</span></li>
 		<li>' . __('WordPress XML-RPC API:', 'ninjafirewall'). '<span class="description"> ' . __('XML-RPC is a remote procedure call (RPC) protocol which uses XML to encode its calls and HTTP as a transport mechanism. WordPress has an XMLRPC API that can be accessed through the <code>xmlrpc.php</code> file. Since WordPress version 3.5, it is always activated and cannot be turned off. NinjaFirewall allows you to immediately block any access to that file, or only to block an access using the <code>system.multicall</code> method often used in brute-force amplification attacks or to block Pingbacks.', 'ninjafirewall'). '</span></li>
@@ -226,7 +231,7 @@ function help_nfsubpolicies() {
 			' . __('NinjaFirewall does not support the <code>ALLOW-FROM</code> value.', 'ninjafirewall'). '
 			<br />' .
 			__('Since v3.1.3, WordPress sets this value to <code>SAMEORIGIN</code> for the administrator and the login page only.', 'ninjafirewall'). '</li>
-		<li>' . __('Disable <code>X-XSS-Protection</code> (IE/Edge, Chrome, Opera and Safari browsers):', 'ninjafirewall'). '<span class="description"> ' . __('this header allows browsers to identify and block XSS attacks by preventing malicious scripts from executing. It is enabled by default on all compatible browsers.', 'ninjafirewall'). '</span></li>'.
+		<li>' . __('Set <code>X-XSS-Protection</code> (IE/Edge, Chrome, Opera and Safari browsers):', 'ninjafirewall'). '<span class="description"> ' . __('this header allows browsers to identify and block XSS attacks by preventing malicious scripts from executing. It is enabled by default on all compatible browsers.', 'ninjafirewall'). '</span></li>'.
 		'<p><img src="' . plugins_url( '/images/glyphicons-warning.png', __DIR__ ) . '">&nbsp;<span class="description">' . __("If a visitor disabled their browser's XSS filter, you cannot re-enable it with that option.", 'ninjafirewall'). '</span></p>'.
 
 		'<li>' . __('Force <code>HttpOnly</code> flag on all cookies to mitigate XSS attacks:', 'ninjafirewall'). '<span class="description"> ' . __('adding this flag to cookies helps to mitigate the risk of cross-site scripting by preventing them from being accessed through client-side scripts. NinjaFirewall can hook all cookies sent by your blog, its plugins or any other PHP script, add the <code>HttpOnly</code> flag if it is missing, and re-inject those cookies back into your server HTTP response headers right before they are sent to your visitors. Note that WordPress sets that flag on the logged in user cookies only.', 'ninjafirewall'). '</span></li>

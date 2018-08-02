@@ -48,7 +48,6 @@ $fh = fopen( NFW_LOG_DIR . '/nfwlog/cache/livelog.php', 'w');
 fclose($fh);
 $_SESSION['nfw_livelog'] = 1;
 
-// jQuery ? No, thanks :
 ?>
 <script>
 var count = 0;

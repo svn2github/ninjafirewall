@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6.6
+Stable tag: 3.6.7
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -199,10 +199,14 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
-= 3.6.6 =
+= 3.6.7 =
 
-* The "Statistics" page and dashboard widget will display the same values. Previously, the total of blocked threats displayed in the "Statistics" page was reset if the corresponding firewall log was deleted.
-* Fixed a bug in the Garbage Collector: in some cases, the firewall log was deleted a few days later than expected.
-* The Garbage Collector will still be able to run even if WP-Cron is disabled.
-* Fixed an issue introduced in WordPress 4.9.6: NinjaFirewall was not visible in the list of plugins when using WP-CLI. Note that if you want to enable/disable it from WP-CLI you will need to append the `--user` switch to your command (e.g., `$ wp plugin activate ninjafirewall --user=some_admin`).
-* Minor fixes.
+* Added a new option to block any attempt (e.g., exploiting a vulnerability, using a backdoor etc) to create a user account. See "Firewall Policies > Basic Policies > Block user accounts creation".
+* The "Daily Activity Report" will include the domain name of the blog in the email subject.
+* Fixed a potential "Zend OPcache API " warning message when saving the "Login Protection" options.
+* The "Updates" menu was renamed to "Rules Update".
+* Improved PHP session handling.
+* Fixed a potential "Call to a member function close() on null" PHP error in the firewall.
+* [WP+ Edition] Fixed a bug in the "Web Filter" page where the button to submit the HTML form was not visible.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes and adjustments.

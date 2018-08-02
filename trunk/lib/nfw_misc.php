@@ -14,16 +14,89 @@
  | but WITHOUT ANY WARRANTY; without even the implied warranty of      |
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the       |
  | GNU General Public License for more details.                        |
- +---------------------------------------------------------------------+ i18n+ / sa
+ +---------------------------------------------------------------------+ i18n+ / sa / s1:h0
 */
 
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
+
+function nfw_session_start() {
+
+	// Start a PHP session
+
+	if (! headers_sent() ) {
+
+		@ini_set('session.cookie_httponly', 1);
+		@ini_set('session.use_only_cookies', 1);
+		if ( $_SERVER['SERVER_PORT'] == 443 ) {
+			@ini_set('session.cookie_secure', 1);
+		}
+
+		if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
+			if (! session_id() ) {
+				session_start();
+			}
+		} else {
+			if ( session_status() !== PHP_SESSION_ACTIVE ) {
+				session_start();
+			}
+		}
+
+	}
+}
+
+// ---------------------------------------------------------------------
+
+function nfw_account_creation( $user_login ) {
+
+	// Allow/disallow account creation:
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+
+	if ( current_user_can('create_users') || empty( $nfw_options['disallow_creation'] ) ) {
+		// Do nothing:
+		return $user_login;
+	}
+
+	$subject = __('Blocked user account creation', 'ninjafirewall');
+	nfw_log2( "WordPress: {$subject}", "Username: {$user_login}", 3, 0);
+
+	nfw_get_blogtimezone();
+
+	// Alert the admin:
+	if ( is_multisite() && $nfw_options['alert_sa_only'] == 2 ) {
+		$recipient = get_option('admin_email');
+	} else {
+		$recipient = $nfw_options['alert_email'];
+	}
+	$subject = '[NinjaFirewall] ' . $subject;
+	$message = __('NinjaFirewall has blocked an attempt to create a user account:', 'ninjafirewall') . "\n\n";
+	if ( is_multisite() ) {
+		$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
+	} else {
+		$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
+	}
+	$message.= __('Username:', 'ninjafirewall') ." {$user_login} (blocked)\n";
+	$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
+	$message.= 'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n";
+	$message.= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . "\n";
+	$message.= __('Date:', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n\n";
+	$message.= 	'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
+				'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+	wp_mail( $recipient, $subject, $message );
+
+	die("<script>if(document.body===null||document.body===undefined){document.write('NinjaFirewall: $subject.');}else{document.body.innerHTML='NinjaFirewall: $subject.';}</script><noscript>NinjaFirewallL $subject.</noscript>");
+
+}
+
+add_filter( 'pre_user_login' , 'nfw_account_creation' );
+
+// ---------------------------------------------------------------------
 
 function nfw_garbage_collector() {
 
-	// Clean/delete cache folder & temp files:
+	// Clean/delete cache folder & temp files (hourly cron job):
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
 	$path = NFW_LOG_DIR . '/nfwlog/cache/';
@@ -36,11 +109,11 @@ function nfw_garbage_collector() {
 	}
 
 	// Don't do anything if the cache folder
-	// was cleaned up less than 5 minutes ago:
+	// was cleaned up less than 65 minutes ago:
 	$gc = $path . 'garbage_collector.php';
 	if ( file_exists( $gc ) ) {
 		$nfw_mtime = filemtime( $gc ) ;
-		if ( $now - $nfw_mtime < 300 ) {
+		if ( $now - $nfw_mtime < 65*60 ) {
 			return;
 		}
 		unlink( $gc );
@@ -95,14 +168,6 @@ function nfw_garbage_collector() {
 		}
 	}
 
-	// Anti-Malware signatures: delete them if older than 1 hour:
-	$nfw_malsigs = NFW_LOG_DIR . '/nfwlog/cache/malscan.txt';
-	if ( file_exists( $nfw_malsigs ) ) {
-		if ( time() - filemtime( $nfw_malsigs ) > 3600 ) {
-			unlink( $nfw_malsigs );
-		}
-	}
-
 	// Live Log:
 	$nfw_livelogrun = $path . 'livelogrun.php';
 	if ( file_exists( $nfw_livelogrun ) ) {
@@ -124,7 +189,7 @@ function nfw_garbage_collector() {
 	}
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_select_ip() {
 	// Ensure we have a proper and single IP (a user may use the .htninja file
@@ -144,7 +209,7 @@ function nfw_select_ip() {
 	}
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_admin_notice(){
 
@@ -197,9 +262,9 @@ function nfw_admin_notice(){
 
 add_action('all_admin_notices', 'nfw_admin_notice');
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------			s1:h0
 
-function nfw_query( $query ) { // i18n
+function nfw_query( $query ) {
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
 	if ( empty($nfw_options['enum_archives']) || empty($nfw_options['enabled']) || is_admin() ) {
@@ -225,7 +290,7 @@ if (! isset($_SESSION['nfw_goodguy']) ) {
 	add_action('pre_get_posts','nfw_query');
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------			s1:h0
 
 // WP >= 4.7:
 function nfwhook_rest_authentication_errors( $ret ) {
@@ -246,7 +311,7 @@ function nfwhook_rest_authentication_errors( $ret ) {
 }
 add_filter( 'rest_authentication_errors', 'nfwhook_rest_authentication_errors' );
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------			s1:h0
 
 function nfwhook_rest_request_before_callbacks( $res, $hnd, $req ) {
 
@@ -268,9 +333,9 @@ function nfwhook_rest_request_before_callbacks( $res, $hnd, $req ) {
 }
 add_filter('rest_request_before_callbacks', 'nfwhook_rest_request_before_callbacks', 999, 3);
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
-function nfw_authenticate( $user ) { // i18n
+function nfw_authenticate( $user ) {
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
 
@@ -294,7 +359,7 @@ function nfw_err_shake( $shake_codes ) {
 	return $shake_codes;
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nf_check_dbdata() {
 
@@ -371,7 +436,7 @@ function nf_check_dbdata() {
 
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nf_get_dbdata() {
 
@@ -386,7 +451,7 @@ function nf_get_dbdata() {
 
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_get_option( $option ) {
 
@@ -397,7 +462,7 @@ function nfw_get_option( $option ) {
 	}
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_update_option( $option, $new_value ) {
 
@@ -408,7 +473,7 @@ function nfw_update_option( $option, $new_value ) {
 	return;
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_delete_option( $option ) {
 
@@ -419,7 +484,7 @@ function nfw_delete_option( $option ) {
 	return;
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfwhook_update_user_meta( $user_id, $meta_key, $meta_value, $prev_value ) {
 
@@ -428,7 +493,7 @@ function nfwhook_update_user_meta( $user_id, $meta_key, $meta_value, $prev_value
 }
 add_filter('update_user_meta', 'nfwhook_update_user_meta', 1, 4);
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfwhook_add_user_meta( $user_id, $meta_key, $meta_value ) {
 
@@ -437,7 +502,7 @@ function nfwhook_add_user_meta( $user_id, $meta_key, $meta_value ) {
 }
 add_filter('add_user_meta', 'nfwhook_add_user_meta', 1, 3);
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfwhook_user_meta( $id, $key, $value ) {
 
@@ -456,7 +521,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 		if ( is_array( $value ) ) {
 			$value = serialize( $value );
 		}
-		if ( strpos( $value, "administrator") === FALSE ) { return; }
+		if ( strpos( $value, 's:13:"administrator"' ) === FALSE ) { return; }
 		$subject = __('Blocked privilege escalation attempt', 'ninjafirewall');
 
 		$user_info = get_userdata( $id );
@@ -502,7 +567,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 		die("<script>if(document.body===null||document.body===undefined){document.write('NinjaFirewall: $subject.');}else{document.body.innerHTML='NinjaFirewall: $subject.';}</script><noscript>NinjaFirewallL $subject.</noscript>");
 	}
 }
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------			s1:h0
 
 function nfw_login_form_hook() {
 
@@ -512,7 +577,7 @@ function nfw_login_form_hook() {
 }
 add_filter( 'login_message', 'nfw_login_form_hook');
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 
 function nfw_rate_notice( $nfw_options ) {
 
@@ -533,7 +598,7 @@ function nfw_rate_notice( $nfw_options ) {
 
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------			s1:h1
 
 function nfw_session_debug() {
 
@@ -589,5 +654,5 @@ if ( defined( 'NFW_SESSION_DEBUG_USER' ) || defined( 'NFW_SESSION_DEBUG_CAPS' ) 
 	add_action( 'admin_bar_menu', 'nfw_session_debug', 500 );
 }
 
-/* ------------------------------------------------------------------ */
+// ---------------------------------------------------------------------
 // EOF

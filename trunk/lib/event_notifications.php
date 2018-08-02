@@ -432,6 +432,9 @@ function nf_daily_report_email($recipient, $logstats) {
 	} else {
 		$url = home_url('/');
 	}
+	if ( preg_match( '`^https?://(.+)/`', $url, $match ) ) {
+		$subject .= " for {$match[1]}";
+	}
 
 	$message = "\n". sprintf( __('Daily activity report for: %s', 'ninjafirewall'), $url) . "\n";
 	$message .= __('Date Range Processed: Yesterday', 'ninjafirewall') .", ". ucfirst( date_i18n('F j, Y',strtotime("-1 days")) ) ."\n\n";

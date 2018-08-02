@@ -271,7 +271,13 @@ if ( $nfw_['a_msg'] ) {
 
 nfw_check_ip();
 
-nfw_check_session();
+// We only start a session if users already have a PHP session
+// cookie because we don't need write access yet:
+$nfw_['session_name'] = ini_get('session.name');
+if ( isset( $_COOKIE[ $nfw_['session_name'] ] ) ) {
+	nfw_check_session();
+}
+
 if (! empty($_SESSION['nfw_goodguy']) ) {
 
 	if (! empty($_SESSION['nfw_livelog']) &&  isset($_POST['livecls']) && isset($_POST['lines'])) {
@@ -446,17 +452,22 @@ return;
 function nfw_quit( $status ) {
 
 	global $nfw_;
-
-	@$nfw_['mysqli']->close();
 	define( 'NFW_STATUS', $status );
-	$nfw_= '';
-	session_write_close();
 
+	if ( isset( $nfw_['mysqli'] ) ) {
+		$nfw_['mysqli']->close();
+	}
+	if ( isset( $nfw_['session_id'] ) ) {
+		session_write_close();
+	}
+	$nfw_= '';
 }
 
 // =====================================================================
 
 function nfw_check_session() {
+
+	global $nfw_;
 
 	if (version_compare(PHP_VERSION, '5.4', '<') ) {
 		if (session_id() ) return;
@@ -464,14 +475,16 @@ function nfw_check_session() {
 		if (session_status() === PHP_SESSION_ACTIVE) return;
 	}
 
+	// Prepare session:
 	@ini_set('session.cookie_httponly', 1);
 	@ini_set('session.use_only_cookies', 1);
-	if ($_SERVER['SERVER_PORT'] == 443) {
+	if ( $_SERVER['SERVER_PORT'] == 443 ) {
 		@ini_set('session.cookie_secure', 1);
 	}
 
 	if (! headers_sent() ) {
 		session_start();
+		$nfw_['session_id'] = 1;
 	}
 }
 
@@ -1158,8 +1171,6 @@ function nfw_block() {
 		return;
 	}
 
-	@$nfw_['mysqli']->close();
-
 	$http_codes = array(
       400 => '400 Bad Request', 403 => '403 Forbidden',
       404 => '404 Not Found', 406 => '406 Not Acceptable',
@@ -1175,7 +1186,10 @@ function nfw_block() {
 	$tmp = @str_replace( '%%NINJA_LOGO%%', '<img title="NinjaFirewall" src="' . $nfw_['nfw_options']['logo'] . '" width="75" height="75">', $tmp );
 	$tmp = str_replace( '%%REM_ADDRESS%%', NFW_REMOTE_ADDR, $tmp );
 
-	@session_destroy();
+	if ( isset( $nfw_['session_id'] ) ) {
+		$_SESSION = array();
+		session_destroy();
+	}
 
 	if (! headers_sent() ) {
 		header('HTTP/1.1 ' . $http_codes[$nfw_['nfw_options']['ret_code']] );
@@ -1339,7 +1353,10 @@ function nfw_bfd($where) {
 			header('Expires: 0');
 			$nfw_['nfw_options']['ret_code'] = '404';
 			nfw_log('Blocked access to the login page', 'bot detection is enabled', 1, 0);
-			@session_destroy();
+			if ( isset( $nfw_['session_id'] ) ) {
+				$_SESSION = array();
+				session_destroy();
+			}
 			exit('404 Not Found');
 		}
 	}
@@ -1448,7 +1465,10 @@ function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $
 		}
 	}
 
-	session_destroy();
+	if ( isset( $nfw_['session_id'] ) ) {
+		$_SESSION = array();
+		session_destroy();
+	}
 
 	if ( $b64 ) { $auth_msgtxt = base64_decode( $auth_msgtxt ); }
 
@@ -1482,9 +1502,7 @@ function nfw_check_auth( $auth_name, $auth_pass, $auth_msgtxt, $bf_rand, $b64, $
 // =====================================================================
 function nfw_get_captcha() {
 
-	if (! headers_sent() ) {
-		session_start();
-	}
+	nfw_check_session();
 
 	$characters  = 'AaBbCcDdEeFfGgHhiIJjKkLMmNnPpRrSsTtUuVvWwXxYyZz123456789';
 	$captcha = '';
