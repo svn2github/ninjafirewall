@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6.7
+Stable tag: 3.6.8
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -198,6 +198,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 15. Security rules updates.
 
 == Changelog ==
+
+= 3.6.8 =
+
+* Fixed an issue where third-party plugins making use of PHP session but without properly checking the status of the current session could behave erratically.
 
 = 3.6.7 =
 

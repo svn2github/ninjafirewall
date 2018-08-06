@@ -457,9 +457,6 @@ function nfw_quit( $status ) {
 	if ( isset( $nfw_['mysqli'] ) ) {
 		$nfw_['mysqli']->close();
 	}
-	if ( isset( $nfw_['session_id'] ) ) {
-		session_write_close();
-	}
 	$nfw_= '';
 }
 
