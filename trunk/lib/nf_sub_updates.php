@@ -545,7 +545,7 @@ function nf_sub_updates_notification($new_rules_version) {
 	}
 	$msg .=__('Rules version:', 'ninjafirewall') .' '. preg_replace('/(\d{4})(\d\d)(\d\d)/', '$1-$2-$3', $new_rules_version) . "\n";
 	$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) ) . "\n\n" .
-			__('This notification can be turned off from NinjaFirewall "Updates" page.', 'ninjafirewall') ."\n\n" .
+			__('This notification can be turned off from NinjaFirewall "Rules Update" page.', 'ninjafirewall') ."\n\n" .
 			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 	wp_mail( $recipient, $subject, $msg );

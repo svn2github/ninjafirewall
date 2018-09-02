@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 4.9
-Stable tag: 3.6.8
+Stable tag: 3.7
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -199,6 +199,17 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 3.7 =
+
+* Added a new option to the "Live Log" page: you can apply filters in order to include or exclude files and folders. See "Live Log > Inclusion and exclusion filters".
+* Added a new option to the "Firewall Options" page: NinjaFirewall will automatically backup its configuration (options, policies and rules) everyday for the last 5 days so that you can restore its configuration to an earlier date if needed. See "Firewall Options > Configuration backup".
+* [WP+ Edition] The "IP Access Control" whitelist and blacklist can now support CIDR notation for IPv4 and IPv6 (e.g., 66.155.0.0/17, 2c0f:f248::/32).
+* Added a warning to the "Login Protection" page if Jetpack is installed and the XML-RPC API protection is activated.
+* Added a notice to the "Login Protection" page to remind that the "Authentication log" option can only work when the protection is set to "Yes, if under attack".
+* Fixed a potential "401 Unauthorized" HTTP response when attempting to access the XMLRPC API using a non-POST method.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes.
+
 = 3.6.8 =
 
 * Fixed an issue where third-party plugins making use of PHP session but without properly checking the status of the current session could behave erratically.
@@ -214,3 +225,54 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * [WP+ Edition] Fixed a bug in the "Web Filter" page where the button to submit the HTML form was not visible.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Minor fixes and adjustments.
+
+= 3.6.6 =
+
+* The "Statistics" page and dashboard widget will display the same values. Previously, the total of blocked threats displayed in the "Statistics" page was reset if the corresponding firewall log was deleted.
+* Fixed a bug in the Garbage Collector: in some cases, the firewall log was deleted a few days later than expected.
+* The Garbage Collector will still be able to run even if WP-Cron is disabled.
+* Fixed an issue introduced in WordPress 4.9.6: NinjaFirewall was not visible in the list of plugins when using WP-CLI. Note that if you want to enable/disable it from WP-CLI you will need to append the `--user` switch to your command (e.g., `$ wp plugin activate nfwplus --user=some_admin`).
+* Minor fixes.
+
+= 3.6.5 =
+
+* The brute-force protection will not be triggered when users click on the email confirmation link, which points to the wp-login.php script, sent by the new WordPress "Export Personal Data" feature.
+* The firewall will automatically detect if the blog runs on an old multisite installation where the main site options table is named "wp_1_options" instead of "wp_options".
+
+= 3.6.4 =
+
+* Fixed potential "session_status()" error with old PHP installations.
+
+= 3.6.3 =
+
+* Added the "Referrer-Policy" header (see "Firewall Policies > Advanced Policies > HTTP response headers").
+* Added the "418 I'm a teapot" HTTP error code (see "Firewall Options > HTTP error code to return").
+* Modified how PHP sessions were handled in order to prevent conflicts with third-party applications that may attempt to start a session without checking if one was already started (e.g., Piwik/Zend Framework, phpMyadmin).
+* Added more options to the X-XSS-Protection header; it can be set to "0", "1", "1; mode=block" or disabled (see "Firewall Policies > Advanced Policies > HTTP response headers").
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes.
+
+= 3.6.2 =
+
+* Added an option to automatically delete the firewall log(s) after a period of time (see "NinjaFirewall > Firewall Log > Auto-delete log").
+* Added an option to enter the admin email address during the installation process.
+* [WP+ Edition] The "Access Control" page was split into 5 tabs: "General", "Geolocation", "IP Access Control", "URL Access Control" and "Bot Access Control".
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Many small fixes throughout the code: bugs, typos, contextual help corrections, various adjustments etc.
+
+= 3.6.1 =
+
+* Added "IP Anonymization" option. It will anonymize IP addresses in the firewall log by removing their last 3 characters. See "NinjaFirewall > Firewall Options > IP Anonymization".
+* Fixed a bug where the "Login Protection" wrongly applied to password protected pages.
+* Fixed a bug where the garbage collector cron job was not deleted when NinjaFirewall was disabled.
+* Added a warning that NinjaFirewall requires `unfiltered_html` capability when attempting to activate it.
+* [WP+ Edition] The "Uploads > Allow, but block scripts, ELF and system files" firewall policy was renamed to "Allow, but block dangerous files" and will also block dangerous SVG files. Therefore, the complete list of blocked files is now: scripts (PHP, CGI, Ruby, Python, bash/shell), C/C++ source code, binaries (MZ/PE/NE and ELF formats), system files (.htaccess, .htpasswd and PHP INI) and SVG files containing Javascript/XML events.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes.
+
+= v3.6 =
+
+* Important: We have removed the "Anti-Malware" option from NinjaFirewall. Instead, we have now a brand new and much better antivirus plugin: NinjaScanner. You can download it from wordpress.org: https://wordpress.org/plugins/ninjascanner/
+* [WP+ Edition] Fixed a bug where IPs that were whitelisted in the "Access Control" page could not connect to the REST API if its access was disabled in the "Firewall Policies".
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Minor fixes.

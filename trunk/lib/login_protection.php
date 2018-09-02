@@ -379,10 +379,18 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		<br />
 		<h3><?php _e('Various options', 'ninjafirewall') ?></h3>
 		<table class="form-table">
+			<?php
+			// Warn the user if Jetpack is installed:
+			if ( is_dir( WP_PLUGIN_DIR . '/jetpack' ) ) {
+				$is_JetPack = '<p><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description">' . __('If you are using the Jetpack plugin, blocking access to the XML-RPC API may prevent it from working correctly.', 'ninjafirewall') . '</span></p>';
+			} else {
+				$is_JetPack = '';
+			}
+			?>
 			<tr>
 				<th scope="row"><?php _e('XML-RPC API', 'ninjafirewall') ?></th>
 				<td align="left">
-				<label><input type="checkbox" onClick="xmlrpc_warn(this);" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bfconfig['bf_xmlrpc'], 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label>
+				<label><input type="checkbox" onClick="xmlrpc_warn(this);" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bfconfig['bf_xmlrpc'], 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label><?php echo $is_JetPack; ?>
 				</td>
 			</tr>
 
@@ -403,7 +411,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 						$bf_msg = __('Your server configuration is not compatible with that option.', 'ninjafirewall');
 						$enabled = 0;
 					} else {
-						$bf_msg = __('See contextual help before enabling this option.', 'ninjafirewall');
+						$bf_msg = __('The login protection must be set to "Yes, if under attack" in order to use this option.', 'ninjafirewall');
 						$enabled = 1;
 					}
 					?>

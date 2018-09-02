@@ -108,13 +108,22 @@ get_current_screen()->add_help_tab( array(
 			<li><code>%%NUM_INCIDENT%%</code> : '. __('the unique incident number as it will appear in the firewall log "INCIDENT" column.' , 'ninjafirewall') . '</li>
 			<li><code>%%NINJA_LOGO%%</code> : '. __('NinjaFirewall logo.' , 'ninjafirewall') . '</li>'
 	) );
+	list ( $major_current ) = explode( '.', NFW_ENGINE_VERSION );
 	get_current_screen()->add_help_tab( array(
 		'id'        => 'opt04',
 		'title'     =>  __('Export/import configuration', 'ninjafirewall'),
 		'content'   => '<br />' .
-			__('This options lets you export you current configuration or import it from another NinjaFirewall (WP Edition) installation. The imported file must match your current version otherwise it will be rejected. Note that importing will override all firewall rules and options.', 'ninjafirewall') .
+			sprintf( __('This options lets you export you current configuration or import it from another NinjaFirewall (WP Edition) installation. The imported file must match the major version of your current version (%s) otherwise it will be rejected. Note that importing will override all firewall rules and options.', 'ninjafirewall'), (int) $major_current .'.x' ) .
 			'<p><img src="' . plugins_url( '/images/glyphicons-warning.png', __DIR__ ) . '">&nbsp;<span class="description">' .
 			__('"File Check" configuration will not be exported/imported.', 'ninjafirewall') . '</span></p>'
+	) );
+
+	get_current_screen()->add_help_tab( array(
+		'id'        => 'opt06',
+		'title'     =>  __('Configuration backup', 'ninjafirewall'),
+		'content'   => '<br />' .
+		__('NinjaFirewall will automatically backup its configuration (options, policies and rules) everyday for the last 5 days. If you want to restore its configuration to an earlier date, select the corresponding file in the list.', 'ninjafirewall')
+
 	) );
 }
 /* ------------------------------------------------------------------ */ // i18n+
@@ -462,7 +471,7 @@ function help_nfsublivelog() {
 		'content'   =>
 			'<p>' .	__('Live Log lets you watch your blog traffic in real time, just like the Unix <code>tail -f</code> command. Note that requests sent to static elements like JS/CSS files and images are not managed by NinjaFirewall.', 'ninjafirewall') .'</p>
 
-			<p>' . __('You can enable/disable the monitoring process, change the refresh rate, clear the screen, enable automatic vertical scrolling, change the log format, select which traffic you want to view (HTTP/HTTPS) and the timezone as well.', 'ninjafirewall') .
+			<p>' . __('You can enable/disable the monitoring process, change the refresh rate, clear the screen, enable automatic vertical scrolling, change the log format, select which traffic you want to view (HTTP/HTTPS) and the timezone.', 'ninjafirewall') .' '. __('You can also apply filters to include or exclude files and folders (REQUEST_URI).', 'ninjafirewall') .
 			'</p>
 
 			<p>' . __('Live Log does not make use of any WordPress core file (e.g., <code>admin-ajax.php</code>). It communicates directly with the firewall without loading WordPress bootstrap. Consequently, it is fast, lightweight and it should not affect your server load, even if you set its refresh rate to the lowest value.', 'ninjafirewall') .	'</p>

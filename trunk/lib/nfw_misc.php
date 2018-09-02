@@ -99,6 +99,12 @@ function nfw_garbage_collector() {
 	// Clean/delete cache folder & temp files (hourly cron job):
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
+	if ( empty( $nfw_options ) ) {
+		// We could reach this part during the installation process
+		// when the options and rules are not fully populated yet:
+		return;
+	}
+
 	$path = NFW_LOG_DIR . '/nfwlog/cache/';
 	$now = time();
 
@@ -187,6 +193,54 @@ function nfw_garbage_collector() {
 			unlink( $nfw_livelog );
 		}
 	}
+
+	// NinjaFirewall's configuration backup. We create a new one daily:
+	$glob = glob( $path .'backup_*.php' );
+	if ( is_array( $glob ) && ! empty( $glob[0] ) ) {
+		rsort( $glob );
+		// Check if last backup if older than one day:
+		if ( preg_match( '`/backup_(\d{10})_.+\.php$`', $glob[0], $match ) ) {
+			if ( $now - $match[1] > 86400 ) {
+				// Backup the configuration:
+				$nfw_rules = nfw_get_option( 'nfw_rules' );
+				if ( file_exists( $path .'bf_conf.php' ) ) {
+					$bd_data = serialize( file_get_contents( $path .'bf_conf.php' ) );
+				} else {
+					$bd_data = '';
+				}
+				$data = serialize( $nfw_options ) ."\n:-:\n". serialize($nfw_rules) ."\n:-:\n". $bd_data;
+				$file = uniqid( 'backup_'. time() .'_', true) . '.php';
+				file_put_contents( $path . $file, $data );
+				array_unshift( $glob, $path . $file );
+			}
+		}
+		// Keep the last 5 backup only (number can be defined
+		// in the wp-config.php):
+		if ( defined('NFW_MAX_BACKUP') ) {
+			$num = (int) NFW_MAX_BACKUP;
+		} else {
+			$num = 5;
+		}
+		$old_backup = array_slice( $glob, $num );
+		foreach( $old_backup as $file ) {
+			echo unlink( $file );
+		}
+	} else {
+		// Create first backup:
+		$nfw_rules = nfw_get_option( 'nfw_rules' );
+		if ( empty( $nfw_rules ) ) {
+			return;
+		}
+		if ( file_exists( $path .'bf_conf.php' ) ) {
+			$bd_data = serialize( file_get_contents( $path .'bf_conf.php' ) );
+		} else {
+			$bd_data = '';
+		}
+		$data = serialize( $nfw_options ) ."\n:-:\n". serialize($nfw_rules) ."\n:-:\n". $bd_data;
+		$file = uniqid( 'backup_'. time() .'_', true) . '.php';
+		file_put_contents( $path . $file, $data );
+	}
+
 }
 
 // ---------------------------------------------------------------------

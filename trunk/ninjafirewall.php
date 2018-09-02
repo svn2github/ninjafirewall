@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.6.8
+Version: 3.7
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.6.8' );
+define( 'NFW_ENGINE_VERSION', '3.7' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -1378,8 +1378,8 @@ function nfw_switch_tabs(tab) {
 			<td width="20">&nbsp;</td>
 			<td align="left">
 				<select name="nfw_options[uploads]" onchange="chksubmenu();">
-					<option value="1"<?php selected( $uploads, 1 ) ?>><?php _e('Allow uploads', 'ninjafirewall') ?></option>
-					<option value="0"<?php selected( $uploads, 0 ) ?>><?php _e('Disallow uploads (default)', 'ninjafirewall') ?></option>
+					<option value="1"<?php selected( $uploads, 1 ) ?>><?php echo __('Allow uploads', 'ninjafirewall') .' '. __('(default)', 'ninjafirewall') ?></option>
+					<option value="0"<?php selected( $uploads, 0 ) ?>><?php _e('Disallow uploads', 'ninjafirewall') ?></option>
 				</select>
 				<p id="sanitize-fn"<?php if (! $uploads) { echo ' style="color:#bbbbbb;"'; }?>>
 					<label><input type="checkbox" onclick='return sanitise_fn(this);' name="nfw_options[sanitise_fn]"<?php checked( $sanitise_fn, 1 ); disabled( $uploads, 0 ) ?> id="san">&nbsp;<?php _e('Sanitise filenames', 'ninjafirewall') ?> (<?php _e('substitution character:', 'ninjafirewall') ?></label> <input id="subs" maxlength="1" size="1" value="<?php echo $substitute ?>" name="nfw_options[substitute]" type="text" <?php disabled( $uploads, 0 ) ?>/> )
@@ -2801,7 +2801,7 @@ function nf_sub_policies_default() {
 	$nfw_rules = nfw_get_option( 'nfw_rules' );
 
 	$nfw_options['scan_protocol']		= 3;
-	$nfw_options['uploads']				= 0;
+	$nfw_options['uploads']				= 1;
 	$nfw_options['sanitise_fn']		= 0;
 	$nfw_options['substitute'] 		= 'X';
 	$nfw_options['get_scan']			= 1;

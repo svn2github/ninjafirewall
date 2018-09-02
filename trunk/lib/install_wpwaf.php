@@ -216,11 +216,9 @@ function nfw_save_changes_wpwaf() {
 		<form method="POST" action="?page=NinjaFirewall&nfw_firstrun=1&rnd=<?php echo time() ?>">
 			<p><input type="submit" class="button-primary" value="<?php _e('Test Firewall', 'ninjafirewall') ?> &#187;" /></p>
 
-
-<input type="hidden" name="nfw_act" value="save_changes_wpwaf" />
-<input type="hidden" name="makechange" value="usr" />
-<?php wp_nonce_field('save_changes_wpwaf', 'nfwnonce', 0); ?>
-
+			<input type="hidden" name="nfw_act" value="save_changes_wpwaf" />
+			<input type="hidden" name="makechange" value="usr" />
+			<?php wp_nonce_field('save_changes_wpwaf', 'nfwnonce', 0); ?>
 
 		</form>
 	</div>

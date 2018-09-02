@@ -59,15 +59,6 @@ if (! is_dir($nfw_['log_dir']) ) {
 if ( strpos($_SERVER['SCRIPT_NAME'], 'wp-login.php' ) !== FALSE ) {
 	nfw_bfd(1);
 } elseif ( strpos($_SERVER['SCRIPT_NAME'], 'xmlrpc.php' ) !== FALSE ) {
-	// Only POST requests are allowed:
-	if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
-		// ret_code, ret_message etc aren't defined because
-		// we didn't load the firewall configuration yet:
-		$nfw_['nfw_options']['ret_code'] = '401';
-		nfw_log('XMLRPC API: unauthorized REQUEST_METHOD', "REQUEST_METHOD: {$_SERVER['REQUEST_METHOD']}", 2, 0);
-		header('HTTP/1.0 401 Unauthorized');
-		exit('401 Unauthorized');
-	}
 	nfw_bfd(2);
 }
 

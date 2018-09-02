@@ -202,6 +202,14 @@ function create_cookie(name, value) {
 	var expires = "expires=" + d.toUTCString();
 	document.cookie = name +'=' + value + "; " + expires;
 }
+function lv_select( value ) {
+	if ( value > 0 ) {
+		document.getElementById('lr-disabled').disabled = false;
+		document.getElementById('lr-disabled').focus();
+	} else {
+		document.getElementById('lr-disabled').disabled = true;
+	}
+}
 </script>
 
 <div class="wrap">
@@ -250,7 +258,7 @@ if ( empty($nfw_options['liveformat']) ) {
 	$liveformat = htmlspecialchars($nfw_options['liveformat']);
 }
 
-if ( empty($nfw_options['liveport'])  || ! preg_match('/^[1-2]$/', $nfw_options['liveport']) ) {
+if ( empty($nfw_options['liveport']) || ! preg_match('/^[1-2]$/', $nfw_options['liveport']) ) {
 	$liveport = 0;
 } else {
 	$liveport = $nfw_options['liveport'];
@@ -260,15 +268,39 @@ if ( empty($nfw_options['livetz']) || preg_match('/[^\w\/]/', $nfw_options['live
 } else {
 	$livetz = $nfw_options['livetz'];
 }
+if ( empty( $nfw_options['liverules'] ) || ! preg_match('/^[0-2]$/', $nfw_options['liverules']) ) {
+	$liverules = 0;
+	$lr_disabled = 'disabled="disabled" ';
+} else {
+	$liverules = $nfw_options['liverules'];
+	$lr_disabled = '';
+}
+if ( empty( $nfw_options['liverulespath'] ) ) {
+	$liverulespath = '';
+} else{
+	$liverulespath = $nfw_options['liverulespath'];
+}
 ?>
 <form method="post">
 	<h3><?php _e('Live Log options', 'ninjafirewall') ?></h3>
 	<table class="form-table">
 		<tr>
+			<th scope="row"><?php _e('Inclusion and exclusion filters (REQUEST_URI)', 'ninjafirewall') ?></th>
+			<td align="left">
+				<select name="liverules" onchange="lv_select(this.value);">
+					<option value="0"<?php selected($liverules, 0) ?>><?php _e('None', 'ninjafirewall') ?></option>
+					<option value="1"<?php selected($liverules, 1) ?>><?php _e('Must include', 'ninjafirewall') ?></option>
+					<option value="2"<?php selected($liverules, 2) ?>><?php _e('Must not include', 'ninjafirewall') ?></option>
+				</select>&nbsp;<input <?php echo $lr_disabled; ?>type="text" id="lr-disabled" class="regular-text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="liverulespath" value="<?php echo htmlentities( $liverulespath ) ?>" placeholder="<?php _e('e.g.,', 'nfwplus') ?> /blog <?php _e('or', 'ninjafirewall') ?> admin.php <?php _e('or', 'ninjafirewall') ?> index.php,/blog" />
+				<br />
+				<span class="description"><?php _e('Full or partial case-sensitive REQUEST_URI string. Multiple values must be comma-separated.', 'ninjafirewall') ?></span>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><?php _e('Format', 'ninjafirewall') ?></th>
 			<td align="left">
 				<p><label><input type="radio" name="lf" value="0"<?php checked($lf, 0) ?> onclick="document.getElementById('liveformat').disabled=true"><code>[%time] %name %client &quot;%method %uri&quot; &quot;%referrer&quot; &quot;%ua&quot; &quot;%forward&quot; &quot;%host&quot;</code></label></p>
-				<p><label><input type="radio" name="lf" value="1"<?php checked($lf, 1) ?> onclick="document.getElementById('liveformat').disabled=false"><?php _e('Custom', 'ninjafirewall') ?> </label><input id="liveformat" type="text" class="regular-text" name="liveformat" value="<?php echo $liveformat ?>"<?php disabled($lf, 0) ?> autocomplete="off"></p>
+				<p><label><input type="radio" name="lf" value="1"<?php checked($lf, 1) ?> onclick="document.getElementById('liveformat').disabled=false;document.getElementById('liveformat').focus()"><?php _e('Custom', 'ninjafirewall') ?> </label><input id="liveformat" type="text" class="regular-text" name="liveformat" value="<?php echo $liveformat ?>"<?php disabled($lf, 0) ?> autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></p>
 				<span class="description"><?php _e('See contextual help for available log format.', 'ninjafirewall') ?></span>
 			</td>
 		</tr>
@@ -312,6 +344,21 @@ function nf_sub_liveloge_save() {
 	}
 
 	$nfw_options = nfw_get_option('nfw_options');
+
+	if ( empty( $_POST['liverules'] ) || ! preg_match('/^[0-2]$/', $_POST['liverules']) ) {
+		$nfw_options['liverules'] = 0;
+	} else {
+		$nfw_options['liverules'] = $_POST['liverules'];
+	}
+
+	$nfw_options['liverulespath'] = '';
+	if (! empty( $_POST['liverulespath'] ) ) {
+		$liverulespath = trim( $_POST['liverulespath'],  " \t\n\r\0\x0B," );
+		$nfw_options['liverulespath'] = preg_replace( '/\s*,\s*/', ',', $liverulespath );
+	}
+	if ( empty( $nfw_options['liverulespath'] ) ) {
+		$nfw_options['liverules'] = 0;
+	}
 
 	if ( empty($_POST['lf']) ) {
 		$nfw_options['liveformat'] = '';

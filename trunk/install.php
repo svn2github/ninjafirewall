@@ -493,7 +493,7 @@ function nfw_default_conf() {
 		'blocked_msg'		=> base64_encode(NFW_DEFAULT_MSG),
 		'debug'				=> 0,
 		'scan_protocol'	=> 3,
-		'uploads'			=> 0,
+		'uploads'			=> 1,
 		'sanitise_fn'		=> 0,
 		'get_scan'			=> 1,
 		'get_sanitise'		=> 0,

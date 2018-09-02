@@ -87,10 +87,25 @@ function fw_livelog_record() {
 			}
 		}
 	} else {
+
 		// Check if we are supposed to log the request (http/https) :
 		if ( empty($nfw_['nfw_options']['liveport']) ||
 			($nfw_['nfw_options']['liveport'] == 1 && $_SERVER['SERVER_PORT'] != 443) ||
 			($nfw_['nfw_options']['liveport'] == 2 && $_SERVER['SERVER_PORT'] == 443) ) {
+
+			// Inclusion and exclusion rules:
+			if (! empty( $nfw_['nfw_options']['liverules'] ) && ! empty( $nfw_['nfw_options']['liverulespath'] ) ) {
+				$liverulespath = preg_quote( $nfw_['nfw_options']['liverulespath'], '/' );
+				$liverulespath = str_replace(',', '|', $liverulespath);
+
+				// Must include:
+				if ( $nfw_['nfw_options']['liverules'] == 1 ) {
+					if (! preg_match("/$liverulespath/", $_SERVER['REQUEST_URI']) ) { return; }
+				// Must not include:
+				} else {
+					if ( preg_match("/$liverulespath/", $_SERVER['REQUEST_URI']) ) { return; }
+				}
+			}
 
 			if ( empty($_SERVER['PHP_AUTH_USER']) ) { $PHP_AUTH_USER = '-'; }
 			else { $PHP_AUTH_USER = $_SERVER['PHP_AUTH_USER']; }

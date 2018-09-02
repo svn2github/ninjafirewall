@@ -26,6 +26,23 @@ $nfw_options = nfw_get_option( 'nfw_options' );
 
 echo '
 <script>
+var restoreconf = 0;
+function save_options() {
+	if ( restoreconf > 0 ) {
+		if ( confirm( "'. esc_js( __('This action will restore the selected configuration file and will override all your current firewall options, policies and rules. Continue?', 'ninjafirewall') ) .'" ) ) {
+			return true;
+		}
+		return false;
+	}
+	return true;
+}
+function select_backup( what ) {
+	if ( what == 0 ) {
+		restoreconf = 0;
+	} else {
+		restoreconf = 1;
+	}
+}
 function preview_msg() {
 	var t1 = document.option_form.elements[\'nfw_options[blocked_msg]\'].value.replace(\'%%REM_ADDRESS%%\',\'' . htmlspecialchars(NFW_REMOTE_ADDR) . '\');
 	var t2 = t1.replace(\'%%NUM_INCIDENT%%\',\'1234567\');
@@ -69,7 +86,7 @@ if ( isset( $_POST['nfw_options']) ) {
 }
 
 ?><br />
-	<form method="post" name="option_form" enctype="multipart/form-data">
+	<form method="post" name="option_form" enctype="multipart/form-data" onsubmit="return save_options();">
 	<?php wp_nonce_field('options_save', 'nfwnonce', 0); ?>
 	<table class="form-table">
 		<tr>
@@ -184,6 +201,8 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 		</table>
 	</div>
 
+	<h3><?php _e('Firewall configuration', 'ninjafirewall') ?></h3>
+
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Export configuration', 'ninjafirewall') ?></th>
@@ -194,9 +213,15 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 			<th scope="row"><?php _e('Import configuration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td align="left"><input type="file" name="nf_imp" /><br /><span class="description"><?php
-				printf( __( 'Imported configuration must match plugin version %s.', 'ninjafirewall'), NFW_ENGINE_VERSION);
+				list ( $major_current ) = explode( '.', NFW_ENGINE_VERSION );
+				printf( __( 'Imported configuration must match plugin version %s.', 'ninjafirewall'), (int) $major_current .'.x' );
 				echo '<br />'. __('It will override all your current firewall options and rules.', 'ninjafirewall')
 			?></span></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php _e('Configuration backup', 'ninjafirewall') ?></th>
+			<td width="20">&nbsp;</td>
+			<td align="left"><?php echo nf_sub_options_confbackup(); ?></td>
 		</tr>
 	</table>
 
@@ -210,13 +235,49 @@ return;
 
 /* ------------------------------------------------------------------ */
 
+function nf_sub_options_confbackup() {
+
+	$glob = glob( NFW_LOG_DIR . '/nfwlog/cache/backup_*.php' );
+	$res = '';
+
+	nfw_get_blogtimezone();
+
+	if ( is_array( $glob ) && ! empty( $glob[0] ) ) {
+		sort( $glob );
+		$res .= '<select name="backup_file" onchange="select_backup(this.value)"><option selected value="">'.
+		__('Available backup files', 'ninjafirewall') .'</option>';
+		foreach( $glob as $file ) {
+			if ( preg_match( '`/(backup_(\d{10})_.+\.php)$`', $file, $match ) ) {
+				$date = ucfirst( date_i18n( 'F d, Y @ g:i A', $match[2] ) );
+				$size = ' ('. number_format( filesize( $file ) ) .' '. __('bytes', 'ninjafirewall') .')';
+				$res .= '<option value="'. htmlentities( $match[1] ) .'" title="'. htmlentities( $file ) .'">'. htmlentities( $date . $size ) .'</option>';
+			}
+		}
+		$res .= '</select>';
+		$res .= '<br /><span class="description">'. sprintf( __( "To restore NinjaFirewall's configuration to an earlier date, select it in the list and click '%s'.", 'ninjafirewall'), __('Save Firewall Options', 'ninjafirewall') ) . '</span>';
+
+	} else {
+		// No backup files yet:
+		$res = __('There are no backup available yet, check back later.', 'ninjafirewall');
+	}
+	return $res;
+
+}
+
+/* ------------------------------------------------------------------ */
+
 function nf_sub_options_save() {
 
 	// Save options :
 
-	// Check if we are uploading/importing the configuration :
+	// Check if we are uploading/importing the configuration... :
 	if (! empty($_FILES['nf_imp']['size']) ) {
-		return nf_sub_options_import();
+		return nf_sub_options_import( $_FILES['nf_imp']['tmp_name'] );
+	}
+
+	// ...or restoring the configuration to an earlier date and return:
+	if (! empty( $_POST['backup_file'] ) && file_exists( NFW_LOG_DIR ."/nfwlog/cache/{$_POST['backup_file']}" ) ) {
+		return nf_sub_options_import( NFW_LOG_DIR ."/nfwlog/cache/{$_POST['backup_file']}" );
 	}
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
@@ -330,11 +391,11 @@ function nf_sub_options_save() {
 }
 /* ------------------------------------------------------------------ */
 
-function nf_sub_options_import() {
+function nf_sub_options_import( $file ) {
 
 	// Import NF configuration from file :
 
-	$data = file_get_contents($_FILES['nf_imp']['tmp_name']);
+	$data = file_get_contents( $file );
 	$err_msg = __('Uploaded file is either corrupted or its format is not supported (#%s)', 'ninjafirewall');
 	if (! $data) {
 		return sprintf($err_msg, 1);
@@ -358,7 +419,11 @@ function nf_sub_options_import() {
 	if ( empty($nfw_options['engine_version']) ) {
 		return sprintf($err_msg, 3);
 	}
-	if ( $nfw_options['engine_version'] != NFW_ENGINE_VERSION  ) {
+
+	// Make sure the major version numbers match (3.x, 4.x etc):
+	list ( $major_current ) = explode( '.', NFW_ENGINE_VERSION );
+	list ( $major_import ) = explode( '.', $nfw_options['engine_version'] );
+	if ( $major_current != $major_import ) {
 		return __('The imported file is not compatible with that version of NinjaFirewall', 'ninjafirewall');
 	}
 
@@ -378,11 +443,14 @@ function nf_sub_options_import() {
 									 '/'. basename(WP_CONTENT_DIR) .'/uploads/|/cache/';
 	// $nfw_options['alert_email'] = get_option('admin_email');
 
-	// We don't import the File Check 'snapshot directory' path:
-	$nfw_options['snapdir'] = '';
-	// We delete any File Check cron jobs :
-	if ( wp_next_scheduled('nfscanevent') ) {
-		wp_clear_scheduled_hook('nfscanevent');
+	if (! empty( $_FILES['nf_imp']['tmp_name'] ) && $file == $_FILES['nf_imp']['tmp_name'] ) {
+		// We don't import the File Check 'snapshot directory' path
+		// (applies to imported configuration, not to restoration of configuration backup):
+		$nfw_options['snapdir'] = '';
+		// We delete any File Check cron jobs :
+		if ( wp_next_scheduled('nfscanevent') ) {
+			wp_clear_scheduled_hook('nfscanevent');
+		}
 	}
 
 	// Re-enable auto updates, if needed :
@@ -448,6 +516,7 @@ function nf_sub_options_import() {
 	} else {
 		$nfw_rules[NFW_DOC_ROOT]['ena']  = 0;
 	}
+
 	// Save rules :
 	nfw_update_option( 'nfw_rules', $nfw_rules);
 
