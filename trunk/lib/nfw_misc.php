@@ -223,7 +223,7 @@ function nfw_garbage_collector() {
 		}
 		$old_backup = array_slice( $glob, $num );
 		foreach( $old_backup as $file ) {
-			echo unlink( $file );
+			unlink( $file );
 		}
 	} else {
 		// Create first backup:
