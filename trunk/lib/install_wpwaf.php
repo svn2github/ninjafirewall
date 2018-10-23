@@ -45,8 +45,7 @@ function nfw_integration_wpwaf( $err_msg = null ) {
 	}
 	</script>
 	<div class="wrap">
-		<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-		<h1>NinjaFirewall (WP Edition)</h1>
+		<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 	<?php
 
 	$wp_config_content = @file_get_contents( $wp_config );
@@ -199,8 +198,7 @@ function nfw_save_changes_wpwaf() {
 
 		?>
 	<div class="wrap">
-		<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-		<h1>NinjaFirewall (WP Edition)</h1>
+		<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 		<br />
 		<div class="updated settings-error"><p><?php _e('Your configuration was saved.', 'ninjafirewall') ?>
 		<?php

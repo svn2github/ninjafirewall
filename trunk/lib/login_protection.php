@@ -18,8 +18,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Login Protection', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Login Protection', 'ninjafirewall') . '</h1>';
 
 // Saved ?
 if ( isset( $_POST['nfw_options']) ) {
@@ -286,13 +285,13 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Enable brute force attack protection', 'ninjafirewall') ?></th>
 			<td>&nbsp;</td>
-			<td align="left">
+			<td>
 			<label><input type="radio" name="nfw_options[bf_enable]" value="1"<?php checked($bfconfig['bf_enable'], 1) ?> onclick="toggle_submenu(1);">&nbsp;<?php _e('Yes, if under attack', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 			<label><input type="radio" name="nfw_options[bf_enable]" value="2"<?php checked($bfconfig['bf_enable'], 2) ?> onclick="toggle_submenu(2);">&nbsp;<?php _e('Always ON', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 			<label><input type="radio" name="nfw_options[bf_enable]" value="0"<?php checked($bfconfig['bf_enable'], 0) ?> onclick="toggle_submenu(0);">&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -305,10 +304,10 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 				<th scope="row"><?php _e('Type of protection', 'ninjafirewall') ?></th>
 				<td>&nbsp;</td>
-				<td align="left" style="vertical-align:top">
+				<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[bf_type]" value="0"<?php checked($bfconfig['bf_type'], 0) ?> onclick="toggle_table(bf_enable, 0);">&nbsp;<?php _e('Password', 'ninjafirewall') ?></label>
 				</td>
-				<td align="left" style="vertical-align:top">
+				<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[bf_type]" value="1"<?php checked($bfconfig['bf_type'], 1) ?> onclick="toggle_table(bf_enable, 1);"<?php echo $gd_disabled ?> />&nbsp;<?php _e('Captcha', 'ninjafirewall') ?></label><?php echo $missing_gd ?>
 				</td>
 			</tr>
@@ -319,7 +318,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Protect the login page against', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GET"<?php checked($bfconfig['bf_request'], 'GET') ?>>&nbsp;<?php _e('<code>GET</code> request attacks', 'ninjafirewall') ?></label></p>
 				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="POST"<?php checked($bfconfig['bf_request'], 'POST') ?>>&nbsp;<?php _e('<code>POST</code> request attacks (default)', 'ninjafirewall') ?></label></p>
 				<p><label><input onclick="getpost(this.value);" type="radio" name="nfw_options[bf_request]" value="GETPOST"<?php checked($bfconfig['bf_request'], 'GETPOST') ?>>&nbsp;<?php _e('<code>GET</code> and <code>POST</code> requests attacks', 'ninjafirewall') ?></label></p>
@@ -327,7 +326,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			</tr>
 			<tr valign="top">
 				<th scope="row"><?php _e('Enable protection', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<?php
 					printf( __('For %1$s minutes, if more than %2$s %3$s requests within %4$s seconds.', 'ninjafirewall'),
 						'<input maxlength="2" size="2" value="'. $bfconfig['bf_bantime'] .'" name="nfw_options[bf_bantime]" id="ban1" onkeyup="is_number(\'ban1\')" class="small-text" type="number" />',
@@ -351,7 +350,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php _e('HTTP authentication', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<?php _e('User:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" type="text" autocomplete="off" value="<?php echo htmlspecialchars( $bfconfig['auth_name'] ) ?>" size="12" name="nfw_options[auth_name]" onkeyup="auth_user_valid();" />&nbsp;&nbsp;&nbsp;&nbsp;<?php _e('Password:', 'ninjafirewall') ?>&nbsp;<input maxlength="32" placeholder="<?php echo $placeholder ?>" type="password" autocomplete="off" value="" size="12" name="nfw_options[auth_pass]" />
 					<br /><span class="description">&nbsp;<?php _e('User and Password must be from 6 to 32 characters.', 'ninjafirewall') ?></span>
 					<br /><br /><?php _e('Message (max. 1024 characters, HTML tags allowed)', 'ninjafirewall') ?>:<br />
@@ -366,7 +365,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php _e('Message', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<input maxlength="255" class="large-text" type="text" autocomplete="off" value="<?php echo htmlspecialchars( $bfconfig['captcha_text'] ) ?>" name="nfw_options[captcha_text]" />
 					<p><span class="description"><?php _e('This message will be displayed above the captcha. Max. 255 characters.', 'ninjafirewall') ?></span></p>
 				</td>
@@ -389,21 +388,21 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			?>
 			<tr>
 				<th scope="row"><?php _e('XML-RPC API', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<label><input type="checkbox" onClick="xmlrpc_warn(this);" name="nfw_options[bf_xmlrpc]" value="1"<?php checked($bfconfig['bf_xmlrpc'], 1) ?>>&nbsp;<?php _e('Apply the protection to the <code>xmlrpc.php</code> script as well.', 'ninjafirewall') ?></label><?php echo $is_JetPack; ?>
 				</td>
 			</tr>
 
 			<tr>
 				<th scope="row"><?php _e('Bot protection', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<label><input type="checkbox" name="nfw_options[bf_allow_bot]" value="1"<?php checked($bfconfig['bf_allow_bot'], 0) ?>>&nbsp;<?php _e('Enable bot protection (applies to <code>wp-login.php</code> only.)', 'ninjafirewall') ?></label>
 				</td>
 			</tr>
 
 			<tr valign="top">
 				<th scope="row"><?php _e('Authentication log', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<?php
 					// Ensure that openlog() and syslog() are not disabled:
 					if (! function_exists('syslog') || ! function_exists('openlog') ) {
@@ -422,7 +421,7 @@ if ( file_exists( NFW_LOG_DIR . '/nfwlog/cache/bf_conf.php' ) ) {
 			</tr>
 			<tr>
 				<th scope="row"><?php _e('Signature', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<label><input type="checkbox" name="nfw_options[bf_nosig]" value="1"<?php checked($bfconfig['bf_nosig'], 1) ?>>&nbsp;<?php
 				// translators: "Brute-force protection by NinjaFirewall" should not be translated.
 				_e('Disable the <i>Brute-force protection by NinjaFirewall</i> signature on the protection page.', 'ninjafirewall') ?></label>

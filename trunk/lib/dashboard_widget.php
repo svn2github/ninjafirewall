@@ -52,7 +52,7 @@ function nfw_stats_widget(){
 	<table border="0" width="100%">
 		<tr>
 			<th width="50%" align="left">' . __('Blocked threats', 'ninjafirewall') .'</th>
-			<td width="50%" align="left">' . number_format( $total ) . '</td>
+			<td width="50%" align="left">' . number_format_i18n( $total ) . '</td>
 		</tr>
 		<tr>
 			<th width="50%" align="left">' . __('Threats level', 'ninjafirewall') .'</th>

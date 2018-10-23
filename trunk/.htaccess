@@ -1,3 +1,4 @@
+Options All -Indexes
 <IfModule mod_rewrite.c>
 	<IfModule mod_version.c>
 		<IfVersion < 2.2>

@@ -332,6 +332,7 @@ function nfw_query( $query ) {
 		} else {
 			$tmp = 'author';
 		}
+		$_SESSION = array();
 		@session_destroy();
 		$query->set('author_name', '0');
 		nfw_log2('User enumeration scan (author archives)', $tmp, 2, 0);
@@ -585,6 +586,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 			nfw_log2( 'WordPress: ' . $subject, "$key: $value", 3, 0);
 		}
 
+		$_SESSION = array();
 		@session_destroy();
 
 		$nfw_options = nfw_get_option( 'nfw_options' );
@@ -626,7 +628,7 @@ function nfwhook_user_meta( $id, $key, $value ) {
 function nfw_login_form_hook() {
 
 	if (! empty( $_SESSION['nfw_bfd'] ) ) {
-		echo '<p class="message">'. __('NinjaFirewall brute-force protection is enabled and you are temporarily whitelisted.', 'ninjafirewall' ) . '</p><br />';
+		echo '<p class="message" id="nfw_login_msg">'. __('NinjaFirewall brute-force protection is enabled and you are temporarily whitelisted.', 'ninjafirewall' ) . '</p><br />';
 	}
 }
 add_filter( 'login_message', 'nfw_login_form_hook');

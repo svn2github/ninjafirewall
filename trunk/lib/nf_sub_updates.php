@@ -46,21 +46,21 @@ if ( empty( $nfw_options['sched_updates'] ) || empty( $nfw_options['enable_updat
 if ( defined( 'NFUPDATESDO' ) && NFUPDATESDO == 2 ) {
 	// Installation:
 	$update_url = array(
-		$proto . '://plugins.svn.wordpress.org/ninjafirewall/trunk/updates/',
+		$proto . '://plugins.svn.wordpress.org/ninjafirewall/updates/',
 		'version3.txt',
-		'rules3.txt'
+		'rules3s.txt'
 	);
 } else {
-	// Scheduled updates:
+	// Scheduled updates or plugin update:
 	$caching_id = sha1( home_url() );
 	$update_url = array(
 		$proto . '://updates.nintechnet.com/index.php',
 		"?version=3&cid={$caching_id}&edn=wp&rt={$rules_type}&su={$sched_updates}",
-		"?rules=3&cid={$caching_id}&edn=wp&rt={$rules_type}&su={$sched_updates}"
+		"?rules=3s&cid={$caching_id}&edn=wp&rt={$rules_type}&su={$sched_updates}"
 	);
 }
 
-// Scheduled updates or NinjaFirewall installation:
+// NFUPDATESDO: scheduled update (1), installation (2) or plugin update (3):
 if (defined('NFUPDATESDO') ) {
 	define('NFW_RULES', nf_sub_do_updates($update_url, $update_log, NFUPDATESDO));
 	return;
@@ -70,8 +70,7 @@ if (defined('NFUPDATESDO') ) {
 nf_not_allowed( 'block', __LINE__ );
 
 echo '<div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Rules Update', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Rules Update', 'ninjafirewall') . '</h1>';
 
 // We stop and warn the user if the firewall is disabled:
 if (! defined('NF_DISABLED') ) {
@@ -142,10 +141,10 @@ function toogle_table(off) {
 	<table class="form-table">
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Automatically update NinjaFirewall security rules', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<label><input type="radio" name="enable_updates" value="1"<?php checked($enable_updates, 1) ?> onclick="toogle_table(1);">&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 			<label><input type="radio" name="enable_updates" value="0"<?php checked($enable_updates, 0) ?> onclick="toogle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -163,7 +162,7 @@ function toogle_table(off) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Check for updates', 'ninjafirewall') ?></th>
-					<td align="left">
+					<td>
 						<p><label><input type="radio" name="sched_updates" value="1"<?php checked($sched_updates, 1) ?> /><?php _e('Hourly', 'ninjafirewall') ?></label></p>
 						<p><label><input type="radio" name="sched_updates" value="2"<?php checked($sched_updates, 2) ?> /><?php _e('Twicedaily', 'ninjafirewall') ?></label></p>
 						<p><label><input type="radio" name="sched_updates" value="3"<?php checked($sched_updates, 3) ?> /><?php _e('Daily', 'ninjafirewall') ?></label></p>
@@ -189,7 +188,7 @@ function toogle_table(off) {
 				</tr>
 			<tr>
 				<th scope="row"><?php _e('Notification', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<p><label><input type="checkbox" name="notify_updates" value="1"<?php checked($notify_updates, 1) ?> /><?php _e('Send me a report by email when security rules have been updated.', 'ninjafirewall') ?></label></p>
 					<span class="description"><?php _e('Reports will be sent to the contact email address defined in the Event Notifications menu.', 'ninjafirewall') ?></span>
 				</td>
@@ -216,7 +215,7 @@ function toogle_table(off) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Updates Log', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<textarea class="small-text code" style="width:100%;height:150px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php
 						$reversed = array_reverse($log_data);
 						foreach ($reversed as $key) {
@@ -301,8 +300,8 @@ function nf_sub_updates_clearlog($update_log) {
 
 function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 
-	// Are we installing NinjaFirewall ?
-	if ( $NFUPDATESDO == 2 ) {
+	// Are we installing (2) or updating (3) NinjaFirewall ?
+	if ( $NFUPDATESDO > 1 ) {
 		 return nf_sub_updates_download($update_url, $update_log, 0);
 	}
 
@@ -411,7 +410,7 @@ function nf_sub_updates_getversion($update_url, $rules_version, $update_log) {
 	);
 	if (! is_wp_error($res) ) {
 		if ( $res['response']['code'] == 200 ) {
-			// Get the rules version :
+			// Get the rules version:
 			$new_version =  explode('|', rtrim($res['body']), 2);
 
 			// Ensure that the rules are compatible :
@@ -476,21 +475,37 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 	);
 	if (! is_wp_error($res) ) {
 		if ( $res['response']['code'] == 200 ) {
-			$data = explode('|', rtrim($res['body']), 2);
+			$data = explode('|', rtrim($res['body']), 3);
 
 			// Rules version should match the one we just fetched
 			// unless we are intalling NinjaFirewall ($new_rules_version==0) :
 			if ( $new_rules_version & $new_rules_version != $data[0]) {
 				nf_sub_updates_log(
 					$update_log,
-					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'nfwplus'), $new_rules_version, htmlspecialchars($data[0]))
+					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'ninjafirewall'), $new_rules_version, htmlspecialchars($data[0]))
 				);
 				return 0;
 			}
+
+			// Verify rules digital signature:
+			if ( function_exists( 'openssl_pkey_get_public') && function_exists( 'openssl_verify' ) ) {
+
+				$public_key = rtrim( file_get_contents( __DIR__ .'/sign.pub' ) );
+				$pubkeyid = openssl_pkey_get_public( $public_key );
+				$verify = openssl_verify( $data[2], base64_decode( $data[1] ), $pubkeyid, OPENSSL_ALGO_SHA256);
+				if ( $verify != 1 ) {
+					nf_sub_updates_log(
+						$update_log,
+						sprintf( __('Error: The new rules %s digital signature is not correct. Aborting update, rules may have been tampered with.', 'ninjafirewall'), htmlspecialchars($data[0]) )
+					);
+					return 0;
+				}
+			}
+
 			// Save new rules version for install/upgrade:
 			define('NFW_NEWRULES_VERSION', $data[0]);
 			// Return the rules:
-			return $data[1];
+			return $data[2];
 
 		// Not a 200 OK ret code :
 		} else {

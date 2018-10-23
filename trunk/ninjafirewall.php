@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.7
+Version: 3.7.1-RC2
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.7' );
+define( 'NFW_ENGINE_VERSION', '3.7.1-RC2' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -421,7 +421,7 @@ function nfw_upgrade() {
 		// v1.3.1 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '1.3.1', '<' ) ) {
 			if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-				$nfw_options['response_headers'] = '000100000';
+				$nfw_options['response_headers'] = '000300000';
 			}
 		}
 		// v1.3.3 update -------------------------------------------------
@@ -499,7 +499,7 @@ function nfw_upgrade() {
 		$nfw_options['engine_version'] = NFW_ENGINE_VERSION;
 		$is_update = 1;
 
-		define('NFUPDATESDO', 2);
+		define('NFUPDATESDO', 3);
 		@nf_sub_updates();
 
 		if (! defined('NFW_NEWRULES_VERSION') ) {
@@ -936,8 +936,8 @@ function nf_menu_main() {
 ?>
 
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1><?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/images/ninjafirewall_32.png', __FILE__ ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
+
 	<?php
 	if ( @NFW_STATUS == 20 && ! empty( $_REQUEST['nfw_firstrun']) ) {
 		echo '<br><div class="updated notice is-dismissible"><p>' .
@@ -1181,6 +1181,16 @@ function nf_menu_main() {
 		<td width="20">&nbsp;</td>
 		<td><code>' .  htmlentities($file) . '</code></td>
 		</tr>';
+
+		// Check if we have a MySQLi link identifier defined in the .htninja:
+		if (! empty( $GLOBALS['nfw_mysqli'] ) && ! empty( $GLOBALS['nfw_table_prefix'] ) ) {
+			echo '<tr>
+			<th scope="row">' . __('MySQLi link identifier', 'ninjafirewall') . '</th>
+			<td width="20">&nbsp;</td>
+			<td>' . __('A MySQLi link identifier was detected in your <code>.htninja</code>.', 'ninjafirewall') . '</td>
+			</tr>';
+		}
+
 	}
 
 	echo '</table>';
@@ -1293,8 +1303,8 @@ function nfw_switch_tabs(tab) {
 </script>
 
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/images/ninjafirewall_32.png', __FILE__ ) .'">&nbsp;' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
+
 
 	if ( isset( $_POST['nfw_options']) ) {
 		if ( empty($_POST['nfwnonce']) || ! wp_verify_nonce($_POST['nfwnonce'], 'policies_save') ) {
@@ -1344,7 +1354,7 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Enable NinjaFirewall for', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="3"<?php checked($scan_protocol, 3 ) ?>>&nbsp;<?php _e('HTTP and HTTPS traffic (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="1"<?php checked($scan_protocol, 1 ) ?>>&nbsp;<?php _e('HTTP traffic only', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[scan_protocol]" value="2"<?php checked($scan_protocol, 2 ) ?>>&nbsp;<?php _e('HTTPS traffic only', 'ninjafirewall') ?></label></p>
@@ -1376,7 +1386,7 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('File Uploads', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<select name="nfw_options[uploads]" onchange="chksubmenu();">
 					<option value="1"<?php selected( $uploads, 1 ) ?>><?php echo __('Allow uploads', 'ninjafirewall') .' '. __('(default)', 'ninjafirewall') ?></option>
 					<option value="0"<?php selected( $uploads, 0 ) ?>><?php _e('Disallow uploads', 'ninjafirewall') ?></option>
@@ -1495,7 +1505,7 @@ function nfw_switch_tabs(tab) {
 				}
 			?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<table class="form-table">
 					<tr style="border: solid 1px #DFDFDF;">
 						<td align="center" width="10"><input type="checkbox" name="nfw_options[wp_admin]" id="wp_01"<?php checked( $wp_admin, 1 ); disabled( $option_disabled, 1) ?>></td>
@@ -1545,9 +1555,14 @@ function nfw_switch_tabs(tab) {
 
 	<?php
 	if ( is_dir( WP_PLUGIN_DIR . '/jetpack' ) ) {
-		$is_JetPack = '<p><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description">' . __('If you are using the Jetpack plugin, blocking <code>system.multicall</code> may prevent it from working correctly.', 'ninjafirewall') . '</span></p>';
+		$is_JetPack = '<p><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description">' . sprintf( __('If you are using the %s plugin, blocking <code>system.multicall</code> may prevent it from working correctly.', 'ninjafirewall'), 'Jetpack') . '</span></p>';
 	} else {
 		$is_JetPack = '';
+	}
+	if ( is_dir( WP_PLUGIN_DIR . '/contact-form-7' ) ) {
+		$is_CF7 = '<p><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-warning.png">&nbsp;<span class="description">' . sprintf( __('If you are using the %s plugin, blocking <code>system.multicall</code> may prevent it from working correctly.', 'ninjafirewall'), 'Contact Form 7') . '</span></p>';
+	} else {
+		$is_CF7 = '';
 	}
 	?>
 
@@ -1555,7 +1570,7 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('User accounts', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<p><label><input type="checkbox" name="nfw_options[disallow_creation]" value="1"<?php checked( $disallow_creation, 1 ) ?>>&nbsp;<?php _e('Block user accounts creation', 'ninjafirewall') ?></label></p>
 				<span class="description"><?php _e('Do not enable this policy if you allow user registration.', 'ninjafirewall') ?></span>
 			</td>
@@ -1564,7 +1579,7 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Protect against username enumeration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<p><label><input type="checkbox" name="nfw_options[enum_archives]" value="1"<?php checked( $enum_archives, 1 ) ?>>&nbsp;<?php _e('Through the author archives', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[enum_login]" value="1"<?php checked( $enum_login, 1 ) ?>>&nbsp;<?php _e('Through the login page', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[enum_restapi]" value="1"<?php checked( $enum_restapi, 1 ) ?>>&nbsp;<?php _e('Through the WordPress REST API', 'ninjafirewall') ?></label></p>
@@ -1584,7 +1599,7 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('WordPress REST API', 'ninjafirewall') ?>*</th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<p><label><input type="checkbox" name="nfw_options[no_restapi]" value="1"<?php checked( $no_restapi, 1 );disabled( $restapi_error, 1) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
 				<?php echo $restapi_msg; ?>
 			</td>
@@ -1593,11 +1608,14 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('WordPress XML-RPC API', 'ninjafirewall') ?>*</th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc]" value="1"<?php checked( $no_xmlrpc, 1 ) ?>>&nbsp;<?php _e('Block any access to the API', 'ninjafirewall') ?></label></p>
+
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_multi]" value="1"<?php checked( $no_xmlrpc_multi, 1 ) ?>>&nbsp;<?php _e('Block <code>system.multicall</code> method', 'ninjafirewall') ?></label></p>
-				<?php echo $is_JetPack; ?>
+
 				<p><label><input type="checkbox" name="nfw_options[no_xmlrpc_pingback]" value="1"<?php checked( $no_xmlrpc_pingback, 1 ) ?>>&nbsp;<?php _e('Block Pingbacks', 'ninjafirewall') ?></label></p>
+
+				<?php echo $is_JetPack; echo $is_CF7; ?>
 			</td>
 		</tr>
 	</table>
@@ -1608,10 +1626,10 @@ function nfw_switch_tabs(tab) {
 		<tr valign="top">
 			<th scope="row" style="vertical-align:top"><?php _e('Block <code>POST</code> requests in the themes folder', 'ninjafirewall') ?> <code>/<?php echo basename(WP_CONTENT_DIR); ?>/themes</code></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_post_themes]" value="1"<?php checked( $no_post_themes, 1 ); disabled( $option_disabled, 1) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_post_themes]" value="0"<?php checked( $no_post_themes, 0 ); disabled( $option_disabled, 1) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 				<?php
 				if ( defined('NFW_WPWAF') ) {
@@ -1623,30 +1641,30 @@ function nfw_switch_tabs(tab) {
 		<tr valign="top">
 			<th scope="row"><a name="builtinconstants"></a><?php _e('Force SSL for admin and logins', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Require_SSL_for_Admin_and_Logins" target="_blank">FORCE_SSL_ADMIN</a></code></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[force_ssl]" value="1"<?php checked( $force_ssl, 1 ) ?> onclick="return ssl_warn();" <?php disabled( $force_ssl_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" id="ssl_0" name="nfw_options[force_ssl]" value="0"<?php checked( $force_ssl, 0 ) ?> <?php disabled( $force_ssl_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Disable the plugin and theme editor', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Disable_the_Plugin_and_Theme_Editor" target="_blank">DISALLOW_FILE_EDIT</a></code></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[disallow_edit]" value="1"<?php checked( $disallow_edit, 1 ) ?> <?php disabled( $disallow_edit_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[disallow_edit]" value="0"<?php checked( $disallow_edit, 0 ) ?> <?php disabled( $disallow_edit_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Disable plugin and theme update/installation', 'ninjafirewall') ?> <code><a href="http://codex.wordpress.org/Editing_wp-config.php#Disable_Plugin_and_Theme_Update_and_Installation" target="_blank">DISALLOW_FILE_MODS</a></code></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[disallow_mods]" value="1"<?php checked( $disallow_mods, 1 ) ?> <?php disabled( $disallow_mods_already_enabled, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[disallow_mods]" value="0"<?php checked( $disallow_mods, 0 ) ?> <?php disabled( $disallow_mods_already_enabled, 1 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1669,7 +1687,7 @@ function nfw_switch_tabs(tab) {
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Users Whitelist', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 			<p><label><input type="radio" name="nfw_options[wl_admin]" value="1"<?php checked( $wl_admin, 1 ) ?>>&nbsp;<?php _e('Add the Administrator to the whitelist (default).', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[wl_admin]" value="2"<?php checked( $wl_admin, 2 ) ?>>&nbsp;<?php _e('Add all logged in users to the whitelist.', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[wl_admin]" value="0"<?php checked( $wl_admin, 0 ) ?>>&nbsp;<?php _e('Disable users whitelist.', 'ninjafirewall') ?></label></p>
@@ -1703,20 +1721,20 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Scan <code>GET</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[get_scan]" value="1"<?php checked( $get_scan, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[get_scan]" value="0"<?php checked( $get_scan, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>GET</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[get_sanitise]" value="1"<?php checked( $get_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[get_sanitise]" value="0"<?php checked( $get_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1746,30 +1764,30 @@ function nfw_switch_tabs(tab) {
 		<tr valign="top">
 			<th scope="row"><?php _e('Scan <code>POST</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[post_scan]" value="1"<?php checked( $post_scan, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[post_scan]" value="0"<?php checked( $post_scan, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Sanitise <code>POST</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[post_sanitise]" value="1"<?php checked( $post_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[post_sanitise]" value="0"<?php checked( $post_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Do not enable this option unless you know what you are doing!', 'ninjafirewall') ?></span>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Decode Base64-encoded <code>POST</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[post_b64]" value="1"<?php checked( $post_b64, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[post_b64]" value="0"<?php checked( $post_b64, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1789,10 +1807,10 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>REQUEST</code> variable', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[request_sanitise]" value="1"<?php checked( $request_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[request_sanitise]" value="0"<?php checked( $request_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Do not enable this option unless you know what you are doing!', 'ninjafirewall') ?></span>
 			</td>
 		</tr>
@@ -1817,20 +1835,20 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Scan cookies', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[cookies_scan]" value="1"<?php checked( $cookies_scan, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[cookies_scan]" value="0"<?php checked( $cookies_scan, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise cookies', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[cookies_sanitise]" value="1"<?php checked( $cookies_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[cookies_sanitise]" value="0"<?php checked( $cookies_sanitise, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1862,30 +1880,30 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Scan <code>HTTP_USER_AGENT</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[ua_scan]" value="1"<?php checked( $ua_scan, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[ua_scan]" value="0"<?php checked( $ua_scan, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>HTTP_USER_AGENT</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[ua_sanitise]" value="1"<?php checked( $ua_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[ua_sanitise]" value="0"<?php checked( $ua_sanitise, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Block suspicious bots/scanners', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_rules[block_bots]" value="1"<?php checked( $block_bots, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_rules[block_bots]" value="0"<?php checked( $block_bots, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -1915,30 +1933,30 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Scan <code>HTTP_REFERER</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[referer_scan]" value="1"<?php checked( $referer_scan, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[referer_scan]" value="0"<?php checked( $referer_scan, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>HTTP_REFERER</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[referer_sanitise]" value="1"<?php checked( $referer_sanitise, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[referer_sanitise]" value="0"<?php checked( $referer_sanitise, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e('Block <code>POST</code> requests that do not have an <code>HTTP_REFERER</code> header', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[referer_post]" value="1"<?php checked( $referer_post, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[referer_post]" value="0"<?php checked( $referer_post, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label><br /><span class="description">&nbsp;<?php _e('Keep this option disabled if you are using scripts like Paypal IPN, WordPress WP-Cron etc', 'ninjafirewall') ?>.</span>
 			</td>
 		</tr>
@@ -1968,30 +1986,30 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Block localhost IP in <code>GET/POST</code> request', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[no_localhost_ip]" value="1"<?php checked( $no_localhost_ip, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[no_localhost_ip]" value="0"<?php checked( $no_localhost_ip, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Block HTTP requests with an IP in the <code>HTTP_HOST</code> header', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_host_ip]" value="1"<?php checked( $no_host_ip, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[no_host_ip]" value="0"<?php checked( $no_host_ip, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Scan traffic coming from localhost and private IP address spaces', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[allow_local_ip]" value="0"<?php checked( $allow_local_ip, 0 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 				</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_options[allow_local_ip]" value="1"<?php checked( $allow_local_ip, 1 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -2028,42 +2046,42 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php printf( __('Set %s to protect against MIME type confusion attacks', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Content-Type-Options</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[x_content_type_options]" value="1"<?php checked( $nfw_options['response_headers'][1], 1 ); disabled($err, 1); ?>><?php echo $yes; ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[x_content_type_options]" value="0"<?php checked( $nfw_options['response_headers'][1], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php printf( __('Set %s to protect against clickjacking attempts', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-Frame-Options</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[x_frame_options]" value="1"<?php checked( $nfw_options['response_headers'][2], 1 ); disabled($err, 1); ?>><code>SAMEORIGIN</code></label></p>
 				<p><label><input type="radio" name="nfw_options[x_frame_options]" value="2"<?php checked( $nfw_options['response_headers'][2], 2 ); disabled($err, 1); ?>><code>DENY</code></label></p>
 			</td>
-			<td align="left" style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[x_frame_options]" value="0"<?php checked( $nfw_options['response_headers'][2], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p></td>
+			<td style="vertical-align:top;"><p><label><input type="radio" name="nfw_options[x_frame_options]" value="0"<?php checked( $nfw_options['response_headers'][2], 0 ); disabled($err, 1); ?>><?php echo $no . $default; ?></label><?php echo $err_msg ?></p></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php printf( __("Set %s (IE/Edge, Chrome, Opera and Safari browsers)", 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">X-XSS-Protection</a>') ?></th>
 			<td width="20"></td>
 
-			<td align="left" width="120">
+			<td width="120">
 				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="0"<?php checked( $nfw_options['response_headers'][3], 0 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>0</code>' ) ?></label></p>
 				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="2"<?php checked( $nfw_options['response_headers'][3], 2 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>1</code>' ) ?></label></p>
 			</td>
-			<td align="left">
-				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>1; mode=block</code>' ); echo $default; ?></label></p>
-				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="3"<?php checked( $nfw_options['response_headers'][3], 3 ); disabled($err, 1); ?> /><?php _e('No', 'ninjafirewall') ?></label></p>
+			<td>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="1"<?php checked( $nfw_options['response_headers'][3], 1 ); disabled($err, 1); ?> /><?php printf( __("Set to %s", "ninjafirewall"), '<code>1; mode=block</code>' ); ?></label></p>
+				<p><label><input type="radio" name="nfw_options[x_xss_protection]" value="3"<?php checked( $nfw_options['response_headers'][3], 3 ); disabled($err, 1); ?> /><?php _e('No', 'ninjafirewall'); echo $default; ?></label></p>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php printf( __('Force %s flag on all cookies to mitigate XSS attacks', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">HttpOnly</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[cookies_httponly]" value="1"<?php checked( $nfw_options['response_headers'][0], 1 ); disabled($err, 1); ?> >&nbsp;<?php echo $yes ?></label>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<label><input type="radio" name="nfw_options[cookies_httponly]" value="0"<?php checked( $nfw_options['response_headers'][0], 0 ); disabled($err, 1); ?>>&nbsp;<?php echo $no . $default; ?></label><br /><span class="description"><?php _e('If your PHP scripts use cookies that need to be accessed from JavaScript, you should disable this option.', 'ninjafirewall') ?></span><?php echo $err_msg ?>
 			</td>
 		</tr>
@@ -2079,14 +2097,14 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php printf( __('Set %s (HSTS) to enforce secure connections to the server', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Strict-Transport-Security</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="1"<?php checked( $nfw_options['response_headers'][4], 1 ); disabled($hsts_err, 1); ?>><?php _e('1 month', 'ninjafirewall') ?></label></p>
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="2"<?php checked( $nfw_options['response_headers'][4], 2 ); disabled($hsts_err, 1); ?>><?php _e('6 months', 'ninjafirewall') ?></label></p>
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="3"<?php checked( $nfw_options['response_headers'][4], 3 ); disabled($hsts_err, 1); ?>><?php _e('1 year', 'ninjafirewall') ?></label></p>
 				<br />
 				<label><input type="checkbox" name="nfw_options[strict_transport_sub]" value="1"<?php checked( $nfw_options['response_headers'][5], 1 ); disabled($hsts_err, 1); ?>><?php _e('Apply to subdomains', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="0"<?php checked( $nfw_options['response_headers'][4], 0 ); disabled($hsts_err, 1); ?>><?php echo $no . $default; ?></label></p>
 				<p><label><input type="radio" name="nfw_options[strict_transport]" value="4"<?php checked( $nfw_options['response_headers'][4], 4 ); disabled($hsts_err, 1); ?>><?php _e('Set <code>max-age</code> to 0', 'ninjafirewall'); ?></label><?php echo $err_msg ?></p>
 				<?php echo $hsts_msg; ?>
@@ -2110,11 +2128,11 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php printf( __('Set %s for the website frontend', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_frontend')" name="nfw_options[csp_frontend]" value="1"<?php checked( $nfw_options['response_headers'][6], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
 				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_frontend')" name="nfw_options[csp_frontend]" value="0"<?php checked( $nfw_options['response_headers'][6], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="nfw_options[csp_frontend_data]" id="csp_frontend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][6], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_frontend_data'] ) ?></textarea>
 				<span class="description"><?php _e('This CSP header will apply to the website frontend only.', 'ninjafirewall') ?></span>
 				<?php echo $err_msg ?>
@@ -2124,11 +2142,11 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php printf( __('Set %s for the WordPress admin dashboard', 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Content-Security-Policy</a>') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 				<p><label><input type="radio" onclick="csp_onoff(1, 'csp_backend')" name="nfw_options[csp_backend]" value="1"<?php checked( $nfw_options['response_headers'][7], 1 ); disabled($err, 1); ?>><?php _e('Yes', 'ninjafirewall') ?></label></p>
 				<p><label><input type="radio" onclick="csp_onoff(0, 'csp_backend')" name="nfw_options[csp_backend]" value="0"<?php checked( $nfw_options['response_headers'][7], 0 ); disabled($err, 1); ?>><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="nfw_options[csp_backend_data]" id="csp_backend" class="large-text code" rows="4"<?php __checked_selected_helper($err, 1, true, 'readonly'); __checked_selected_helper($nfw_options['response_headers'][7], 0, true, 'readonly') ?>><?php echo htmlspecialchars( $nfw_options['csp_backend_data'] ) ?></textarea>
 				<span class="description"><?php _e('This CSP header will apply to the WordPress admin dashboard only.', 'ninjafirewall') ?></span>
 				<?php echo $err_msg ?>
@@ -2148,12 +2166,12 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php printf( __("Set %s (Chrome, Opera and Firefox browsers)", 'ninjafirewall'), '<a href="https://nintechnet.com/ninjafirewall/wp-edition/doc/#responseheaders" target="_blank">Referrer-Policy</a>') ?></th>
 			<td width="20"></td>
-			<td align="left" width="120" style="vertical-align:top;">
+			<td width="120" style="vertical-align:top;">
 
 				<p><label><input onclick="document.getElementById('rp_select').disabled=false" type="radio" name="nfw_options[referrer_policy_enabled]" value="1"<?php checked($nfw_options['referrer_policy_enabled'], 1) ?> /><?php _e('Yes', 'ninjafirewall') ?></label></p>
 				<p><label><input onclick="document.getElementById('rp_select').disabled=true" type="radio" name="nfw_options[referrer_policy_enabled]" value="0"<?php checked($nfw_options['referrer_policy_enabled'], 0) ?> /><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 			</td>
-			<td align="left" style="vertical-align:top;">
+			<td style="vertical-align:top;">
 				<select id="rp_select" name="nfw_options[referrer_policy]"<?php disabled($nfw_options['referrer_policy_enabled'], 0) ?>>
 					<option value="1"<?php selected($nfw_options['response_headers'][8], 1) ?>>no-referrer</option>
 					<option value="2"<?php selected($nfw_options['response_headers'][8], 2) ?>>no-referrer-when-downgrade</option>
@@ -2202,10 +2220,10 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Block PHP built-in wrappers in <code>GET</code>, <code>POST</code>, <code>HTTP_USER_AGENT</code>, <code>HTTP_REFERER</code> and cookies', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[php_wrappers]" value="1"<?php checked( $php_wrappers, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<label><input type="radio" name="nfw_rules[php_wrappers]" value="0"<?php checked( $php_wrappers, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -2245,12 +2263,12 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Block serialized PHP objects in the following global variables', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120" style="vertical-align:top">
+			<td width="120" style="vertical-align:top">
 				<p><label><input type="checkbox" name="nfw_rules[php_objects_get]" value="1"<?php echo $NFW_OBJECTS_GET ?>><code>GET</code><?php echo $default ?></label><p>
 				<p><label><input type="checkbox" name="nfw_rules[php_objects_post]" value="1"<?php echo $NFW_OBJECTS_POST ?>><code>POST</code><?php echo $default ?></label><p>
 				<p><label><input type="checkbox" name="nfw_rules[php_objects_cookie]" value="1"<?php echo $NFW_OBJECTS_COOKIE ?>><code>COOKIE</code></label><p>
 			</td>
-			<td align="left" style="vertical-align:top">
+			<td style="vertical-align:top">
 				<p><label><input type="checkbox" name="nfw_rules[php_objects_http_user_agent]" value="1"<?php echo $NFW_OBJECTS_HTTP_USER_AGENT ?>><code>HTTP_USER_AGENT</code><?php echo $default ?></label><p>
 				<p><label><input type="checkbox" name="nfw_rules[php_objects_http_referer]" value="1"<?php echo $NFW_OBJECTS_HTTP_REFERER ?>><code>HTTP_REFERER</code><?php echo $default ?></label><p>
 			</td>
@@ -2258,40 +2276,40 @@ function nfw_switch_tabs(tab) {
 		<tr>
 			<th scope="row"><?php _e('Hide PHP notice and error messages', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[php_errors]" value="1"<?php checked( $php_errors, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[php_errors]" value="0"<?php checked( $php_errors, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>PHP_SELF</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[php_self]" value="1"<?php checked( $php_self, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[php_self]" value="0"<?php checked( $php_self, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>PATH_TRANSLATED</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[php_path_t]" value="1"<?php checked( $php_path_t, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[php_path_t]" value="0"<?php checked( $php_path_t, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Sanitise <code>PATH_INFO</code>', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_options[php_path_i]" value="1"<?php checked( $php_path_i, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_options[php_path_i]" value="0"<?php checked( $php_path_i, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -2335,30 +2353,30 @@ function nfw_switch_tabs(tab) {
 		<tr valign="top">
 			<th scope="row"><?php _e('Block the <code>DOCUMENT_ROOT</code> server variable in HTTP request', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label <?php echo $greyed ?>><input type="radio" name="nfw_rules[block_doc_root]" value="1"<?php checked( $block_doc_root, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label <?php echo $greyed ?>><input <?php echo $disabled ?>type="radio" name="nfw_rules[block_doc_root]" value="0"<?php checked( $block_doc_root, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label><?php echo $disabled_msg ?>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Block ASCII character 0x00 (NULL byte)', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left" width="120">
+			<td width="120">
 				<label><input type="radio" name="nfw_rules[block_null_byte]" value="1"<?php checked( $block_null_byte, 1 ) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_rules[block_null_byte]" value="0"<?php checked( $block_null_byte, 0 ) ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Block ASCII control characters 1 to 8 and 14 to 31', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="1"<?php checked( $block_ctrl_chars, 1 ) ?>>&nbsp;<?php _e('Yes', 'ninjafirewall') ?></label>
 			</td>
-			<td align="left">
+			<td>
 				<label><input type="radio" name="nfw_rules[block_ctrl_chars]" value="0"<?php checked( $block_ctrl_chars, 0 ) ?>>&nbsp;<?php _e('No (default)', 'ninjafirewall') ?></label>
 			</td>
 		</tr>
@@ -2810,7 +2828,7 @@ function nf_sub_policies_default() {
 	$nfw_options['post_sanitise']		= 0;
 	$nfw_options['request_sanitise'] = 0;
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
-		$nfw_options['response_headers'] = '000100000';
+		$nfw_options['response_headers'] = '000300000';
 		$nfw_options['referrer_policy_enabled'] = 0;
 		$nfw_options['csp_backend_data'] = nf_sub_policies_csp();
 		$nfw_options['csp_frontend_data'] = '';
@@ -2908,8 +2926,7 @@ function nf_sub_fileguard() {
 	</script>
 
 	<div class="wrap">
-		<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-		<h1><?php _e('File Guard', 'ninjafirewall') ?></h1>
+		<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/images/ninjafirewall_32.png', __FILE__ ) ?>">&nbsp;<?php _e('File Guard', 'ninjafirewall') ?></h1>
 	<?php
 	if ( defined('NFW_WPWAF') ) {
 		?>
@@ -2952,10 +2969,10 @@ function nf_sub_fileguard() {
 		<table class="form-table">
 			<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 				<th scope="row"><?php _e('Enable File Guard', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 				<label><input type="radio" id="fgenable" name="nfw_options[fg_enable]" value="1"<?php checked($nfw_options['fg_enable'], 1) ?> onclick="toggle_table(1);">&nbsp;<?php _e('Yes (recommended)', 'ninjafirewall') ?></label>
 				</td>
-				<td align="left">
+				<td>
 				<label><input type="radio" name="nfw_options[fg_enable]" value="0"<?php checked($nfw_options['fg_enable'], 0) ?> onclick="toggle_table(2);">&nbsp;<?php _e('No', 'ninjafirewall') ?></label>
 				</td>
 			</tr>
@@ -2967,7 +2984,7 @@ function nf_sub_fileguard() {
 			<table class="form-table" border="0">
 				<tr valign="top">
 					<th scope="row"><?php _e('Real-time detection', 'ninjafirewall') ?></th>
-					<td align="left">
+					<td>
 					<?php
 						printf( __('Monitor file activity and send an alert when someone is accessing a PHP script that was modified or created less than %s hour(s) ago.', 'ninjafirewall'), '<input maxlength="2" size="2" value="'. $nfw_options['fg_mtime'] .'" name="nfw_options[fg_mtime]" id="mtime" onkeyup="is_number(\'mtime\')" class="small-text" type="number" />');
 					?>
@@ -2975,7 +2992,7 @@ function nf_sub_fileguard() {
 				</tr>
 				<tr>
 					<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
-					<td align="left"><input class="large-text" type="text" maxlength="255" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s), max. 255 characters. Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
+					<td><input class="large-text" type="text" maxlength="255" name="nfw_options[fg_exclude]" value="<?php echo htmlspecialchars( $fg_exclude ); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /foo/bar/cache/ <?php _e('or', 'ninjafirewall') ?> /cache/" /><br /><span class="description"><?php _e('Full or partial case-sensitive string(s), max. 255 characters. Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 				</tr>
 			</table>
 		</div>
@@ -3039,8 +3056,8 @@ function nf_sub_network() {
 
 	echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Network', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/images/ninjafirewall_32.png', __FILE__ ) .'">&nbsp;' . __('Network', 'ninjafirewall') . '</h1>';
+
 	if (! is_multisite() ) {
 		echo '<div class="updated notice is-dismissible"><p>' . __('You do not have a multisite network.', 'ninjafirewall') . '</p></div></div>';
 		return;
@@ -3070,8 +3087,8 @@ function nf_sub_network() {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Display NinjaFirewall status icon in the admin bar of all sites in the network', 'ninjafirewall') ?></th>
-			<td align="left" width="200"><label><input type="radio" name="nfw_options[nt_show_status]" value="1"<?php echo $nfw_options['nt_show_status'] != 2 ? ' checked' : '' ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label></td>
-			<td align="left"><label><input type="radio" name="nfw_options[nt_show_status]" value="2"<?php echo $nfw_options['nt_show_status'] == 2 ? ' checked' : '' ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label></td>
+			<td width="200"><label><input type="radio" name="nfw_options[nt_show_status]" value="1"<?php echo $nfw_options['nt_show_status'] != 2 ? ' checked' : '' ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label></td>
+			<td><label><input type="radio" name="nfw_options[nt_show_status]" value="2"<?php echo $nfw_options['nt_show_status'] == 2 ? ' checked' : '' ?>>&nbsp;<?php _e('No', 'ninjafirewall') ?></label></td>
 		</tr>
 	</table>
 

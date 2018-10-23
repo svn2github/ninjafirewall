@@ -68,8 +68,7 @@ function default_msg() {
 </script>
 
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Firewall Options', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Firewall Options', 'ninjafirewall') . '</h1>';
 
 // Saved options ?
 if ( isset( $_POST['nfw_options']) ) {
@@ -96,7 +95,7 @@ if ( isset( $_POST['nfw_options']) ) {
 if (! empty( $nfw_options['enabled']) ) {
 	echo '
 			<td width="20" align="left">&nbsp;</td>
-			<td align="left">
+			<td>
 				<select name="nfw_options[enabled]" style="width:200px">
 					<option value="1" selected>' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0">' . __('Disabled', 'ninjafirewall') . '</option>
@@ -105,7 +104,7 @@ if (! empty( $nfw_options['enabled']) ) {
 } else {
 	echo '
 			<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-error.png"></td>
-			<td align="left">
+			<td>
 				<select name="nfw_options[enabled]" style="width:200px">
 					<option value="1">' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0" selected>' . __('Disabled', 'ninjafirewall') . '</option>
@@ -120,7 +119,7 @@ echo '
 // Debugging enabled ?
 if (! empty( $nfw_options['debug']) ) {
 echo '<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/images/glyphicons-error.png"></td>
-			<td align="left">
+			<td>
 				<select name="nfw_options[debug]" style="width:200px">
 				<option value="1" selected>' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0">' . __('Disabled (default)', 'ninjafirewall') . '</option>
@@ -130,7 +129,7 @@ echo '<td width="20" align="left"><img src="' . plugins_url() . '/ninjafirewall/
 } else {
 // Debugging disabled ?
 echo '<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<select name="nfw_options[debug]" style="width:200px">
 				<option value="1">' . __('Enabled', 'ninjafirewall') . '</option>
 					<option value="0" selected>' . __('Disabled (default)', 'ninjafirewall') . '</option>
@@ -147,7 +146,7 @@ if (! @preg_match( '/^(?:4(?:0[0346]|18)|50[03])$/', $nfw_options['ret_code']) )
 		<tr>
 			<th scope="row"><?php _e('HTTP error code to return', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 			<select name="nfw_options[ret_code]" style="width:200px">
 			<option value="400"<?php selected($nfw_options['ret_code'], 400) ?>><?php _e('400 Bad Request', 'ninjafirewall') ?></option>
 			<option value="403"<?php selected($nfw_options['ret_code'], 403) ?>><?php _e('403 Forbidden (default)', 'ninjafirewall') ?></option>
@@ -170,7 +169,7 @@ if (! @preg_match( '/^(?:4(?:0[0346]|18)|50[03])$/', $nfw_options['ret_code']) )
 		<tr>
 			<th scope="row"><?php _e('IP anonymization', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox"<?php checked($nfw_options['anon_ip'], 1) ?> name="nfw_options[anon_ip]" /> <?php _e('Anonymize IP addresses by removing the last 3 characters.', 'ninjafirewall') ?></label></p>
 			<p><span class="description"><?php printf( __('Does not apply to private IP addresses and the <a href="%s">Login Protection</a>.', 'ninjafirewall'), '?page=nfsubloginprot' ) ?></span></p>
 			</td>
@@ -181,7 +180,7 @@ echo '
 		<tr>
 			<th scope="row">' . __('Blocked user message', 'ninjafirewall') . '</th>
 			<td width="20">&nbsp;</td>
-			<td align="left">
+			<td>
 				<textarea name="nfw_options[blocked_msg]" class="small-text code" cols="60" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">';
 
 if (! empty( $nfw_options['blocked_msg']) ) {
@@ -207,12 +206,12 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 		<tr>
 			<th scope="row"><?php _e('Export configuration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left"><input class="button-secondary" type="submit" name="nf_export" value="<?php _e('Download', 'ninjafirewall') ?>" /><br /><span class="description"><?php _e( 'File Check configuration will not be exported/imported.', 'ninjafirewall') ?></span></td>
+			<td><input class="button-secondary" type="submit" name="nf_export" value="<?php _e('Download', 'ninjafirewall') ?>" /><br /><span class="description"><?php _e( 'File Check configuration will not be exported/imported.', 'ninjafirewall') ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Import configuration', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left"><input type="file" name="nf_imp" /><br /><span class="description"><?php
+			<td><input type="file" name="nf_imp" /><br /><span class="description"><?php
 				list ( $major_current ) = explode( '.', NFW_ENGINE_VERSION );
 				printf( __( 'Imported configuration must match plugin version %s.', 'ninjafirewall'), (int) $major_current .'.x' );
 				echo '<br />'. __('It will override all your current firewall options and rules.', 'ninjafirewall')
@@ -221,7 +220,7 @@ if (! empty( $nfw_options['blocked_msg']) ) {
 		<tr>
 			<th scope="row"><?php _e('Configuration backup', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
-			<td align="left"><?php echo nf_sub_options_confbackup(); ?></td>
+			<td><?php echo nf_sub_options_confbackup(); ?></td>
 		</tr>
 	</table>
 
@@ -249,7 +248,7 @@ function nf_sub_options_confbackup() {
 		foreach( $glob as $file ) {
 			if ( preg_match( '`/(backup_(\d{10})_.+\.php)$`', $file, $match ) ) {
 				$date = ucfirst( date_i18n( 'F d, Y @ g:i A', $match[2] ) );
-				$size = ' ('. number_format( filesize( $file ) ) .' '. __('bytes', 'ninjafirewall') .')';
+				$size = ' ('. number_format_i18n( filesize( $file ) ) .' '. __('bytes', 'ninjafirewall') .')';
 				$res .= '<option value="'. htmlentities( $match[1] ) .'" title="'. htmlentities( $file ) .'">'. htmlentities( $date . $size ) .'</option>';
 			}
 		}
@@ -440,7 +439,7 @@ function nf_sub_options_import( $file ) {
 	$nfw_options['logo'] = plugins_url() . '/ninjafirewall/images/ninjafirewall_75.png';
 	$nfw_options['wp_dir'] = '/wp-admin/(?:css|images|includes|js)/|' .
 									 '/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
-									 '/'. basename(WP_CONTENT_DIR) .'/uploads/|/cache/';
+									 '/'. basename(WP_CONTENT_DIR) .'/(?:uploads|blogs\.dir)/|/cache/';
 	// $nfw_options['alert_email'] = get_option('admin_email');
 
 	if (! empty( $_FILES['nf_imp']['tmp_name'] ) && $file == $_FILES['nf_imp']['tmp_name'] ) {

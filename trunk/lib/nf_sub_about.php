@@ -50,8 +50,7 @@ function nfw_eg() {
 }
 </script>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;" title="NinTechNet"></div>
-	<h1>' . __('About', 'ninjafirewall') .'</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('About', 'ninjafirewall') . '</h1>
 	<br />
 	<center>';
 ?>
@@ -165,7 +164,7 @@ if (! preg_match( '/^win/i', PHP_OS ) ) {
 	}
 	$free = ( $MemFree + $Buffers + $Cached ) / 1024;
 	if ( $free ) {
-		echo '<tr valign="top"><td width="47%;" align="right">' . __('RAM', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . number_format( $free ) . ' ' . __('MB free', 'ninjafirewall') . ' / '. number_format( $MemTotal ) . ' ' . __('MB total', 'ninjafirewall') . '</td></tr>';
+		echo '<tr valign="top"><td width="47%;" align="right">' . __('RAM', 'ninjafirewall') . '</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . number_format_i18n( $free ) . ' ' . __('MB free', 'ninjafirewall') . ' / '. number_format_i18n( $MemTotal ) . ' ' . __('MB total', 'ninjafirewall') . '</td></tr>';
 	}
 
 	$cpu = array_filter( @explode( "\n", `egrep 'model name|cpu cores' /proc/cpuinfo` ) );

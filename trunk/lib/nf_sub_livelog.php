@@ -34,8 +34,8 @@ if ( empty($_SESSION['nfw_goodguy']) ) {
 if (! empty($err_msg) ) {
 	?>
 	<div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1><?php _e('Live Log', 'ninjafirewall') ?></h1>
+	<h1><img style="vertical-align:top;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('Live Log', 'ninjafirewall') ?></h1>
+
 	<br />
 	<div class="error notice is-dismissible"><p><?php echo $err_msg ?></p></div>
 	</div>
@@ -213,8 +213,7 @@ function lv_select( value ) {
 </script>
 
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( <?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1><?php _e('Live Log', 'ninjafirewall') ?></h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('Live Log', 'ninjafirewall') ?></h1>
 <?php
 if ( isset($_POST['lf']) ) {
 	$res = nf_sub_liveloge_save();
@@ -286,7 +285,7 @@ if ( empty( $nfw_options['liverulespath'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Inclusion and exclusion filters (REQUEST_URI)', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<select name="liverules" onchange="lv_select(this.value);">
 					<option value="0"<?php selected($liverules, 0) ?>><?php _e('None', 'ninjafirewall') ?></option>
 					<option value="1"<?php selected($liverules, 1) ?>><?php _e('Must include', 'ninjafirewall') ?></option>
@@ -298,7 +297,7 @@ if ( empty( $nfw_options['liverulespath'] ) ) {
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Format', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<p><label><input type="radio" name="lf" value="0"<?php checked($lf, 0) ?> onclick="document.getElementById('liveformat').disabled=true"><code>[%time] %name %client &quot;%method %uri&quot; &quot;%referrer&quot; &quot;%ua&quot; &quot;%forward&quot; &quot;%host&quot;</code></label></p>
 				<p><label><input type="radio" name="lf" value="1"<?php checked($lf, 1) ?> onclick="document.getElementById('liveformat').disabled=false;document.getElementById('liveformat').focus()"><?php _e('Custom', 'ninjafirewall') ?> </label><input id="liveformat" type="text" class="regular-text" name="liveformat" value="<?php echo $liveformat ?>"<?php disabled($lf, 0) ?> autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></p>
 				<span class="description"><?php _e('See contextual help for available log format.', 'ninjafirewall') ?></span>
@@ -306,7 +305,7 @@ if ( empty( $nfw_options['liverulespath'] ) ) {
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Display', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<select name="liveport">
 					<option value="0"<?php selected($liveport, 0) ?>><?php _e('HTTP and HTTPS traffic (default)', 'ninjafirewall') ?></option>
 					<option value="1"<?php selected($liveport, 1) ?>><?php _e('HTTP traffic only', 'ninjafirewall') ?></option>
@@ -316,7 +315,7 @@ if ( empty( $nfw_options['liverulespath'] ) ) {
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Timezone', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<select name="livetz">
 				<?php
 				$timezone_choice = nfw_timezone_choice();

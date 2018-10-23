@@ -24,8 +24,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 ?>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;" title="NinTechNet"></div>
-	<h1><font color="#21759B">WP+</font> Edition</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<font color="#21759B">WP+</font> Edition</h1>
 	<br />
 	<table border="0" cellspacing="2" cellpadding="5" width="100%">
 		<tr>

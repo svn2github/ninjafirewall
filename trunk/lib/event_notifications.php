@@ -42,8 +42,7 @@ function ac_radio_toogle(on_off, rbutton) {
 }
 </script>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Event Notifications', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Event Notifications', 'ninjafirewall') . '</h1>';
 
 // Saved ?
 if ( isset( $_POST['nfw_options']) ) {
@@ -65,7 +64,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="radio" name="nfw_options[a_0]" value="1"<?php checked( $nfw_options['a_0'], 1) ?>>&nbsp;<?php _e('An administrator logs in (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[a_0]" value="2"<?php checked( $nfw_options['a_0'], 2) ?>>&nbsp;<?php _e('Someone - user, admin, editor, etc - logs in', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[a_0]" value="0"<?php checked( $nfw_options['a_0'], 0) ?>>&nbsp;<?php _e('No, thanks (not recommended)', 'ninjafirewall') ?></label></p>
@@ -79,7 +78,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever someone', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox" name="nfw_options[a_11]" value="1"<?php checked( $nfw_options['a_11'], 1) ?>>&nbsp;<?php _e('Uploads a plugin (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="checkbox" name="nfw_options[a_12]" value="1"<?php checked( $nfw_options['a_12'], 1) ?>>&nbsp;<?php _e('Installs a plugin (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="checkbox" name="nfw_options[a_13]" value="1"<?php checked( $nfw_options['a_13'], 1) ?>>&nbsp;<?php _e('Activates a plugin', 'ninjafirewall') ?></label></p>
@@ -96,7 +95,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever someone', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox" name="nfw_options[a_21]" value="1"<?php checked( $nfw_options['a_21'], 1) ?>>&nbsp;<?php _e('Uploads a theme (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="checkbox" name="nfw_options[a_22]" value="1"<?php checked( $nfw_options['a_22'], 1) ?>>&nbsp;<?php _e('Installs a theme (default)', 'ninjafirewall') ?></label></p>
 			<p><label><input type="checkbox" name="nfw_options[a_23]" value="1"<?php checked( $nfw_options['a_23'], 1) ?>>&nbsp;<?php _e('Activates a theme', 'ninjafirewall') ?></label></p>
@@ -111,7 +110,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever someone', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox" name="nfw_options[a_31]" value="1"<?php checked( $nfw_options['a_31'], 1) ?>>&nbsp;<?php _e('Updates WordPress (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
@@ -134,7 +133,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me an alert whenever', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<p><label><input type="checkbox" name="nfw_options[a_51]" value="1"<?php checked( $nfw_options['a_51'], 1) ?>>&nbsp;<?php _e('An administrator account is created, modified or deleted in the database (default)', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[a_53]" value="1"<?php checked( $nfw_options['a_53'], 1) ?>>&nbsp;<?php _e('A user attempts to gain administrative privileges (default)', 'ninjafirewall') ?></label></p>
 			</td>
@@ -147,7 +146,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Send me a daily activity report', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox" name="nfw_options[a_52]" value="1"<?php checked( $nfw_options['a_52'], 1) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
@@ -159,7 +158,7 @@ if (! isset( $nfw_options['a_0'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Write all events to the firewall log', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="checkbox" name="nfw_options[a_41]" value="1"<?php checked( $nfw_options['a_41'], 1) ?>>&nbsp;<?php _e('Yes (default)', 'ninjafirewall') ?></label></p>
 			</td>
 		</tr>
@@ -174,7 +173,7 @@ if (! is_multisite() ) {
 	<table class="form-table">
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Alerts should be sent to', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<input class="regular-text" type="text" name="nfw_options[alert_email]" size="45" maxlength="250" value="<?php
 			if ( empty( $nfw_options['alert_email'])) {
 				echo htmlspecialchars( get_option('admin_email') );
@@ -204,7 +203,7 @@ if (! is_multisite() ) {
 	<table class="form-table">
 		<tr style="background-color:#F9F9F9;border: solid 1px #DFDFDF;">
 			<th scope="row"><?php _e('Alerts should be sent to', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="1"<?php checked( $nfw_options['alert_sa_only'], 1 ) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('Only to me, the Super Admin', 'ninjafirewall') ?>, <?php echo '<code>'. htmlspecialchars(get_option('admin_email')) . '</code>'; ?> (<?php _e('default', 'ninjafirewall') ?>)</label></p>
 			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="2"<?php checked( $nfw_options['alert_sa_only'], 2) ?> onclick="ac_radio_toogle(0,'alert_multirec');" />&nbsp;<?php _e('To the administrator of the site where originated the alert', 'ninjafirewall') ?></label></p>
 			<p><label><input type="radio" name="nfw_options[alert_sa_only]" value="3"<?php checked( $nfw_options['alert_sa_only'], 3) ?> onclick="ac_radio_toogle(1,'alert_multirec');" />&nbsp;<?php _e('Other(s):', 'ninjafirewall') ?> </label><input class="regular-text" type="text" name="nfw_options[alert_multirec]" size="45" maxlength="250" value="<?php echo $tmp_email ?>" <?php disabled($tmp_email, '') ?>></p>

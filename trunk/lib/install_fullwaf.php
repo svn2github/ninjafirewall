@@ -30,8 +30,7 @@ function nfw_get_abspath( $err = 0 ) {
 	}
 	echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
 	if ( $err ) {
 		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') .' '. $err . '</p></div>';
 	}
@@ -139,8 +138,7 @@ function nfw_presave( $err = '' ) {
 
 	echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Firewall Policies', 'ninjafirewall') . '</h1>';
 
 	if (! is_writable( NFW_LOG_DIR . '/nfwlog' ) ) {
 		echo '<div class="error settings-error"><p>'. sprintf( __('Error: NinjaFirewall log directory is not writable (%s). Please chmod it to 0777 and reload this page.', 'ninjafirewall'), '<code>' . htmlspecialchars(NFW_LOG_DIR) . '/nfwlog/</code>') .'</p></div></div>';
@@ -198,7 +196,7 @@ function nfw_presave( $err = '' ) {
 		</tr>
 
 		<?php
-		$f1 = $f2 = $f3 = $php_ini_type = '';
+		$f1 = ''; $f2 = ''; $f3 = ''; $php_ini_type = '';
 		if ( file_exists( $_SESSION['abspath'] . 'php.ini') ) {
 			if (empty($_SESSION['php_ini_type']) ) {
 				$f1 = $recommended;
@@ -227,7 +225,7 @@ function nfw_presave( $err = '' ) {
 			<td>
 				<p><label><input type="radio" name="php_ini_type" value="1"<?php checked($php_ini_type, 1) ?>><code>php.ini</code></label><?php echo $f1 ?><br /><span class="description"><?php _e('Used by most shared hosting accounts.', 'ninjafirewall') ?></span></p>
 
-				<p><label><input type="radio" name="php_ini_type" value="2"<?php checked($php_ini_type, 2) ?>><code>.user.ini</code></label><?php echo $f2 ?><br /><span class="description"><?php _e('Used by most dedicated/VPS servers, as well as shared hosting accounts that do not support php.ini', 'ninjafirewall') ?> (<a href="http://php.net/manual/en/configuration.file.per-user.php"><?php _e('more info', 'ninjafirewall') ?></a>).</span></p>
+				<p><label><input type="radio" name="php_ini_type" value="2"<?php checked($php_ini_type, 2) ?>><code>.user.ini</code></label><?php echo $f2 ?><br /><span class="description"><?php _e('The default PHP INI file since PHP 5.3.0', 'ninjafirewall') ?> (<a href="http://php.net/manual/en/configuration.file.per-user.php"><?php _e('more info', 'ninjafirewall') ?></a>).</span></p>
 
 				<p><label><input type="radio" name="php_ini_type" value="3"<?php checked($php_ini_type, 3) ?>><code>php5.ini</code></label><?php echo $f3 ?><br /><span class="description"><?php _e('A few shared hosting accounts. Seldom used.', 'ninjafirewall') ?></span></p>
 			</td>
@@ -300,8 +298,7 @@ function nfw_integration( $err = '' ) {
 	}
 </script>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 	<?php
 	if ( $err ) {
 		echo '<div class="error settings-error"><p>' . __('Error:', 'ninjafirewall') .' '. $err . '</p></div>';
@@ -614,8 +611,7 @@ NFW_INTEGRATION:
 
 	?>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 	<br />
 	<div class="updated settings-error"><p><?php _e('Your configuration was saved.', 'ninjafirewall') ?>
 	<?php

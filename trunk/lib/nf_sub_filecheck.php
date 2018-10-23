@@ -126,8 +126,7 @@ if (! isset($nfw_options['snapexclude']) ) {
 }
 
 echo '<div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('File Check', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('File Check', 'ninjafirewall') . '</h1>';
 
 if ( $err ) {
 	echo '<div class="error notice is-dismissible"><p>' . $err . '</p></div>';
@@ -144,7 +143,7 @@ if (! file_exists($nfmon_snapshot) ) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Create a snapshot of all files stored in that directory', 'ninjafirewall') ?></th>
-				<td align="left"><input class="large-text" type="text" name="snapdir" value="<?php
+				<td><input class="large-text" type="text" name="snapdir" value="<?php
 				if (! empty($nfw_options['snapdir']) ) {
 					echo htmlspecialchars($nfw_options['snapdir']);
 				} else {
@@ -157,12 +156,12 @@ if (! file_exists($nfmon_snapshot) ) {
 
 			<tr>
 				<th scope="row"><?php _e('Exclude the following files/folders (optional)', 'ninjafirewall') ?></th>
-				<td align="left"><input class="large-text" type="text" name="snapexclude" value="<?php echo htmlentities($nfw_options['snapexclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /wp-content/nfwlog/" maxlength="255"><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
+				<td><input class="large-text" type="text" name="snapexclude" value="<?php echo htmlentities($nfw_options['snapexclude']); ?>" placeholder="<?php _e('e.g.,', 'ninjafirewall') ?> /wp-content/nfwlog/" maxlength="255"><br /><span class="description"><?php _e('Full or partial case-sensitive string(s). Multiple values must be comma-separated', 'ninjafirewall') ?> (<code>,</code>).</span></td>
 			</tr>
 
 			<tr>
 				<th scope="row">&nbsp;</th>
-				<td align="left"><label><input type="checkbox" name="snapnoslink" value="1" checked="checked" /><?php _e('Do not follow symbolic links (default)', 'ninjafirewall') ?></label></td>
+				<td><label><input type="checkbox" name="snapnoslink" value="1" checked="checked" /><?php _e('Do not follow symbolic links (default)', 'ninjafirewall') ?></label></td>
 			</tr>
 
 		</table>
@@ -310,9 +309,9 @@ if (file_exists($nfmon_diff) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Last snapshot', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<p><?php printf( __('Created on: %s', 'ninjafirewall'), date_i18n('M d, Y @ H:i:s O', $stat['ctime'])); ?></p>
-				<p><?php printf( __('Total files: %s ', 'ninjafirewall'), number_format($count) ); ?></p>
+				<p><?php printf( __('Total files: %s ', 'ninjafirewall'), number_format_i18n($count) ); ?></p>
 
 				<p><?php _e('Directory:', 'ninjafirewall') ?> <code><?php echo htmlspecialchars($nfw_options['snapdir']) ?></code></p>
 				<?php
@@ -343,7 +342,7 @@ if (file_exists($nfmon_diff) ) {
 		</tr>
 		<tr>
 			<th scope="row"><?php _e('Last changes', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 
 			<?php
 			// Show info about last changes, if any :
@@ -513,7 +512,7 @@ if (file_exists($nfmon_diff) ) {
 		<table class="form-table">
 			<tr>
 				<th scope="row"><?php _e('Enable scheduled scans', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<p><label><input type="radio" name="sched_scan" value="0"<?php checked($sched_scan, 0) ?> /><?php _e('No (default)', 'ninjafirewall') ?></label></p>
 					<p><label><input type="radio" name="sched_scan" value="1"<?php checked($sched_scan, 1) ?> /><?php _e('Hourly', 'ninjafirewall') ?></label></p>
 					<p><label><input type="radio" name="sched_scan" value="2"<?php checked($sched_scan, 2) ?> /><?php _e('Twicedaily', 'ninjafirewall') ?></label></p>
@@ -540,7 +539,7 @@ if (file_exists($nfmon_diff) ) {
 			</tr>
 			<tr>
 				<th scope="row"><?php _e('Scheduled scan report', 'ninjafirewall') ?></th>
-				<td align="left">
+				<td>
 					<p><label><input type="radio" name="report_scan" value="0"<?php checked($report_scan, 0) ?> /><?php _e('Send me a report by email only if changes are detected (default)', 'ninjafirewall') ?></label></p>
 					<p><label><input type="radio" name="report_scan" value="1"<?php checked($report_scan, 1) ?> /><?php _e('Always send me a report by email after a scheduled scan', 'ninjafirewall') ?></label></p>
 				</td>

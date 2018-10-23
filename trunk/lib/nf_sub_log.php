@@ -81,8 +81,8 @@ nf_sub_log_js_header();
 
 ?>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url(); ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1><?php _e('Firewall Log', 'ninjafirewall') ?></h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('Firewall Log', 'ninjafirewall') ?></h1>
+
 <?php
 // Display a one-time notice after two weeks of use:
 nfw_rate_notice( $nfw_options );
@@ -106,7 +106,7 @@ foreach ($available_logs as $log_name => $tmp) {
 		echo ' selected';
 	}
 	$log_stat = stat($log_dir . $log_name);
-	echo '>' . str_replace('.php', '', $log_name) . ' (' . number_format($log_stat['size']) .' '. __('bytes', 'ninjafirewall') . ')</option>';
+	echo '>' . str_replace('.php', '', $log_name) . ' (' . number_format_i18n($log_stat['size']) .' '. __('bytes', 'ninjafirewall') . ')</option>';
 }
 echo '</select></center>';
 
@@ -167,7 +167,7 @@ if ( empty( $nfw_options['auto_del_log'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Auto-delete log', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 			<?php
 				$input = '<input type="number" name="nfw_options[auto_del_log]" min="0" value="'. (int) $nfw_options['auto_del_log'] .'" class="small-text" />';
 				printf( __('Automatically delete logs older than %s days', 'ninjafirewall' ), $input );
@@ -199,7 +199,7 @@ if ( empty( $nfw_options['auto_del_log'] ) ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php _e('Enter your public key (optional)', 'ninjafirewall') ?></th>
-			<td align="left">
+			<td>
 				<input class="large-text" type="text" maxlength="80" name="nfw_options[clogs_pubkey]" value="<?php echo htmlspecialchars( $nfw_options['clogs_pubkey'] ) ?>" autocomplete="off" />
 				<p><span class="description"><?php printf( __('<a href="%s">Consult our blog</a> if you want to enable centralized logging.', 'ninjafirewall'), 'https://blog.nintechnet.com/centralized-logging-with-ninjafirewall/' ) ?></span></p>
 			</td>

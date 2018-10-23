@@ -125,8 +125,8 @@ function nfw_welcome() {
 
 ?>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
+
 	<?php
 	if (file_exists( dirname(plugin_dir_path(__FILE__)) . '/nfwplus') ) {
 		echo '<br /><div class="error settings-error"><p>' . sprintf( __('Error: You have a copy of NinjaFirewall (%s) installed.<br />Please uninstall it completely before attempting to install NinjaFirewall (WP Edition).', 'ninjafirewall'), '<font color=#21759B>WP+</font> Edition' ) . '</p></div></div></div></div></div></div></body></html>';
@@ -255,8 +255,8 @@ if ( file_exists('" . plugin_dir_path(__FILE__) . 'lib/firewall.php' . "') ) {
 	}
 	echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('NinjaFirewall (WP Edition)', 'ninjafirewall') . '</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Firewall Policies', 'ninjafirewall') . '</h1>
+
 	<br />
 	 <div class="error settings-error"><p>' . $err . '</p></div>
 
@@ -367,8 +367,7 @@ function welcome_email() {
 function nfw_firewalltest() {
 	?>
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url(<?php echo plugins_url() ?>/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>NinjaFirewall (WP Edition)</h1>
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="<?php echo plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) ?>">&nbsp;<?php _e('NinjaFirewall (WP Edition)', 'ninjafirewall') ?></h1>
 
 	<?php
 	if (! defined('NFW_STATUS') || NFW_STATUS != 20 ) {
@@ -585,7 +584,7 @@ function nfw_default_conf() {
 	// 2. headers_list() and header_remove(): some hosts may disable them.
 	if ( function_exists('header_register_callback') && function_exists('headers_list') && function_exists('header_remove') ) {
 		// X-XSS-Protection:
-		$nfw_options['response_headers'] = '000100000';
+		$nfw_options['response_headers'] = '000300000';
 	}
 	$nfw_options['referrer_policy_enabled'] = 0;
 

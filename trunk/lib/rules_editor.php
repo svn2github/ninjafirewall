@@ -14,8 +14,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 echo '
 <div class="wrap">
-	<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>Rules Editor</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Rules Editor', 'ninjafirewall') . '</h1>';
 
 $nfw_rules = nfw_get_option( 'nfw_rules' );
 $is_update = 0;
@@ -84,7 +83,7 @@ echo '<br /><h3>' . __('NinjaFirewall built-in security rules', 'ninjafirewall')
 	<table class="form-table">
 		<tr>
 			<th scope="row">' . __('Select the rule you want to disable or enable', 'ninjafirewall') .'</th>
-			<td align="left">
+			<td>
 			<form method="post">'. $nonce . '
 			<select name="sel_e_r" style="font-family:Consolas,Monaco,monospace;">
 				<option value="0">' . __('Total rules enabled', 'ninjafirewall') .' : ' . count( $enabled_rules ) . '</option>';

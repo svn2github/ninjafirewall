@@ -24,8 +24,7 @@ nf_not_allowed( 'block', __LINE__ );
 
 echo '
 <div class="wrap">
-		<div style="width:33px;height:33px;background-image:url( ' . plugins_url() . '/ninjafirewall/images/ninjafirewall_32.png);background-repeat:no-repeat;background-position:0 0;margin:7px 5px 0 0;float:left;"></div>
-	<h1>' . __('Statistics', 'ninjafirewall') . '</h1>';
+	<h1><img style="vertical-align:top;width:33px;height:33px;" src="'. plugins_url( '/ninjafirewall/images/ninjafirewall_32.png' ) .'">&nbsp;' . __('Statistics', 'ninjafirewall') . '</h1>';
 
 // Display a one-time notice after two weeks of use:
 $nfw_options = nfw_get_option( 'nfw_options' );
@@ -104,29 +103,29 @@ echo '
 	<table class="form-table">
 		<tr>
 			<th scope="row"><h3>' . __('Monthly stats', 'ninjafirewall') . '</h3></th>
-			<td align="left">' . summary_stats_combo( $statx ) . '</td>
+			<td>' . summary_stats_combo( $statx ) . '</td>
 		</tr>
 		<tr>
 			<th scope="row">' . __('Blocked threats', 'ninjafirewall') . '</th>
-			<td align="left">' . $total . '</td>
+			<td>' . $total . '</td>
 		</tr>
 		<tr>
 			<th scope="row">' . __('Threats level', 'ninjafirewall') . '</th>
-			<td align="left">
+			<td>
 				' . __('Critical', 'ninjafirewall') . ' : ' . $critical . '%<br />
-				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" align="left" style="height:14px;">
+				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" style="height:14px;">
 					<tr>
 						<td width="' . round( $critical) . '%" background="' . plugins_url() . '/ninjafirewall/images/bar-critical.png" style="padding:0px"></td><td width="' . round(100 - $critical) . '%" style="padding:0px"></td>
 					</tr>
 				</table>
 				<br /><br />' . __('High', 'ninjafirewall') . ' : ' . $high . '%<br />
-				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" align="left" style="height:14px;">
+				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" style="height:14px;">
 					<tr>
 						<td width="' . round( $high) . '%" background="' . plugins_url() . '/ninjafirewall/images/bar-high.png" style="padding:0px"></td><td width="' . round(100 - $high) . '%" style="padding:0px"></td>
 					</tr>
 				</table>
 				<br /><br />' . __('Medium', 'ninjafirewall') . ' : ' . $medium . '%<br />
-				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" align="left" style="height:14px;">
+				<table bgcolor="#DFDFDF" border="0" cellpadding="0" cellspacing="0" height="14" width="250" style="height:14px;">
 					<tr>
 						<td width="' . round( $medium) . '%" background="' . plugins_url() . '/ninjafirewall/images/bar-medium.png" style="padding:0px;"></td><td width="' . round(100 - $medium) . '%" style="padding:0px;"></td>
 					</tr>
@@ -136,15 +135,15 @@ echo '
 		<tr><th scope="row"><h3>' . __('Benchmarks', 'ninjafirewall') . '</h3></th><td>&nbsp;</td><td>&nbsp;</td></tr>
 		<tr>
 			<th scope="row">' . __('Average time per request', 'ninjafirewall') . '</th>
-			<td align="left">' . $speed . 's</td>
+			<td>' . $speed . 's</td>
 		</tr>
 		<tr>
 			<th scope="row">' . __('Fastest request', 'ninjafirewall') . '</th>
-			<td align="left">' . round( $fast, 4) . 's</td>
+			<td>' . round( $fast, 4) . 's</td>
 		</tr>
 		<tr>
 			<th scope="row">' . __('Slowest request', 'ninjafirewall') . '</th>
-			<td align="left">' . round( $slow, 4) . 's</td>
+			<td>' . round( $slow, 4) . 's</td>
 		</tr>
 	</table>
 </div>';
