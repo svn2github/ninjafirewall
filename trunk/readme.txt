@@ -204,8 +204,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 * Fixed two potentials PHP notices in the firewall on systems running PHP 7.2+.
 * Added a function to the firewall engine to detect octal-encoded values that could be used as WAF evasion techniques (e.g. "?foo=\050\141\154\145\162\164\051\050\170\163\163\051").
 * If you have a complex database setup that NinjaFirewall is not able to properly retrieve, you can give it a MySQLi link identifier in the `.htninja` instead. See "Giving NinjaFirewall a MySQLi link identifier" at http://nin.link/htninja/ for more details.
-* Added RTL language support.
+* Added right to left language support
+* Improved HTTPS detection in the firewall.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Fixed potential "ini_set" PHP warning when a session was started by another plugin.
 * Many small fixes and adjustments.
 
 = 3.7 =

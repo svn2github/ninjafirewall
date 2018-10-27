@@ -20,30 +20,37 @@
 if (! defined( 'NFW_ENGINE_VERSION' ) ) { die( 'Forbidden' ); }
 
 // ---------------------------------------------------------------------
+// Start a PHP session.
 
 function nfw_session_start() {
 
-	// Start a PHP session
-
 	if (! headers_sent() ) {
-
-		@ini_set('session.cookie_httponly', 1);
-		@ini_set('session.use_only_cookies', 1);
-		if ( $_SERVER['SERVER_PORT'] == 443 ) {
-			@ini_set('session.cookie_secure', 1);
-		}
 
 		if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 			if (! session_id() ) {
+				nfw_ini_set_cookie();
 				session_start();
 			}
 		} else {
 			if ( session_status() !== PHP_SESSION_ACTIVE ) {
+				nfw_ini_set_cookie();
 				session_start();
 			}
 		}
-
 	}
+}
+
+// ---------------------------------------------------------------------
+
+function nfw_ini_set_cookie() {
+
+	if ( ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) ||
+		$_SERVER['SERVER_PORT'] == 443 || defined('NFW_IS_HTTPS') ) {
+
+		@ini_set('session.cookie_secure', 1);
+	}
+	@ini_set('session.cookie_httponly', 1);
+	@ini_set('session.use_only_cookies', 1);
 }
 
 // ---------------------------------------------------------------------

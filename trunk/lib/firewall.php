@@ -57,6 +57,15 @@ if (! is_dir($nfw_['log_dir']) ) {
 	}
 }
 
+// Check if we are connected over HTTPS
+if ( ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) || $_SERVER['SERVER_PORT'] == 443 ||
+	( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
+	// This can be defined in the .htninja
+	if (! defined('NFW_IS_HTTPS') ) {
+		define('NFW_IS_HTTPS', true );
+	}
+}
+
 if ( strpos($_SERVER['SCRIPT_NAME'], 'wp-login.php' ) !== FALSE ) {
 	nfw_bfd(1);
 } elseif ( strpos($_SERVER['SCRIPT_NAME'], 'xmlrpc.php' ) !== FALSE ) {
@@ -330,11 +339,11 @@ if (! empty($nfw_['nfw_options']['allow_local_ip']) && ! filter_var(NFW_REMOTE_A
 	return;
 }
 
-if ( (@$nfw_['nfw_options']['scan_protocol'] == 1) && ($_SERVER['SERVER_PORT'] == 443) ) {
+if ( @$nfw_['nfw_options']['scan_protocol'] == 1 && defined('NFW_IS_HTTPS') ) {
 	nfw_quit(20);
 	return;
 }
-if ( (@$nfw_['nfw_options']['scan_protocol'] == 2) && ($_SERVER['SERVER_PORT'] != 443) ) {
+if ( @$nfw_['nfw_options']['scan_protocol'] == 2 && ! defined('NFW_IS_HTTPS') ) {
 	nfw_quit(20);
 	return;
 }
@@ -477,7 +486,7 @@ function nfw_check_session() {
 	// Prepare session:
 	@ini_set('session.cookie_httponly', 1);
 	@ini_set('session.use_only_cookies', 1);
-	if ( $_SERVER['SERVER_PORT'] == 443 ) {
+	if ( defined('NFW_IS_HTTPS') ) {
 		@ini_set('session.cookie_secure', 1);
 	}
 
@@ -1654,7 +1663,7 @@ function nfw_response_headers() {
 	// Stop here is no more headers:
 	if ( empty($NFW_RESHEADERS[4] ) ) { return; }
 
-	if ( $_SERVER['SERVER_PORT'] != 443 &&
+	if (! defined('NFW_IS_HTTPS') &&
 	(! isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) ||
 	$_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https') ) {
 		return;

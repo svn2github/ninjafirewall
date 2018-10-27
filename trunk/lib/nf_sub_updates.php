@@ -505,7 +505,7 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 			// Save new rules version for install/upgrade:
 			define('NFW_NEWRULES_VERSION', $data[0]);
 			// Return the rules:
-			return $data[2];
+			return @$data[2];
 
 		// Not a 200 OK ret code :
 		} else {
