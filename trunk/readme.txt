@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
 Requires at least: 3.3.0
 Tested up to: 5.0
-Stable tag: 3.7
+Stable tag: 3.7.1
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -202,9 +202,9 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 = 3.7.1 =
 
 * Fixed two potentials PHP notices in the firewall on systems running PHP 7.2+.
-* Added a function to the firewall engine to detect octal-encoded values that could be used as WAF evasion techniques (e.g. "?foo=\050\141\154\145\162\164\051\050\170\163\163\051").
+* Added a function to the firewall engine to detect octal-encoded values that could be used as WAF evasion techniques (e.g. `?foo=\050\141\154\145\162\164\051\050\170\163\163\051`).
 * If you have a complex database setup that NinjaFirewall is not able to properly retrieve, you can give it a MySQLi link identifier in the `.htninja` instead. See "Giving NinjaFirewall a MySQLi link identifier" at http://nin.link/htninja/ for more details.
-* Added right to left language support
+* Added right to left language support.
 * Improved HTTPS detection in the firewall.
 * [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 * Fixed potential "ini_set" PHP warning when a session was started by another plugin.
