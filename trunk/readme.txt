@@ -199,9 +199,16 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 
 == Changelog ==
 
+= 3.7.2 =
+
+* Added a new option to block any attempt by non-admin users to modify some important WordPress settings (e.g., by exploiting a vulnerability, using a backdoor etc). See "Firewall Policies > Basic Policies > Block attempts to modify important WordPress settings".
+* [WP+ Edition] Fixed a bug in the "Web Filter" callback function where the firewall was writing its log in the `/wp-content/` folder instead of `/wp-content/nfwlog/`.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
+* Small fixes and adjustments.
+
 = 3.7.1 =
 
-* Fixed two potentials PHP notices in the firewall on systems running PHP 7.2+.
+* Fixed two potential PHP notices in the firewall on systems running PHP 7.2+.
 * Added a function to the firewall engine to detect octal-encoded values that could be used as WAF evasion techniques (e.g. `?foo=\050\141\154\145\162\164\051\050\170\163\163\051`).
 * If you have a complex database setup that NinjaFirewall is not able to properly retrieve, you can give it a MySQLi link identifier in the `.htninja` instead. See "Giving NinjaFirewall a MySQLi link identifier" at http://nin.link/htninja/ for more details.
 * Added right to left language support.

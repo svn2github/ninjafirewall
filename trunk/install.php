@@ -549,7 +549,10 @@ function nfw_default_conf() {
 		'nt_show_status'	=> 1,
 		'post_b64'			=> 1,
 		// v3.6.7:
-		'disallow_creation'=>0,
+		'disallow_creation'	=> 0,
+		// v3.7.2:
+		'disallow_settings'	=> 1,
+
 		// v1.1.2 :
 		'no_xmlrpc'			=> 0,
 		// v1.7 :

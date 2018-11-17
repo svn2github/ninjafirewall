@@ -479,7 +479,7 @@ function nf_sub_updates_download($update_url, $update_log, $new_rules_version) {
 
 			// Rules version should match the one we just fetched
 			// unless we are intalling NinjaFirewall ($new_rules_version==0) :
-			if ( $new_rules_version & $new_rules_version != $data[0]) {
+			if ( $new_rules_version && $new_rules_version != $data[0]) {
 				nf_sub_updates_log(
 					$update_log,
 					sprintf( __('Error: The new rules versions do not match (%s != %s).', 'ninjafirewall'), $new_rules_version, htmlspecialchars($data[0]))

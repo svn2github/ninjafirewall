@@ -3,7 +3,7 @@
 Plugin Name: NinjaFirewall (WP Edition)
 Plugin URI: https://nintechnet.com/
 Description: A true Web Application Firewall to protect and secure WordPress.
-Version: 3.7.1
+Version: 3.7.2
 Author: The Ninja Technologies Network
 Author URI: https://nintechnet.com/
 License: GPLv3 or later
@@ -19,7 +19,7 @@ Domain Path: /languages
  | (c) NinTechNet - https://nintechnet.com/                            |
  +---------------------------------------------------------------------+
 */
-define( 'NFW_ENGINE_VERSION', '3.7.1' );
+define( 'NFW_ENGINE_VERSION', '3.7.2' );
 /*
  +---------------------------------------------------------------------+
  | This program is free software: you can redistribute it and/or       |
@@ -493,6 +493,12 @@ function nfw_upgrade() {
 		// v3.6.2 update -------------------------------------------------
 		if ( version_compare( $nfw_options['engine_version'], '3.6.2', '<' ) ) {
 			$nfw_options['rate_notice'] = time() + 86400 * 15;
+		}
+		// v3.7.2 update -------------------------------------------------
+		if ( version_compare( $nfw_options['engine_version'], '3.7.2', '<' ) ) {
+			if (! isset( $nfw_options['disallow_settings'] ) ) {
+				$nfw_options['disallow_settings'] = 1;
+			}
 		}
 		// -------------------------------------------------------------
 
@@ -1426,6 +1432,11 @@ function nfw_switch_tabs(tab) {
 	} else {
 		$disallow_creation = 1;
 	}
+	if ( empty( $nfw_options['disallow_settings']) ) {
+		$disallow_settings = 0;
+	} else {
+		$disallow_settings = 1;
+	}
 	if ( empty( $nfw_options['enum_archives']) ) {
 		$enum_archives = 0;
 	} else {
@@ -1568,9 +1579,10 @@ function nfw_switch_tabs(tab) {
 
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php _e('User accounts', 'ninjafirewall') ?></th>
+			<th scope="row"><?php _e('General', 'ninjafirewall') ?></th>
 			<td width="20">&nbsp;</td>
 			<td>
+				<p><label><input type="checkbox" name="nfw_options[disallow_settings]" value="1"<?php checked( $disallow_settings, 1 ) ?>>&nbsp;<?php echo __('Block attempts to modify important WordPress settings', 'ninjafirewall') .' '. __('(default)', 'ninjafirewall') ?></label></p>
 				<p><label><input type="checkbox" name="nfw_options[disallow_creation]" value="1"<?php checked( $disallow_creation, 1 ) ?>>&nbsp;<?php _e('Block user accounts creation', 'ninjafirewall') ?></label></p>
 				<span class="description"><?php _e('Do not enable this policy if you allow user registration.', 'ninjafirewall') ?></span>
 			</td>
@@ -2646,6 +2658,12 @@ function nf_sub_policies_save() {
 	} else {
 		$nfw_options['disallow_creation'] = 1;
 	}
+	if (! isset( $_POST['nfw_options']['disallow_settings']) ) {
+		$nfw_options['disallow_settings'] = 0;
+	} else {
+		$nfw_options['disallow_settings'] = 1;
+	}
+
 	if (! isset( $_POST['nfw_options']['enum_archives']) ) {
 		$nfw_options['enum_archives'] = 0;
 	} else {
@@ -2850,6 +2868,7 @@ function nf_sub_policies_default() {
 		'/wp-includes/(?:(?:css|images|js(?!/tinymce/wp-tinymce\.php)|theme-compat)/|[^/]+\.php)|' .
 		'/'. basename(WP_CONTENT_DIR) .'/(?:uploads|blogs\.dir)/';
 	$nfw_options['disallow_creation']= 0;
+	$nfw_options['disallow_settings']= 1;
 	$nfw_options['enum_archives']		= 0;
 	$nfw_options['enum_login']			= 0;
 	$nfw_options['enum_restapi']		= 0;
@@ -3132,7 +3151,7 @@ function nf_sub_event() {
 
 }
 
-add_action('init', 'nf_check_dbdata', 1);
+add_action('shutdown', 'nf_check_dbdata', 1);
 
 add_action('nfdailyreport', 'nfdailyreportdo');
 
