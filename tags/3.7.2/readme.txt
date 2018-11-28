@@ -1,7 +1,7 @@
 === NinjaFirewall (WP Edition) ===
 Contributors: nintechnet, bruandet
-Tags: firewall, security, WAF, antivirus, brute force, protection, malware, admin, attack, backdoor, botnet, bruteforce, brute-force, hack, hhvm, infection, injection, login, nginx, nintechnet, ninjafirewall, palomuuri, pare-feu, phishing, prevention, proxy, sécurité, sécuriser, seguridad, seguranca, sicherheit, sicurezza, veiligheid, shellshock, soaksoak, sqli, trojan, user enumeration, virus, Web application firewall, widget, wp-login, XML-RPC, xmlrpc, XSS
-Requires at least: 3.3.0
+Tags: security, firewall, malware, antispam, virus, scanner, hacked site, brute force, seguridad, seguranca, sicherheit, sicurezza, veiligheid
+Requires at least: 3.7
 Tested up to: 5.0
 Stable tag: 3.7.2
 Requires PHP: 5.3
