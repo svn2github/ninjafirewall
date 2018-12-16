@@ -156,7 +156,7 @@ function nfw_presave( $err = '' ) {
 	if ( $apf = ini_get('auto_prepend_file') ) {
 		?>
 			<div style="background:#fff;border-left:4px solid #fff;-webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);box-shadow:0 1px 1px 0 rgba(0,0,0,.1);margin:5px 0 15px;padding:1px 12px;border-left-color:orange;">
-				<p><?php printf( __('NinjaFirewall detected that the PHP <code>auto_prepend_file</code> directive seems to be used by another application: %s.', 'ninjafirewall'), '<code>'. htmlspecialchars($apf) .'</code>' ); echo ' '; _e('Because NinjaFirewall needs to use that directive, it will orverride your current one.', 'ninjafirewall') ?></p>
+				<p><?php printf( __('NinjaFirewall detected that the PHP <code>auto_prepend_file</code> directive seems to be used by another application: %s.', 'ninjafirewall'), '<code>'. htmlspecialchars($apf) .'</code>' ); echo ' '; _e('Because NinjaFirewall needs to use that directive, it will override it.', 'ninjafirewall') ?></p>
 			</div>
 		<?php
 	}
@@ -547,6 +547,10 @@ NFW_INTEGRATION:
 				exit;
 			}
 			$fdata = file_get_contents($_SESSION['abspath'] . '.htaccess');
+
+			// Comment out any existing 'auto_prepend_file' directive:
+			$fdata = preg_replace( '`^(\s*php_value\s*auto_prepend_file.+?)$`m' , '#\1', $fdata);
+
 			$fdata = preg_replace( '`\s?'. HTACCESS_BEGIN .'.+?'. HTACCESS_END .'[^\r\n]*\s?`s' , "\n", $fdata);
 			copy( $_SESSION['abspath'] . '.htaccess',	$_SESSION['abspath'] . '.htaccess.ninja' . $bakup_file );
 		}

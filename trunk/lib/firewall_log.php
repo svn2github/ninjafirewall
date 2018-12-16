@@ -129,13 +129,17 @@ if ( isset( $data['log'] ) && is_array( $data['log'] ) ) {
 		}
 	}
 }
-
+if ( defined('NFW_TEXTAREA_HEIGHT') ) {
+	$th = (int) NFW_TEXTAREA_HEIGHT;
+} else {
+	$th = '450';
+}
 ?>
 <form name="frmlog">
 	<table class="form-table">
 		<tr>
 			<td width="100%">
-				<textarea name="txtlog" class="small-text code" style="width:100%;height:300px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php
+				<textarea name="txtlog" class="small-text code" style="width:100%;height:<?php echo $th; ?>px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php
 				if ( ! empty( $logline ) ) {
 					echo '       DATE         INCIDENT  LEVEL     RULE     IP            REQUEST' . "\n";
 					echo $logline;

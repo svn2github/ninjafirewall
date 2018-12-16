@@ -401,7 +401,7 @@ function nf_sub_options_import( $file ) {
 	}
 	@list ($options, $rules, $bf) = @explode("\n:-:\n", $data . "\n:-:\n");
 
-
+	// Detect and remove potential Unicode BOM:
 	if ( preg_match( '/^\xef\xbb\xbf/', $options ) ) {
 		$options = preg_replace( '/^\xef\xbb\xbf/', '', $options );
 	}
@@ -409,10 +409,11 @@ function nf_sub_options_import( $file ) {
 	if (! $options || ! $rules) {
 		return sprintf($err_msg, 2);
 	}
-	$nfw_options = @unserialize($options);
-	$nfw_rules = @unserialize($rules);
-	if (! empty($bf) ) {
-		$bf_conf = unserialize($bf);
+
+	$nfw_options = @json_decode( $options, true );
+	$nfw_rules = @json_decode( $rules, true );
+	if (! empty( $bf ) ) {
+		$bf_conf = json_decode( $bf, true );
 	}
 
 	if ( empty($nfw_options['engine_version']) ) {

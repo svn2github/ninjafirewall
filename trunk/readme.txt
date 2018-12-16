@@ -1,4 +1,4 @@
-=== NinjaFirewall (WP Edition) ===
+=== NinjaFirewall (WP Edition) - Advanced Security ===
 Contributors: nintechnet, bruandet
 Tags: security, firewall, malware, antispam, virus, scanner, hacked site, brute force, seguridad, seguranca, sicherheit, sicurezza, veiligheid
 Requires at least: 3.7
@@ -66,7 +66,7 @@ To get the most efficient protection, NinjaFirewall can automatically update its
 
 Unlike a Cloud Web Application Firewall, or Cloud WAF, NinjaFirewall works and filters the traffic on your own server and infrastructure. That means that your sensitive data (contact form messages, customers credit card number, login credentials etc) remains on your server and is not routed through a third-party company's servers, which could pose unnecessary risks (e.g., decryption of your HTTPS traffic in order to inspect it, employees accessing your data or logs in plain text, theft of private information, man-in-the-middle attack etc).
 
-NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). [See our blog for more details](https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/ "GDPR Compliance").
+Your website can run NinjaFirewall and be compliant with the General Data Protection Regulation (GDPR). [See our blog for more details](https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/ "GDPR Compliance").
 
 = IPv6 compatibility =
 
@@ -198,6 +198,18 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 15. Security rules updates.
 
 == Changelog ==
+
+= 3.8 =
+
+* A lot of code was cleaned-up, fixed and improved as well as the whole files structure of the plugin.
+* Increased the height of the textarea in the "Firewall Log" and "Live Log" pages.
+* Fixed an issue where some caching plugins could mess with the database monitoring process which could return erroneous results.
+* Improved the database monitoring process for blogs that have a huge amount of rows in the "wp_usermeta" table.
+* The "File Check" notification will include the number of new, modified and deleted files in the body of the email.
+* [WP+ Edition] Added an option to disable login alerts for users whose IP address is whitelisted. See "NinjaFirewall > Event Notifications > Do not send a notification if the user is in the IP Access Control whitelist".
+* [WP+ Edition] Fixed an issue where, after deleting the log, it was once again deleted if the page was reloaded in the browser.
+* Fixed an issue where any `auto_prepend_file` directive left by another application in the .htaccess was not removed before starting the installation of NinjaFirewall on servers running LiteSpeed or Apache + mod_php.
+* [WP+ Edition] Updated IPv4/IPv6 GeoIP databases.
 
 = 3.7.2 =
 

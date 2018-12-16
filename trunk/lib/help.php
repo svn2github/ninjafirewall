@@ -455,7 +455,7 @@ function help_nfsublog() {
 		'id'        => 'log04',
 		'title'     => __('GDPR Compliance', 'ninjafirewall'),
 		'content'   =>
-			'<p>'.  __('NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') .' <a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a>'.
+			'<p>'.  __('Your website can run NinjaFirewall and be compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') .' <a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a>'.
 			'</p>'
 	) );
 

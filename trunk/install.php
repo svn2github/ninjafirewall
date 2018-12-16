@@ -174,7 +174,7 @@ function nfw_welcome() {
 
 	<h3><?php _e('Privacy policy', 'ninjafirewall') ?></h3>
 
-	<p><?php _e('NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') ?> <a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a></p>
+	<p><?php _e('Your website can run NinjaFirewall and be compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') ?> <a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a></p>
 
 </div>
 <?php
@@ -308,6 +308,9 @@ function welcome_email() {
 
 		$message.= __('-Keep your blog protected against the latest vulnerabilities:', 'ninjafirewall') . "\n";
 		$message.= 'https://blog.nintechnet.com/ninjafirewall-wpwp-introduces-automatic-updates-for-security-rules ' . "\n\n";
+
+		$message.= __('-Test your website security with our online scanner:', 'ninjafirewall') . "\n";
+		$message.= 'https://webscanner.nintechnet.com/ ' . "\n\n";
 
 		$message.= __('-NinjaFirewall Referral Program:', 'ninjafirewall') . "\n";
 		$message.= 'https://nintechnet.com/referral/ ' . "\n\n";

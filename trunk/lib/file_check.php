@@ -812,9 +812,10 @@ function nf_scan_email($nfmon_diff, $log_dir) {
 		$data.= '== ' . site_url() . "\n";
 		$data.= '== ' . date_i18n('M d, Y @ H:i:s O', $stat['ctime']) . "\n\n";
 		$data.= '[+] = ' . __('New file', 'ninjafirewall') .
-					'      [-] = ' . __('Deleted file', 'ninjafirewall') .
 					'      [!] = ' . __('Modified file', 'ninjafirewall') .
+					'      [-] = ' . __('Deleted file', 'ninjafirewall') .
 					"\n\n";
+		$n = 0; $m = 0; $d = 0;
 		$fh = fopen($nfmon_diff, 'r');
 		while (! feof($fh) ) {
 			$res = explode('::', fgets($fh) );
@@ -822,12 +823,15 @@ function nf_scan_email($nfmon_diff, $log_dir) {
 			// New file :
 			if ($res[1] == 'N') {
 				$data .= '[+] ' . $res[0] . "\n";
+				++$n;
 			// Deleted file :
 			} elseif ($res[1] == 'D') {
 				$data .= '[-] ' . $res[0] . "\n";
+				++$d;
 			// Modified file:
 			} elseif ($res[1] == 'M') {
 				$data .= '[!] ' . $res[0] . "\n";
+				++$m;
 			}
 		}
 		fclose($fh);
@@ -841,6 +845,11 @@ function nf_scan_email($nfmon_diff, $log_dir) {
 			$msg .=__('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 		}
 		$msg .= sprintf( __('Date: %s', 'ninjafirewall'), ucfirst(date_i18n('M d, Y @ H:i:s O')) )."\n\n";
+		// Display summary in the email body:
+		$msg .= sprintf( __('New files: %s', 'ninjafirewall'), $n ) ."\n";
+		$msg .= sprintf( __('Modified files: %s', 'ninjafirewall'), $m ) ."\n";
+		$msg .= sprintf( __('Deleted files: %s', 'ninjafirewall'), $d ) ."\n\n";
+
 		$msg .= __('See attached file for details.', 'ninjafirewall') . "\n\n" .
 			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 			__('Support forum:', 'ninjafirewall') .' http://wordpress.org/support/plugin/ninjafirewall' . "\n";

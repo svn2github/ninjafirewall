@@ -224,13 +224,19 @@ if ( isset($_POST['lf']) ) {
 	}
 }
 $nfw_options = nfw_get_option('nfw_options');
+
+if ( defined('NFW_TEXTAREA_HEIGHT') ) {
+	$th = (int) NFW_TEXTAREA_HEIGHT;
+} else {
+	$th = '450';
+}
 ?>
 <form name="liveform">
 	<table class="form-table">
 		<tr>
 			<td style="width:100%;text-align:center;">
 				<span class="description" id="loading">&nbsp;</span><br />
-				<textarea name="txtlog" id="idtxtlog" class="small-text code" style="width:100%;height:325px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php _e('No traffic yet, please wait...', 'ninjafirewall'); echo "\n"; ?></textarea>
+				<textarea name="txtlog" id="idtxtlog" class="small-text code" style="width:100%;height:<?php echo $th; ?>px;" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><?php _e('No traffic yet, please wait...', 'ninjafirewall'); echo "\n"; ?></textarea>
 				<br />
 				<center>
 					<p>

@@ -102,7 +102,7 @@ function nfw_eg() {
 		<br />
 
 		<div id="11">
-			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="500">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" border="0" width="600">
 				<tr style="text-align:center;">
 					<td><a href="http://www.facebook.com/sharer.php?u=https://nintechnet.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/facebook.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
 					<td><a href="https://plus.google.com/share?url=https://nintechnet.com/" target="_blank"><img title="Share it" src="' . plugins_url() . '/ninjafirewall/images/google.png" width="90" height="90" style="border: 0px solid #DFDFDF;padding:0px;-moz-box-shadow:-3px 5px 5px #999;-webkit-box-shadow:-3px 5px 5px #999;box-shadow:-3px 5px 5px #999;background-color:#FCFCFC;"></a></td>
@@ -114,17 +114,17 @@ function nfw_eg() {
 		</div>
 
 		<div id="12" style="display:none;">
-			<table width="500">
+			<table width="600">
 				<tr>
 					<td>
-						<textarea class="small-text code" cols="60" rows="8" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">' . htmlspecialchars($changelog) . '</textarea>
+						<textarea class="small-text code" cols="75" rows="8" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">' . htmlspecialchars($changelog) . '</textarea>
 					</td>
 				</tr>
 			</table>
 		</div>
 
 		<div id="13" style="display:none;">
-			<table border="0" style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+			<table border="0" style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="600">
 				<tr valign="top"><td width="47%;" align="right">REMOTE_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['REMOTE_ADDR']) . '</td></tr>
 				<tr valign="top"><td width="47%;" align="right">SERVER_ADDR</td><td width="3%">&nbsp;</td><td width="50%" align="left">' .htmlspecialchars($_SERVER['SERVER_ADDR']) . '</td></tr>
 				<tr valign="top"><td width="47%;" align="right">SERVER_NAME</td><td width="3%">&nbsp;</td><td width="50%" align="left">' . htmlspecialchars($_SERVER['SERVER_NAME']) . '</td></tr>
@@ -182,7 +182,7 @@ echo '
 		</div>
 
 		<div id="14" style="display:none;">
-			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="600">
 				<tr>
 					<td>
 						' . sprintf(__('By joining our NinjaFirewall Referral Program you can earn up to %s for every payment made by a user who signs up using your personal referral link.', 'ninjafirewall'), '20%') .
@@ -193,9 +193,9 @@ echo '
 		</div>
 
 		<div id="15" style="display:none;">
-			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="500">
+			<table style="text-align:justify;border:2px #749BBB solid;padding:6px;border-radius:4px" width="600">
 				<tr>
-					<td>'. __('NinjaFirewall is compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') .'<br /><a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a></td>
+					<td>'. __('Your website can run NinjaFirewall and be compliant with the General Data Protection Regulation (GDPR). For more info, please visit our blog:', 'ninjafirewall') .'<br /><a href="https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/">https://blog.nintechnet.com/ninjafirewall-general-data-protection-regulation-compliance/</a></td>
 				</tr>
 			</table>
 		</div>

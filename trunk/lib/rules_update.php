@@ -60,7 +60,7 @@ if ( defined( 'NFUPDATESDO' ) && NFUPDATESDO == 2 ) {
 	);
 }
 
-// NFUPDATESDO: scheduled update (1), installation (2) or plugin update (3):
+// NFUPDATESDO: scheduled update (1), installation (2) or plugin update (3 - deprecated since v3.8):
 if (defined('NFUPDATESDO') ) {
 	define('NFW_RULES', nf_sub_do_updates($update_url, $update_log, NFUPDATESDO));
 	return;
@@ -300,7 +300,7 @@ function nf_sub_updates_clearlog($update_log) {
 
 function nf_sub_do_updates($update_url, $update_log, $NFUPDATESDO = 1) {
 
-	// Are we installing (2) or updating (3) NinjaFirewall ?
+	// Are we installing (2) or updating (3 - deprecated since v3.8) NinjaFirewall ?
 	if ( $NFUPDATESDO > 1 ) {
 		 return nf_sub_updates_download($update_url, $update_log, 0);
 	}

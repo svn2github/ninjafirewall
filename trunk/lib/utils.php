@@ -80,11 +80,8 @@ function nfw_account_creation( $user_login ) {
 	}
 	$subject = '[NinjaFirewall] ' . $subject;
 	$message = __('NinjaFirewall has blocked an attempt to create a user account:', 'ninjafirewall') . "\n\n";
-	if ( is_multisite() ) {
-		$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
-	} else {
-		$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
-	}
+	// Show current blog, not main site (multisite):
+	$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 	$message.= __('Username:', 'ninjafirewall') ." {$user_login} (blocked)\n";
 	$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
 	$message.= 'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n";
@@ -217,11 +214,11 @@ function nfw_garbage_collector() {
 				// Backup the configuration:
 				$nfw_rules = nfw_get_option( 'nfw_rules' );
 				if ( file_exists( $path .'bf_conf.php' ) ) {
-					$bd_data = serialize( file_get_contents( $path .'bf_conf.php' ) );
+					$bd_data = json_encode( file_get_contents( $path .'bf_conf.php' ) );
 				} else {
 					$bd_data = '';
 				}
-				$data = serialize( $nfw_options ) ."\n:-:\n". serialize($nfw_rules) ."\n:-:\n". $bd_data;
+				$data = json_encode( $nfw_options ) ."\n:-:\n". json_encode($nfw_rules) ."\n:-:\n". $bd_data;
 				$file = uniqid( 'backup_'. time() .'_', true) . '.php';
 				file_put_contents( $path . $file, $data );
 				array_unshift( $glob, $path . $file );
@@ -349,7 +346,7 @@ function nfw_query( $query ) {
 		@session_destroy();
 		$query->set('author_name', '0');
 		nfw_log2('User enumeration scan (author archives)', $tmp, 2, 0);
-		wp_redirect( home_url('/') );
+		wp_safe_redirect( home_url('/') );
 		exit;
 	}
 }
@@ -429,45 +426,132 @@ function nfw_err_shake( $shake_codes ) {
 
 // ---------------------------------------------------------------------
 
+function nfw_check_emailalert() {
+
+	$nfw_options = nfw_get_option( 'nfw_options' );
+
+	if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
+		$recipient = get_option('admin_email');
+	} else {
+		$recipient = $nfw_options['alert_email'];
+	}
+
+	global $current_user;
+	$current_user = wp_get_current_user();
+
+	list( $a_1, $a_2, $a_3 ) = explode( ':', NFW_ALERT . ':' );
+
+	if (! empty($nfw_options['a_' . $a_1 . $a_2]) ) {
+		$alert_array = array(
+			'1' => array (
+				'0' => __('Plugin', 'ninjafirewall'), '1' => __('uploaded', 'ninjafirewall'),	'2' => __('installed', 'ninjafirewall'), '3' => __('activated', 'ninjafirewall'),
+				'4' => __('updated', 'ninjafirewall'), '5' => __('deactivated', 'ninjafirewall'), '6' => __('deleted', 'ninjafirewall'), 'label' => __('Name', 'ninjafirewall')
+			),
+			'2' => array (
+				'0' => __('Theme', 'ninjafirewall'), '1' => __('uploaded', 'ninjafirewall'), '2' => __('installed', 'ninjafirewall'), '3' => __('activated', 'ninjafirewall'),
+				'4' => __('deleted', 'ninjafirewall'), 'label' => __('Name', 'ninjafirewall')
+			),
+			'3' => array (
+				'0' => 'WordPress', '1' => __('upgraded', 'ninjafirewall'),	'label' => __('Version', 'ninjafirewall')
+			)
+		);
+
+		if ( substr_count($a_3, ',') ) {
+			$alert_array[$a_1][0] .= 's';
+			$alert_array[$a_1]['label'] .= 's';
+		}
+		$subject = __('[NinjaFirewall] Alert:', 'ninjafirewall') . ' ' . $alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2];
+		if ( is_multisite() ) {
+			$url = __('-Blog :', 'ninjafirewall') .' '. network_home_url('/') . "\n\n";
+		} else {
+			$url = __('-Blog :', 'ninjafirewall') .' '. home_url('/') . "\n\n";
+		}
+		$message = __('NinjaFirewall has detected the following activity on your account:', 'ninjafirewall') . "\n\n".
+			'-' . $alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2] . "\n" .
+			'-' . $alert_array[$a_1]['label'] . ' : ' . $a_3 . "\n\n" .
+			__('-User :', 'ninjafirewall') .' '. $current_user->user_login . ' (' . $current_user->roles[0] . ")\n" .
+			__('-IP   :', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n" .
+			__('-Date :', 'ninjafirewall') .' '. ucfirst( date_i18n('F j, Y @ H:i:s O') ) ."\n" .
+			$url .
+			'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
+			__('Support forum:', 'ninjafirewall') . ' http://wordpress.org/support/plugin/ninjafirewall' . "\n";
+		wp_mail( $recipient, $subject, $message );
+
+		if (! empty($nfw_options['a_41']) ) {
+			nfw_log2(
+				$alert_array[$a_1][0] . ' ' . $alert_array[$a_1][$a_2] . ' by '. $current_user->user_login,
+				$alert_array[$a_1]['label'] . ': ' . $a_3,
+				6,
+				0
+			);
+		}
+
+	}
+}
+
+// ---------------------------------------------------------------------
+
 function nf_check_dbdata() {
 
 	$nfw_options = nfw_get_option( 'nfw_options' );
 
+	// Don't do anything if NinjaFirewall is disabled or DB monitoring option is off :
 	if ( empty( $nfw_options['enabled'] ) || empty($nfw_options['a_51']) ) { return; }
+
+	// Don't run more than once every minute:
+	if ( get_transient( 'nfw_db_check' ) !== false ) {
+		return;
+	}
 
 	if ( is_multisite() ) {
 		global $current_blog;
-		$nfdbhash = NFW_LOG_DIR .'/nfwlog/cache/nfdbhash.'. $current_blog->site_id .'-'. $current_blog->blog_id .'.php';
+		$db_hash = NFW_LOG_DIR .'/nfwlog/cache/db_hash.'. $current_blog->site_id .'-'. $current_blog->blog_id .'.php';
 	} else {
 		global $blog_id;
-		$nfdbhash = NFW_LOG_DIR .'/nfwlog/cache/nfdbhash.'. $blog_id .'.php';
+		$db_hash = NFW_LOG_DIR .'/nfwlog/cache/db_hash.'. $blog_id .'.php';
 	}
 
 	$adm_users = nf_get_dbdata();
-	if (! $adm_users) { return; }
-
-	if (! file_exists($nfdbhash) ) {
-		@file_put_contents( $nfdbhash, md5( serialize( $adm_users) ), LOCK_EX );
+	if (! $adm_users) {
+		set_transient( 'nfw_db_check', 1, 60 );
 		return;
 	}
 
-	$old_hash = trim (file_get_contents($nfdbhash) );
+	// Sort by ID to prevent false alerts:
+	usort( $adm_users, 'nfw_sort_by_id' );
 
-	if ( $old_hash == md5( serialize($adm_users)) ) {
+	if (! file_exists( $db_hash ) ) {
+		// We don't have any hash yet, let's create one and quit
+		// (md5 is faster than sha1 or crc32 with long strings) :
+		@file_put_contents( $db_hash, md5( serialize( $adm_users) ), LOCK_EX );
+		set_transient( 'nfw_db_check', 1, 60 );
 		return;
-	} else {
-		$fstat = stat($nfdbhash);
-		if ( ( time() - $fstat['mtime']) < 60 ) {
-			return;
-		}
+	}
 
-		$tmp = @file_put_contents( $nfdbhash, md5( serialize( $adm_users) ), LOCK_EX );
+	$old_hash = trim ( file_get_contents( $db_hash ) );
+	if (! $old_hash ) {
+		@file_put_contents( $db_hash, md5( serialize( $adm_users) ), LOCK_EX );
+		set_transient( 'nfw_db_check', 1, 60 );
+		return;
+	}
+
+	// Compare both hashes:
+	if ( $old_hash == md5( serialize( $adm_users ) ) ) {
+		set_transient( 'nfw_db_check', 1, 60 );
+		return;
+
+	} else {
+		// Create or update 60-second transient:
+		set_transient( 'nfw_db_check', 1, 60 );
+
+		// Save the new hash:
+		$tmp = @file_put_contents( $db_hash, md5( serialize( $adm_users ) ), LOCK_EX );
 		if ( $tmp === FALSE ) {
 			return;
 		}
 
 		nfw_get_blogtimezone();
-
+		// Send an email to the admin:
 		if ( ( is_multisite() ) && ( $nfw_options['alert_sa_only'] == 2 ) ) {
 			$recipient = get_option('admin_email');
 		} else {
@@ -476,32 +560,30 @@ function nf_check_dbdata() {
 
 		$subject = __('[NinjaFirewall] Alert: Database changes detected', 'ninjafirewall');
 		$message = __('NinjaFirewall has detected that one or more administrator accounts were modified in the database:', 'ninjafirewall') . "\n\n";
-		if ( is_multisite() ) {
-			$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
-		} else {
-			$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
-		}
-		$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
+		// Even if this is a multisite install, we display
+		// the requested blog, not the main site:
+		$message .=__('Blog:', 'nfwplus') .' '. home_url('/') . "\n";
 		$message.= __('Date:', 'ninjafirewall') .' '. date_i18n('F j, Y @ H:i:s') . ' (UTC '. date('O') . ")\n\n";
 		$message.= sprintf(__('Total administrators : %s', 'ninjafirewall'), count($adm_users) ) . "\n\n";
-		foreach( $adm_users as $obj => $adm ) {
-			$message.= 'Admin ID : ' . $adm->ID . "\n";
-			$message.= '-user_login : ' . $adm->user_login . "\n";
-			$message.= '-user_nicename : ' . $adm->user_nicename . "\n";
-			$message.= '-user_email : ' . $adm->user_email . "\n";
-			$message.= '-user_registered : ' . $adm->user_registered . "\n";
-			$message.= '-display_name : ' . $adm->display_name . "\n\n";
+		foreach( $adm_users as $adm ) {
+			$message.= 'Admin ID: ' . $adm->ID . "\n";
+			$message.= '-user_login: ' . $adm->user_login . "\n";
+			$message.= '-user_nicename: ' . $adm->user_nicename . "\n";
+			$message.= '-user_email: ' . $adm->user_email . "\n";
+			$message.= '-user_registered: ' . $adm->user_registered . "\n";
+			$message.= '-display_name: ' . $adm->display_name . "\n\n";
 		}
-		$message.= "\n" . __('If you cannot see any modifications in the above fields, it is likely that the administrator password was changed.', 'ninjafirewall'). "\n\n";
+		$message.=  __('If you cannot see any modifications in the above fields, it is possible that the administrator password was changed.', 'ninjafirewall'). "\n\n";
+		$message.= __('This notification can be turned off from NinjaFirewall "Event Notifications" page.', 'ninjafirewall') . "\n\n";
 		$message.= 	'NinjaFirewall (WP Edition) - https://nintechnet.com/' . "\n" .
 						'Support forum: http://wordpress.org/support/plugin/ninjafirewall' . "\n";
 		wp_mail( $recipient, $subject, $message );
 
+		// Log event if required:
 		if (! empty($nfw_options['a_41']) ) {
 			nfw_log2('Database changes detected', 'administrator account', 4, 0);
 		}
 	}
-
 }
 
 // ---------------------------------------------------------------------
@@ -516,7 +598,13 @@ function nf_get_dbdata() {
 			)
 		)
 	);
+}
 
+// ---------------------------------------------------------------------
+
+function nfw_sort_by_id( $a, $b ) {
+
+  return strcmp( $a->ID, $b->ID );
 }
 
 // ---------------------------------------------------------------------
@@ -614,11 +702,8 @@ function nfwhook_user_meta( $id, $key, $value ) {
 			}
 			$subject = '[NinjaFirewall] ' . $subject;
 			$message = __('NinjaFirewall has blocked an attempt to gain administrative privileges:', 'ninjafirewall') . "\n\n";
-			if ( is_multisite() ) {
-				$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
-			} else {
-				$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
-			}
+			// Show current blog, not main site (multisite):
+			$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 			$message.= __('Username:', 'ninjafirewall') .' '. $user_info->user_login . " (ID: $id)\n";
 			$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
 			$message.= 'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n";
@@ -748,7 +833,6 @@ add_action( 'init', 'nf_wp_init' );
 function nf_monitor_options( $value, $option, $old_value ) {
 
 	$monitor = array(
-		//~ 'active_plugins',
 		'admin_email',
 		'blog_public',
 		'blogdescription',
@@ -757,8 +841,10 @@ function nf_monitor_options( $value, $option, $old_value ) {
 		'comment_registration',
 		'default_role',
 		'home',
+		'mailserver_login',
 		'siteurl',
 		'users_can_register',
+		'wp_user_roles'
 	);
 
 	// User-defined exclusion list (undocumented):
@@ -822,12 +908,8 @@ function nf_monitor_options_alert( $option, $value, $old_value ) {
 		__('You can review this option from your WordPress "%s" page.', 'ninjafirewall') ."\n\n",
 		__('Settings > General', 'ninjafirewall')
 	);
-
-	if ( is_multisite() ) {
-		$message.= __('Blog:', 'ninjafirewall') .' '. network_home_url('/') . "\n";
-	} else {
-		$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
-	}
+	// Show current blog, not main site (multisite):
+	$message.= __('Blog:', 'ninjafirewall') .' '. home_url('/') . "\n";
 	$message.= __('User IP:', 'ninjafirewall') .' '. NFW_REMOTE_ADDR . "\n";
 	$message.= 'SCRIPT_FILENAME: ' . $_SERVER['SCRIPT_FILENAME'] . "\n";
 	$message.= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . "\n";
