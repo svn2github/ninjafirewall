@@ -82,15 +82,15 @@ if (! empty($nfw_options['engine_version']) && version_compare($nfw_options['eng
 			foreach( $glob as $file ) {
 				$data = file_get_contents( $file );
 				list ( $options, $rules, $bf ) = @explode("\n:-:\n", $data . "\n:-:\n");
-				$nfw_options = @unserialize( $options );
-				$nfw_rules = @unserialize( $rules );
+				$array_options = @unserialize( $options );
+				$array_rules = @unserialize( $rules );
 				if (! empty( $bf ) ) {
 					$bf_conf = @unserialize( $bf );
 				} else {
 					$bf_conf = '';
 				}
-				if ( $nfw_options !== false && $nfw_rules !== false ) {
-					$data = json_encode( $nfw_options ) ."\n:-:\n". json_encode( $nfw_rules ) ."\n:-:\n". $bf_conf;
+				if ( $array_options !== false && $array_rules !== false ) {
+					$data = json_encode( $array_options ) ."\n:-:\n". json_encode( $array_rules ) ."\n:-:\n". $bf_conf;
 					file_put_contents( $file, $data );
 				}
 			}

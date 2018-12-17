@@ -3,7 +3,7 @@ Contributors: nintechnet, bruandet
 Tags: security, firewall, malware, antispam, virus, scanner, hacked site, brute force, seguridad, seguranca, sicherheit, sicurezza, veiligheid
 Requires at least: 3.7
 Tested up to: 5.0
-Stable tag: 3.8
+Stable tag: 3.8.1
 Requires PHP: 5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -198,6 +198,10 @@ NinjaFirewall works on Unix-like servers only. There is no Microsoft Windows ver
 15. Security rules updates.
 
 == Changelog ==
+
+= 3.8.1 =
+
+* Fixed a potential issue where the firewall configuration could be corrupted when attempting to restore a backup from the Firewall Options page right after updating to version 3.8.
 
 = 3.8 =
 
